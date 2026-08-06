@@ -1,0 +1,9 @@
+[submodule "holonight-qt"]
+	path = holonight-qt
+	url = git@github.com:lebedenko/holonight-qt.git
+[submodule "holonight-shell"]
+	path = holonight-shell
+	url = git@github.com:lebedenko/holonight-shell.git
+[submodule "holonight-icons"]
+	path = holonight-icons
+	url = git@github.com:lebedenko/holonight-icons.git
