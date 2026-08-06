@@ -1,2 +1,4 @@
 # Personal agent tooling is installed outside the umbrella repository contract.
 /.skills/
+AGENTS.md
+CLAUDE.md
