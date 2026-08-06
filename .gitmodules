@@ -7,3 +7,15 @@
 [submodule "holonight-icons"]
 	path = holonight-icons
 	url = git@github.com:lebedenko/holonight-icons.git
+[submodule "holonight-ai"]
+	path = holonight-ai
+	url = git@github.com:lebedenko/holonight-ai.git
+[submodule "holonight-pkg-manager"]
+	path = holonight-pkg-manager
+	url = git@github.com:lebedenko/holonight-pkg-manager.git
+[submodule "holonight-settings"]
+	path = holonight-settings
+	url = git@github.com:lebedenko/holonight-settings.git
+[submodule "holonightd"]
+	path = holonightd
+	url = git@github.com:lebedenko/holonightd.git

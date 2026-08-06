@@ -11,13 +11,10 @@ implementation stays in the component repositories.
 | `holonight-qt` | Shared Qt/QML design system and reusable primitives | Pinned submodule |
 | `holonight-shell` | Desktop shell and system surfaces | Pinned submodule |
 | `holonight-icons` | Shared icon assets | Pinned submodule |
-| `holonight-ai` | AI desktop application | Local checkout; pending canonical publication |
-| `holonight-pkg-manager` | Package manager | Local checkout; pending canonical publication |
-| `holonight-settings` | Settings application | Local checkout; pending canonical publication |
-| `holonightd` | HoloNight service | Local checkout; pending canonical publication |
-
-Local-only repositories are deliberately not pinned: an umbrella integration state must never depend on an
-unpublished commit. Add each one as a submodule after its canonical remote contains the revision to pin.
+| `holonight-ai` | AI desktop application | Pinned submodule |
+| `holonight-pkg-manager` | Package manager | Pinned submodule |
+| `holonight-settings` | Settings application | Pinned submodule |
+| `holonightd` | HoloNight service | Pinned submodule |
 
 ## Working with the umbrella
 

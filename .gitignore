@@ -1,8 +1,2 @@
-# Local repositories that cannot be pinned until their canonical remotes are published.
-/holonight-ai/
-/holonight-pkg-manager/
-/holonight-settings/
-/holonightd/
-
 # Personal agent tooling is installed outside the umbrella repository contract.
 /.skills/
