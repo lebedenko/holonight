@@ -247,9 +247,9 @@ packages remain gated by published provider handoffs.
 | `holonight-shell` | Own and publish the Shell product-config package; adopt canonical appearance notifications; remove independent theme parsing/path logic; keep portal projection separate | [Local SDD](../../../holonight-shell/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | umbrella | Field/owner ledger, cross-repository contract, dependency order, pins, and final clean-break verification | This initiative |
 
-`holonight-config` is pinned at published design baseline `c0e4aa2`. Its implementation remains gated on initiative
-acceptance and ACF-003 becoming `Ready`.
-`holonight-qt` is pinned at published design baseline `767cf3d`. Its implementation remains gated on ACF-003.
+`holonight-config` is pinned at published verified handoff `81b01d3`; its implementation is complete.
+`holonight-qt` is pinned at published design baseline `767cf3d` and ACF-004 is ready against the exact
+`holonight-config@81b01d3` provider revision.
 `holonight-shell` is pinned at published design baseline `4fe7516`. Its product-config package is the provider for
 Settings adoption, so ACF-006 precedes ACF-005.
 `holonight-settings` is pinned at published design baseline `73f3d15`.
