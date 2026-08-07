@@ -214,6 +214,13 @@ that are appropriate only for a specific application or test.
 
 ## Roadmap and decision gates
 
+### Prerequisite — Appearance Configuration Foundation
+
+The [Appearance Configuration Foundation](../appearance-configuration-foundation/README.md) initiative must be
+`Integrated` before CTV-003 begins. CTV must consume the clean canonical appearance contract and separated token
+taxonomy; it must not add compatibility layers for the current `theme.conf`, `appearance.json`, and appearance fields
+inside `config.toml`.
+
 ### Phase 0 — Inventory and contract
 
 Inventory representative daily-use applications and identify their actual toolkit/version, Wayland or XWayland
@@ -255,12 +262,13 @@ release, or integration boundaries. This initiative remains the parent roadmap a
 ## Dependency order
 
 1. Umbrella application inventory, support matrix, and ownership decision.
-2. `holonight-qt` semantic producer export and Qt 5 feasibility contracts.
-3. `holonight-appearance-adapters` validates the consumer contract and prototypes GTK 3/4 integration mechanisms.
-4. `holonight-settings` adopts the settled apply/revert and status contract.
-5. `holonight-shell` adopts the settled session and portal propagation contract for Hyprland.
-6. Repository-local implementation proceeds in the phase order above, using published provider revisions.
-7. Umbrella integration review validates the exact pinned revisions and representative applications.
+2. Integrate the Appearance Configuration Foundation prerequisite.
+3. `holonight-qt` semantic producer export and Qt 5 feasibility contracts.
+4. `holonight-appearance-adapters` validates the consumer contract and prototypes GTK 3/4 integration mechanisms.
+5. `holonight-settings` adopts the settled apply/revert and status contract.
+6. `holonight-shell` adopts the settled session and portal propagation contract for Hyprland.
+7. Repository-local implementation proceeds in the phase order above, using published provider revisions.
+8. Umbrella integration review validates the exact pinned revisions and representative applications.
 
 Provider revisions must be published and pinned before dependent consumer work starts.
 
