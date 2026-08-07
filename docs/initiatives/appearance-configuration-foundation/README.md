@@ -219,14 +219,14 @@ with evidence that non-Qt producers require ownership.
 
 ## Remaining acceptance work
 
-1. Create and publish the `holonight-config` repository and add it to the umbrella at an exact baseline.
-2. Create one local SDD per participating repository, link each here and in `TASKS.md`, and verify that all use the
+1. Create one local SDD per participating repository, link each here and in `TASKS.md`, and verify that all use the
    field names, defaults, dependency direction, and clean-break rules above.
-3. Settle exact default values and numeric ranges in the `holonight-config` SDD, using the HoloNight design system as
+2. Settle exact default values and numeric ranges in the `holonight-config` SDD, using the HoloNight design system as
    evidence rather than inheriting whichever current file happens to differ.
-4. Decide whether secret-storage remediation is fully inside the Shell work package or a linked prerequisite security
+3. Decide whether secret-storage remediation is fully inside the Shell work package or a linked prerequisite security
    initiative. Appearance/config separation itself remains mandatory here.
-5. Record published baselines and change repository packages from `Planned` to `Ready` only after the contracts agree.
+4. Record the remaining published baselines and change repository packages from `Planned` to `Ready` only after the
+   contracts agree.
 
 ## Non-goals
 
@@ -245,12 +245,13 @@ with evidence that non-Qt producers require ownership.
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
 | `holonight-qt` | Theme/shape model cleanup; color-versus-metric token separation; adoption of the canonical appearance reader contract | Pending |
-| `holonight-config` (repository to create) | Canonical appearance schema, defaults, validation, path, TOML serialization, atomic write, diagnostics, and test helpers | Pending repository and local SDD |
+| `holonight-config` | Canonical appearance schema, defaults, validation, path, TOML serialization, atomic write, diagnostics, and test helpers | Pending local SDD |
 | `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API; keep shell-product configuration separate and preserve unrelated values | Pending |
 | `holonight-shell` | Adopt canonical appearance notifications; remove independent theme parsing/path logic; keep shell-only configuration and portal projection correctly separated | Pending |
 | umbrella | Field/owner ledger, cross-repository contract, dependency order, pins, and final clean-break verification | This initiative |
 
-`holonight-config` must be created, published, and pinned before repository-local implementation begins.
+`holonight-config` is pinned at its published initial baseline. Its local SDD must be settled before implementation
+begins.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 

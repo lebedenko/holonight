@@ -11,6 +11,7 @@ implementation stays in the component repositories.
 | `holonight-qt` | Shared Qt/QML design system and reusable primitives | Pinned submodule |
 | `holonight-shell` | Desktop shell and system surfaces | Pinned submodule |
 | `holonight-icons` | Shared icon assets | Pinned submodule |
+| `holonight-config` | Toolkit-neutral shared configuration contracts | Pinned submodule |
 | `holonight-appearance-adapters` | Toolkit-neutral and GTK desktop appearance adapters | Pinned submodule |
 | `holonight-ai` | AI desktop application | Pinned submodule |
 | `holonight-pkg-manager` | Package manager | Pinned submodule |
