@@ -244,7 +244,7 @@ with evidence that non-Qt producers require ownership.
 
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
-| `holonight-qt` | Theme/shape model cleanup; color-versus-metric token separation; adoption of the canonical appearance reader contract | Pending |
+| `holonight-qt` | Theme/shape model cleanup; color-versus-metric token separation; adoption of the canonical appearance reader contract | [Local SDD](../../../holonight-qt/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | `holonight-config` | Canonical appearance schema, defaults, validation, path, TOML serialization, atomic write, diagnostics, and test helpers | [Local SDD](../../../holonight-config/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API; keep shell-product configuration separate and preserve unrelated values | Pending |
 | `holonight-shell` | Adopt canonical appearance notifications; remove independent theme parsing/path logic; keep shell-only configuration and portal projection correctly separated | Pending |
@@ -252,6 +252,7 @@ with evidence that non-Qt producers require ownership.
 
 `holonight-config` is pinned at published design baseline `c0e4aa2`. Its implementation remains gated on initiative
 acceptance and ACF-003 becoming `Ready`.
+`holonight-qt` is pinned at published design baseline `767cf3d`. Its implementation remains gated on ACF-003.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 
