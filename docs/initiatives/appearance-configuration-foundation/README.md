@@ -185,9 +185,9 @@ with evidence that non-Qt producers require ownership.
 
 - Appearance changes never rewrite files containing credentials, access tokens, authenticated feed URLs, or other
   private service configuration.
-- Secrets move to an appropriate secret store or a separately owned product configuration as determined by the
-  repository-local design; secret migration itself may be split into a security follow-up if it exceeds this
-  initiative, but appearance must cease sharing its transaction boundary with them.
+- Credential/private-URL migration is assigned to a separate Shell-owned security initiative because it requires
+  service provisioning, user migration, and Settings UX decisions beyond appearance ownership. ACF does not wait for
+  that implementation, but appearance must cease sharing its read/write transaction boundary with those values.
 - Tests and documentation use redacted fixtures only.
 
 ### Token taxonomy
@@ -223,9 +223,7 @@ with evidence that non-Qt producers require ownership.
    field names, defaults, dependency direction, and clean-break rules above.
 2. Settle exact default values and numeric ranges in the `holonight-config` SDD, using the HoloNight design system as
    evidence rather than inheriting whichever current file happens to differ.
-3. Decide whether secret-storage remediation is fully inside the Shell work package or a linked prerequisite security
-   initiative. Appearance/config separation itself remains mandatory here.
-4. Record the remaining published baselines and change repository packages from `Planned` to `Ready` only after the
+3. Record the remaining published baselines and change repository packages from `Planned` to `Ready` only after the
    contracts agree.
 
 ## Non-goals
@@ -246,13 +244,15 @@ with evidence that non-Qt producers require ownership.
 |---|---|---|
 | `holonight-qt` | Theme/shape model cleanup; color-versus-metric token separation; adoption of the canonical appearance reader contract | [Local SDD](../../../holonight-qt/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | `holonight-config` | Canonical appearance schema, defaults, validation, path, TOML serialization, atomic write, diagnostics, and test helpers | [Local SDD](../../../holonight-config/docs/sdd/appearance-configuration-foundation/SPEC.md) |
-| `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API; keep shell-product configuration separate and preserve unrelated values | Pending |
-| `holonight-shell` | Adopt canonical appearance notifications; remove independent theme parsing/path logic; keep shell-only configuration and portal projection correctly separated | Pending |
+| `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API and Shell-owned product package; keep save transactions separate | Pending |
+| `holonight-shell` | Own and publish the Shell product-config package; adopt canonical appearance notifications; remove independent theme parsing/path logic; keep portal projection separate | [Local SDD](../../../holonight-shell/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | umbrella | Field/owner ledger, cross-repository contract, dependency order, pins, and final clean-break verification | This initiative |
 
 `holonight-config` is pinned at published design baseline `c0e4aa2`. Its implementation remains gated on initiative
 acceptance and ACF-003 becoming `Ready`.
 `holonight-qt` is pinned at published design baseline `767cf3d`. Its implementation remains gated on ACF-003.
+`holonight-shell` is pinned at published design baseline `4fe7516`. Its product-config package is the provider for
+Settings adoption, so ACF-006 precedes ACF-005.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 
@@ -296,8 +296,10 @@ It must not require Qt GUI/QML or application-owned targets. Qt-specific convers
 2. `holonight-config` implements the canonical neutral schema, validation, serialization, and diagnostics contract
    and publishes it.
 3. `holonight-qt` separates token responsibilities and adopts the canonical appearance input.
-4. `holonight-settings` adopts the canonical writer and removes appearance from shell-product TOML writes.
-5. `holonight-shell` adopts the canonical reader/notification contract and removes independent theme parsing.
+4. `holonight-shell` publishes its product-config package, adopts the canonical reader/notification contract, and
+   removes independent theme parsing and appearance from product TOML.
+5. `holonight-settings` adopts the canonical appearance writer and Shell-owned product-config package, then removes
+   its duplicate schema and mixed save transaction.
 6. Umbrella pins published revisions and verifies the clean break at the exact revisions.
 
 Provider revisions must be published and pinned before dependent consumer work starts.
