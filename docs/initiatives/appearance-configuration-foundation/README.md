@@ -1,6 +1,6 @@
 # Appearance Configuration Foundation
 
-Status: Draft
+Status: Accepted
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -50,8 +50,8 @@ The token model has a related responsibility defect. `holonight-qt/palette/holon
 
 ## Target architecture
 
-ACF-002 settles the target architecture below. The initiative remains `Draft` until the new shared repository exists,
-all repository-local SDDs link the same contract, and implementation baselines are recorded.
+ACF-002 settles the target architecture below. The initiative was accepted on 2026-08-07 after the shared repository
+and all local SDDs were published, pinned, and reviewed against the same contract.
 
 ### Canonical document and schema owner
 
@@ -217,14 +217,13 @@ with evidence that non-Qt producers require ownership.
 - Environment overrides are reduced to a documented minimal test/deployment surface and do not silently compete with
   the saved user choice.
 
-## Remaining acceptance work
+## Acceptance record
 
-1. Create one local SDD per participating repository, link each here and in `TASKS.md`, and verify that all use the
-   field names, defaults, dependency direction, and clean-break rules above.
-2. Settle exact default values and numeric ranges in the `holonight-config` SDD, using the HoloNight design system as
-   evidence rather than inheriting whichever current file happens to differ.
-3. Record the remaining published baselines and change repository packages from `Planned` to `Ready` only after the
-   contracts agree.
+On 2026-08-07 the four published local SDDs were reviewed together. They agree on canonical field names and defaults,
+strict appearance validation, Settings-only writes, consumer last-known-good reload, exact package direction, the
+Shell-before-Settings product-schema handoff, clean removal of legacy authorities, metric taxonomy, and the separate
+Shell-owned credential-remediation follow-up. ACF-003 is the only initially ready implementation package; downstream
+packages remain gated by published provider handoffs.
 
 ## Non-goals
 
@@ -244,7 +243,7 @@ with evidence that non-Qt producers require ownership.
 |---|---|---|
 | `holonight-qt` | Theme/shape model cleanup; color-versus-metric token separation; adoption of the canonical appearance reader contract | [Local SDD](../../../holonight-qt/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | `holonight-config` | Canonical appearance schema, defaults, validation, path, TOML serialization, atomic write, diagnostics, and test helpers | [Local SDD](../../../holonight-config/docs/sdd/appearance-configuration-foundation/SPEC.md) |
-| `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API and Shell-owned product package; keep save transactions separate | Pending |
+| `holonight-settings` | Remove duplicate schema/writer logic; adopt the canonical API and Shell-owned product package; keep save transactions separate | [Local SDD](../../../holonight-settings/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | `holonight-shell` | Own and publish the Shell product-config package; adopt canonical appearance notifications; remove independent theme parsing/path logic; keep portal projection separate | [Local SDD](../../../holonight-shell/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | umbrella | Field/owner ledger, cross-repository contract, dependency order, pins, and final clean-break verification | This initiative |
 
@@ -253,6 +252,7 @@ acceptance and ACF-003 becoming `Ready`.
 `holonight-qt` is pinned at published design baseline `767cf3d`. Its implementation remains gated on ACF-003.
 `holonight-shell` is pinned at published design baseline `4fe7516`. Its product-config package is the provider for
 Settings adoption, so ACF-006 precedes ACF-005.
+`holonight-settings` is pinned at published design baseline `73f3d15`.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 
