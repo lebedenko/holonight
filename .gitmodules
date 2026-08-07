@@ -19,3 +19,6 @@
 [submodule "holonightd"]
 	path = holonightd
 	url = git@github.com:lebedenko/holonightd.git
+[submodule "holonight-appearance-adapters"]
+	path = holonight-appearance-adapters
+	url = git@github.com:lebedenko/holonight-appearance-adapters.git

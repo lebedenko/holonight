@@ -135,14 +135,27 @@ cross-repository contract.
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
 | `holonight-qt` | Canonical semantic color mapping for Qt; Qt 6 compatibility; scoped Qt 5 Widgets style/platform-theme feasibility and implementation | Pending |
+| `holonight-appearance-adapters` | Toolkit-neutral appearance export tooling; GTK 3/4 adapters; standards-based portal, GSettings, XSettings, and generated appearance outputs | Pending |
 | `holonight-settings` | User-facing appearance controls, validation, preview semantics, and apply/revert behavior | Pending |
 | `holonight-shell` | Hyprland session environment and desktop integration; startup-time propagation and diagnostics | Pending |
-| Toolkit adapter owner (TBD) | GTK 3/4 artifacts and any toolkit-neutral appearance export not owned by the repositories above | Pending ownership decision |
 | umbrella | Support matrix, cross-repository contracts, exact revision integration, and manual application matrix | This initiative |
 
-`holonight-qt` must not silently become the owner of GTK or general desktop configuration merely because it owns the
-source palette today. Discovery must decide whether toolkit adapters belong in a small new repository or whether the
-umbrella ownership map should be explicitly revised.
+The ownership boundary is intentionally split:
+
+- `holonight-qt` owns the canonical semantic token meanings, scheme/accent resolution, and the producer side of the
+  versioned semantic appearance contract because it currently owns the source palette.
+- `holonight-appearance-adapters` owns the toolkit-neutral serialization/export tooling, contract validation on the
+  consumer side, translation into GTK 3/4 and standards-based desktop outputs, and adapter diagnostics. It does not
+  own the user's selected appearance state.
+- `holonight-settings` owns user-facing selection, validation, preview, apply/revert orchestration, and presentation
+  of adapter status. It does not contain toolkit-specific generators.
+- `holonight-shell` owns Hyprland session propagation and startup integration. It does not derive colors or generate
+  toolkit themes.
+- The umbrella owns the cross-repository schema/version contract and exact integration pins, but no product code.
+
+This keeps GTK and other desktop adapters out of `holonight-qt` without duplicating the source token catalog. Future
+terminal, editor, or application-specific adapters belong in `holonight-appearance-adapters` only after a separate
+scope decision accepts them; repository ownership does not make those integrations automatic goals.
 
 ## Cross-repository contracts
 
@@ -242,8 +255,8 @@ release, or integration boundaries. This initiative remains the parent roadmap a
 ## Dependency order
 
 1. Umbrella application inventory, support matrix, and ownership decision.
-2. `holonight-qt` semantic export and Qt 5 feasibility contracts.
-3. Toolkit adapter owner prototypes and selects GTK 3/4 integration mechanisms.
+2. `holonight-qt` semantic producer export and Qt 5 feasibility contracts.
+3. `holonight-appearance-adapters` validates the consumer contract and prototypes GTK 3/4 integration mechanisms.
 4. `holonight-settings` adopts the settled apply/revert and status contract.
 5. `holonight-shell` adopts the settled session and portal propagation contract for Hyprland.
 6. Repository-local implementation proceeds in the phase order above, using published provider revisions.
