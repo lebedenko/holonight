@@ -1,6 +1,6 @@
 # Appearance Configuration Foundation
 
-Status: Accepted
+Status: Integrated
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -247,13 +247,14 @@ packages remain gated by published provider handoffs.
 | `holonight-shell` | Own and publish the Shell product-config package; adopt canonical appearance notifications; remove independent theme parsing/path logic; keep portal projection separate | [Local SDD](../../../holonight-shell/docs/sdd/appearance-configuration-foundation/SPEC.md) |
 | umbrella | Field/owner ledger, cross-repository contract, dependency order, pins, and final clean-break verification | This initiative |
 
-`holonight-config` is pinned at published verified handoff `81b01d3`; its implementation is complete.
-`holonight-qt` is pinned at published verified handoff `6f591cb`; its implementation and light/dark visual matrices
-are complete against the exact `holonight-config@81b01d3` provider revision.
+`holonight-config` is pinned at published verified revision `5cd36ec`; its implementation and generated-build ignore
+cleanup are complete.
+`holonight-qt` is pinned at published verified revision `c124d6c`; its implementation and light/dark visual matrices
+are complete against the canonical Config provider contract.
 `holonight-shell` is pinned at published verified path-provider handoff `93e1faf`; ACF-006 and ACF-006A are complete
-against exact providers `holonight-config@81b01d3` and `holonight-qt@6f591cb`.
-`holonight-settings` is pinned at published verified handoff `a960f2e`; ACF-005 is complete against those three exact
-provider revisions. ACF-007 is ready for the final dependency-order integration matrix.
+against the canonical Config and Qt provider contracts.
+`holonight-settings` is pinned at published verified handoff `a960f2e`; ACF-005 is complete. ACF-007 passed the final
+dependency-order integration matrix at these exact umbrella pins on 2026-08-08.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 
@@ -307,17 +308,17 @@ Provider revisions must be published and pinned before dependent consumer work s
 
 ## Integration acceptance criteria
 
-- [ ] Every current field is classified and has one schema owner, writer, and documented consumer set.
-- [ ] One versioned canonical appearance document replaces the current appearance state spread across three files.
-- [ ] No canonical appearance field has a second persisted authority or contradictory derived copy.
-- [ ] Appearance saving is atomic and cannot partially update multiple appearance files.
-- [ ] Appearance changes do not parse or rewrite secret-bearing product configuration.
-- [ ] Superseded readers, writers, watchers, path helpers, environment aliases, and duplicated defaults are removed.
-- [ ] `ColorTokens` contains colors only; metrics and shapes have separate, non-duplicated authorities.
-- [ ] Qt/QML, Settings, Shell, portal, and adapter-facing tests cover valid, missing, invalid, update, and rollback behavior.
-- [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] Cross-repository contracts are compatible at the pinned revisions.
-- [ ] Root integration builds and tests pass in dependency order.
-- [ ] Manual dark/light, accent, typography, shape, Shell, and Settings checks pass under Hyprland.
-- [ ] Commands, results, versions, cleanup observations, and verification date are recorded in the final integration row.
+- [x] Every current field is classified and has one schema owner, writer, and documented consumer set.
+- [x] One versioned canonical appearance document replaces the current appearance state spread across three files.
+- [x] No canonical appearance field has a second persisted authority or contradictory derived copy.
+- [x] Appearance saving is atomic and cannot partially update multiple appearance files.
+- [x] Appearance changes do not parse or rewrite secret-bearing product configuration.
+- [x] Superseded readers, writers, watchers, path helpers, environment aliases, and duplicated defaults are removed.
+- [x] `ColorTokens` contains colors only; metrics and shapes have separate, non-duplicated authorities.
+- [x] Qt/QML, Settings, Shell, portal, and adapter-facing tests cover valid, missing, invalid, update, and rollback behavior.
+- [x] Every repository work package has a published commit and passed local verification.
+- [x] Participating submodules are clean and pinned to those published commits.
+- [x] Cross-repository contracts are compatible at the pinned revisions.
+- [x] Root integration builds and tests pass in dependency order.
+- [x] Manual dark/light, accent, typography, shape, Shell, and Settings checks pass under Hyprland.
+- [x] Commands, results, versions, cleanup observations, and verification date are recorded in the final integration row.
