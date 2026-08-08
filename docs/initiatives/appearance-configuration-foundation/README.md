@@ -250,10 +250,10 @@ packages remain gated by published provider handoffs.
 `holonight-config` is pinned at published verified handoff `81b01d3`; its implementation is complete.
 `holonight-qt` is pinned at published verified handoff `6f591cb`; its implementation and light/dark visual matrices
 are complete against the exact `holonight-config@81b01d3` provider revision.
-`holonight-shell` is pinned at published verified handoff `d9f388d`; ACF-006 is complete against exact providers
-`holonight-config@81b01d3` and `holonight-qt@6f591cb`. Its product-config package is now available for Settings.
-`holonight-settings` is pinned at published design baseline `73f3d15`; ACF-005 is ready against those three exact
-provider revisions.
+`holonight-shell` is pinned at published verified path-provider handoff `93e1faf`; ACF-006 and ACF-006A are complete
+against exact providers `holonight-config@81b01d3` and `holonight-qt@6f591cb`.
+`holonight-settings` is pinned at published verified handoff `a960f2e`; ACF-005 is complete against those three exact
+provider revisions. ACF-007 is ready for the final dependency-order integration matrix.
 `holonight-appearance-adapters` translates resolved appearance into external toolkit outputs and must not become the
 source of the user's selection.
 
