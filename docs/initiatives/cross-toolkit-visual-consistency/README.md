@@ -134,7 +134,7 @@ cross-repository contract.
 
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
-| `holonight-qt` | Canonical semantic color mapping for Qt; Qt 6 compatibility; scoped Qt 5 Widgets style/platform-theme feasibility and implementation | Pending |
+| `holonight-qt` | Canonical semantic color mapping for Qt; Qt 6 compatibility; scoped Qt 5 Widgets style/platform-theme feasibility and implementation | [Semantic export SDD](../../../holonight-qt/docs/sdd/cross-toolkit-semantic-export/SPEC.md) |
 | `holonight-appearance-adapters` | Toolkit-neutral appearance export tooling; GTK 3/4 adapters; standards-based portal, GSettings, XSettings, and generated appearance outputs | Pending |
 | `holonight-settings` | User-facing appearance controls, validation, preview semantics, and apply/revert behavior | Pending |
 | `holonight-shell` | Hyprland session environment and desktop integration; startup-time propagation and diagnostics | Pending |
