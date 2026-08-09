@@ -1,6 +1,6 @@
 # Cross-Toolkit Visual Consistency
 
-Status: Draft
+Status: Accepted
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -162,7 +162,8 @@ scope decision accepts them; repository ownership does not make those integratio
 ### Canonical appearance state
 
 The existing HoloNight configuration remains the source of the user's selected scheme, accent, and appearance
-profile. Before acceptance, the participating repositories must document:
+profile. Semantic appearance contract version 1, produced through the existing HoloNight Config and Qt provider
+APIs, is the accepted adapter input. The participating repositories document:
 
 - the exact supported fields and values;
 - which component validates and writes them;
@@ -172,6 +173,24 @@ profile. Before acceptance, the participating repositories must document:
 
 There must be one canonical selection state. GTK settings, Qt settings, portal values, and generated theme files are
 outputs, not competing sources of truth.
+
+### Accepted Tier 1 outputs
+
+- The production adapter applies available GNOME GSettings interface keys and updates only its owned keys in the
+  GTK 3 and GTK 4 `settings.ini` files. Missing schemas or keys are supported native fallbacks.
+- The existing Shell Settings portal backend remains the only portal publisher. The adapter reports portal
+  propagation as delegated and does not start another backend.
+- `XCURSOR_THEME` is resolved from canonical appearance at session startup. No session-wide `GTK_THEME` is exported.
+- XSettings is reported through its existing session owner when present. HoloNight does not start a competing
+  XSettings manager.
+- GSettings changes are live where consumers observe them, `settings.ini` changes require application relaunch,
+  and cursor environment propagation requires a session restart.
+
+Qt 5 styling and platform-theme prototypes are not shipped: the semantic style failed the accepted all-combination
+contrast gate, while the private platform theme did not provide native-dialog integration. Qt 5 applications retain
+their native toolkit fallback. GTK 3 and GTK 4 palette fragments are also not shipped because stable global
+application coverage cannot be guaranteed, and libadwaita or application-owned palettes remain native. These
+decisions preserve Tier 1 support without claiming rejected Tier 2 or Tier 3 behavior.
 
 ### Semantic export
 
