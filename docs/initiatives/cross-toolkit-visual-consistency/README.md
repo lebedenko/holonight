@@ -137,7 +137,7 @@ cross-repository contract.
 | `holonight-qt` | Canonical semantic color mapping for Qt; Qt 6 compatibility; scoped Qt 5 Widgets style/platform-theme feasibility and implementation | [Semantic export SDD](../../../holonight-qt/docs/sdd/cross-toolkit-semantic-export/SPEC.md) |
 | `holonight-appearance-adapters` | Toolkit-neutral appearance export tooling; GTK 3/4 adapters; standards-based portal, GSettings, XSettings, and generated appearance outputs | [CTV-005 consumer and Tier 1 SDD](../../../holonight-appearance-adapters/docs/sdd/ctv-005-semantic-consumer/SPEC.md); [CTV-006 GTK palette evaluation](../../../holonight-appearance-adapters/docs/sdd/ctv-006-gtk-palette/SPEC.md) |
 | `holonight-settings` | User-facing appearance controls, validation, preview semantics, and apply/revert behavior | Pending |
-| `holonight-shell` | Hyprland session environment and desktop integration; startup-time propagation and diagnostics | Pending |
+| `holonight-shell` | Hyprland session environment and desktop integration; startup-time propagation and diagnostics | [CTV-103 session and portal SDD](../../../holonight-shell/docs/sdd/ctv-103-session-portal/SPEC.md) |
 | umbrella | Support matrix, cross-repository contracts, exact revision integration, and manual application matrix | This initiative |
 
 The ownership boundary is intentionally split:
