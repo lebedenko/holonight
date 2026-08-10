@@ -11,3 +11,9 @@ An initiative has two umbrella-owned files:
 
 Do not duplicate local implementation checklists here. Component repositories own their specifications, designs,
 tests, and commits.
+
+## Deferred backlog
+
+| Initiative | Status | Priority | Scheduling |
+|---|---|---|---|
+| [GTK Visual Fidelity](gtk-visual-fidelity/README.md) | Draft | Low | Deferred until explicitly prioritized |
