@@ -118,6 +118,45 @@ cross-repository contract.
 - Terminal, editor, browser-content, and application-owned themes are adjacent to toolkit chrome integration. They
   require separate ownership and value decisions before HoloNight writes their configuration.
 
+## CTV-401 long-tail survey
+
+The post-baseline survey ran on the 2026-08-10 reference HoloNight/Hyprland session with
+`holonight-appearance-adapters@e3b3efd`, `holonight-settings@2d25b3e`, `holonight-qt@e30ff79`, and
+`holonight-shell@e2418fa` installed. Electron launches inherited
+`--enable-features=WaylandWindowDecorations` and `--ozone-platform-hint=wayland`. Chrome used
+`/usr/bin/google-chrome-stable`, Teams used `teams-for-linux --gtk-version=3`, Postman used
+`/opt/postman/Postman`, Code OSS used `code-oss` with an isolated temporary user-data and extensions directory plus
+`--disable-extensions`, and DataGrip used `/opt/datagrip/bin/datagrip`.
+
+The classifications are deterministic: **Covered** means the accepted system contract reaches the application;
+**Application opt-in** means a supported application preference must be enabled; **Application-owned** means the
+application intentionally controls the surface; and **HoloNight gap** means a missing HoloNight mechanism causes a
+reproducible inconsistency. Hyprland reported `xwayland: false` for Chrome, Teams, Postman, Code OSS, and DataGrip, so
+all five survey targets used native Wayland on this machine.
+
+| Application | Version | Dark baseline and light response | Clean launch | Classification |
+|---|---|---|---|---|
+| Google Chrome | 151.0.7922.71-1 | With Chrome Appearance set to Qt, browser chrome and a temporary local `prefers-color-scheme` probe changed to light; the GTK and Classic choices retained their own dark/native presentation | Qt mode relaunched light and the probe reported `light`; restored GTK mode relaunched dark | Application opt-in |
+| Teams for Linux | 2.13.0-1 | Its System theme changed live from dark to light | Relaunched light; returned to dark after canonical restoration | Covered |
+| Postman | 12.21.9-1 | Its System theme changed live from dark to light | Relaunched light; returned to dark after canonical restoration | Covered |
+| Code OSS | 1.131.0-1 | An extension-free isolated profile with automatic color-scheme detection changed live from dark to light | Relaunched light; returned to dark after canonical restoration | Covered |
+| DataGrip | 2026.2.2, DB-262.9437.70 | “Sync with OS” did not change live; selecting it used the expected built-in light/dark UI rather than the installed TokyoDark theme, while editor colors remained a distinct choice | Relaunched light; original `com.junkfactory.tokyodark` UI and `TokyoDark` editor selections were restored | Application opt-in |
+
+Additional regression observations support the boundaries rather than creating new packages. Firefox followed the
+public GTK/portal route, including a live correction after portal restart. KeePassXC remained stable with its explicit
+Dark preference and is application-owned. GTK Demo stayed dark because the installed `Tokyonight-Dark` GTK theme is
+an accepted native fallback: Tier 1 publishes a light/dark preference but does not replace GTK palettes after the
+CTV-301/CTV-302 rejection. Chrome's GTK choice reflects that same installed theme; its Qt choice provides the stable
+system-following path.
+
+The machine was restored to `holonight-dark`, GSettings `prefer-dark`, GTK 3/4 dark preference, KDE
+`holonight-dark`, Chrome GTK appearance, and the original DataGrip TokyoDark UI/editor selections. Teams, Postman,
+and Code OSS retained their System/automatic choices. Chromium preference files changed volatile runtime metadata,
+so restoration was confirmed from the owned semantic values rather than incorrectly claiming byte-identical files.
+All surveyed applications still launched after restoration. CTV-104 resolved the only reproducible shared session
+gap; the remaining differences are documented application opt-ins or accepted application/native ownership, so no
+new adapter work package is justified and CTV-501 may proceed.
+
 ## Non-goals
 
 - Pixel-identical widgets, spacing, or animations across Qt, GTK, Electron, Java, and bespoke toolkits.
