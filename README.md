@@ -14,6 +14,7 @@ implementation stays in the component repositories.
 | `holonight-config` | Toolkit-neutral shared configuration contracts | Pinned submodule |
 | `holonight-appearance-adapters` | Toolkit-neutral and GTK desktop appearance adapters | Pinned submodule |
 | `holonight-ai` | AI desktop application | Pinned submodule |
+| `holonight-greeter` | Pre-session login UI, greetd IPC, authentication flow, and session selection | Pinned submodule |
 | `holonight-pkg-manager` | Package manager | Pinned submodule |
 | `holonight-settings` | Settings application | Pinned submodule |
 | `holonightd` | HoloNight service | Pinned submodule |

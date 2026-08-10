@@ -25,3 +25,6 @@
 [submodule "holonight-config"]
 	path = holonight-config
 	url = git@github.com:lebedenko/holonight-config.git
+[submodule "holonight-greeter"]
+	path = holonight-greeter
+	url = git@github.com:lebedenko/holonight-greeter.git
