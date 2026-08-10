@@ -1,6 +1,6 @@
 # Cross-Toolkit Visual Consistency
 
-Status: Accepted
+Status: Integrated
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -330,17 +330,72 @@ release, or integration boundaries. This initiative remains the parent roadmap a
 
 Provider revisions must be published and pinned before dependent consumer work starts.
 
+## CTV-501 final integration — 2026-08-10
+
+The final review used the published umbrella pins `holonight-config@5cd36ec`, `holonight-qt@e30ff79`,
+`holonight-appearance-adapters@e3b3efd`, `holonight-settings@b86d877`, and `holonight-shell@c32c7d9`.
+Each participating checkout was clean, its local head equaled `origin/main`, and its commit was available from the
+canonical remote. The `holonight-greeter/` working directory was not inspected or modified.
+
+Automated verification ran in dependency order. Config passed 2/2 CTest targets, format, tidy, install, and consumer
+checks. Qt passed 20/20 Qt 6 and 22/22 Qt 5 CTest targets, palette contrast gates, format, tidy, and install-tree
+consumers. Appearance Adapters passed its six locally available CTest targets, format, tidy, and install-tree CLI;
+the published CI handoff covers the isolated GTK 3/4 probes unavailable locally because Xvfb is not installed.
+Settings passed 38/38 tests, format, tidy, QML lint/type checks, configured-prefix tests, and staged activation
+metadata inspection; canonical CI run `31375086859` passed. Shell passed 1139/1139 tests, format, tidy, QML
+lint/type, architecture, standalone config-package consumer, Release build, clean staged install, live desktop
+integration, and compositor-smoke checks; canonical CI run `31378432209` passed. CTV-106 fixed the only
+exact-environment test failure, in which `/usr/bin/holonight-appearance-adapter` leaked into the unavailable-command
+fixture.
+
+The installed `/usr` Settings, Shell, adapter, and Qt platform-theme/style plugins had the same ELF build IDs as
+the Release artifacts at those pins. Settings desktop, Shell, and D-Bus activation resolved
+`/usr/bin/holonight-settings`; the stale per-user binary, desktop entry, icon, and service were moved recoverably to
+`/tmp/holonight-settings-stale-20260810`. Older per-user HoloNight Qt platform-theme, style, and QML modules that
+preceded `/usr` in the activation paths were deleted after exact target review; a fresh Settings D-Bus activation
+then loaded its platform theme and QML plugins from `/usr/lib/qt6`. Live desktop diagnostics confirmed the HoloNight
+portal, notification and status-notifier owners, active Shell service, Hyprland session identity, and Qt
+platform-theme/Quick Controls activation. The unset cursor environment is the documented native fallback for
+canonical cursor `default`, not a startup failure.
+
+The user-operated matrix passed with these observations:
+
+- Blue to violet propagated live through the canonical file, HoloNight Settings and Shell Qt surfaces, GSettings,
+  and the portal; Blue was restored exactly.
+- Restore Native Defaults removed only adapter-owned GTK/GSettings state while preserving canonical dark/Blue,
+  `Tokyonight-Dark`, KDE, animation, clock, and portal values. Reapply restored all owned semantic values.
+- Representative Qt, Electron, browser, and DataGrip file dialogs opened, remained usable and dark, and cancelled
+  cleanly. Latin/Ukrainian editing (`Hello, світ!`) passed in Qt, Electron/browser, and DataGrip fields. IBus/Fcitx
+  composition was not applicable because no input-method framework was configured.
+- Settings and Chrome moved between 1.25x `eDP-1` and 1.5x `DP-5` with correct rescaling, focus, legibility, and no
+  clipping.
+- Keyboard focus was visible and Tab/Shift+Tab traversal, activation, and cancellation worked. Traversal order was
+  not fully predictable; deterministic focus ordering is accepted as a separate usability refinement rather than a
+  compatibility failure. Automated palette contrast checks passed. Screen-reader integration was not applicable
+  because no reader was active.
+- An isolated Chrome profile launched successfully with `--ozone-platform=x11`; Hyprland reported XWayland, the
+  fallback stayed usable and dark, and the local color-scheme probe reported dark. The temporary profile was removed
+  after the test. Chrome, Teams, Postman, Code OSS, and DataGrip also launched through native Wayland during the
+  review.
+- Application ownership was restored and user-confirmed: Chrome GTK, Teams/Postman System, Code OSS automatic
+  color-scheme detection, KeePassXC Dark, and DataGrip TokyoDark UI plus TokyoDark editor colors.
+
+Final inspection confirmed canonical `holonight-dark` with accent `blue`, GSettings `prefer-dark`, GTK 3/4 dark
+preference, KDE `holonight-dark`, portal dark/Blue values, healthy adapter status, and the required Qt activation
+variables. The libadwaita warning emitted by Zenity when it reads `gtk-application-prefer-dark-theme` documents its
+intentional native Tier 1 fallback: libadwaita applications own `AdwStyleManager` color-scheme handling.
+
 ## Integration acceptance criteria
 
-- [ ] The support matrix names representative applications, toolkit versions, display path, target tier, and expected fallback.
-- [ ] Toolkit adapter ownership and lifecycle are explicit; no implementation is placed in the umbrella repository.
-- [ ] The canonical appearance and semantic export contracts are versioned and documented.
-- [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] Cross-repository contracts are compatible at the pinned revisions.
-- [ ] Root integration builds and tests pass in dependency order.
-- [ ] Changing scheme and accent produces the documented live/relaunch/restart behavior for every target tier.
-- [ ] Representative Qt 6, Qt 5, GTK 4, GTK 3, and Electron applications pass startup and visual checks under Hyprland.
-- [ ] Missing optional adapters and deliberately unsupported toolkits fall back safely.
-- [ ] Accessibility, high-DPI, native Wayland/XWayland, file-dialog, input-method, and rollback checks pass where applicable.
-- [ ] Commands, results, application versions, screenshots or visual notes, and verification date are recorded in the final integration row.
+- [x] The support matrix names representative applications, toolkit versions, display path, target tier, and expected fallback.
+- [x] Toolkit adapter ownership and lifecycle are explicit; no implementation is placed in the umbrella repository.
+- [x] The canonical appearance and semantic export contracts are versioned and documented.
+- [x] Every repository work package has a published commit and passed local verification.
+- [x] Participating submodules are clean and pinned to those published commits.
+- [x] Cross-repository contracts are compatible at the pinned revisions.
+- [x] Root integration builds and tests pass in dependency order.
+- [x] Changing scheme and accent produces the documented live/relaunch/restart behavior for every target tier.
+- [x] Representative Qt 6, Qt 5, GTK 4, GTK 3, and Electron applications pass startup and visual checks under Hyprland.
+- [x] Missing optional adapters and deliberately unsupported toolkits fall back safely.
+- [x] Accessibility, high-DPI, native Wayland/XWayland, file-dialog, input-method, and rollback checks pass where applicable.
+- [x] Commands, results, application versions, screenshots or visual notes, and verification date are recorded in the final integration row.
