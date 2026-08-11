@@ -13,7 +13,7 @@
 | EMS-009 | `holonight-greeter` | Review Greeter/system integration and publish local backlog | EMS-002 | [SDD](../../../holonight-greeter/docs/sdd/ecosystem-maintainability-standardization/README.md) | Done | `39a38da` | Review/backlog published; staged Release build/assets passed |
 | EMS-010 | `holonightd` | Review daemon/service lifecycle and publish local backlog | — | [SDD](../../../holonightd/docs/sdd/ecosystem-maintainability-standardization/README.md) | Done | `657508a` | Review/backlog published; staged Release build passed; pre-existing untracked doc excluded |
 | EMS-011 | umbrella | Implement source installer, uninstaller, preflight, manifest, and docs | — | — | Done | — | 2026-08-12: `task --list`; `bash -n`; `scripts/install.sh --check`; complete alternate-root build/install; manifest hash/mode/symlink checks; modified-file-preserving uninstall |
-| EMS-012 | umbrella | Pin published repository handoffs and run final Arch integration | EMS-001–EMS-011 | — | In Progress | — | Published handoffs ready for umbrella checkpoint; real `/usr` verification pending |
+| EMS-012 | umbrella | Pin published repository handoffs and run final Arch integration | EMS-001–EMS-011 | — | Blocked | `deef2dd` | 2026-08-12: all handoffs published and pinned; alternate-root integration passed. Real `/usr` install is blocked by a prior unowned HoloNight installation with no source-install manifest; destructive removal or an explicit migration decision is required. |
 
 CI-image changes in every local backlog refer to the existing Shared CI Build Infrastructure initiative and are not
 implemented or duplicated here.
