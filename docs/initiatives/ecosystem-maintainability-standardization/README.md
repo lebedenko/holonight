@@ -1,6 +1,6 @@
 # Ecosystem Maintainability Standardization
 
-Status: Accepted
+Status: Integrated
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -81,9 +81,9 @@ prefixes rather than globally installed builds.
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] Exported CMake packages and QML modules resolve from one temporary staged prefix.
-- [ ] Root install/uninstall integration tests cover collision, upgrade, hash, symlink, permission, and modification preservation behavior.
-- [ ] A real Arch VM install validates binaries, QML modules, desktop/D-Bus metadata, units, caches, and Greeter assets.
-- [ ] The final umbrella integration row records commands, results, and verification date.
+- [x] Every repository work package has a published commit and passed local verification.
+- [x] Participating submodules are pinned to published commits; pre-existing untracked user documents remain excluded.
+- [x] Exported CMake packages and QML modules resolve from one temporary staged prefix.
+- [x] Root install/uninstall integration checks cover collision rejection, upgrade ownership, hashes, symlinks, permissions, and modified-file preservation.
+- [x] Real Arch installation validates binaries, QML modules, desktop/D-Bus metadata, units, caches, and Greeter assets.
+- [x] The final umbrella integration row records commands, results, and verification date.
