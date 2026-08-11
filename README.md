@@ -34,3 +34,31 @@ requirements and implementation tasks belong in local repository SDDs.
 
 The original [`umbrella-project-idea.md`](umbrella-project-idea.md) is retained as design background. The workflow in
 `AGENTS.md` and the initiative templates are the operative contract.
+
+## Installing from source
+
+The umbrella can build every pinned production component in dependency order and install the completed result under
+`/usr`:
+
+```sh
+task install -- --check
+task install
+```
+
+The installer supports Arch Linux and Arch-derived distributions. It checks the pinned submodules, compiler, build
+tools, system packages, and Greeter account without installing packages. Builds run without privilege and every
+component is staged before the installer checks for collisions. Privilege is requested only when the completed stage
+is copied to `/usr` and caches are refreshed. The operation does not configure greetd, enable services, or create
+user configuration.
+
+For unattended image/VM installation or integration testing, use `--yes` and an absolute alternate root:
+
+```sh
+task install -- --yes --root /tmp/holonight-root
+task uninstall -- --yes --root /tmp/holonight-root
+```
+
+Installed paths, content hashes, and pinned source revisions are recorded in
+`/var/lib/holonight/source-install/`. Uninstall removes only files that still match that record, preserves modified
+files and non-empty directories, and never removes user data, administrator configuration, logs, databases,
+credentials, or service state.

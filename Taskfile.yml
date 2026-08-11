@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Build and install the pinned HoloNight ecosystem from source
+    cmds:
+      - scripts/install.sh {{.CLI_ARGS}}
+
+  uninstall:
+    desc: Remove an umbrella-managed source installation
+    cmds:
+      - scripts/uninstall.sh {{.CLI_ARGS}}
