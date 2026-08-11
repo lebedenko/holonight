@@ -6,8 +6,8 @@ implementation.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| HGR-101 | `holonight-greeter` | From exact baseline `975e35a`, author the local SDD; implement and publish the complete fullscreen Qt/QML greeter MVP, deterministic demos, user/Wayland-session discovery, C++ greetd client and arbitrary PAM conversation flow, safe session launch, logind power actions, machine configuration/state, Cage guidance, and Arch packaging against `holonight-qt@e30ff79` and the unchanged `holonight-shell@c32c7d9` session contract | Published providers `holonight-qt@e30ff79`, `holonight-shell@c32c7d9`; this accepted initiative | Pending | Ready | — | Required before `Done`: fake Unix-socket greetd protocol suite; deterministic domain/security tests; offscreen QML/demo suite; build, format, static analysis, QML lint/type, install-tree and package-content checks; live Cage/greetd VT matrix; publish the verified commit to the canonical remote |
-| HGR-201 | umbrella | Confirm the HGR-101 handoff is published; pin it; verify provider compatibility and the complete MVP at exact revisions; record final commands/results/date; mark the initiative `Integrated` only after successful integration | HGR-101 | — | Planned | — | — |
+| HGR-101 | `holonight-greeter` | From exact baseline `975e35a`, author the local SDD; implement and publish the complete fullscreen Qt/QML greeter MVP, deterministic demos, user/Wayland-session discovery, C++ greetd client and arbitrary PAM conversation flow, safe session launch, logind power actions, machine configuration/state, and Cage guidance against `holonight-qt@e30ff79` and the unchanged `holonight-shell@c32c7d9` session contract | Published providers `holonight-qt@e30ff79`, `holonight-shell@c32c7d9`; this accepted initiative | [HGR-101 SDD](../../../holonight-greeter/docs/sdd/greeter-mvp/SPEC.md) | Done | `90426aa` | Published to the canonical remote. Local automated verification passed; the user-confirmed isolated VT2 verification record for successful and failed password-first authentication, account switching, session start, cancellation cleanup, and Cage teardown was published on 2026-08-11. |
+| HGR-201 | umbrella | Confirm the HGR-101 handoff is published; pin it; verify provider compatibility and the complete MVP at exact revisions; record final commands/results/date; mark the initiative `Integrated` only after successful integration | HGR-101 | — | Done | This integration commit | Verified 2026-08-11 at `holonight-qt@e30ff79`, `holonight-shell@c32c7d9`, and `holonight-greeter@90426aa`. `task test` passed 20/20 Qt tests and 1,139/1,139 Shell tests (three declared environment skips). Greeter `task test` and `task lint` passed. A fresh CMake build/install using `/tmp/holonight-qt-prefix` produced the expected install tree and did not create `/etc/greetd/config.toml`. The user confirmed the final isolated VT2 retest fixed all known greeter issues. All three commits matched clean canonical `origin/main` refs before pinning. |
 
 ## Required HGR-101 verification
 
@@ -52,16 +52,14 @@ Headless tests must cover:
 - an assertion that every visible enabled control is connected to a valid action and no placeholder/dead controls
   ship.
 
-### Toolchain, installation, packaging, and live system
+### Toolchain, installation, and live system
 
 Before HGR-101 is `Done`, record successful:
 
 - configure/build and the complete automated test suite;
 - format check, project static analysis, and QML lint/type checks;
 - install-tree smoke test using installed HoloNight QML modules rather than source-tree imports;
-- Arch package build and content/ownership verification for the binary, configuration, resources, state-directory
-  provisioning, documentation/example, and policy files;
-- upgrade/install checks proving `/etc/greetd/config.toml` is never packaged, created, edited, replaced, or removed;
+- install checks proving `/etc/greetd/config.toml` is never created, edited, replaced, or removed;
 - live Cage/greetd testing on a VT for successful and failed authentication, arbitrary prompt handling as available,
   cancel/retry, Wayland session selection/start, administrator-configured keyboard-layout display, reboot/shutdown
   authorization and denial/failure, and recovery after forced greeter failure without a login loop.

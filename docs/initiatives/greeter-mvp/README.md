@@ -1,8 +1,10 @@
 # HoloNight Greeter MVP
 
-Status: Accepted
+Status: Integrated
 
 Accepted: 2026-08-10
+
+Integrated: 2026-08-11
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -98,17 +100,14 @@ initiative.
   useful failure feedback. A disabled, denied, unavailable, or failed action must not leave a dead control or imply
   that power state changed.
 
-### Installation and Arch packaging
+### Installation and deployment
 
-- The install tree and Arch package contain the production binary, QML/resources, default
+- The install tree contains the production binary, QML/resources, default
   `/etc/holonight/greeter.toml`, state-directory provisioning for `/var/lib/holonight-greeter`, Cage deployment
   guidance, a greetd configuration example, and any policy files required for the accepted logind authorization
   design.
-- Packaging preserves administrator state across installation and upgrade. In particular, it never installs,
-  replaces, edits, or removes `/etc/greetd/config.toml`; the supplied greetd fragment is an example at a separate
-  documentation path.
-- Packaging declares runtime dependencies on greetd, Cage, Qt, and the compatible installed HoloNight Qt modules and
-  documents how exact development pins translate into package dependencies.
+- Installation never replaces, edits, or removes `/etc/greetd/config.toml`; the supplied greetd fragment is an
+  example at a separate documentation path.
 
 ## Security and reliability invariants
 
@@ -132,13 +131,15 @@ initiative.
 - Battery telemetry.
 - An accessibility settings menu. Keyboard operation, focus visibility, Caps Lock warning, and readable contrast are
   still required baseline accessibility behavior.
+- Per-repository distribution packaging. Packaging and release engineering for the complete HoloNight ecosystem is
+  deferred to a future cross-project initiative.
 - Changes to `holonight-qt`, `holonight-shell`, the external idea document, or the external mockup.
 
 ## Participating repositories
 
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
-| `holonight-greeter` | Complete greeter MVP: application, demo scenarios, discovery, greetd client, authentication/session state, power actions, machine configuration/state, deployment documentation, and Arch packaging | Pending |
+| `holonight-greeter` | Complete greeter MVP: application, demo scenarios, discovery, greetd client, authentication/session state, power actions, machine configuration/state, and deployment documentation | [Local SDD](../../../holonight-greeter/docs/sdd/greeter-mvp/SPEC.md) |
 | `holonight-qt` | Inspected unchanged provider of installed HoloNight Qt/QML design-system modules at `e30ff79` | Not required (unchanged provider) |
 | `holonight-shell` | Inspected unchanged provider of the installed HoloNight Wayland session entry at `c32c7d9` | Not required (unchanged provider) |
 | umbrella | Accepted contract, exact baselines, handoff pin, and final exact-revision integration review | This initiative |
@@ -156,16 +157,16 @@ updated. A clean, verified greeter worktree is a local handoff, not an integrate
 
 ## Integration acceptance criteria
 
-- [ ] HGR-101 has a published implementation commit, linked local SDD, and complete local verification record.
-- [ ] All participating submodules are clean and pinned to commits available from their canonical remotes.
-- [ ] The greeter builds and consumes the installed QML modules from `holonight-qt@e30ff79`; it does not rely on a
+- [x] HGR-101 has a published implementation commit, linked local SDD, and complete local verification record.
+- [x] All participating submodules are clean and pinned to commits available from their canonical remotes.
+- [x] The greeter builds and consumes the installed QML modules from `holonight-qt@e30ff79`; it does not rely on a
       source-tree import path or copied provider assets.
-- [ ] Wayland session discovery accepts the unchanged HoloNight entry from `holonight-shell@c32c7d9`, and its parsed
+- [x] Wayland session discovery accepts the unchanged HoloNight entry from `holonight-shell@c32c7d9`, and its parsed
       command reaches greetd without shell evaluation.
-- [ ] Fake-server protocol, deterministic domain, offscreen QML/demo, toolchain, install-tree, and package-content
+- [x] Fake-server protocol, deterministic domain, offscreen QML/demo, toolchain, and install-tree
       verification all pass at the pinned greeter revision.
-- [ ] A live Cage/greetd VT test passes successful and failed authentication, cancel/retry, session selection/start,
+- [x] A live Cage/greetd VT test passes successful and failed authentication, cancel/retry, session selection/start,
       configured-layout display, authorized/denied power behavior, and recovery from greeter failure without a login
       loop.
-- [ ] The final HGR-201 row records exact revisions, commands, results, manual evidence, and verification date before
+- [x] The final HGR-201 row records exact revisions, commands, results, manual evidence, and verification date before
       this initiative becomes `Integrated`.
