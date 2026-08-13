@@ -4,7 +4,7 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 readonly STATE_REL="var/lib/holonight/source-install"
-readonly MODULES=(holonight-config holonight-qt holonight-appearance-adapters holonight-icons holonight-shell holonight-settings holonight-ai holonight-pkg-manager holonight-greeter holonightd)
+readonly MODULES=(holonight-config holonight-qt holonight-appearance-adapters holonight-icons holonight-system-services holonight-shell holonight-settings holonight-ai holonight-pkg-manager holonight-greeter holonightd)
 
 TARGET_ROOT="/"
 ASSUME_YES=0

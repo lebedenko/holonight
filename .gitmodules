@@ -28,3 +28,6 @@
 [submodule "holonight-greeter"]
 	path = holonight-greeter
 	url = git@github.com:lebedenko/holonight-greeter.git
+[submodule "holonight-system-services"]
+	path = holonight-system-services
+	url = git@github.com:lebedenko/holonight-system-services.git
