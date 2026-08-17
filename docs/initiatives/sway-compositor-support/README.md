@@ -1,6 +1,6 @@
 # First-Class Sway Support
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -62,11 +62,10 @@ Provider revisions must be published and pinned before dependent consumer work s
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed its local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] The optional Wayland package contract works for both Wayland and non-Wayland consumers.
-- [ ] Hyprland, Sway, and generic backends expose only truthful capabilities at the pinned revisions.
-- [ ] Root integration builds and tests pass in provider-first dependency order.
-- [ ] The unchanged greeter discovers, parses, and starts both installed HoloNight session entries.
-- [ ] User-performed Hyprland, raw/installed Sway, generic compositor, and layer-surface lifecycle checks pass.
-
+- [x] Every repository work package has a published commit and passed its local verification.
+- [x] Participating submodules are clean and pinned to those published commits.
+- [x] The optional Wayland package contract works for both Wayland and non-Wayland consumers.
+- [x] Hyprland, Sway, and generic backends expose only truthful capabilities at the pinned revisions.
+- [x] Root integration builds and tests pass in provider-first dependency order.
+- [x] The unchanged greeter discovers, parses, and starts both installed HoloNight session entries.
+- [x] User-performed Hyprland, raw/installed Sway, generic compositor, and layer-surface lifecycle checks pass.
