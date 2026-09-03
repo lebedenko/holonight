@@ -23,9 +23,9 @@ bundled visual assets, PAM authentication, and resilient read-only status indica
 ## Cross-repository contracts
 
 The product targets hyprlock 0.9.6 or newer and introduces no Qt, QML, or other HoloNight API dependency. Its only
-internal config-to-script interface is `/usr/libexec/holonight-hyprlock/status` with the `user`, `wifi`, `volume`,
-and `battery` subcommands. Each is read-only, emits at most one Pango-safe line, and degrades without blocking the
-locker when an optional provider is absent.
+internal config-to-script interface is `/usr/libexec/holonight-hyprlock/status` with the `user`, `volume`, and
+`battery` subcommands. Each is read-only, emits at most one Pango-safe line, and degrades without blocking the locker
+when an optional provider is absent. The Wi-Fi indicator and keyboard layout are rendered directly by Hyprlock.
 
 Production installation uses `/etc/xdg/hypr/hyprlock.conf` as a fallback, with assets below
 `/usr/share/holonight-hyprlock`. A user's own hyprlock configuration takes precedence.
@@ -40,7 +40,7 @@ Production installation uses `/etc/xdg/hypr/hyprlock.conf` as a fallback, with a
 
 - [x] The product work package has a published commit and passed local verification.
 - [x] The submodule is clean and pinned to that published commit.
-- [x] The four status-helper commands and installed absolute paths match the local SDD.
+- [x] The three status-helper commands and installed absolute paths match the local SDD.
 - [x] CMake, CTest, staged-install, config-safety, and asset checks pass at the pinned revision.
 - [ ] Manual checks cover layout fidelity, multiple monitors, avatars, live state, Caps Lock, PAM failure/success, and
   verbose-log resource errors.
