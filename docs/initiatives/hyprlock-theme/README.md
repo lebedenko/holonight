@@ -38,9 +38,9 @@ Production installation uses `/etc/xdg/hypr/hyprlock.conf` as a fallback, with a
 
 ## Integration acceptance criteria
 
-- [ ] The product work package has a published commit and passed local verification.
-- [ ] The submodule is clean and pinned to that published commit.
-- [ ] The four status-helper commands and installed absolute paths match the local SDD.
-- [ ] CMake, CTest, staged-install, config-safety, and asset checks pass at the pinned revision.
+- [x] The product work package has a published commit and passed local verification.
+- [x] The submodule is clean and pinned to that published commit.
+- [x] The four status-helper commands and installed absolute paths match the local SDD.
+- [x] CMake, CTest, staged-install, config-safety, and asset checks pass at the pinned revision.
 - [ ] Manual checks cover layout fidelity, multiple monitors, avatars, live state, Caps Lock, PAM failure/success, and
   verbose-log resource errors.

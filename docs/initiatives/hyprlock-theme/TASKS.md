@@ -3,7 +3,7 @@
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | HYL-101 | `holonight-hyprlock` | Implement theme, helper, assets, package, docs, and automated tests from `b22cb16` | — | [SDD](../../../holonight-hyprlock/docs/sdd/hyprlock-theme/README.md) | Done | `d9db610` | 2026-09-03: shell syntax, CMake, 2/2 CTest tests, staged install and PNG validation passed with hyprlock v0.9.6; commit published to canonical `origin/main`. |
-| HYL-201 | umbrella | Verify published commit, register and pin submodule, and complete final integration | HYL-101 | — | Ready | — | Awaiting pin and manual lock-screen acceptance. |
+| HYL-201 | umbrella | Verify published commit, register and pin submodule, and complete final integration | HYL-101 | — | In Progress | — | 2026-09-03: canonical `origin/main` contains `d9db610`; clean gitlink staged at that revision. At the pinned revision, `sh -n scripts/status tests/test-status.sh tests/test-package.sh`, CMake configure/build, and 2/2 CTest tests passed with hyprlock v0.9.6; staged install and asset checks are covered by `package-layout`. Manual lock-screen acceptance remains. |
 
 Allowed states:
 

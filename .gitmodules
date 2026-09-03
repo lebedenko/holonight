@@ -31,3 +31,6 @@
 [submodule "holonight-system-services"]
 	path = holonight-system-services
 	url = git@github.com:lebedenko/holonight-system-services.git
+[submodule "holonight-hyprlock"]
+	path = holonight-hyprlock
+	url = git@github.com:lebedenko/holonight-hyprlock.git
