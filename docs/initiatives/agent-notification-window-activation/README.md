@@ -83,7 +83,7 @@ Provider revisions must be published and pinned before dependent consumer work s
 
 - [x] Every repository work package has a published commit and passed local verification.
 - [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] The two D-Bus interfaces and accepted-result semantics are compatible at the pinned revisions.
-- [ ] Repository builds and automated tests pass in dependency order.
+- [x] The two D-Bus interfaces and accepted-result semantics are compatible at the pinned revisions.
+- [x] Repository builds and automated tests pass in dependency order.
 - [ ] Hyprland and Sway notification-action and direct `ActivateSession` smoke checks pass.
 - [ ] Closed-window, ambiguous-target, unavailable-shell, and generic-Wayland checks fail cleanly without a process launch.
