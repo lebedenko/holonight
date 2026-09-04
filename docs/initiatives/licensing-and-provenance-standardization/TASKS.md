@@ -2,7 +2,7 @@
 
 | ID | Repository | Deliverable | State | Commit | Verification |
 |---|---|---|---|---|---|
-| LPS-001 | holonight-shell | Rewrite history; replace weather SVGs; document protocols/assets | Done | `2f22b59` | REUSE 3.3; clean build; mapping tests; Qt resource audit; staged license install; fresh-clone object proof (2026-09-04) |
+| LPS-001 | holonight-shell | Rewrite history; replace weather SVGs; document protocols/assets | Done | `67d19a5` | REUSE 3.3; clean build; mapping tests; Qt resource audit; staged license install; fresh-clone object proof; format and full tidy pass (2026-09-04) |
 | LPS-002 | holonight-qt | Declare palette/protocol provenance | Done | `0b1bf7c` | REUSE 3.3; CMake configure (2026-09-04) |
 | LPS-003 | holonight-greeter | Declare authored artwork provenance | Done | `f378680` | REUSE 3.3; CMake configure (2026-09-04) |
 | LPS-004 | holonight-hyprlock | Correct license and artwork provenance | Done | `05ec61f` | REUSE 3.3; CMake configure (2026-09-04) |
