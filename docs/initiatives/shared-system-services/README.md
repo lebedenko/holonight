@@ -44,7 +44,7 @@ remaining independent clients of PulseAudio/PipeWire, NetworkManager, and BlueZ.
 
 Published implementation baselines:
 
-- `holonight-shell`: `c328df03a308f14b6815e64ea160b3f2c749d9e5`
+- `holonight-shell`: `2e63d8edfbe1e332266997b41ff80765588d01eb`
 - `holonight-settings`: `b480b860424eaf77f5b76f67a9e79f518cdc21f7`
 
 ## Dependency order

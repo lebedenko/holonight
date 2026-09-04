@@ -1,0 +1,11 @@
+name: Licensing
+on: [push, pull_request]
+jobs:
+  reuse:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: pipx run --spec reuse==6.2.0 reuse lint
+      - run: git submodule foreach --recursive 'pipx run --spec reuse==6.2.0 reuse lint'

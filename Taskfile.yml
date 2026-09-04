@@ -1,6 +1,24 @@
 version: "3"
 
+vars:
+  SUBMODULES:
+    sh: git submodule foreach --quiet 'printf "%s " "$name"'
+
 tasks:
+  license-check:
+    desc: Validate REUSE metadata in the umbrella and initialized submodules
+    cmds:
+      - reuse lint
+      - for: { var: SUBMODULES }
+        task: license-check:repository
+        vars: { REPOSITORY: '{{.ITEM}}' }
+
+  license-check:repository:
+    internal: true
+    dir: '{{.REPOSITORY}}'
+    cmds:
+      - reuse lint
+
   install:
     desc: Build and install the pinned HoloNight ecosystem from source
     cmds:

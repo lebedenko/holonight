@@ -20,7 +20,7 @@ agent daemon's public D-Bus API, with compositor-specific window management rema
 
 | Repository | Published baseline | Ownership in this initiative | Local SDD |
 |---|---|---|---|
-| `holonight-shell` | `b48574d39a83943cb7c6fa012ed0066bb8120399` | Window-resolution and activation provider | [`agent-window-activation`](../../../holonight-shell/docs/sdd/agent-window-activation/SPEC.md) |
+| `holonight-shell` | `dd78e9961ef38770f933a9dad94ce5c47e019ae0` | Window-resolution and activation provider | [`agent-window-activation`](../../../holonight-shell/docs/sdd/agent-window-activation/SPEC.md) |
 | `holonightd` | `dbb6ecc6205f964c3c4dc4e2467503ee940dc34f` | Session descriptors, notification action handling, and activation API | [`agent-notification-window-activation`](../../../holonightd/docs/sdd/agent-notification-window-activation/SPEC.md) |
 
 These exact published revisions are the upstream implementation baselines. Implementers work and commit only in their
@@ -72,7 +72,7 @@ the shell provider itself; the shell notification server needs no agent-specific
 ## Dependency order
 
 1. `ANWA-101`: `holonight-shell` publishes the activation provider from baseline
-   `b48574d39a83943cb7c6fa012ed0066bb8120399`.
+   `dd78e9961ef38770f933a9dad94ce5c47e019ae0`.
 2. `ANWA-102`: `holonightd` adopts the provider from baseline
    `dbb6ecc6205f964c3c4dc4e2467503ee940dc34f` after `ANWA-101` is published and pinned.
 3. `ANWA-201`: the umbrella coordinator pins both published handoffs and performs integration review.
