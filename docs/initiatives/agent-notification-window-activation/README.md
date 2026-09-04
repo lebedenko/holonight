@@ -81,7 +81,7 @@ Provider revisions must be published and pinned before dependent consumer work s
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed local verification.
+- [x] Every repository work package has a published commit and passed local verification.
 - [ ] Participating submodules are clean and pinned to those published commits.
 - [ ] The two D-Bus interfaces and accepted-result semantics are compatible at the pinned revisions.
 - [ ] Repository builds and automated tests pass in dependency order.
