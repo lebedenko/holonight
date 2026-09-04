@@ -3,3 +3,7 @@
 /.source-install/
 AGENTS.md
 CLAUDE.md
+
+# Generated CMake language-server and configuration artifacts.
+/.cache/
+/CMakeFiles/
