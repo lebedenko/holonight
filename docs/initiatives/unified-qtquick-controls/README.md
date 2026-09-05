@@ -25,7 +25,7 @@ is an input; its broad selection claims and recommendations must be reconciled w
 
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
-| `holonight-qt` | Compatibility audit, shared style coverage, composite migration, policy checks, examples, installed-consumer tests, and documentation | Pending |
+| `holonight-qt` | Compatibility audit, shared style coverage, composite migration, policy checks, examples, installed-consumer tests, and documentation | [Discovery SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-shell` | Shell and authentication adoption, session propagation, and selection/loading diagnostics | Pending |
 | `holonight-settings` | Application adoption and correction of contradictory import-contract tests | Pending |
 | `holonight-ai` | Application adoption and alignment of its import checker | Pending |
@@ -138,3 +138,12 @@ compatibility manifest. Provider revisions must be published and pinned before d
       Do not automate pointer movement, clicking, or window focus; request manual interaction when required.
 - [ ] The final ledger row records commands, results, application/Qt versions, limitations, and verification date;
       only its successful completion permits status `Integrated`.
+
+## Discovery checkpoint — 2026-09-05
+
+Published current checkouts are recorded in [the existing-work baseline handoff](BASELINE.md). The
+[provider audit](../../../holonight-qt/docs/sdd/unified-qtquick-controls/DESIGN.md) records source dependencies and
+verification design. UQC-001 remains In Progress: desktop probes did not reach QML loading, isolated third-party
+authentication evidence is missing, and the exact desktop coverage proposal is not settled. See
+[application evidence](../../../holonight-qt/docs/sdd/unified-qtquick-controls/APPLICATIONS.md). The initiative remains
+Draft; review findings with the user before UQC-002 acceptance or any implementation.

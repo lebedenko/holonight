@@ -6,7 +6,7 @@ implementation packages remain Planned until the acceptance gate and their depen
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| UQC-001 | `holonight-qt` | Audit runtime selection, composite dependencies, style-specific properties, and third-party control coverage; specify required additions and verification | — | Pending | Ready | — | Initial installed-app survey is recorded in README; rendering and compatibility remain unverified |
+| UQC-001 | `holonight-qt` | Audit runtime selection, composite dependencies, style-specific properties, and third-party control coverage; specify required additions and verification | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | In Progress | `063a752b8a391e7e5212bdad884b5f4525bfed3e` (partial audit) | Source inventory and verification design complete; application loading/rendering and exact desktop coverage remain unverified. See SDD TASKS and APPLICATIONS. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Planned | — | — |
 | UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | Pending | Planned | — | — |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |

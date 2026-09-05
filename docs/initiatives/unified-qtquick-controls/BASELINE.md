@@ -20,7 +20,9 @@ pre-existing provider review was preserved unchanged in separate documentation c
 - Provider: `cmake --build build -j 4`; `cmake --install build --prefix /tmp/holonight-qt-prefix`; existing 28 CTest
   entries passed. Focused `QmlAvatar.*`: loading/failure test passed; shader masking skipped under software rendering.
 - Shell: `QT_QPA_PLATFORM=offscreen dbus-run-session -- ctest --test-dir build --output-on-failure`: 1,139/1,139 passed.
-- Settings: existing CTest suite 45 entries, no failures; two activation checks skipped without a session bus.
+- Settings: existing CTest suite 45 entries, no failures; two activation checks initially skipped without a session
+  bus. Follow-up `QT_QPA_PLATFORM=offscreen dbus-run-session -- ctest --test-dir build -R
+  SettingsActivationServiceTest --output-on-failure` passed all 10 activation checks, including those two.
 - AI: 711-entry suite had one missing-prefix failure and one credential-service skip. After staging Qt, all three
   `CanonicalQmlModules` tests passed, including the failed installed-artifact check. Real credential testing excluded.
 - Packages: 94/94 CTest entries passed.
