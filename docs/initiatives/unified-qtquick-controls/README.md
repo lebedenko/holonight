@@ -147,3 +147,17 @@ verification design. UQC-001 remains In Progress: desktop probes did not reach Q
 authentication evidence is missing, and the exact desktop coverage proposal is not settled. See
 [application evidence](../../../holonight-qt/docs/sdd/unified-qtquick-controls/APPLICATIONS.md). The initiative remains
 Draft; review findings with the user before UQC-002 acceptance or any implementation.
+
+
+## Discovery continuation — 2026-09-06
+
+The [updated provider proposal](../../../holonight-qt/docs/sdd/unified-qtquick-controls/APPLICATIONS.md) and
+[reproducible evidence](../../../holonight-qt/docs/sdd/unified-qtquick-controls/audit/EVIDENCE.md) supersede the earlier
+pre-QML timeout inference: corrected logging establishes staged-module loading in all three desktop applications.
+Haruna reaches the event loop in ordinary/private-bus probes; the fixture verifies default, explicit Fusion and
+Haruna-style Fusion fallback origins. Application-owned slider painting and the competing fallback are explicit
+review boundaries. Nine provisional additions are proposed, pending required manual surface/state observations.
+
+This remains a partial handoff. No separate authentication login is prepared; manual Hyprland checks are pending.
+Follow the [collection checklist](../../../holonight-qt/docs/sdd/unified-qtquick-controls/audit/CHECKLIST.md).
+UQC-001 remains In Progress and the initiative Draft. Stop for joint review before UQC-002 acceptance.
