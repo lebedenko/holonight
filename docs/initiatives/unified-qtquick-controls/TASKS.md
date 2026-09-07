@@ -8,7 +8,7 @@ UQC-002 settles the contract. UQC-101 is In Progress from published provider ass
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
-| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `24220e95a4ca612700e2fd2b0395f59a481144b6` (nine-controls slice) | 2026-09-08: all nine Templates controls and installed origins verified, including generated menu-bar delegates, Basic/Fusion fallback, all 16 schemes, palette/overlay/layout/state coverage and hybrid regressions. Full build and all 46 provider CTest entries pass. Canonical publication confirmed; runtime/composite migration and executable defaults remain open. |
+| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `bd5f2f0f6844ec809b3fa80182a61493cf724c0a` (composite runtime slice) | 2026-09-08: all 26 public composites load under HoloNight/Fusion; actual control/editor/popup/delegate/scrollbar origins, Core isolation, editing/appearance contracts and both ComboBox geometry variants pass in build and installed-prefix runs. Full build and all 49 provider CTest entries pass. Canonical publication confirmed; executable defaults and final provider acceptance remain open. |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | Pending | Planned | — | — |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | Pending | Planned | — | — |
@@ -141,3 +141,31 @@ UQC-101 remains In Progress; composite runtime imports and executable defaults r
 UQC-102–UQC-106 remain Planned. NeoChat named-scheme observations and manual Hyprland/Sway acceptance remain
 UQC-201 ecosystem gates. No umbrella integration checks, real-application acceptance or desktop pointer/focus
 automation were performed. Unrelated package-manager mockups are preserved.
+
+
+## Provider composite-runtime checkpoint — 2026-09-08
+
+Accepted the provider slice from published `24220e95a4ca612700e2fd2b0395f59a481144b6` and umbrella
+`b44340c169dd63073740efd088b76913b1353bd1`:
+
+- `f32f5bb`: Templates-based Core HnLabel and straightforward composite runtime imports.
+- `da470c5`: search/text/ComboBox compatibility, shared implementation-only popup geometry and initial regressions.
+- `bd5f2f0`: separate-process and installed acceptance, scope-specific policy, typography/frame preservation and record.
+
+Canonical `git ls-remote origin refs/heads/main` returned
+`bd5f2f0f6844ec809b3fa80182a61493cf724c0a` after publication. The provider is clean and its gitlink records that revision.
+The [provider implementation record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+contains the contracts, file changes, exact commands, results and limits.
+
+Verification: full provider build; focused HoloNight/Fusion composite and Core-only fixtures; staged-prefix runs;
+all 49 provider CTest entries (11.65 seconds); C++ formatting; import-policy positive/negative cases and whitespace
+checks passed. All 26 public composites load. Runtime base/editor/popup/delegate/progress/scrollbar origins and staged
+plugin paths are checked. Core stays independent of selected Controls. Both ComboBox variants retain 0.78/1.0/1.25
+geometry near window edges and after ancestor movement, empty/long models, item limits, selection visibility and
+unsupported-transform diagnostics. Editing, replacement slots, typography overrides, appearance reload and disabled
+states are covered without desktop pointer/focus automation.
+
+UQC-101 remains In Progress. Demo/gallery embedded defaults and import migration, remaining guide/policy alignment
+and final provider acceptance are subsequent work. UQC-102–UQC-106 remain Planned, and UQC-201 remains Planned.
+No umbrella integration or real-application/manual Hyprland/Sway acceptance checks ran. Unrelated package-manager
+working-tree files are preserved.
