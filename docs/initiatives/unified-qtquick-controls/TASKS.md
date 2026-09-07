@@ -8,7 +8,7 @@ UQC-002 settles the contract. UQC-101 is In Progress from published provider ass
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
-| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `bc3ed4a0f8e6b9b0d3a3568b07c8c2905332e955` (palette slice) | 2026-09-08: application/window/control palettes, composite appearance boundaries and hybrid reload masks verified; original palette/reload regressions reproduced before fixes. Full build and all 46 provider CTest entries pass, including 16 schemes, offscreen rendering and staged-prefix HoloNight/Fusion/Haruna fixtures. Canonical publication confirmed; remaining UQC-101 slices stay open. |
+| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `24220e95a4ca612700e2fd2b0395f59a481144b6` (nine-controls slice) | 2026-09-08: all nine Templates controls and installed origins verified, including generated menu-bar delegates, Basic/Fusion fallback, all 16 schemes, palette/overlay/layout/state coverage and hybrid regressions. Full build and all 46 provider CTest entries pass. Canonical publication confirmed; runtime/composite migration and executable defaults remain open. |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | Pending | Planned | — | — |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | Pending | Planned | — | — |
@@ -117,3 +117,27 @@ UQC-101 remains In Progress. The nine additions, runtime-import migration and ex
 work; UQC-102–UQC-106 remain Planned. NeoChat named-scheme observations and Hyprland/Sway acceptance remain UQC-201
 ecosystem gates. No umbrella integration tests or desktop pointer/focus automation were performed. Unrelated
 package-manager mockups are preserved.
+
+## Provider nine-controls checkpoint — 2026-09-08
+
+Accepted the provider slice from published `bc3ed4a0f8e6b9b0d3a3568b07c8c2905332e955` and umbrella checkpoint
+`8099678`:
+
+- `675240e`: ApplicationWindow, Label, ToolButton, ToolBar, ToolSeparator and MenuSeparator, with focused acceptance.
+- `7d0c988`: Popup, MenuBar, MenuBarItem and effective Shadow overlays, with focused acceptance.
+- `24220e9`: installed origins/fallback coverage, layout/state/overlay regressions and implementation documentation.
+
+Canonical `origin/main` was checked after publication and resolves to
+`24220e95a4ca612700e2fd2b0395f59a481144b6`. The provider is clean and its gitlink now records that revision.
+The [provider implementation record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+contains the role contracts, changed files, commands, test results and limitations.
+
+Verification: full provider build, focused palette/hybrid/staged-prefix checks, source/import policy checks,
+all 46 provider CTest entries (7.92 seconds), C++ formatting and whitespace checks passed. All sixteen schemes,
+new control type/delegate origins, HoloNight with Basic and Fusion fallback, explicit Fusion and the Haruna fixture
+are covered. Dialog remains an unimplemented fallback sentinel. Historical discovery characterization is unchanged.
+
+UQC-101 remains In Progress; composite runtime imports and executable defaults remain provider work. Consumers
+UQC-102–UQC-106 remain Planned. NeoChat named-scheme observations and manual Hyprland/Sway acceptance remain
+UQC-201 ecosystem gates. No umbrella integration checks, real-application acceptance or desktop pointer/focus
+automation were performed. Unrelated package-manager mockups are preserved.
