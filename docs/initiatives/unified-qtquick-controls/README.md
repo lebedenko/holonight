@@ -114,7 +114,7 @@ from the active desktop authentication service.
 5. `UQC-201`: verify the exact integrated revisions and real-application matrix in both supported sessions.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
-the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Ready; consumer packages remain Planned
+the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is In Progress; consumer packages remain Planned
 until the verified provider is published and pinned. Gitlinks remain authoritative; this document is not a second
 compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
@@ -206,3 +206,9 @@ provider discovery commit `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c`. UQC-101's 
 published provider revision. Consumer assignments must record their then-current published baselines when Ready.
 Execution order is provider → settings → AI → packages → greeter → shell, then umbrella integration. All consumers
 require the published, pinned provider; their local SDDs are prepared before their implementation starts.
+
+## Provider implementation checkpoint — 2026-09-07
+
+The published geometry slice fixes indicator-only and mirrored CheckBox/RadioButton/Switch layout and passes the
+provider suite. UQC-101 remains In Progress. See the [implementation SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+for remaining provider work. Consumer packages remain Planned until the complete provider handoff.

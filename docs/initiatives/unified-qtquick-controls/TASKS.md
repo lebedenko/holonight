@@ -1,14 +1,14 @@
 # Unified Qt Quick Controls and Third-Party Compatibility — Coordination Ledger
 
 The initiative is Accepted following user scope approval on 2026-09-07. Discovery UQC-001 is complete and
-UQC-002 settles the contract. UQC-101 is Ready at published provider baseline
-`033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c`; consumers remain Planned until its verified handoff is published and pinned.
+UQC-002 settles the contract. UQC-101 is In Progress from published provider assignment baseline
+`033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c`; consumers remain Planned until the complete provider handoff is published and pinned.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
-| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Ready | — | — |
+| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `22ded7815727ce483fd91e82a9cc04bfe252ec3b` (geometry slice) | 2026-09-07: indicator-only and mirrored geometry fixed; original code fails new behavioral regression, fix passes five focused tests and all 28 provider CTest entries including installed consumer. Published checkpoint; remaining UQC-101 slices stay open. |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | Pending | Planned | — | — |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | Pending | Planned | — | — |
@@ -82,3 +82,14 @@ resolves the pending scope review; README's accepted-scope section is authoritat
 All five consumer checkouts still match their published discovery baselines. Package-manager's two unrelated
 untracked mockups are retained; they do not change its source baseline or satisfy final clean-tree acceptance.
 No UQC-201 checks have been run. Final runtime/manual coverage remains open.
+
+## Provider geometry checkpoint — 2026-09-07
+
+Published provider `22ded7815727ce483fd91e82a9cc04bfe252ec3b` contains the first UQC-101 implementation slice and its
+local implementation ledger. Canonical `origin/main` was checked before pinning; the provider working tree is clean.
+This checkpoint does not make consumers Ready: palette support, all nine additions, composite/runtime migration,
+embedded defaults, policy and final installed/negative/rendering coverage remain provider work.
+
+Verification: full provider build, five focused QML tests, 28/28 CTest entries, and whitespace checks passed.
+The new geometry regression failed before the fix. Exact commands and work scope are in the local SDD; no live
+application interaction or UQC-201 ecosystem checks were performed for this slice. Resume from the pinned revision.
