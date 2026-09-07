@@ -1,6 +1,6 @@
 # Unified Qt Quick Controls and Third-Party Compatibility
 
-Status: Draft
+Status: Accepted
 
 ## Goal
 
@@ -114,8 +114,8 @@ from the active desktop authentication service.
 5. `UQC-201`: verify the exact integrated revisions and real-application matrix in both supported sessions.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
-the work-package ID. The initial discovery package is Ready; implementation packages remain Planned until contract
-acceptance and their dependencies are satisfied. Gitlinks remain authoritative; this document is not a second
+the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Ready; consumer packages remain Planned
+until the verified provider is published and pinned. Gitlinks remain authoritative; this document is not a second
 compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -161,3 +161,48 @@ review boundaries. Nine provisional additions are proposed, pending required man
 This remains a partial handoff. No separate authentication login is prepared; manual Hyprland checks are pending.
 Follow the [collection checklist](../../../holonight-qt/docs/sdd/unified-qtquick-controls/audit/CHECKLIST.md).
 UQC-001 remains In Progress and the initiative Draft. Stop for joint review before UQC-002 acceptance.
+
+## Scope-review preparation — 2026-09-07
+
+The provider working tree now contains manual desktop observations, completed isolated authentication discovery,
+and a six-case installed-provider layout/palette comparison. These are unpublished continuation artifacts; the
+published gitlink still identifies the earlier partial audit. See the [scope review](../../../holonight-qt/docs/sdd/unified-qtquick-controls/REVIEW.md)
+and its linked application evidence.
+
+The proposed scope adds indicator-only CheckBox/RadioButton/Switch geometry fixes and application palette support
+to the standard-control work, alongside the nine provisional missing controls. The reduced license-popup
+composition overflows under all three compared styles; resolve it as an application composition limitation,
+preserving legitimate horizontal scrolling. Unreported application surfaces and states remain unverified.
+
+The comparison was rerun successfully on 2026-09-07. Joint coverage and palette-boundary review, publication of the
+discovery handoff, and UQC-002 contract acceptance remain prerequisites to product implementation. No acceptance
+state or gitlink changes are implied by this working-tree update.
+
+## Accepted scope — 2026-09-07
+
+The user approved the complete [scope review](../../../holonight-qt/docs/sdd/unified-qtquick-controls/REVIEW.md).
+This supersedes earlier Draft/review gates in the historical checkpoints above.
+
+- Implement ApplicationWindow, Label, ToolButton, ToolBar, ToolSeparator, MenuSeparator, Popup, MenuBar and
+  MenuBarItem in the provider. Retain Basic fallback for other unimplemented controls and honor Haruna's explicit
+  Fusion fallback. Application-painted sliders remain application-owned. Dialog/DialogButtonBox/Page/Pane and
+  other deferred catalog entries are explicitly outside the required additions.
+- Fix indicator-only CheckBox, RadioButton and Switch geometry, including mirrored placement and existing Switch
+  size roles. Verify adjacent labels, trailing-card containment and ordinary labeled controls.
+- Standard controls respect application/control Qt palette overrides. Session defaults supply HoloNight colors;
+  application theme selection must not write shared desktop configuration. Core/composites retain their explicit
+  appearance APIs. Provider design must map roles and states and verify default parity and dark/light round trips.
+- Preserve composite error, sizing, delegate-corner and scaled-popup APIs through public hooks. Core HnLabel uses
+  Templates.Label to avoid a selected-style dependency cycle. Authentication wrappers preserve overrides and
+  propagate process-local installed-prefix discovery paths with meaningful missing-module diagnostics.
+- The license-popup reduced composition clips under all three compared styles. Accept this application/Kirigami
+  composition limitation; do not add blanket popup padding or disable legitimate horizontal scrolling.
+- Recorded manual observations and isolated authentication complete discovery with explicit limits. Unobserved
+  server/onboarding fields and visual/input states remain required final matrix checks, not inferred passes.
+  Existing UQC-201 two-compositor, activation, installed-prefix and negative-fixture gates remain in force.
+
+Canonical remote checks on 2026-09-07 confirmed the existing consumer discovery baselines in BASELINE.md and
+provider discovery commit `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c`. UQC-101's exact assignment baseline is that
+published provider revision. Consumer assignments must record their then-current published baselines when Ready.
+Execution order is provider → settings → AI → packages → greeter → shell, then umbrella integration. All consumers
+require the published, pinned provider; their local SDDs are prepared before their implementation starts.

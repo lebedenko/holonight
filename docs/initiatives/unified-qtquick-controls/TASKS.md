@@ -1,14 +1,14 @@
 # Unified Qt Quick Controls and Third-Party Compatibility — Coordination Ledger
 
-The initiative is Draft. `UQC-001` is discovery only; no product implementation is authorized by its Ready state.
-Before assignment, record the exact published upstream baseline in the repository-local SDD and handoff. All product
-implementation packages remain Planned until the acceptance gate and their dependencies are complete.
+The initiative is Accepted following user scope approval on 2026-09-07. Discovery UQC-001 is complete and
+UQC-002 settles the contract. UQC-101 is Ready at published provider baseline
+`033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c`; consumers remain Planned until its verified handoff is published and pinned.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| UQC-001 | `holonight-qt` | Audit runtime selection, composite dependencies, style-specific properties, and third-party control coverage; specify required additions and verification | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | In Progress | `4d63b29c708a8876daa30b738f91aef68800d3de` (partial audit) | 2026-09-06: corrected logs verify staged-provider loading in Haruna/NeoChat/Tokodon; installed fixture passes default/Fusion/Fusion-fallback origins. Nine provisional additions and API-preserving resolutions proposed. Manual surface/state observations, isolated authentication and final coverage remain open. Canonical provider publication confirmed; see SDD TASKS/APPLICATIONS and audit checklist. |
-| UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Planned | — | — |
-| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | Pending | Planned | — | — |
+| UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
+| UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
+| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Ready | — | — |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | Pending | Planned | — | — |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | Pending | Planned | — | — |
@@ -55,3 +55,30 @@ Resume with the [guided checklist](../../../holonight-qt/docs/sdd/unified-qtquic
 [durable evidence](../../../holonight-qt/docs/sdd/unified-qtquick-controls/audit/EVIDENCE.md). UQC-001 stays In Progress,
 UQC-002 stays Planned, initiative stays Draft. Stop for joint scope review; UQC-201 retains full Hyprland/Sway
 activation and integration acceptance. Unrelated package-manager mockups and other checkouts are preserved.
+
+## Scope-review preparation — 2026-09-07 (unpublished)
+
+Reviewed the provider's existing continuation artifacts, including manual desktop observations, isolated agent
+registration/prompt/cancellation evidence, and controlled geometry/palette comparisons. Authentication discovery
+is complete according to the recorded user observations; the cancelled command's exact numeric exit was not
+retained. Earlier missing-authentication statements above describe the published 2026-09-06 checkpoint.
+
+Reconfigured and built the standalone audit in `/tmp/uqc-20260907-discovery-build`; the build passed, with CMake
+warnings about unavailable Kirigami plugin link targets. All six `check-layout.py` characterization runs against
+`/var/tmp/uqc-auth-test-20260907/prefix` passed, including runtime Kirigami loading. These reproduce existing behavior,
+not acceptance of the defects. Current run logs: `/tmp/uqc-layout-itg2jcu2` (temporary).
+
+The [provider scope review](../../../holonight-qt/docs/sdd/unified-qtquick-controls/REVIEW.md) is ready for joint
+discussion of indicator geometry, palette authority, nine proposed controls and explicit composition limitations.
+UQC-001 remains In Progress, UQC-002 Planned and the initiative Draft. Provider continuation files are still
+uncommitted; this note does not accept a published handoff or update its pin.
+
+## Accepted discovery handoff — 2026-09-07
+
+Provider `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` is committed, published on canonical `origin/main`, and clean.
+The umbrella pin now accepts that discovery handoff. The preceding unpublished notes are historical. User approval
+resolves the pending scope review; README's accepted-scope section is authoritative for UQC-002.
+
+All five consumer checkouts still match their published discovery baselines. Package-manager's two unrelated
+untracked mockups are retained; they do not change its source baseline or satisfy final clean-tree acceptance.
+No UQC-201 checks have been run. Final runtime/manual coverage remains open.
