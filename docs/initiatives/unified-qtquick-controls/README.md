@@ -115,9 +115,9 @@ from the active desktop authentication service.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
-is published and pinned. UQC-103 settings is In Progress with its repository-local SDD; other consumers remain
-Planned. Gitlinks remain authoritative; this document is not a second compatibility manifest. Provider revisions
-must be published and pinned before dependent consumer work starts.
+is published and pinned. UQC-103 settings is Done with its published local acceptance record; UQC-104 AI is Ready
+for the next iteration. Other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
+compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
 
@@ -233,3 +233,16 @@ contains the detailed acceptance evidence and isolation guarantees.
 UQC-103 settings is the next Ready assignment and starts with its local SDD. Other consumers and UQC-201 remain
 Planned. The initiative remains Accepted; human-operated Hyprland/Sway, real-application and activation acceptance
 remain integration gates. No consumer implementation or ecosystem integration run is part of this checkpoint.
+
+
+## Settings handoff — 2026-09-08
+
+UQC-103 is Done with the published settings pin and [local acceptance record](../../../holonight-settings/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
+Settings uses runtime Controls and the embedded HoloNight default while preserving explicit style overrides,
+Core/composites, editor bindings, conflict behavior and configure-time activation paths. All 53 settings CTest entries,
+final focused acceptance, four build/four staged-install launch modes and static checks pass. See the [ledger](TASKS.md)
+for commands/results and the publication handoff.
+
+UQC-104 AI is the next Ready assignment at its rechecked published baseline. Its local SDD and implementation begin
+in a later iteration. Remaining consumers and UQC-201 remain Planned; the initiative stays Accepted. Human-operated
+Hyprland/Sway, real-application and ecosystem activation acceptance remain integration gates.
