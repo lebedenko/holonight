@@ -29,7 +29,7 @@ is an input; its broad selection claims and recommendations must be reconciled w
 | `holonight-shell` | Shell and authentication adoption, session propagation, and selection/loading diagnostics | Pending |
 | `holonight-settings` | Application adoption and correction of contradictory import-contract tests | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-ai` | Application adoption and alignment of its import checker | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) |
-| `holonight-pkg-manager` | Application adoption and independent-launch verification | Pending |
+| `holonight-pkg-manager` | Application adoption and independent-launch verification | [SDD](../../../holonight-pkg-manager/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-greeter` | Application adoption and pre-session verification, preserving scaled ComboBox behavior | Pending |
 | Umbrella | Contract acceptance, baseline coordination, real-application matrix, and final integration | This initiative |
 
@@ -117,7 +117,7 @@ Only Ready work packages may be assigned. Each implementer receives one reposito
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
-UQC-105 package-manager is Ready; other consumers remain Planned. Gitlinks remain
+UQC-105 package-manager is In Progress; other consumers remain Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
