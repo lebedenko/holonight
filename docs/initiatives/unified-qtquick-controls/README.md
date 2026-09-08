@@ -116,8 +116,9 @@ from the active desktop authentication service.
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
-UQC-105 package-manager is Blocked on supplemental provider repair UQC-107 and AI CI confirmation UQC-108; other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
-compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
+UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
+UQC-105 package-manager is Ready; other consumers remain Planned. Gitlinks remain
+authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
 

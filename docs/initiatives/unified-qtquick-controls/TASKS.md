@@ -3,7 +3,7 @@
 The initiative is Accepted following user scope approval on 2026-09-07. Discovery UQC-001 is complete and
 UQC-002 settles the contract. UQC-101 is Done with its verified provider published and pinned.
 UQC-103 settings and UQC-104 AI are Done with local acceptance and publication complete.
-UQC-105 package-manager is Blocked on supplemental UQC-107/UQC-108; UQC-102, UQC-106 and UQC-201 remain Planned.
+Supplemental UQC-107/UQC-108 are Done; UQC-105 package-manager is Ready; UQC-102, UQC-106 and UQC-201 remain Planned.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
@@ -13,10 +13,10 @@ UQC-105 package-manager is Blocked on supplemental UQC-107/UQC-108; UQC-102, UQC
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `2508635351e4901e1b03daf62dbb8ef6538ffcc5` | 2026-09-08: 53/53 CTest entries, final 8/8 focused checks, HoloNight/Fusion actual-window acceptance and four build/four installed override modes pass. Formatting, tidy, QML lint/types, package/activation, syntax, links and whitespace pass. Implementation `d45141e`, documentation handoff and adapter-isolation follow-up published; canonical availability confirmed before pinning. |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | Implementation `286df4791c651ab8842f0d8f278eac9d4f803b81`; published handoff in gitlink | 2026-09-08: 713 executed CTest passes, one opt-in Secret Service skip; 59/59 QML-related checks in each style; dedicated dual-style application acceptance; four build/four staged-install launch modes with implementation/plugin evidence and private-bus/XDG isolation; format, full tidy, QML lint/types, policy fixtures, activation-prefix, syntax, links and whitespace pass. See [local record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md). |
-| UQC-105 | `holonight-pkg-manager` | Adopt runtime controls and embedded default; verify independent launch and scrollbar behavior | UQC-107, UQC-108 | Pending — prepare package-manager-local SDD first | Blocked | Assignment baseline `518bb60232086e9537fb402f91b4b703d260ffcf` | 2026-09-08: canonical origin/main and local baseline rechecked; prerequisite is published, pinned provider `50c59558bb3817f57a992dd72730dba141db1bc8`. Preserve the two untracked mockups. Implementation starts in a later iteration. |
+| UQC-105 | `holonight-pkg-manager` | Adopt runtime controls and embedded default; verify independent launch and scrollbar behavior | UQC-107, UQC-108 | Pending — prepare package-manager-local SDD first | Ready | Assignment baseline `518bb60232086e9537fb402f91b4b703d260ffcf` | 2026-09-08: canonical origin/main and local baseline rechecked; prerequisite is published, pinned provider `50c59558bb3817f57a992dd72730dba141db1bc8`. Preserve the two untracked mockups. Implementation starts in a later iteration. |
 | UQC-106 | `holonight-greeter` | Adopt runtime controls and embedded default; verify pre-session startup and retain scaled ComboBox geometry | UQC-101 | Pending | Planned | — | — |
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
-| UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Ready | Baseline `2834665e4c8b9c7681e56a2c8238310f1b6b3157` | Both CI dependency pins and Taskfile must agree; green build/test, static checks and licensing required before UQC-105 becomes Ready. |
+| UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-106 | This initiative | Planned | — | — |
 
 Allowed states:
@@ -329,3 +329,26 @@ acceptance passes (39.20 seconds). UQC-108 adopts this provider revision; remote
 Provider `478ef7c40a22c7c3f7ea6f45d9205411b5504834` follows up the CI-only false-positive library classification:
 compare basenames instead of parent directories. The isolated matrix passes; publication is canonically confirmed
 before pinning. AI's final dependency pins use this revision. Product code is identical to the initial linkage fix.
+
+Provider CI `34264044057` and licensing `34264043952` passed at the pinned revision, including all 61 CI tests.
+AI CI `34264138449` passed static checks but exposed an internal composite enum in ProviderListDelegate under
+Qt 6.11.1. Published AI follow-up `a8e2aa42359c92be767894bcfdfad3f51a07167a` uses public
+HnListDelegate.Outline and adds an independent policy fixture. Local runtime/policy/lint checks pass;
+CI `34266081919` must be green before accepting UQC-108 and unblocking package-manager.
+
+AI CI `34266081919` passed its full suite, then exposed missing provider discovery in seven source-only list tests
+under explicit Holonight. Published `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` configures the common test entry
+point from the existing provider-path macro. All 59 QML selections pass under each style with host provider modules
+hidden. Final remote gate: CI `34267789749`; licensing `34267789698` is green. UQC-105 remains Blocked.
+
+## UQC-108 accepted handoff — 2026-09-08
+
+AI `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` is published and clean. CI `34267789749` passes build/test,
+both existing QML styles, eight actual launches, lint/types, formatting and full tidy; licensing `34267789698`
+also passes. UQC-108 is Done. Local 713 executed tests pass (one opt-in credential skip), both 59-test QML
+selections pass with host provider modules hidden, and all eight actual launches pass under that same isolation.
+No live provider requests, credential interaction or desktop activation were performed.
+
+UQC-105 is Ready at canonically rechecked package-manager baseline `518bb60232086e9537fb402f91b4b703d260ffcf`.
+Use pinned provider `478ef7c40a22c7c3f7ea6f45d9205411b5504834` and unchanged configuration baseline.
+Publish and link the local SDD before product implementation. Preserve both untracked mockups.
