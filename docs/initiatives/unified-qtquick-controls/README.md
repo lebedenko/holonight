@@ -212,3 +212,11 @@ require the published, pinned provider; their local SDDs are prepared before the
 The published geometry slice fixes indicator-only and mirrored CheckBox/RadioButton/Switch layout and passes the
 provider suite. UQC-101 remains In Progress. See the [implementation SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
 for remaining provider work. Consumer packages remain Planned until the complete provider handoff.
+
+## Provider executable-defaults checkpoint — 2026-09-08
+
+The published provider now supplies migrated demo/gallery applications with embedded, overridable style defaults,
+installed-prefix discovery, application import policy and aligned usage guides. All 59 provider CTest entries pass;
+see the [ledger](TASKS.md) and [provider implementation record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
+UQC-101 remains In Progress pending isolated negative fixtures and final provider acceptance. Consumer packages
+remain Planned and the initiative remains Accepted.

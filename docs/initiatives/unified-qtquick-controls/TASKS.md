@@ -8,7 +8,7 @@ UQC-002 settles the contract. UQC-101 is In Progress from published provider ass
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
-| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `bd5f2f0f6844ec809b3fa80182a61493cf724c0a` (composite runtime slice) | 2026-09-08: all 26 public composites load under HoloNight/Fusion; actual control/editor/popup/delegate/scrollbar origins, Core isolation, editing/appearance contracts and both ComboBox geometry variants pass in build and installed-prefix runs. Full build and all 49 provider CTest entries pass. Canonical publication confirmed; executable defaults and final provider acceptance remain open. |
+| UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | In Progress | `82ccb126c2ad8f364f32e0ae3b1551040a6949cb` (executable defaults slice) | 2026-09-08: demo/gallery runtime imports and embedded defaults pass default, environment, command-line and configuration modes in build and installed-prefix launches. Application policy and guides aligned; full build and all 59 provider CTest entries pass. Canonical publication confirmed; isolated negative fixtures and final provider acceptance remain open. |
 | UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-101 | Pending | Planned | — | — |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | Pending | Planned | — | — |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | Pending | Planned | — | — |
@@ -169,3 +169,27 @@ UQC-101 remains In Progress. Demo/gallery embedded defaults and import migration
 and final provider acceptance are subsequent work. UQC-102–UQC-106 remain Planned, and UQC-201 remains Planned.
 No umbrella integration or real-application/manual Hyprland/Sway acceptance checks ran. Unrelated package-manager
 working-tree files are preserved.
+
+## Provider executable-defaults checkpoint — 2026-09-08
+
+Accepted published provider `82ccb126c2ad8f364f32e0ae3b1551040a6949cb` from provider baseline
+`bd5f2f0f6844ec809b3fa80182a61493cf724c0a` and umbrella `8e3cc74ba44503efd610713dc539934bef55fcad`.
+Canonical `git ls-remote origin refs/heads/main` returned that revision after publication. The provider is clean;
+its gitlink now records the verified revision.
+
+Both examples use namespaced runtime Controls and embedded, overridable HoloNight defaults. Error-state examples
+use public composites, and gallery Switch sizing preserves HoloNight semantics without invalid Fusion properties.
+Installed examples discover their own prefix without adding the build-tree QML path. Application policy covers
+instances, fallback types, enums and attached properties; guides, local provider instructions and CI are aligned.
+
+Verification: full provider build and all 59 CTest entries passed (43.15 seconds, Qt 6.11.2). Thirteen focused checks
+passed again after final checker isolation changes (43.67 seconds). Actual build/installed executable launches
+verify default selection, environment Fusion, command-line Fusion over environment HoloNight, external configuration,
+resolved Button URLs, plugin paths and absence of QML diagnostics. Python syntax, C++ formatting, shell syntax,
+changed guide links and whitespace pass. Exact commands, changed files and startup-check limitations are in the
+[provider record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
+
+UQC-101 remains In Progress. Resume with isolated missing-module/plugin/dependency and bad-case diagnostics,
+competing-style/imperative-precedence/platform-theme-only fixtures and final provider acceptance. Consumers remain
+Planned until that complete handoff. No UQC-201 integration or human-operated Hyprland/Sway acceptance ran. Unrelated
+package-manager working-tree files are preserved.
