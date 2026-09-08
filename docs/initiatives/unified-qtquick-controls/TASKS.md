@@ -15,8 +15,8 @@ UQC-105 package-manager is Blocked on supplemental UQC-107/UQC-108; UQC-102, UQC
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | Implementation `286df4791c651ab8842f0d8f278eac9d4f803b81`; published handoff in gitlink | 2026-09-08: 713 executed CTest passes, one opt-in Secret Service skip; 59/59 QML-related checks in each style; dedicated dual-style application acceptance; four build/four staged-install launch modes with implementation/plugin evidence and private-bus/XDG isolation; format, full tidy, QML lint/types, policy fixtures, activation-prefix, syntax, links and whitespace pass. See [local record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md). |
 | UQC-105 | `holonight-pkg-manager` | Adopt runtime controls and embedded default; verify independent launch and scrollbar behavior | UQC-107, UQC-108 | Pending — prepare package-manager-local SDD first | Blocked | Assignment baseline `518bb60232086e9537fb402f91b4b703d260ffcf` | 2026-09-08: canonical origin/main and local baseline rechecked; prerequisite is published, pinned provider `50c59558bb3817f57a992dd72730dba141db1bc8`. Preserve the two untracked mockups. Implementation starts in a later iteration. |
 | UQC-106 | `holonight-greeter` | Adopt runtime controls and embedded default; verify pre-session startup and retain scaled ComboBox geometry | UQC-101 | Pending | Planned | — | — |
-| UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Ready | Baseline `50c59558bb3817f57a992dd72730dba141db1bc8` | AI CI 34251906896 exposes missing configuration-header usage requirements; publish verified correction before pinning. |
-| UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Planned | Baseline `2834665e4c8b9c7681e56a2c8238310f1b6b3157` | Both CI dependency pins and Taskfile must agree; green build/test, static checks and licensing required before UQC-105 becomes Ready. |
+| UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `f9e4e2eea935055754f41d292320d87f4088c8a4` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
+| UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Ready | Baseline `2834665e4c8b9c7681e56a2c8238310f1b6b3157` | Both CI dependency pins and Taskfile must agree; green build/test, static checks and licensing required before UQC-105 becomes Ready. |
 | UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-106 | This initiative | Planned | — | — |
 
 Allowed states:
@@ -311,3 +311,12 @@ UQC-107 is assigned to holonight-qt at the exact baseline above, with configurat
 `fe69a59e6b73167fd5349223a4d265d75386c139`. Stage dependencies privately and verify clean Release compilation,
 provider tests, example startup, installed consumers and static checks. Publish before advancing the gitlink.
 No public API/schema changes, system installation or package transactions are authorized.
+
+## UQC-107 handoff and UQC-108 assignment — 2026-09-08
+
+Provider `f9e4e2eea935055754f41d292320d87f4088c8a4` is published on canonical origin/main,
+confirmed by `git ls-remote` before pinning. Local Release acceptance passed with system configuration headers
+hidden; exact commands and limitations are in the provider record. UQC-107 is Done.
+UQC-108 is Ready and assigned to holonight-ai at `2834665e4c8b9c7681e56a2c8238310f1b6b3157`.
+Adopt the corrected provider in Taskfile and both CI jobs, repeat local acceptance, publish and require green
+remote build/test, static and licensing checks. UQC-105 stays Blocked until that gate passes.
