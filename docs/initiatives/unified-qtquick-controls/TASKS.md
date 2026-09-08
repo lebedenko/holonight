@@ -18,7 +18,7 @@ UQC-102 and UQC-201 remain Planned.
 | UQC-106 | `holonight-greeter` | Adopt runtime controls and embedded default; verify pre-session startup and retain scaled ComboBox geometry | UQC-107, UQC-105, UQC-109 | [SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/SPEC.md) | In Progress | Assignment baseline `9130c9ccbf05986ab1843ae322831e7fe9efdac9` | 2026-09-09: clean local HEAD and canonical origin/main rechecked. Prerequisite: published pinned provider `478ef7c40a22c7c3f7ea6f45d9205411b5504834`; unchanged configuration revision. See assignment below. |
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
-| UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Ready | Baseline `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | 2026-09-09: user authorized narrowly scoped provider fix; configuration unchanged. |
+| UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Remote CI running; final results recorded below. |
 | UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-108 | This initiative | Planned | — | — |
 
 Allowed states:
@@ -410,3 +410,17 @@ QVariantList diagnostics. Assign only holonight-qt at `478ef7c40a22c7c3f7ea6f45d
 Guard the empty role before delegate model lookup, add a reproducing regression,
 verify and publish separately. Greeter adopts the corrected published prerequisite
 after this handoff. Configuration and other consumers remain unchanged.
+
+## UQC-109 local handoff — 2026-09-09
+
+Provider implementation `7ee28b1` and handoff `00e6e208b6c9b30d89b66ef3aeb4ef8175050764`
+are published and canonically confirmed. All 59 provider CTests pass, including
+installed acceptance; both runtime styles pass at DPR 1/1.25. Formatting, QML
+lint and licensing pass; focused tidy completes with existing fixture advisories.
+The [provider record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+documents the reproducer and exact commands. UQC-109 is locally Done; remote
+CI/licensing confirmation remains required before the final greeter handoff.
+
+This checkpoint pins the published correction before greeter adopts it. UQC-106
+remains In Progress, UQC-102/UQC-201 remain Planned, initiative remains Accepted.
+Configuration and other consumer implementations are unchanged.
