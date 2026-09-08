@@ -30,7 +30,7 @@ is an input; its broad selection claims and recommendations must be reconciled w
 | `holonight-settings` | Application adoption and correction of contradictory import-contract tests | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-ai` | Application adoption and alignment of its import checker | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-pkg-manager` | Application adoption and independent-launch verification | [SDD](../../../holonight-pkg-manager/docs/sdd/unified-qtquick-controls/SPEC.md) |
-| `holonight-greeter` | Application adoption and pre-session verification, preserving scaled ComboBox behavior | Pending |
+| `holonight-greeter` | Application adoption and pre-session verification, preserving scaled ComboBox behavior | [SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | Umbrella | Contract acceptance, baseline coordination, real-application matrix, and final integration | This initiative |
 
 Detailed requirements, implementation decisions, file changes, and test tasks belong in each repository's local SDD.
@@ -117,7 +117,7 @@ Only Ready work packages may be assigned. Each implementer receives one reposito
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
-UQC-105 package-manager is Done; UQC-106 greeter is Ready. UQC-102 and UQC-201 remain Planned. Gitlinks remain
+UQC-105 package-manager is Done; UQC-106 greeter is In Progress. UQC-102 and UQC-201 remain Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -272,3 +272,13 @@ and the [ledger](TASKS.md) contain verification and publication evidence.
 UQC-106 greeter is the next Ready assignment at its rechecked canonical baseline, using the corrected pinned
 provider prerequisite. Start with its local SDD before implementation. The initiative remains Accepted; UQC-102
 and UQC-201 remain Planned, including human-operated Hyprland/Sway and final ecosystem integration.
+
+## UQC-106 design checkpoint — 2026-09-09
+
+Greeter design `7bd4bdfb38c16c18402a6501f645c3b5f5eceea5` is published and confirmed
+on canonical origin/main. Its [SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/SPEC.md)
+settles runtime imports, public scaled footer composite, embedded selection, exact
+build versus installed discovery, private dependencies and isolated GUI/launch
+acceptance. Configuration stays unchanged. UQC-106 is In Progress; implementation
+starts after this checkpoint is published. UQC-102 and UQC-201 remain Planned;
+the initiative remains Accepted. Unrelated package-manager mockups are preserved.
