@@ -115,7 +115,8 @@ from the active desktop authentication service.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
-is published and pinned. UQC-103 settings is Done with its published local acceptance record; UQC-104 AI is In Progress with its published local design. Other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
+is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
+UQC-105 package-manager is Ready; other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
 compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -245,3 +246,16 @@ for commands/results and the publication handoff.
 UQC-104 AI is the next Ready assignment at its rechecked published baseline. Its local SDD and implementation begin
 in a later iteration. Remaining consumers and UQC-201 remain Planned; the initiative stays Accepted. Human-operated
 Hyprland/Sway, real-application and ecosystem activation acceptance remain integration gates.
+
+## AI handoff — 2026-09-08
+
+UQC-104 is Done with the published AI pin and [local acceptance record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
+AI now uses runtime Controls with an embedded overridable default and executable-relative
+installed discovery, preserving Core/composites and the existing application behavior.
+Local tests, both-style QML/application acceptance, all eight isolated actual launch modes,
+and static/deployment checks pass. The [ledger](TASKS.md) records publication and verification.
+
+UQC-105 package-manager is the next Ready assignment at its rechecked canonical baseline,
+with the pinned provider prerequisite. Its implementation starts in a later iteration;
+its two untracked mockups remain untouched. The initiative stays Accepted and UQC-102,
+UQC-106 and UQC-201 remain Planned. Final ecosystem and human-operated acceptance are pending.
