@@ -117,7 +117,7 @@ Only Ready work packages may be assigned. Each implementer receives one reposito
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
-UQC-105 package-manager is In Progress; other consumers remain Planned. Gitlinks remain
+UQC-105 package-manager is Done; UQC-106 greeter is Ready. UQC-102 and UQC-201 remain Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -260,3 +260,15 @@ UQC-105 package-manager is the next Ready assignment at its rechecked canonical 
 with the pinned provider prerequisite. Its implementation starts in a later iteration;
 its two untracked mockups remain untouched. The initiative stays Accepted and UQC-102,
 UQC-106 and UQC-201 remain Planned. Final ecosystem and human-operated acceptance are pending.
+
+## Package-manager handoff — 2026-09-09
+
+UQC-107 provider repair, UQC-108 AI CI confirmation and UQC-105 package-manager are Done with published pins
+and green remote checks. Package-manager uses runtime-selected Controls with an embedded HoloNight default,
+exact-build/executable-relative dependency discovery, isolated dual-style acceptance and preserved independent
+scrolling. Its [local record](../../../holonight-pkg-manager/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+and the [ledger](TASKS.md) contain verification and publication evidence.
+
+UQC-106 greeter is the next Ready assignment at its rechecked canonical baseline, using the corrected pinned
+provider prerequisite. Start with its local SDD before implementation. The initiative remains Accepted; UQC-102
+and UQC-201 remain Planned, including human-operated Hyprland/Sway and final ecosystem integration.
