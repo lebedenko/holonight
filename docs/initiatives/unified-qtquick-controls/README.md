@@ -28,7 +28,7 @@ is an input; its broad selection claims and recommendations must be reconciled w
 | `holonight-qt` | Compatibility audit, shared style coverage, composite migration, policy checks, examples, installed-consumer tests, and documentation | [Discovery SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-shell` | Shell and authentication adoption, session propagation, and selection/loading diagnostics | Pending |
 | `holonight-settings` | Application adoption and correction of contradictory import-contract tests | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/SPEC.md) |
-| `holonight-ai` | Application adoption and alignment of its import checker | Pending |
+| `holonight-ai` | Application adoption and alignment of its import checker | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-pkg-manager` | Application adoption and independent-launch verification | Pending |
 | `holonight-greeter` | Application adoption and pre-session verification, preserving scaled ComboBox behavior | Pending |
 | Umbrella | Contract acceptance, baseline coordination, real-application matrix, and final integration | This initiative |
@@ -115,8 +115,7 @@ from the active desktop authentication service.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
-is published and pinned. UQC-103 settings is Done with its published local acceptance record; UQC-104 AI is Ready
-for the next iteration. Other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
+is published and pinned. UQC-103 settings is Done with its published local acceptance record; UQC-104 AI is In Progress with its published local design. Other consumers remain Planned. Gitlinks remain authoritative; this document is not a second
 compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
