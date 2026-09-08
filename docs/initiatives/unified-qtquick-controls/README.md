@@ -114,9 +114,10 @@ from the active desktop authentication service.
 5. `UQC-201`: verify the exact integrated revisions and real-application matrix in both supported sessions.
 
 Only Ready work packages may be assigned. Each implementer receives one repository, an exact upstream baseline, and
-the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is In Progress; consumer packages remain Planned
-until the verified provider is published and pinned. Gitlinks remain authoritative; this document is not a second
-compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
+the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
+is published and pinned. UQC-103 settings is Ready, beginning with its repository-local SDD; other consumers remain
+Planned. Gitlinks remain authoritative; this document is not a second compatibility manifest. Provider revisions
+must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
 
@@ -220,3 +221,15 @@ installed-prefix discovery, application import policy and aligned usage guides. 
 see the [ledger](TASKS.md) and [provider implementation record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
 UQC-101 remains In Progress pending isolated negative fixtures and final provider acceptance. Consumer packages
 remain Planned and the initiative remains Accepted.
+
+## Final provider handoff — 2026-09-08
+
+UQC-101 is Done following isolated deployment/diagnostic acceptance, final provider contract review, password masking,
+input hints and length-limit coverage, and rendering checks at DPR 1.0 and 1.25. Both examples build and all 61 provider CTest entries pass.
+Canonical publication was confirmed before updating the provider gitlink. The [ledger](TASKS.md) records the handoff,
+verification and exact published settings baseline; the [provider record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+contains the detailed acceptance evidence and isolation guarantees.
+
+UQC-103 settings is the next Ready assignment and starts with its local SDD. Other consumers and UQC-201 remain
+Planned. The initiative remains Accepted; human-operated Hyprland/Sway, real-application and activation acceptance
+remain integration gates. No consumer implementation or ecosystem integration run is part of this checkpoint.
