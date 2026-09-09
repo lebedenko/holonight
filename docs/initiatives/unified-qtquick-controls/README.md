@@ -118,8 +118,8 @@ the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. U
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
 UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
-UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is Ready for assigned integration verification. Gitlinks remain
-authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
+UQC-102 shell is Done with published local acceptance and green final-revision CI.
+UQC-201 is In Progress for automated integration and manual verification preparation. Gitlinks remain authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
 
@@ -312,3 +312,16 @@ cases and existing QML/CI-image-publication limitations.
 The initiative remains Accepted; UQC-201 remains Planned. No live authentication,
 desktop interaction, ecosystem activation or umbrella integration acceptance ran.
 Package-manager mockups remain untracked and unchanged.
+
+## UQC-201 automated evidence and manual kit — 2026-09-09
+
+UQC-201 is In Progress. [Fresh integration evidence](INTEGRATION.md) records the
+authoritative-pin builds, complete suites, installed/relocated launches, static
+checks, third-party probes, versions and failed attempts. Two automated findings
+remain open: installer package ownership (UQC-202) and reproducible AI composer
+geometry under explicit Fusion (UQC-203). Neither is silently counted as passing.
+
+The [Hyprland/Sway manual matrix](MANUAL.md) and [isolated authentication kit](AUTHENTICATION.md)
+are prepared. All manual gates remain unchecked. The initiative remains Accepted;
+no final integration acceptance, system installation, package transaction or live
+authentication operation is claimed.
