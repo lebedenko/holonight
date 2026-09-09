@@ -7,3 +7,6 @@ CLAUDE.md
 # Generated CMake language-server and configuration artifacts.
 /.cache/
 /CMakeFiles/
+
+# Python installer regression fixtures.
+/tests/__pycache__/
