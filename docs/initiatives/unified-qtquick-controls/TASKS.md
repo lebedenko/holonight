@@ -4,7 +4,7 @@ The initiative is Accepted following user scope approval on 2026-09-07. Discover
 UQC-002 settles the contract. UQC-101 is Done with its verified provider published and pinned.
 UQC-103 settings and UQC-104 AI are Done with local acceptance and publication complete.
 Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greeter are Done.
-UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 remains Planned.
+UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is Ready for the assigned automated integration and manual-kit work.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
@@ -19,7 +19,7 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Final CI 34288860789 and licensing 34288860847 pass. |
-| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109 | This initiative | Planned | — | — |
+| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109 | This initiative | Ready | Umbrella coordinator at `a26b4e537ea8105a991ec5f48e06e9fe7565dd72` | 2026-09-09: all implementation packages Done; clean canonical checkouts confirmed. Automated verification and user-operated manual kit assigned; manual acceptance remains open. |
 
 Allowed states:
 
@@ -543,3 +543,23 @@ the initiative remains Accepted and UQC-201 Planned. Live authentication,
 human-operated Hyprland/Sway, ecosystem activation and final integration are still
 reserved for UQC-201. No umbrella integration tests or clean-ecosystem claim are made.
 Package-manager's untracked explore/history mockups retain their original hashes.
+
+## UQC-201 readiness and assignment — 2026-09-09
+
+All implementation packages are Done. The umbrella coordinator is assigned UQC-201
+from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`, using this checkpoint's authoritative
+gitlinks. Every submodule is clean and its HEAD equals canonical origin/main, verified
+with `git submodule foreach --quiet 'git ls-remote origin refs/heads/main'`.
+
+Package-manager `32f989f2949092886c26cea4459945c875746089` publishes only
+`docs/mockups/explore.png` and `docs/mockups/history.png` as `chore: additional mockups`.
+REUSE passes (122/122); staged scope and unchanged SHA-256 bytes verified:
+
+- explore: `5bef2cd1eaaaab6112d512343e56c8ea11e07921e60e3d8a73d867619582bf27`
+- history: `ee0aa045baeb79b24bd075b44c0e30a55935dadd131ba15a4daf48765fb2bcb5`
+
+Canonical publication was confirmed before updating the gitlink. Verification uses
+fresh private builds and one staged prefix against current pins, without consumer
+Taskfile dependency substitution. No product changes, system installation, package
+transactions, live authentication or desktop pointer/focus automation are assigned.
+The initiative remains Accepted until user-operated Hyprland and Sway gates pass.

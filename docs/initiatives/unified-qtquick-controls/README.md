@@ -118,7 +118,7 @@ the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. U
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
 UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
-UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 remains Planned. Gitlinks remain
+UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is Ready for assigned integration verification. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
