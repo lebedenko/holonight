@@ -2,6 +2,8 @@
 
 Verification date: 2026-09-09. Status: **In Progress**. Initiative: **Accepted**.
 Manual acceptance remains pending in [the user-operated kit](MANUAL.md).
+UQC-202/UQC-203 repairs and fresh passing gate rechecks are appended below;
+the original failures remain as historical evidence.
 
 ## Baseline and isolation
 
@@ -188,3 +190,36 @@ a separately configured accessible prefix; this is an explicit manual prerequisi
 not a claimed activation pass. Do not weaken home permissions or alter existing
 activation managers. The current shell launch matrix independently verifies
 relocated bin/libexec discovery in a private test environment.
+
+## UQC-202/UQC-203 gate recheck — 2026-09-09
+
+Published handoff checkpoint: `730be066e78c4cf5c0d65f3f78fb669f5fcbb229`.
+The authoritative gitlinks at that checkpoint are AI
+`7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c`, provider
+`00e6e208b6c9b30d89b66ef3aeb4ef8175050764`, and configuration
+`fe69a59e6b73167fd5349223a4d265d75386c139`. Other pins are unchanged.
+The AI handoff is documentation-only above green implementation `11b021a`;
+canonical publication was confirmed before pinning. UQC-202's implementation
+`8af91cb` is published and green in installer CI/licensing. AI implementation
+CI 34390403485 and licensing 34390403390 pass; details and failed intermediate
+attempts are in the [local SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md).
+
+| Rechecked gate | Fresh result |
+|---|---|
+| `bash scripts/install.sh --check` | Exit 0, Preflight passed; includes real Qt 6.11.2 WaylandClient/scanner configure probe and unchanged distribution/compiler/account/gitlink checks |
+| Explicit Fusion QML selection | Exit 0, 59/59 pass, 15.37 s; includes formerly failing composer geometry |
+| Submodule working trees | `git submodule foreach --quiet 'git status --porcelain'` produces no output; every submodule clean |
+| Umbrella REUSE and whitespace | 47/47 source/document files licensed; `git diff --check` passes |
+
+The Fusion check uses the same private integration build/prefix, disposable
+HOME/XDG/private bus, offscreen rendering and hidden host HoloNight discovery.
+Commands are appended to [COMMANDS.md](COMMANDS.md); raw local outputs are in
+ignored `.cache/uqc203/logs/uqc201-installer-final.log` and
+`.cache/uqc203/logs/uqc201-fusion-final.log`. No system installation, package
+transaction, live authentication or active-desktop automation occurred.
+
+These fresh passes resolve the two automated findings above without erasing the
+original failures. UQC-202 and UQC-203 are Done. UQC-201 stays **In Progress** and
+the initiative stays **Accepted**. This is a targeted gate recheck, not final
+ecosystem integration. MANUAL.md, AUTHENTICATION.md and the initiative's manual
+checklists are unchanged; all human Hyprland/Sway/authentication gates remain open.

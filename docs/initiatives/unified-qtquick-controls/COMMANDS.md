@@ -1034,3 +1034,31 @@ The optional historical audit fixture was built with CMake/Ninja in
 `.cache/uqc201/build/audit`; its `check-fixture.py` invocation exited 1 because its
 pre-implementation Basic expectations are obsolete. The copied kit instead
 passes the current provider's eight example startup checks above.
+
+## UQC-202/UQC-203 targeted recheck — 2026-09-09
+
+Run at published umbrella `730be066e78c4cf5c0d65f3f78fb669f5fcbb229`, after
+accepting the canonically published AI handoff. Both commands exit 0; Fusion
+passes 59/59 in 15.37 seconds. The earlier failing commands/results above remain.
+
+```sh
+cd "$UQC_ROOT"
+bash scripts/install.sh --check
+env LD_LIBRARY_PATH="$UQC_ROOT/.cache/uqc201/prefix/lib" \
+  QT_QUICK_CONTROLS_STYLE=Fusion QT_SCALE_FACTOR=1 \
+  bwrap --die-with-parent --bind / / --dev /dev --proc /proc \
+  --tmpfs /usr/lib/qt6/qml/Holonight \
+  --ro-bind /dev/null /usr/lib/libholonight_config.so \
+  --setenv UQC_ISOLATED 1 -- \
+  python3 "$UQC_ROOT/holonight-shell/scripts/run-isolated-test.py" \
+  ctest --test-dir "$UQC_ROOT/.cache/uqc201/build/ai" \
+  -R 'Qml|CanonicalQmlModules|BottomAnchoredListView|MarkdownBlock' \
+  --output-on-failure -j4
+git submodule foreach --quiet 'git status --porcelain'
+reuse --no-multiprocessing lint
+git diff --check
+```
+
+Submodule status produces no output; REUSE passes 47/47 and whitespace passes.
+The final repair fixtures also pass `task test:installer` (eight tests),
+`bash -n scripts/install.sh scripts/install-dependencies.sh`, and CI YAML parsing.
