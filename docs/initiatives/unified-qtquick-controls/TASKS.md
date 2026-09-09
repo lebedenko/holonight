@@ -4,14 +4,14 @@ The initiative is Accepted following user scope approval on 2026-09-07. Discover
 UQC-002 settles the contract. UQC-101 is Done with its verified provider published and pinned.
 UQC-103 settings and UQC-104 AI are Done with local acceptance and publication complete.
 Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greeter are Done.
-UQC-102 shell is Ready; UQC-201 remains Planned.
+UQC-102 shell is In Progress with its published design checkpoint; UQC-201 remains Planned.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-002 | umbrella | Accept shared contracts, target-app coverage, dependency order, integration gates, and published assignment baselines | UQC-001 | This initiative | Done | Acceptance checkpoint | 2026-09-07: user approved all nine additions, palette support, indicator geometry and explicit composition limits. Existing source inventory and all six published baselines rechecked; final manual/activation gates retained. |
 | UQC-101 | `holonight-qt` | Implement accepted coverage and composite migration; provide policy checks, embedded-config example, installed-consumer tests, and aligned documentation | UQC-002 | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `50c59558bb3817f57a992dd72730dba141db1bc8` | 2026-09-08: full provider contract review complete; ten isolated cases plus Qt-default reference, password/hint/length coverage under both styles, DPR 1.0/1.25 rendering, installed/startup/palette/composite/policy checks and all 61 provider CTest entries pass. Canonical publication confirmed before pinning. Ecosystem-only gates remain UQC-201. |
-| UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-109, UQC-106 | Pending: publish shell-local SDD before implementation | Ready | Assignment baseline `723763e09ff815d344a6cb01529dd8345a43b316` | 2026-09-09: clean checkout and canonical origin/main rechecked; use corrected published provider `00e6e208b6c9b30d89b66ef3aeb4ef8175050764`. See assignment below. |
+| UQC-102 | `holonight-shell` | Migrate shell/authentication; verify activation propagation and distinguish configured selection from module loading in diagnostics | UQC-109, UQC-106 | [SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/SPEC.md) | In Progress | Design `5324b47fb01501d4fa3e90e7865b23065efce970` | 2026-09-09: published shell design canonically confirmed; code/provider contract review, local links, file inventory, task ordering and whitespace pass. Product implementation and verification pending. See design checkpoint below. |
 | UQC-103 | `holonight-settings` | Adopt namespaced runtime controls and embedded default; align instructions and contradictory contract tests | UQC-101 | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `2508635351e4901e1b03daf62dbb8ef6538ffcc5` | 2026-09-08: 53/53 CTest entries, final 8/8 focused checks, HoloNight/Fusion actual-window acceptance and four build/four installed override modes pass. Formatting, tidy, QML lint/types, package/activation, syntax, links and whitespace pass. Implementation `d45141e`, documentation handoff and adapter-isolation follow-up published; canonical availability confirmed before pinning. |
 | UQC-104 | `holonight-ai` | Adopt runtime controls and embedded default; align import checker and verify composite behavior | UQC-101 | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | Implementation `286df4791c651ab8842f0d8f278eac9d4f803b81`; published handoff in gitlink | 2026-09-08: 713 executed CTest passes, one opt-in Secret Service skip; 59/59 QML-related checks in each style; dedicated dual-style application acceptance; four build/four staged-install launch modes with implementation/plugin evidence and private-bus/XDG isolation; format, full tidy, QML lint/types, policy fixtures, activation-prefix, syntax, links and whitespace pass. See [local record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md). |
 | UQC-105 | `holonight-pkg-manager` | Adopt runtime controls and embedded default; verify independent launch and scrollbar behavior | UQC-107, UQC-108 | [Record](../../../holonight-pkg-manager/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `3686bd22a2478e174ba033636eb2e268aafbef5c` | 2026-09-09: all 98 CTests, 13 source QML tests per style, 18 compiled acceptance tests per style, eight isolated actual launches, format/tidy/lint/types/policy/syntax/links/whitespace pass. Final-revision CI 34278555864 (build/test and static) and licensing 34278555744 pass; canonical publication confirmed. Mockups unchanged. |
@@ -473,3 +473,33 @@ umbrella integration acceptance occurred. Real pre-session/compositor behavior,
 human-operated Hyprland/Sway, activation and final ecosystem checks remain UQC-201.
 Package-manager's untracked `docs/mockups/explore.png` and `docs/mockups/history.png`
 are preserved. No clean-ecosystem claim is made while those files remain untracked.
+
+## UQC-102 design checkpoint — 2026-09-09
+
+Shell design `5324b47fb01501d4fa3e90e7865b23065efce970` is published on canonical
+origin/main, confirmed by `git -C holonight-shell ls-remote origin refs/heads/main`
+before this gitlink update. It starts from the assigned baseline
+`723763e09ff815d344a6cb01529dd8345a43b316`. Provider
+`00e6e208b6c9b30d89b66ef3aeb4ef8175050764` and configuration
+`fe69a59e6b73167fd5349223a4d265d75386c139` were rechecked on canonical origin/main
+and remain unchanged at their authoritative pins.
+
+The shell-local [SPEC](../../../holonight-shell/docs/sdd/unified-qtquick-controls/SPEC.md),
+[DESIGN](../../../holonight-shell/docs/sdd/unified-qtquick-controls/DESIGN.md) and
+[TASKS](../../../holonight-shell/docs/sdd/unified-qtquick-controls/TASKS.md) settle
+shell/authentication/compatibility imports, public identity-selector geometry hooks,
+embedded defaults, build/bin/libexec discovery, askpass CLI/protocol preservation,
+verified session propagation and selection/discovery/loaded-control diagnostics.
+They define dependency order, exact affected files and future isolated acceptance.
+No new public provider API or configuration schema is planned; a discovered gap
+requires a separate coordinated prerequisite.
+
+Verification: current code and pinned provider contracts reviewed; local Markdown
+links, existing file inventory, task ordering, staged scope and `git diff --check`
+pass. This checkpoint changes documentation and the shell gitlink only. Product
+tests are not required and were not run; implementation and verification remain
+pending. UQC-102 is In Progress. Stop after publishing this umbrella checkpoint,
+before product implementation. The initiative remains Accepted and UQC-201 Planned.
+Live authentication, compositor interaction and ecosystem activation stay UQC-201.
+Package-manager mockups `docs/mockups/explore.png` and `docs/mockups/history.png`
+remain untracked and unchanged; no clean-ecosystem or integration claim is made.

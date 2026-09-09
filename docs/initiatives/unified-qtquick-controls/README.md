@@ -26,7 +26,7 @@ is an input; its broad selection claims and recommendations must be reconciled w
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
 | `holonight-qt` | Compatibility audit, shared style coverage, composite migration, policy checks, examples, installed-consumer tests, and documentation | [Discovery SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) |
-| `holonight-shell` | Shell and authentication adoption, session propagation, and selection/loading diagnostics | Pending |
+| `holonight-shell` | Shell and authentication adoption, session propagation, and selection/loading diagnostics | [SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-settings` | Application adoption and correction of contradictory import-contract tests | [SDD](../../../holonight-settings/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-ai` | Application adoption and alignment of its import checker | [SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/SPEC.md) |
 | `holonight-pkg-manager` | Application adoption and independent-launch verification | [SDD](../../../holonight-pkg-manager/docs/sdd/unified-qtquick-controls/SPEC.md) |
@@ -118,7 +118,7 @@ the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. U
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
 UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
-UQC-102 shell is Ready; UQC-201 remains Planned. Gitlinks remain
+UQC-102 shell is In Progress with its published design checkpoint; UQC-201 remains Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
