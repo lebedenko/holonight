@@ -118,7 +118,7 @@ the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. U
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
 UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
-UQC-102 shell is In Progress with its published design checkpoint; UQC-201 remains Planned. Gitlinks remain
+UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 remains Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -299,3 +299,16 @@ Ready at its canonically rechecked baseline, using the corrected provider
 prerequisite. Publish and link shell's local SDD before implementation.
 The initiative remains Accepted; UQC-201 and its human-operated ecosystem gates
 remain Planned. No shell product implementation or final integration ran here.
+
+## Shell acceptance checkpoint — 2026-09-09
+
+UQC-102 is Done with its published [shell acceptance record](../../../holonight-shell/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md)
+and green final-revision build/test, static and licensing checks. Embedded defaults,
+qualified runtime controls, standalone bin/libexec discovery, authentication protocol
+and verified session style propagation pass isolated local acceptance. The ledger
+records the exact publication, 1157-test suite, 45 launch modes, three missing-module
+cases and existing QML/CI-image-publication limitations.
+
+The initiative remains Accepted; UQC-201 remains Planned. No live authentication,
+desktop interaction, ecosystem activation or umbrella integration acceptance ran.
+Package-manager mockups remain untracked and unchanged.
