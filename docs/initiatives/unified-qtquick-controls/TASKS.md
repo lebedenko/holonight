@@ -20,8 +20,8 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Final CI 34288860789 and licensing 34288860847 pass. |
 | UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Explicit AI Fusion composer geometry fails reproducibly; installer preflight rejects the current Qt Wayland package ownership. Both findings remain open. Third-party bounded loading verified; all human Hyprland/Sway and authentication gates unchecked. |
-| UQC-202 | umbrella | Resolve installer preflight Qt 6 Wayland package-ownership assumptions with a separately verified correction | — (found during UQC-201) | [Fresh evidence](INTEGRATION.md) | Planned | — | 2026-09-09: `--check` requires absent `qt6-wayland`, but installed Qt6WaylandClient CMake metadata is owned by `qt6-base 6.11.2-3`. No package transaction or installer change performed. This gate must be resolved before final integration. |
-| UQC-203 | `holonight-ai` | Resolve composer geometry acceptance under explicit Fusion against the integrated provider | — (found during UQC-201) | [Fresh evidence](INTEGRATION.md) | Planned | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` (unassigned baseline) | 2026-09-09: `ChatComposerActionsQml.PreservesDesktopAndCompactPresentation` fails in the 59-test Fusion selection and in a focused serial recheck: icon-only attachment implicit height 24 versus labeled context/tools 25. Settle intended native-style geometry before changing the UI or assertion; publish a separately verified handoff before repinning. |
+| UQC-202 | umbrella | Resolve installer preflight Qt 6 Wayland package-ownership assumptions with a separately verified correction | — (found during UQC-201) | [Design](UQC-202.md) | Ready | Baseline `4c38804f142486b23dc20b81f6a0fa78e5530421` | 2026-09-09: `--check` requires absent `qt6-wayland`, but installed Qt6WaylandClient CMake metadata is owned by `qt6-base 6.11.2-3`. No package transaction or installer change performed. This gate must be resolved before final integration. |
+| UQC-203 | `holonight-ai` | Resolve composer geometry acceptance under explicit Fusion against the integrated provider | — (found during UQC-201) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Ready | Baseline `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | 2026-09-09: `ChatComposerActionsQml.PreservesDesktopAndCompactPresentation` fails in the 59-test Fusion selection and in a focused serial recheck: icon-only attachment implicit height 24 versus labeled context/tools 25. Settle intended native-style geometry before changing the UI or assertion; publish a separately verified handoff before repinning. |
 
 Allowed states:
 
@@ -580,3 +580,18 @@ requires resolution of UQC-202 and the reproducible AI Fusion geometry finding
 (UQC-203), plus completed Hyprland/Sway manual evidence. No system installation,
 package transaction, live authentication or active-desktop pointer/focus/activation
 operation occurred.
+
+## UQC-202/UQC-203 readiness and assignment — 2026-09-09
+
+Both packages are Ready with settled contracts. Canonical origin/main was
+rechecked for umbrella `4c38804f142486b23dc20b81f6a0fa78e5530421`, AI
+`b874334b20053f94f84fd9b4b1a0a7e0c7cc867a`, provider
+`00e6e208b6c9b30d89b66ef3aeb4ef8175050764`, and configuration
+`fe69a59e6b73167fd5349223a4d265d75386c139` before assignment.
+The coordinator implements UQC-202 first in umbrella, then UQC-203 only in AI,
+with separate implementation/publication boundaries. The installer verifies
+Qt capabilities independently of package ownership; AI preserves native style
+sizing and adds polished geometry acceptance. See [UQC-202 design](UQC-202.md)
+and [AI supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md).
+Publish this checkpoint before implementation. Keep UQC-201 In Progress and the
+initiative Accepted; all manual Hyprland/Sway/authentication gates stay unchecked.
