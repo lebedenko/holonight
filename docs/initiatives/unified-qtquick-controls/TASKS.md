@@ -637,3 +637,20 @@ original failures and document the repaired gates. All submodules are clean;
 umbrella REUSE (47/47), links and whitespace pass. No manual files/checklists
 changed. UQC-202/UQC-203 remain Done, UQC-201 remains In Progress, and the initiative
 remains Accepted pending human Hyprland/Sway/authentication acceptance.
+
+## UQC-201 guided preparation checkpoint — 2026-09-09
+
+At baseline `7fcc8bb48a451185b9412950ac7f651ee75975c7`, a fresh installation is
+configured directly under `/tmp/holonight-uqc201-8r1jtlln/prefix`, resolving the
+old kit's inaccessible activation paths. [Fresh preparation evidence](INTEGRATION.md#uqc-201-accessible-guided-preparation--2026-09-09)
+records nine passing dependency-order suites (one expected AI credential skip),
+installed selector matrices, repaired Fusion 59/59, metadata/linkage/permission
+checks, helper checks and retained sandbox failures. No product files or pins
+changed; final canonical publication and clean-submodule checks pass.
+
+[Guided batches](GUIDED.md), [manual matrix](MANUAL.md), and
+[authentication instructions](AUTHENTICATION.md) now use the accessible kit.
+**Reviewed manual results: none yet.** First handoff is Hyprland Settings default
+at scale 1; subsequent batches wait for returned observations. UQC-201 stays
+In Progress, repairs stay Done, and the initiative stays Accepted. Real pre-session
+greeter acceptance remains a separate pending gate even after demo observations.

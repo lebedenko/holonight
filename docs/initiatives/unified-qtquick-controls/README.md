@@ -325,3 +325,12 @@ The [Hyprland/Sway manual matrix](MANUAL.md) and [isolated authentication kit](A
 are prepared. All manual gates remain unchecked. The initiative remains Accepted;
 no final integration acceptance, system installation, package transaction or live
 authentication operation is claimed.
+
+## UQC-201 guided preparation — 2026-09-09
+
+UQC-202/UQC-203 are Done. The [new accessible kit](GUIDED.md) uses a directly
+configured prefix and passes fresh dependency-order/runtime verification at the
+unchanged pins; [evidence](INTEGRATION.md#uqc-201-accessible-guided-preparation--2026-09-09)
+retains the earlier failures. Guided Hyprland then Sway checks are ready for user
+operation. No manual result has been accepted yet. UQC-201 remains In Progress
+and the initiative Accepted; real pre-session greeter acceptance remains separate.

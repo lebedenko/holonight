@@ -223,3 +223,93 @@ original failures. UQC-202 and UQC-203 are Done. UQC-201 stays **In Progress** a
 the initiative stays **Accepted**. This is a targeted gate recheck, not final
 ecosystem integration. MANUAL.md, AUTHENTICATION.md and the initiative's manual
 checklists are unchanged; all human Hyprland/Sway/authentication gates remain open.
+
+## UQC-201 accessible guided preparation — 2026-09-09
+
+Baseline: `7fcc8bb48a451185b9412950ac7f651ee75975c7`. All twelve submodules
+remain clean and match that baseline's gitlinks and canonical `origin/main`,
+rechecked with `git ls-remote` before and after preparation. No pins or product
+files changed. Installer `bash scripts/install.sh --check` passes. Installed
+versions remain those above; compositor packages are Hyprland `0.56.2-2` and
+Sway `1:1.12-4` (package epoch included).
+
+The new kit is `/tmp/holonight-uqc201-8r1jtlln` (410 MiB), configured directly at
+`/tmp/holonight-uqc201-8r1jtlln/prefix`; no service paths were patched after install.
+Fresh private build directories and raw results are under
+`.cache/uqc201-guided-qht3_tjs`. The old kits, build directories and evidence remain.
+Dependency order/options match the recorded integration recipe, including the
+pinned AI repair; no consumer Taskfile dependency preparation ran. The installed
+prefix is populated before each component's focused/full checks. Shell and
+Settings tests run serially, inside disposable HOME/XDG/private-bus fixtures with
+host HoloNight QML/configuration libraries hidden. No live authentication,
+active-desktop activation, AI requests or package transactions ran.
+
+| Component | Fresh full result | Harness seconds |
+|---|---|---|
+| config | 2/2 pass | 0.77 |
+| system-services | 2/2 pass | 9.63 |
+| qt | 59/59 pass | 42.17 |
+| appearance-adapters | 6/6 pass | 0.11 |
+| shell | 1157/1157 pass | 228.60 |
+| settings | 53/53 pass | 42.91 |
+| ai | 713 pass; one opt-in real-credential skip | 23.79 |
+| pkg-manager | 98/98 pass | 8.40 |
+| greeter | 8/8 pass | 5.44 |
+
+Standalone shell configuration builds/installs successfully. Focused selections
+pass. Build and installed AI/package-manager/greeter selector matrices pass all
+24 launches, as do four installed Settings modes and eight installed provider
+example modes. AI's explicit Holonight and Fusion selections each pass 59/59;
+Fusion CTest time is 15.37 seconds. Both package-manager source selections and
+provider composites at scale 1.25 pass. Earlier source static-analysis evidence
+remains applicable to the unchanged pins; this preparation reruns runtime suites,
+not all clang-tidy jobs.
+
+All 18 unique installed ELF files resolve dependencies without missing libraries
+or workspace paths. All seven installed desktop/D-Bus/systemd/session metadata
+files resolve executable paths; Settings desktop-file validation passes. Prefix
+permissions permit other-user read/traversal and its symlinks remain inside the
+prefix. `SHA256SUMS` records 239 regular installed files. The service `Exec` paths
+now point directly to the accessible prefix, resolving the earlier relocated-kit
+prerequisite; actual activation in tux remains a manual gate.
+
+Haruna, NeoChat and Tokodon each reach the expected 12-second probe limit (exit
+124), loading staged provider/platform-theme plugins. Selected load-line counts
+are 5, 10 and 5 respectively; no TypeError, ReferenceError or failed-component
+marker was found. This is bounded loading evidence, not visible acceptance.
+Raw runs are `/tmp/uqc-audit-g4ot_2h3`, `/tmp/uqc-audit-6alompu5` and
+`/tmp/uqc-audit-yffp0qd1`; selected plugin lines stay in the private build logs.
+
+Hyprland configuration verification passes; Sway headless validation passes.
+Python syntax, terminal shell syntax and the helpers' current-user refusals pass
+(expected refusal exits: session/auth 1, application helper 2). A freshly generated
+helper kit reproduces all five authentication/terminal files byte for byte.
+The owned-agent adaptation retains session/registration/cancellation guards and
+uses recorded child start ticks because the frontend is intentionally
+non-dumpable. A harmless non-authentication child confirms start ticks remain
+readable/stable while executable inspection is denied. Live registration remains
+unverified. No agent or challenge was launched by these preparation helpers.
+
+Retained failed attempts: SSH inside the sandbox exits 128 on its system SSH
+configuration access; private test-bus startup fails for initial config/example
+checks (exit 1); initial Sway validation cannot create its socket and exits 134.
+Approved retries outside the command sandbox pass, with headless/offscreen/private
+bus isolation retained. Failed config/example logs have `-sandbox-failure`
+suffixes; result records preserve both attempts. These are environment failures,
+not silent test passes or product work packages.
+
+[GUIDED.md](GUIDED.md) defines one reviewed batch at a time, Hyprland before a
+fresh Sway login. The real test login owns the compositor; discovery is set before
+the new test bus starts. Disposable application configuration and a generated
+Haruna clip are included. Owned defaults, explicit Fusion and Qt scale 1/1.25
+are selectable. Systemd environment imports require the separately guided tux-only
+review; no launcher modifies a manager automatically. AI has a shipped D-Bus
+service but no desktop entry; package-manager has neither. Haruna has no D-Bus
+service; NeoChat and Tokodon do. These unavailable routes are N/A with metadata
+and CMake install-rule evidence, not missing visual results.
+
+Umbrella REUSE (52/52), local documentation links, Python syntax and whitespace
+pass. The preparation checkpoint retains initiative **Accepted** and UQC-201
+**In Progress**. Every user-operated observation remains pending; greeter demo
+checks do not resolve real pre-session acceptance. The next action is the small
+[Hyprland/Settings batch](GUIDED.md#batch-1-hyprland-login-and-settings-default).

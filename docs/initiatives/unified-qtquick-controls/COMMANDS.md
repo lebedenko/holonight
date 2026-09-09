@@ -1062,3 +1062,207 @@ git diff --check
 Submodule status produces no output; REUSE passes 47/47 and whitespace passes.
 The final repair fixtures also pass `task test:installer` (eight tests),
 `bash -n scripts/install.sh scripts/install-dependencies.sh`, and CI YAML parsing.
+
+## UQC-201 accessible kit — 2026-09-09
+
+Baseline `7fcc8bb48a451185b9412950ac7f651ee75975c7`. Fresh work directory:
+`.cache/uqc201-guided-qht3_tjs`; configured kit `/tmp/holonight-uqc201-8r1jtlln`.
+Commands below are the executed argument vectors, with the umbrella root normalized
+to `$UQC_ROOT`. Set `UQC_ROOT` to the umbrella root and export
+`LD_LIBRARY_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix/lib` for these commands.
+The private patchelf executable from the prior verified tool cache is unchanged.
+All output and timings remain in `results.jsonl`, `extra-results.jsonl`,
+`kit-results.jsonl`, `third-party-results.jsonl` and `logs/` under the new work directory.
+
+<details>
+<summary>Fresh dependency-order commands and exits</summary>
+
+```sh
+# config-configure: exit 0, 0.24s
+cmake -S $UQC_ROOT/holonight-config -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/config -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON
+# config-build: exit 0, 1.17s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/config -j 6
+# config-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/config
+# config-full: exit 1, 0.04s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/config --output-on-failure --no-tests=error -j 4
+# config-full: exit 0, 0.77s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/config --output-on-failure --no-tests=error -j 4
+# system-services-configure: exit 0, 0.51s
+cmake -S $UQC_ROOT/holonight-system-services -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/system-services -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON
+# system-services-build: exit 0, 5.00s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/system-services -j 6
+# system-services-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/system-services
+# system-services-full: exit 0, 9.63s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/system-services --output-on-failure --no-tests=error -j 4
+# shell-config-configure: exit 0, 0.39s
+cmake -S $UQC_ROOT/holonight-shell/libs/holonight-shell-config -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell-config -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+# shell-config-build: exit 0, 2.20s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell-config -j 6
+# shell-config-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell-config
+# qt-configure: exit 0, 1.77s
+cmake -S $UQC_ROOT/holonight-qt -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON -DBUILD_DEMO=ON -DBUILD_CONTROLS_GALLERY=ON -DHOLONIGHT_PATCHELF_EXECUTABLE=/tmp/uqc201-uv-cache/archive-v0/mVGV6ox16yY-nm-6uMj4N/bin/patchelf
+# qt-build: exit 0, 65.61s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt -j 6
+# qt-install: exit 0, 0.03s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt
+# qt-focused: exit 0, 7.94s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt -R 'runtime|startup|import.*policy|uqc_|control_palette|palette_dark|palette_hybrid|core_isolation' --output-on-failure -j 4
+# qt-full: exit 0, 42.17s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt --output-on-failure --no-tests=error -j 4
+# appearance-adapters-configure: exit 0, 1.18s
+cmake -S $UQC_ROOT/holonight-appearance-adapters -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/appearance-adapters -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON -DHOLONIGHT_QT_DIR=/tmp/holonight-uqc201-8r1jtlln/prefix -DHOLONIGHT_CONFIG_DIR=/tmp/holonight-uqc201-8r1jtlln/prefix
+# appearance-adapters-build: exit 0, 2.75s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/appearance-adapters -j 6
+# appearance-adapters-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/appearance-adapters
+# appearance-adapters-full: exit 0, 0.11s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/appearance-adapters --output-on-failure --no-tests=error -j 4
+# shell-configure: exit 0, 2.59s
+cmake -S $UQC_ROOT/holonight-shell -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON
+# shell-build: exit 0, 232.66s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell -j 6
+# shell-install: exit 0, 0.06s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell
+# shell-focused: exit 0, 2.61s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell -R QtNetworkManagerBackendTest --output-on-failure -j 1
+# shell-full: exit 0, 228.60s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/shell --output-on-failure --no-tests=error -j 1
+# settings-configure: exit 0, 1.03s
+cmake -S $UQC_ROOT/holonight-settings -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/settings -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON
+# settings-build: exit 0, 26.54s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/settings -j 6
+# settings-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/settings
+# settings-focused: exit 0, 12.60s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/settings -R 'runtime|startup|import.*policy|uqc_|control_palette|palette_dark|palette_hybrid|core_isolation' --output-on-failure -j 1
+# settings-full: exit 0, 42.91s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/settings --output-on-failure --no-tests=error -j 1
+# ai-configure: exit 0, 1.51s
+cmake -S $UQC_ROOT/holonight-ai -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON
+# ai-build: exit 0, 104.96s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai -j 6
+# ai-install: exit 0, 0.03s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai
+# ai-focused: exit 0, 29.50s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai -R 'runtime|startup|import.*policy|uqc_|control_palette|palette_dark|palette_hybrid|core_isolation' --output-on-failure -j 4
+# ai-full: exit 0, 23.79s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai --output-on-failure --no-tests=error -j 4
+# pkg-manager-configure: exit 0, 0.81s
+cmake -S $UQC_ROOT/holonight-pkg-manager -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON
+# pkg-manager-build: exit 0, 25.30s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager -j 6
+# pkg-manager-install: exit 0, 0.01s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager
+# pkg-manager-focused: exit 0, 10.89s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager -R 'runtime|startup|import.*policy|uqc_|control_palette|palette_dark|palette_hybrid|core_isolation' --output-on-failure -j 4
+# pkg-manager-full: exit 0, 8.40s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager --output-on-failure --no-tests=error -j 4
+# greeter-configure: exit 0, 0.90s
+cmake -S $UQC_ROOT/holonight-greeter -B $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_PREFIX_PATH=/tmp/holonight-uqc201-8r1jtlln/prefix -DCMAKE_INSTALL_LIBDIR=lib -DTIDY_JOBS=4 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON
+# greeter-build: exit 0, 14.49s
+cmake --build $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter -j 6
+# greeter-install: exit 0, 0.02s
+cmake --install $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter
+# greeter-focused: exit 0, 1.83s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter -R 'runtime|startup|import.*policy|uqc_|control_palette|palette_dark|palette_hybrid|core_isolation' --output-on-failure -j 4
+# greeter-full: exit 0, 5.44s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter --output-on-failure --no-tests=error -j 4
+# ai-build-launches: exit 0, 12.48s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-ai/scripts/check-runtime-launches.py $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai/holonight-chat /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/ai-build-launches
+# ai-installed-launches: exit 0, 12.50s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-ai/scripts/check-runtime-launches.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-chat /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/ai-installed-launches --forbid-path $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# pkg-manager-build-launches: exit 0, 12.45s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-pkg-manager/scripts/check-runtime-launches.py $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager/holonight-packages /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/pkg-manager-build-launches
+# pkg-manager-installed-launches: exit 0, 12.39s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-pkg-manager/scripts/check-runtime-launches.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-packages /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/pkg-manager-installed-launches --forbid-path $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# greeter-build-launches: exit 0, 12.29s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-greeter/scripts/check-runtime-launches.py $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/greeter/holonight-greeter /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/greeter-build-launches
+# greeter-installed-launches: exit 0, 12.37s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-greeter/scripts/check-runtime-launches.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-greeter /tmp/holonight-uqc201-8r1jtlln/prefix --logs $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/logs/greeter-installed-launches --forbid-path $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# settings-installed-default: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-settings/tests/check_settings_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-settings /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml default --forbid-qml-root $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# settings-installed-environment: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-settings/tests/check_settings_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-settings /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml environment --forbid-qml-root $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# settings-installed-command-line: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-settings/tests/check_settings_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-settings /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml command-line --forbid-qml-root $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# settings-installed-configuration: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-settings/tests/check_settings_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-settings /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml configuration --forbid-qml-root $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build
+# ai-source-Holonight: exit 0, 15.46s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai -R 'Qml|CanonicalQmlModules|BottomAnchoredListView|MarkdownBlock' --output-on-failure -j 4
+# ai-source-Fusion: exit 0, 15.45s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/ai -R 'Qml|CanonicalQmlModules|BottomAnchoredListView|MarkdownBlock' --output-on-failure -j 4
+# pkg-manager-source-Holonight: exit 0, 0.62s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager -R InstalledPackagesViewTest --output-on-failure -j 4
+# pkg-manager-source-Fusion: exit 0, 0.57s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/pkg-manager -R InstalledPackagesViewTest --output-on-failure -j 4
+# qt-source-Holonight: exit 0, 1.72s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt -R runtime_composites --output-on-failure -j 4
+# qt-source-Fusion: exit 0, 1.63s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so --setenv UQC_ISOLATED 1 -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py ctest --test-dir $UQC_ROOT/.cache/uqc201-guided-qht3_tjs/build/qt -R runtime_composites --output-on-failure -j 4
+# kit-holonight_demo-default: exit 1, 0.05s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_demo /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml default
+# kit-holonight_demo-default: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_demo /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml default
+# kit-holonight_demo-environment: exit 0, 3.14s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_demo /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml environment
+# kit-holonight_demo-command-line: exit 0, 3.13s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_demo /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml command-line
+# kit-holonight_demo-configuration: exit 0, 3.14s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_demo /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml configuration
+# kit-holonight_controls_gallery-default: exit 0, 3.14s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_controls_gallery /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml default
+# kit-holonight_controls_gallery-environment: exit 0, 3.14s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_controls_gallery /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml environment
+# kit-holonight_controls_gallery-command-line: exit 0, 3.14s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_controls_gallery /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml command-line
+# kit-holonight_controls_gallery-configuration: exit 0, 3.12s
+bwrap --die-with-parent --bind / / --dev /dev --proc /proc --tmpfs /usr/lib/qt6/qml/Holonight --ro-bind /dev/null /usr/lib/libholonight_config.so -- python3 $UQC_ROOT/holonight-shell/scripts/run-isolated-test.py python3 $UQC_ROOT/holonight-qt/tests/check_example_startup.py /tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight_controls_gallery /tmp/holonight-uqc201-8r1jtlln/prefix/lib/qt6/qml configuration
+```
+
+</details>
+
+The first config-full and example-default attempts fail because the command
+sandbox denies private D-Bus sockets. Subsequent commands use approved execution
+outside that sandbox, retaining bwrap host-provider masking and disposable private
+buses. Their earlier logs are preserved with `-sandbox-failure` suffixes.
+Shell tests are serial; no consumer Taskfile substitution runs.
+
+Additional preparation commands/checks:
+
+```sh
+bash scripts/install.sh --check
+Hyprland --verify-config --config /tmp/holonight-uqc201-8r1jtlln/hyprland.conf
+env WLR_BACKENDS=headless WLR_RENDERER=pixman sway --validate --config /tmp/holonight-uqc201-8r1jtlln/sway.conf
+bash -n /tmp/holonight-uqc201-8r1jtlln/terminal.sh
+desktop-file-validate /tmp/holonight-uqc201-8r1jtlln/prefix/share/applications/org.holonight.Settings.desktop
+python3 docs/initiatives/unified-qtquick-controls/prepare-guided-kit.py /tmp/holonight-uqc201-helpers-z5cjj5wb
+reuse --no-multiprocessing lint
+git diff --check
+git submodule foreach --quiet 'git status --porcelain'
+git ls-remote --exit-code origin refs/heads/main
+git submodule foreach --quiet 'git ls-remote --exit-code origin refs/heads/main'
+```
+
+All final commands pass. The helper-generation directory is a separate fresh
+syntax/reproduction kit, not an installed acceptance prefix. Its auth/terminal
+files match the acceptance kit byte for byte. Python AST parsing passes for the
+three umbrella helpers and copied auth helpers. The session/app/auth helpers
+intentionally refuse the current user (1/2/1); these are expected guard outcomes.
+A non-authentication child verifies the non-dumpable start-time correlation.
+Details: `helper-checks.json`, `helper-generation.txt`, `non-dumpable-check.txt`.
+
+The initial Sway validation exits 134 after sandbox socket denial; approved
+headless validation exits 0. The initial canonical SSH query exits 128 on system
+SSH configuration access; approved read-only queries confirm all pins. No live
+session, pointer/focus interaction or authentication is performed by these checks.
+
+The third-party runner executes the same recorded platform-theme probes above,
+substituting the new prefix and work directory; all three return expected timeout
+124. Metadata/executable checks and `ldd` over 18 unique installed ELF files pass;
+`metadata-inventory.json` and `elf-linkage.json` retain results. Prefix permission,
+symlink containment and SHA-256 inventory checks pass for 239 regular files.
+Only diagnostic summaries are published; raw application/authentication logs are
+not added to Git. The [guided handoff](GUIDED.md) contains the pending user steps.

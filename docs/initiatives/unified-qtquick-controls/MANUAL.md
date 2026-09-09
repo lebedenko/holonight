@@ -1,6 +1,8 @@
 # UQC-201 user-operated acceptance
 
-Status: **Pending**. Run each gate in both Hyprland and Sway. Automated origin,
+Status: **Pending**. Follow [guided batches](GUIDED.md) using the new accessible
+kit, Hyprland first and then Sway in a fresh tux login. Run each gate in both.
+Automated origin,
 selector and geometry fixtures complement these observations; they do not establish
 visual acceptance. See [fresh automated evidence](INTEGRATION.md). Historical
 [provider collection instructions](../../../holonight-qt/docs/sdd/unified-qtquick-controls/audit/CHECKLIST.md)
@@ -8,12 +10,12 @@ remain useful for interpreting traces, but their old prefixes are not this build
 
 ## Prefix and evidence
 
-From the umbrella root, in the compositor being checked:
+In the prepared test compositor (start with [GUIDED.md](GUIDED.md)):
 
 ```sh
-UQC_ROOT="$PWD"
-UQC_PREFIX="$UQC_ROOT/.cache/uqc201/prefix"
-UQC_AUDIT="$UQC_ROOT/holonight-qt/docs/sdd/unified-qtquick-controls/audit"
+UQC_KIT=/tmp/holonight-uqc201-8r1jtlln
+UQC_PREFIX="$UQC_KIT/prefix"
+UQC_AUDIT="$UQC_KIT"
 test -f "$UQC_PREFIX/lib/qt6/qml/Holonight/qmldir"
 pacman -Q haruna neochat tokodon hyprpolkitagent qt6-base qt6-declarative
 ```
@@ -110,13 +112,14 @@ and [session script checks](../../../holonight-shell/tests/test_session_scripts.
 show the supported propagation paths; passing those fixtures does not check the
 current compositor's activation manager.
 
-In the **disposable login only**, after confirming the environment:
+In the **disposable login only**, after the separate bus and manager environment
+review in [GUIDED.md](GUIDED.md#activation-environment-review):
 
 ```sh
-dbus-update-activation-environment --systemd PATH XDG_DATA_DIRS QML_IMPORT_PATH \
-  QT_PLUGIN_PATH LD_LIBRARY_PATH QT_QPA_PLATFORMTHEME QT_QUICK_CONTROLS_STYLE \
+dbus-update-activation-environment PATH XDG_DATA_DIRS QML_IMPORT_PATH \
+  QT_PLUGIN_PATH LD_LIBRARY_PATH QT_QPA_PLATFORMTHEME \
   QML_IMPORT_TRACE QT_DEBUG_PLUGINS QT_FORCE_STDERR_LOGGING QT_LOGGING_RULES
-systemctl --user show-environment
+systemctl --user show-environment | rg '^(PATH|XDG_DATA_DIRS|QML_IMPORT_PATH|QT_PLUGIN_PATH|LD_LIBRARY_PATH|QT_QPA_PLATFORMTHEME|QT_QUICK_CONTROLS_STYLE)='
 cat "$UQC_PREFIX/share/dbus-1/services/org.holonight.Settings.service"
 gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus \
   --method org.freedesktop.DBus.StartServiceByName org.holonight.Settings 0
@@ -146,17 +149,15 @@ The reusable [guarded authentication procedure](../../../holonight-qt/docs/sdd/u
 checks the surveyed Qt version, actual logind identity and successful registration
 reply before allowing a challenge. Use a newly prepared kit with this run's prefix;
 do not use its historical `/var/tmp/uqc-auth-test-20260907` build. The kit path and
-preparation result are recorded in INTEGRATION.md. From a real tux VT login, start
-`Hyprland --config /tmp/holonight-uqc201-manual/hyprland.conf` or
-`sway --config /tmp/holonight-uqc201-manual/sway.conf`; follow the self-contained
-[kit README](AUTHENTICATION.md). The copied kit prefix supports relocated terminal checks. Its D-Bus
-service Exec paths still name the original workspace prefix, so activation from
-a user unable to traverse that workspace is blocked pending a separately
-configured accessible prefix. Do not weaken home permissions or silently edit
-service metadata. In the separate compositor:
+preparation result are recorded in INTEGRATION.md. From a real tux VT login, use
+the [guided session launcher](GUIDED.md#batch-1-hyprland-login-and-settings-default)
+so prefix discovery precedes the session bus. Follow the self-contained
+[authentication instructions](AUTHENTICATION.md). The new prefix is configured
+directly at its accessible location; installed service paths are not patched.
+In the separate compositor:
 
 ```sh
-UQC_KIT=/tmp/holonight-uqc201-manual
+UQC_KIT=/tmp/holonight-uqc201-8r1jtlln
 /usr/bin/python3 "$UQC_KIT/auth-test.py" preflight
 # Set UQC_RUN to the exact evidence directory printed above, in both terminals.
 LD_LIBRARY_PATH="$UQC_KIT/prefix/lib" /usr/bin/python3 "$UQC_KIT/auth-test.py" agent --run "$UQC_RUN"

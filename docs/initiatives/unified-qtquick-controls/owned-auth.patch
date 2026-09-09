@@ -1,0 +1,25 @@
+--- auth-test.py
++++ auth-test.py
+@@ -12,2 +12,2 @@
+-BUNDLE = Path(__file__).resolve().parent
+-AGENT = '/usr/lib/hyprpolkitagent/hyprpolkitagent'
++BUNDLE = Path(__file__).resolve().parent.parent
++AGENT = str(BUNDLE / 'prefix/libexec/holonight-polkit-agent')
+@@ -108 +108 @@
+-                   QT_QUICK_CONTROLS_STYLE='Holonight', QML_IMPORT_PATH=str(prefix / 'lib/qt6/qml'),
++                   QML_IMPORT_PATH=str(prefix / 'lib/qt6/qml'),
+@@ -118,0 +119 @@
++            metadata['start_ticks'] = Path('/proc', str(proc.pid), 'stat').read_text().rsplit(')', 1)[1].split()[19]
+@@ -138,2 +139,5 @@
+-        if Path('/proc', str(metadata['pid']), 'exe').resolve() != Path(AGENT):
+-            raise SystemExit('STOP: recorded PID no longer belongs to the expected agent.')
++        # The owned agent deliberately sets PR_SET_DUMPABLE=0, denying /proc/exe.
++        # Correlate the directly launched child's immutable start time instead.
++        ticks = Path('/proc', str(metadata['pid']), 'stat').read_text().rsplit(')', 1)[1].split()[19]
++        if ticks != metadata['start_ticks']:
++            raise SystemExit('STOP: recorded child PID has been reused.')
+--- registration.py
++++ registration.py
+@@ -19 +19 @@
+-            or "'/org/hyprland/PolicyKit1/AuthenticationAgent'" not in call):
++            or "'/org/holonight/PolkitAgent'" not in call):
