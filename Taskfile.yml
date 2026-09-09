@@ -19,6 +19,11 @@ tasks:
     cmds:
       - reuse lint
 
+  test:installer:
+    desc: Check installer dependency preflight without installing anything
+    cmds:
+      - python3 -m unittest discover -s tests -p 'test_install_dependencies.py' -v
+
   install:
     desc: Build and install the pinned HoloNight ecosystem from source
     cmds:

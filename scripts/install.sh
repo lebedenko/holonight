@@ -39,6 +39,9 @@ done
 TARGET_ROOT="${TARGET_ROOT%/}"
 [[ -n "$TARGET_ROOT" ]] || TARGET_ROOT="/"
 
+# shellcheck source=install-dependencies.sh
+. "$SCRIPT_DIR/install-dependencies.sh"
+
 preflight() {
   [[ -r /etc/os-release ]] || die "cannot identify this distribution"
   # shellcheck disable=SC1091
@@ -48,36 +51,7 @@ preflight() {
     *) die "unsupported distribution '${PRETTY_NAME:-unknown}'; source installation currently supports Arch Linux and Arch-derived systems" ;;
   esac
 
-  local missing_commands=() command_name
-  for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent; do
-    command -v "$command_name" >/dev/null 2>&1 || missing_commands+=("$command_name")
-  done
-
-  local missing_packages=() package_name
-  local packages=(base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg qt6-wayland layer-shell-qt
-    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
-    syntax-highlighting md4c greetd cage)
-  if command -v pacman >/dev/null 2>&1; then
-    while IFS= read -r package_name; do
-      [[ -n "$package_name" ]] && missing_packages+=("$package_name")
-    done < <(pacman -T "${packages[@]}" 2>/dev/null || true)
-  else
-    missing_commands+=(pacman)
-  fi
-
-  if ((${#missing_commands[@]})); then
-    printf 'Missing required commands: %s\n' "${missing_commands[*]}" >&2
-  fi
-  if ((${#missing_packages[@]})); then
-    printf 'Missing required Arch packages. Install them explicitly with:\n  sudo pacman -S --needed %s\n' "${missing_packages[*]}" >&2
-  fi
-  ((${#missing_commands[@]} == 0 && ${#missing_packages[@]} == 0)) || return 1
-
-  local compiler
-  compiler="$(command -v c++ || command -v g++)"
-  printf '#include <expected>\nint main(){std::expected<int,int> v(1); return *v-1;}\n' |
-    "$compiler" -std=c++23 -x c++ -fsyntax-only - >/dev/null 2>&1 ||
-    die "the default C++ compiler does not provide the required C++23 support"
+  check_install_dependencies || return 1
 
   getent passwd greeter >/dev/null || die "the greeter system account is missing; install/configure greetd before installing HoloNight Greeter"
 
