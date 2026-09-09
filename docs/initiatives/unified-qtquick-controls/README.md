@@ -117,7 +117,8 @@ Only Ready work packages may be assigned. Each implementer receives one reposito
 the work-package ID. Discovery is complete and UQC-002 accepted on 2026-09-07. UQC-101 is Done; its verified provider
 is published and pinned. UQC-103 settings and UQC-104 AI are Done with published local acceptance records.
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
-UQC-105 package-manager is Done; UQC-106 greeter is In Progress. UQC-102 and UQC-201 remain Planned. Gitlinks remain
+UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
+UQC-102 shell is Ready; UQC-201 remains Planned. Gitlinks remain
 authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
@@ -282,3 +283,19 @@ build versus installed discovery, private dependencies and isolated GUI/launch
 acceptance. Configuration stays unchanged. UQC-106 is In Progress; implementation
 starts after this checkpoint is published. UQC-102 and UQC-201 remain Planned;
 the initiative remains Accepted. Unrelated package-manager mockups are preserved.
+
+## Greeter acceptance and shell assignment — 2026-09-09
+
+UQC-106 is Done with its published [greeter acceptance record](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md).
+The migration preserves scaled text-only footer selectors, authentication and
+session behavior while selecting standard controls at runtime. UQC-109 fixed the
+provider's empty-icon-role QVariantList handling; its published corrected handoff
+is the authoritative provider gitlink. Configuration is unchanged.
+
+Local style/DPR, authentication, popup, policy and actual build/install discovery
+acceptance passes, including host-provider isolation. The [ledger](TASKS.md)
+records exact publication and remote verification evidence. UQC-102 shell is
+Ready at its canonically rechecked baseline, using the corrected provider
+prerequisite. Publish and link shell's local SDD before implementation.
+The initiative remains Accepted; UQC-201 and its human-operated ecosystem gates
+remain Planned. No shell product implementation or final integration ran here.
