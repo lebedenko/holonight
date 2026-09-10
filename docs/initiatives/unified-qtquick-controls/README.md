@@ -334,3 +334,6 @@ unchanged pins; [evidence](INTEGRATION.md#uqc-201-accessible-guided-preparation-
 retains the earlier failures. Guided Hyprland then Sway checks are ready for user
 operation. No manual result has been accepted yet. UQC-201 remains In Progress
 and the initiative Accepted; real pre-session greeter acceptance remains separate.
+
+Current acceptance defects and repair order: [canonical findings register](FINDINGS.md).
+Broad manual acceptance is paused; UQC-204 has a published automated repair and awaits focused Settings/AI feedback.

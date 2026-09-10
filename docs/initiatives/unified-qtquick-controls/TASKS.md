@@ -23,7 +23,7 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-202 | umbrella | Verify installer Qt Wayland capabilities independently of package ownership | — (found during UQC-201) | [Design and evidence](UQC-202.md) | Done | `8af91cb173d6268e71ddb1b92afed8915a6ac658` | 2026-09-09: eight fixtures, syntax, licensing, whitespace and real installer --check pass. Installer CI 34380475124 and licensing 34380474984 are green. Canonical publication confirmed; original failure retained in INTEGRATION.md. |
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
-| UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | In Progress | Baseline `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | Scope/reproductions recorded before Ready assignment on 2026-09-11; baseline failures reproduced under both styles/scales. See canonical register. |
+| UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance pending. |
 | UQC-205 | `holonight-shell` | Owned Polkit completion first, then prompt/identity/askpass repairs | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -1631,3 +1631,18 @@ Sway Settings equivalence is recorded in the register with its evidence limits.
 UQC-201 remains In Progress and initiative Accepted; all existing failures and
 integration gates remain open. Provider handoff and fresh focus kit follow local
 verification and canonical publication.
+
+
+### Published UQC-204 provider accepted — 2026-09-11
+
+Accepted `65c806fb6a65cae9652dde7a69d595813973c1a9` from canonical holonight-qt
+origin/main after successful push and independent `git ls-remote` confirmation.
+Provider is clean; implementation is `e97b646`, followed by test naming/static
+cleanup. Only the provider gitlink changes; all other product pins are preserved.
+Verification and initial tool-path failure are recorded in the local SDD. This
+completes repository-local UQC-204, not manual or ecosystem acceptance.
+
+Next: release a fresh, focused Settings/AI kit from this provider. Do not modify
+`/tmp/holonight-uqc201-8r1jtlln` or repeat broad Sway/application acceptance.
+UQC-205 Polkit cancellation and UQC-206 dropdown interaction are next; all other
+findings, shipped-service/compositor gates and real pre-session greeter remain open.

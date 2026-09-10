@@ -26,6 +26,12 @@ were supplied with the plan. Do not infer a complete Sway matrix pass.
 
 ## Shared focus — UQC-204, holonight-qt
 
+Automated repair accepted on 2026-09-11 at published provider `65c806f` (implementation
+`e97b646`). Baseline failed seven of eight cases per style/scale; repaired build and
+installed modules pass eight of eight in all four combinations. F01–F03 remain
+pending the short real Settings/AI keyboard regression; original observations are
+preserved below. No other finding is closed by this handoff.
+
 | ID | Application / context; reproduction | Confirmed facts and suspected cause | Evidence | Acceptance |
 |---|---|---|---|---|
 | F01 | Settings H/F, 1/1.25; edit Weather City then Tab. AI H/F 1.25; first ComboBox traversal then full cycle | Text editing works; first-cycle indicator absent, later cycle restores it. Provider baseline reproduces lost visualFocus from parameterless wrapper forwarding. Sway Settings equivalence reported with limits above. | [Settings](GUIDED.md#evidence-review), [AI clarification](GUIDED.md#ai-fusion-comparison-and-switch-feedback--2026-09-10); private `.cache/uqc201-focus-probe/` | First and repeated Tab/Backtab entries retain owner, reason and visible indicator under both styles. |
