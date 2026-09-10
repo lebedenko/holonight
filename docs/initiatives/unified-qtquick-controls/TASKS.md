@@ -23,6 +23,16 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-202 | umbrella | Verify installer Qt Wayland capabilities independently of package ownership | — (found during UQC-201) | [Design and evidence](UQC-202.md) | Done | `8af91cb173d6268e71ddb1b92afed8915a6ac658` | 2026-09-09: eight fixtures, syntax, licensing, whitespace and real installer --check pass. Installer CI 34380475124 and licensing 34380474984 are green. Canonical publication confirmed; original failure retained in INTEGRATION.md. |
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
+| UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | In Progress | Baseline `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | Scope/reproductions recorded before Ready assignment on 2026-09-11; baseline failures reproduced under both styles/scales. See canonical register. |
+| UQC-205 | `holonight-shell` | Owned Polkit completion first, then prompt/identity/askpass repairs | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-209 | `holonight-settings` | Settings slider geometry investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-210 | `holonight-ai` | Temperature row geometry | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+
 Allowed states:
 
 - `Planned`: defined, but dependencies or acceptance are not ready.
@@ -654,3 +664,970 @@ changed; final canonical publication and clean-submodule checks pass.
 at scale 1; subsequent batches wait for returned observations. UQC-201 stays
 In Progress, repairs stay Done, and the initiative stays Accepted. Real pre-session
 greeter acceptance remains a separate pending gate even after demo observations.
+
+## UQC-201 first manual finding — 2026-09-10
+
+The user reports no visible focus or action from Tab/Shift+Tab/Space/Enter in
+Settings in the prepared Hyprland login. The [guided observation ledger](GUIDED.md#evidence-review)
+records the supplied evidence path and the preceding, subsequently recovered VT
+freeze. Keyboard traversal is not accepted. Source inspection finds focus visuals
+in the provider controls but no Settings test exercising Tab traversal; this does
+not establish runtime focus or a product root cause. Await text-entry/window-focus
+clarification and review of the actual process/origin evidence before assigning a
+repository-owned repair package. No product files, pins or acceptance states change.
+
+## UQC-204 provider focus-visibility finding — 2026-09-10
+
+User follow-up confirms City text entry and click-focus work. Repeated Tab advances
+through controls with intermittent missing focus indicators; exact order remains
+user-reported rather than instrumented. Settings is pinned at
+`2508635351e4901e1b03daf62dbb8ef6538ffcc5`; provider ownership is narrowed to
+`holonight-qt` at `00e6e208b6c9b30d89b66ef3aeb4ef8175050764`.
+
+`qml/controls/HnSettingsRow.qml` forwards active focus with parameterless
+`forceActiveFocus()`. An offscreen installed-prefix probe compares keyboard focus
+forwarded through the row with a standalone ComboBox. In both Holonight and Fusion:
+
+```text
+forwarded: activeFocus=true, focusReason=7 (OtherFocusReason), visualFocus=false
+standalone: activeFocus=true, focusReason=1 (TabFocusReason), visualFocus=true
+```
+
+Private probe and logs: `.cache/uqc201-focus-probe/forward.qml`, `Holonight.log`,
+`Fusion.log`. Both final runs exit 0 with software/offscreen rendering and unavailable
+session/system bus endpoints. No live pointer/focus interaction was automated.
+The existing provider test `Controls_SettingsRowForwardsSingleFocusAndSkipsCompoundRoot`
+checks focus destinations using Basic, but does not assert keyboard focus reason or
+visualFocus. This confirms a shared-control defect matching the user's observation;
+it does not establish that every invisible stop has the same cause. The Weather
+page also clips its scrollable content, so offscreen focus must remain a separate
+consideration during follow-up.
+
+UQC-204 is Planned; prepare its repository-local SDD and acceptance scope before
+Ready assignment. Product implementation and submodule pins remain unchanged.
+UQC-201 keyboard visibility remains failed; no further repetition of the same
+manual sequence is needed to establish this finding.
+
+## UQC-201 reboot recovery — 2026-09-10
+
+Regenerated helpers with `prepare-guided-kit.py /tmp/holonight-uqc201-8r1jtlln`
+and restored the original configured prefix with `cmake --install` from all ten
+surviving component builds in dependency order. No relocation or product change.
+Qt packages remain 6.11.2-3/base and 6.11.2-1/declarative; product pins are unchanged.
+Recovery logs: `.cache/uqc201-guided-qht3_tjs/reboot-20260910/`.
+
+Python/terminal syntax, launcher wrong-user guards, Hyprland configuration and
+headless Sway validation pass. All 239 installed regular files are hashed;
+permissions and internal symlinks pass, and all 18 ELF files resolve dependencies
+without workspace paths. Installed Settings default and environment/Fusion startup
+checks pass with host-provider masking, private buses and forbidden build QML paths.
+The initial sandbox attempt could not bind its private bus; an approved retry
+omitting LD_LIBRARY_PATH failed against the masked host config library. Both final
+checks passed with the prefix library path used by the guided launcher.
+
+READY is restored after these recovery checks. Prior full-suite evidence remains
+historical; no full-suite rerun or new manual pass is claimed. Next guided step is
+Settings default at Qt/output scale 1.25/1, then review before Fusion. UQC-204 stays
+Planned and unresolved; UQC-201 stays In Progress and the initiative Accepted.
+
+
+## UQC-201 additional Settings findings — 2026-09-10
+
+See [continuation observations](GUIDED.md#settings-continuation-observations--2026-09-10)
+for the user's report. Record three separate triage subjects: slider geometry/value
+jump on press, disappearing/noninteractive popup rows, and popup selected-item
+initialization/outside-click dismissal. No root cause, repair acceptance or manual
+pass is inferred. Evidence directory and exact slider identities are pending.
+
+Read-only source review at unchanged pins finds Appearance font selectors use
+provider `qml/controls/HnIconComboBox.qml`, while Weather selectors use provider
+`qml/ComboBox.qml`. Both popup implementations reparent to the overlay, use a
+scrollable ListView over delegateModel, bind currentIndex to highlightedIndex,
+and reposition on index changes/opening. Neither explicitly sets closePolicy.
+These are investigation points, not proof of the reported causes. Appearance
+slider rows combine fill-width sliders and value labels inside RowLayouts loaded
+by HnSettingsRow; the provider slider has no explicit pressed-dependent width.
+This does not rule out indirect sizing or appearance-update effects.
+
+Compare default/Fusion at the same scale and correlate logs before settling
+repository-owned repair scopes and local SDDs. Preserve UQC-204 independently.
+Only GUIDED.md and TASKS.md changed; source inspection and `git diff --check`
+performed, no product tests or pointer/focus automation. UQC-201 remains In Progress.
+
+### Settings Fusion follow-up — 2026-09-10
+
+User confirms Escape closes expanded HoloNight ComboBoxes. Outside-click failure
+is unchanged. Fusion comparison reports substantially better behavior with only
+missing popup-row hover feedback and tight ComboBox/button padding. Padding is
+explicitly a non-defect visual preference; hover feedback remains a triage
+observation. Earlier interaction failures were not reported in Fusion, but exact
+controls and process/origin evidence remain pending; no root cause or exhaustive
+pass is asserted. See GUIDED.md for the next AI default batch. UQC-204 and other
+HoloNight findings remain open; initiative Accepted, UQC-201 In Progress.
+Documentation-only update; `git diff --check` passes. No product tests needed.
+
+
+## UQC-201 AI provider-form findings — 2026-09-10
+
+[User observations](GUIDED.md#ai-provider-form-observations--2026-09-10) record
+intermittent ComboBox focus feedback, suspected disabled-control traversal,
+button ring loss after successful Space activation, a knob-only slider, a
+forward-only invisible focus stop between Context window and Temperature, and
+loss of Tab/Shift+Tab after VT return until clicking a control. Preserve these
+as separate triage subjects; no root cause or product acceptance is established.
+
+Read-only review at AI `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` and provider
+`00e6e208b6c9b30d89b66ef3aeb4ef8175050764`:
+
+- Provider HnFormField enables activeFocusOnTab whenever a loaded child exists,
+  without checking that child's enabled/visible/activeFocusOnTab state. It forwards
+  focus using parameterless forceActiveFocus(). This resembles UQC-204's reason
+  loss but is a different composite and needs its own reproduction/scope review.
+- AI OllamaSettingsPanel places Context window in an HnFormField with a SpinBox;
+  Temperature's HnFormField instead loads a RowLayout with a SpinBox and Slider.
+  Forwarding to that layout is a candidate for the invisible forward stop, not
+  an instrumented identification of the focused item.
+- ProviderFormActionRow reserves an action-column width of 220. Temperature's
+  nested row has a fill-width Slider beside a SpinBox. Inspect allocated/minimum
+  widths before attributing the knob-only rendering to either repository.
+- ProviderActionButton is a thin runtime Button wrapper. Provider Button draws
+  its focus border using visualFocus. Some action bindings disable buttons while
+  work is in progress; exact action and focus lifecycle must be captured before
+  explaining the ring loss. No action was triggered during source inspection.
+- VT-return failure requires separate session/application event evidence; visual
+  focus appearance alone does not prove compositor keyboard focus or delivery.
+
+No implementation assignment, product edits, pin changes or automated live UI
+interaction. GUIDED.md/TASKS.md updated and `git diff --check` passes; product tests
+were not run for this documentation-only triage. Await Fusion comparison and run
+references before settling repair scopes/local SDDs. UQC-204 remains Planned;
+UQC-201 remains In Progress and the initiative Accepted.
+
+
+### AI Fusion comparison / Switch observation — 2026-09-10
+
+The user reports the same focus traversal failures under Fusion. Missing ComboBox
+focus feedback occurs on the first traversal in both styles, then disappears on
+later cycles. Preserve this initialization condition in future regression scope.
+Fusion's Temperature slider has a track and knob but remains too short; AI layout
+is user-suspected, not a measured root cause. No resolution of the button or
+VT-return failures is claimed. See GUIDED.md for the complete comparison.
+
+HoloNight Switch feedback is visible off but not on; Fusion shows feedback in both
+states. Keyboard focus is the provisional interpretation given the surrounding
+report. Read-only provider Switch.qml inspection finds a visualFocus-controlled
+ring around the thumb using borderFocus, with a checked track using primary (or
+primaryHover). Contrast against that track is an investigation point only: no
+runtime colors, focus state or screenshot were measured. Exact Switch/feedback
+type and evidence path remain pending. Do not merge this with UQC-204's forwarding
+cause without reproduction.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product changes or tests.
+UQC-201 remains In Progress, UQC-204 Planned and the initiative Accepted. Continue
+with the package-manager default manual batch while preserving these failed gates.
+
+
+### Package-manager default feedback — 2026-09-10
+
+User reports no issues observed in the requested default-style package-manager
+batch at Qt/output scale 1.25/1. Preserve this positive observation with its scope;
+run/origin correlation and Fusion comparison remain pending. No exhaustive manual
+or integration pass is inferred. GUIDED.md/TASKS.md updated; `git diff --check`
+passes. No product changes or tests. UQC-201 stays In Progress; prior defects open.
+
+
+### Package-manager Fusion feedback — 2026-09-10
+
+User reports no issues in the Fusion package-manager batch requested at Qt/output
+scale 1.25/1. Both tested styles have positive observations; actual run/origin
+correlation and remaining matrix gates are pending. Next guided batch is shell
+default in the prepared minimal compositor. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits or tests. UQC-201 stays In Progress;
+existing Settings/AI/provider findings remain open.
+
+
+## UQC-201 shell rendering/input finding — 2026-09-10
+
+[Shell observation](GUIDED.md#shell-default-failure--2026-09-10): default-style
+shell requested at Qt/output scale 1.25/1 renders only left sections initially,
+jitters/resizes under pointer interaction, reveals/hides right sections, and
+appears unclickable while some tooltips work. Exclusive space appears visually
+stable; actual geometry is unmeasured. This blocks this run's shell interaction
+acceptance; no product root cause or integration acceptance is established.
+
+Read-only review at shell `1320f37093e2148a224a4e8fbfaf4ac1b536c6a8` finds
+LayerShellManager::configureSurface assigns kBarHeight to both requested surface
+height and exclusive_zone. TopBar uses a parent-filling RowLayout, a fill-width
+active-window section and right-side status/tray/clock sections. This establishes
+the requested sizing arrangement, not the runtime result or jitter cause.
+The scale-1 comparison keeps style unchanged to narrow the reported failure.
+
+Listing `/home/tux/uqc-guided-evidence` was denied by filesystem permissions;
+actual run evidence has not been inspected. Request the user's printed run path
+and selected diagnostics when needed. No source edits or live pointer/focus
+interaction. GUIDED.md/TASKS.md updated; `git diff --check` passes. No product tests
+run for documentation-only triage. UQC-201 In Progress, initiative Accepted;
+previous findings remain open.
+
+
+### Shell scale-1 follow-up — 2026-09-10
+
+User reports functional interaction and correctly working/rendered popups at Qt
+scale 1, with no jitter. This comparison implicates scale-dependent behavior in
+the earlier failure but does not establish its cause. Remaining frame defects
+are detailed in GUIDED.md: broken right edges for logo/workspaces/active window,
+status-widget solid backgrounds covering borders, with bell/date-time correct.
+
+Read-only source review identifies shell-local Controls/BarFrame.qml (Canvas) as
+the frame used by the inspected topbar sections; do not assign this to a shared
+provider HudFrame based only on the visual description. TopBar uses negative
+section margins; BarFrame also extends across inherited section padding. Review
+path geometry and sibling overpainting separately. Network/audio/battery/keyboard
+and notifications are BarSection instances; BarSection declares transparent color,
+and the widgets contain their own state-dependent background rectangles. Thus a
+solid covering block is not explained merely by a missing transparent root color.
+Runtime rendering evidence is still required. No root cause or repair scope settled.
+
+Next manual comparison is Fusion at Qt scale 1. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product changes/tests or pointer automation.
+Scale-1.25 shell failure and earlier findings remain open; UQC-201 In Progress.
+
+
+### Shell Fusion scale-1 feedback — 2026-09-10
+
+User reports identical topbar behavior/rendering under Fusion, including the
+existing frame/background defects, with no additional issues. Sidebar Overview's
+indeterminate progress bar displays Fusion styling; no new progress malfunction
+is asserted. Record positive interaction feedback at scale 1 alongside unresolved
+visual defects. Both-selector reproduction does not prove ownership/root cause.
+Fusion scale 1.25 and actual evidence/origin correlation remain pending.
+Next guided batch is Haruna default at Qt scale 1. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits/tests. UQC-201 stays In Progress and
+all prior failed gates remain open.
+
+
+### Haruna default scale-1 findings — 2026-09-10
+
+User reports mostly functional Haruna, persistent ComboBox outside-click failure,
+a working long font dropdown, mixed light/dark file/color pickers, imperfect warning
+corners in Mouse → Add action, visually different dialog buttons, and concurrent
+help popups. See GUIDED.md for precise observations and classification limits.
+
+Accepted scope explicitly preserves Haruna Fusion fallback and defers Dialog/
+DialogButtonBox implementations. Do not infer actual button origin from appearance
+or classify palette/geometry defects as accepted merely because fallback exists.
+Likewise, concurrent help-popups are a user preference/application-logic hypothesis,
+not yet a required provider repair. Working font-list scrolling narrows the earlier
+Settings report without invalidating it. No runtime/source reproduction of these
+new Haruna findings was performed; picker backend and evidence paths are pending.
+
+Next guided comparison is explicit Fusion at scale 1 for the reported surfaces;
+Holonight scale 1.25 remains pending. GUIDED.md/TASKS.md updated; `git diff --check`
+passes. No product changes/tests. UQC-201 remains In Progress; prior failures open.
+
+
+### Haruna Fusion results / provider icon gaps — 2026-09-10
+
+Fusion pickers are consistently dark and outside-click closes ComboBoxes. Warning
+corners remain defective in both styles; Fusion dropdown hover feedback remains
+missing. New user comparison reports icons in Fusion top menus/Settings navigation
+but not HoloNight, with excessive empty top-menu icon space. See GUIDED.md for
+scope, sidebar-location ambiguity and the requested per-dropdown alignment rule.
+
+Read-only inspection of pinned provider `00e6e208b6c9b30d89b66ef3aeb4ef8175050764`
+confirms implementation limitations: MenuItem.qml reads icon.source and hides its
+HnIcon when that source is empty, without consuming icon.name; its checkmark and
+icon containers always reserve compact-icon widths plus RowLayout spacing.
+ItemDelegate.qml's contentItem is Text only and does not render the icon property.
+Button/ToolButton use IconLabel with the full icon property, an existing provider
+convention to inspect when designing the repair. These code gaps match the report,
+but actual Haruna delegate origins/icon properties remain uncorrelated.
+
+Record requested provider repair scope: support menu/delegate icons and allocate
+menu icon space per dropdown only when at least one item has an icon, aligning all
+labels while retaining necessary independent checkmark/submenu geometry. Prepare
+repository-local SDD and reproduction before Ready assignment; no implementation
+or acceptance claim. Palette mixing, popup dismissal, hover and both-style warning
+corners remain separate triage subjects.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product files/tests changed
+or run. Next is Haruna Holonight at Qt scale 1.25. UQC-201 remains In Progress;
+initiative Accepted and previous defects open.
+
+
+### Haruna persistent first-row highlight — 2026-09-10
+
+User reports no new scale-1.25 failures; existing warning corners are less visible.
+New both-scale HoloNight observation: first row in list-based Settings pages
+(e.g. Shortcuts) retains a selected-looking background despite interaction with
+other rows, independently of functioning hover highlights. Fusion has no such
+persistent background and gives brief click feedback but no visible hover effect.
+
+Read-only provider ItemDelegate.qml inspection confirms background isSelected
+combines highlighted, checked and ListView.isCurrentItem. This can introduce
+selection visuals based on view current-item state even without an explicit
+application highlight/check state. It is a concrete reproduction candidate, not
+runtime proof of Haruna's delegate type/currentIndex or final repair semantics.
+Future regression scope should distinguish current-item, selection, hover, press
+and focus, preserving intended selection in real selection-bearing lists.
+Keep this separate from the previously recorded missing icons/empty menu columns.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No implementation, product
+tests or live UI automation. Evidence/origin correlation remains pending. Next
+manual batch is NeoChat Holonight at scale 1; UQC-201 remains In Progress.
+
+
+### NeoChat navigation-triggered palette finding — 2026-09-10
+
+User inspected logged-out Settings; ComboBox outside-click failure repeats, with
+no other interaction issue observed. Initial main/General Settings surfaces are
+dark in an application-looking palette; navigating to another Settings page changes
+both Settings and main window to the current HoloNight scheme. No explicit palette
+selection reported. Exact destination page and process/control/palette evidence
+remain pending. Account-dependent surfaces are untested.
+
+Treat this as an unresolved navigation-triggered palette transition, not proof of
+missing startup style selection or a successful correction to HoloNight colors.
+The accepted contract preserves application palette overrides; examine initial
+palette ownership and lazy-page side effects before assigning a repository repair.
+Next comparison is Fusion at scale 1, same navigation, noting retained disposable
+profile state. Holonight scale 1.25 remains pending. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits/tests or live UI automation. UQC-201
+remains In Progress; no manual gate closed by inference.
+
+
+### NeoChat Fusion palette/spacing/dropdown comparison — 2026-09-10
+
+User confirms recoloring under both selectors. New Fusion observations: no
+indicator-to-label gap for CheckBox/RadioButton; Appearance color-scheme dropdown
+uses all available vertical space, highlights hovered rows, and looks HoloNight-
+like despite a Fusion-looking collapsed control. See GUIDED.md for limits.
+No actual mixed implementation, overflow or unreachable rows is established.
+This popup's working hover feedback narrows earlier Haruna observations; missing
+hover is not a universal Fusion failure. Checkbox/radio spacing under HoloNight
+and NeoChat Fusion outside-click dismissal remain unconfirmed.
+
+No source/runtime attribution performed this turn. Record spacing as a finding
+requiring concrete control/layout inspection; retain palette transition separately.
+Next is Holonight scale 1.25 with the same surfaces. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits/tests or live UI automation. UQC-201
+remains In Progress, initiative Accepted, and prior findings remain open.
+
+
+### NeoChat repeated Appearance-page palette toggle — 2026-09-10
+
+User's deeper reproduction supersedes the earlier broad navigation/initialization
+hypothesis: only opening Appearance changes colors; other Settings pages do not.
+Across repeated Settings close/reopen cycles, opening Appearance alternates between
+the initial non-HoloNight-looking scheme and the current HoloNight-looking scheme,
+also affecting the main window. No explicit color-scheme selection is reported.
+Confirmed by user under Holonight Qt scale 1 and 1.25, and Fusion Qt scale 1.
+The remaining scale-1.25 result is reported unchanged from scale 1.
+
+Record repeated page-entry palette mutation, not a one-time loading transition or
+style-selection success. Exact palette values/origins and configuration writes
+remain unmeasured; both-selector reproduction does not settle ownership. Future
+reproduction should preserve repeated window/page-entry cycles and distinguish
+page initialization from explicit user selection. Do not require the user to
+repeat this established sequence again. See GUIDED.md for the exact steps.
+
+Next batch: Tokodon default scale 1. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. Documentation-only; no product tests or live automation.
+UQC-201 remains In Progress and previous failed gates remain open.
+
+
+### Tokodon palette-toggle / font-picker findings — 2026-09-10
+
+User reports the same repeated two-scheme toggle as NeoChat; Tokodon opens Settings
+on Appearance, triggering it immediately. This adds a second application to the
+navigation-triggered palette finding without proving shared root cause/ownership.
+Font picker has a light main background and otherwise dark controls. OK/Cancel
+look unlike HoloNight/Fusion and resemble Basic to the user; exact dialog/backend
+and control origins are unverified. Retain palette mismatch and button-style
+classification as separate subjects. Accepted Basic fallback is not proof of
+these buttons' origin or a palette-failure waiver.
+
+Next guided comparison is Tokodon Fusion at scale 1; Holonight scale 1.25 remains
+pending. GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits,
+tests or live UI automation. UQC-201 remains In Progress and prior findings open.
+
+
+### Tokodon Fusion Switch containment finding — 2026-09-10
+
+User confirms palette toggle and references the same ComboBox/RadioButton/CheckBox
+observations as NeoChat Fusion. New failure: right-aligned Switch extends beyond
+the right edge of its boxed Settings section, with title/description on the left.
+Actual setting/section and geometry/origins remain pending; do not equate this
+with a proven provider indicator defect or silently close the earlier accepted
+trailing-card containment requirement. Font-picker Fusion palette/button result
+was not explicitly supplied.
+
+Next comparison is Tokodon Holonight scale 1.25, including these boxed rows;
+HoloNight overflow applicability is not yet established. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits/tests or live UI automation. UQC-201
+remains In Progress; previous palette, focus, geometry and rendering gates open.
+
+
+### Picker inconsistency depends on observed palette state — 2026-09-10
+
+Tokodon Holonight scale 1.25 is reported unchanged from scale 1. User clarifies
+mixed picker colors seem associated with the HoloNight-looking application palette;
+the alternate initial palette produces consistently colored pickers. Preserve as
+an observed correlation requiring paired same-picker evidence, not a proven cause
+or a retrospective pass for all dialogs. Future comparison must vary/record actual
+palette state independently of Controls selector. The repeated Appearance toggle
+may affect prior style comparisons; original observations remain retained.
+
+Next manual batch is greeter demo default scale 1; activation/authentication,
+remaining palette checks, real pre-session greeter and Sway gates stay pending.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+live UI automation. UQC-201 remains In Progress and all unresolved findings open.
+
+
+## Greeter demo functional/visual findings — 2026-09-10
+
+See GUIDED.md for user-reported disappearing session rows, disabled layout-selector
+hover/color mismatch, keyboard password-reveal failure, user-selector Tab omission,
+and requested power-button/background/icon/avatar-selector corrections. General
+keyboard navigation and popup placement are positive observations with those
+exceptions. Password-field palette mismatch remains a suspicion to verify.
+
+Read-only review of greeter pin `b082d82636726fa1fc51178215a3e85d5bb8bbec`
+(no repository AGENTS.md present; umbrella instructions apply) finds:
+
+- FooterSelector derives from HnIconComboBox, overrides content with fixed color
+  literals and background hover/down colors without explicit enabled-state guards.
+  This is a candidate for disabled appearance issues, not a runtime state trace.
+- LoginPanel uses a regular Controls.ComboBox for users, enabled only with multiple
+  users outside starting/authenticated states. Its background/indicator are empty.
+  Password Backtab and power-button Tab link directly to system actions/password,
+  respectively. Inspect the complete chain and enabled state for user reachability.
+- Password echoMode depends on reveal.pressed; reveal is a Controls.Button labelled
+  Hold to reveal password. Keyboard activation/press timing needs reproduction;
+  do not change its semantics based solely on a brief Space activation report.
+- System actions use text symbols for reboot/poweroff. Actual glyph bounds and
+  normal backgrounds require review. The requested avatar selector was not located
+  by provider filename search; locate its identity before choosing implementation.
+
+No repository repair assigned or product files changed. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product tests or live input automation. Next is demo
+Fusion scale 1; UQC-201 remains In Progress, real pre-session gate pending.
+
+
+### Greeter demo Fusion selector comparison — 2026-09-10
+
+User reports session selector works with mouse/keyboard under Fusion, but lacks
+visible hover feedback. User selector is unusually large and lacks hover feedback,
+but works when used; exact affected geometry and Tab-chain inclusion remain
+unconfirmed. General "same issues" preserves other greeter findings without
+claiming a keyboard password-reveal fix. See GUIDED.md for classification limits.
+
+Next is Holonight demo scale 1.25. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product edits/tests or live UI automation. UQC-201
+remains In Progress; real pre-session and other pending gates remain open.
+
+
+### Greeter demo scale-1.25 / authentication handoff — 2026-09-10
+
+User reports no difference from Holonight scale 1. All existing greeter findings
+remain open; no real pre-session pass inferred. Next guided step is read-only
+third-party authentication preflight per AUTHENTICATION.md; no agent/challenge
+has been started. The restored helper and READY marker are present; helper source
+inspection confirms preflight collection precedes separate agent/registration/
+challenge steps. Review returned evidence before continuing.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or live
+UI automation. UQC-201 remains In Progress; outstanding matrix and evidence gates
+are retained, including Sway and remaining style/scale combinations.
+
+
+### Third-party authentication preflight reviewed — 2026-09-10
+
+Read user-supplied `/home/tux/uqc-auth-evidence/20260910T181636Z` via explicitly
+requested `sudo -A` after ordinary filesystem access was denied. Identity records
+session 5, UID 1001, seat0/tty3, Type=wayland, Active=yes, Remote=no. Session inventory
+shows one tux graphical login plus its user manager. Recorded tux processes and
+user services show no known competing Polkit agent. Agent-named processes belong
+to UID 1000 and are left untouched. Journal contains startup lines only; journal
+silence is not treated as registration-absence proof.
+
+Policy requires auth_admin for all three implicit exec cases. Versions match the
+kit (hyprpolkitagent 0.1.3-10, Qt base 6.11.2-3/declarative 6.11.2-1); agent links
+Qt6 and recorded linkage has no missing dependencies. Reviewed collection commands
+exit 0. These are preflight snapshot results, not registration/prompt acceptance.
+Next user step is the guarded agent launch in the same tux login, then registration
+verification in a second prepared terminal. No challenge before registration PASS.
+No service changes or agent launch performed by the assistant.
+
+
+### Third-party authentication registration PASS — 2026-09-10
+
+User returns helper output: "PASS: registration reply, current authority, agent
+PID and login session match." Run: `/home/tux/uqc-auth-evidence/20260910T181636Z`.
+Record the reported live registration verification; prompt appearance, masking,
+keyboard behavior and cancellation remain pending. Next user step is `challenge`
+in the second prepared tux terminal while the helper's agent remains running.
+The challenge repeats registration checks before its REGISTERED confirmation and
+runs only `pkexec --disable-internal-agent /usr/bin/true`. Inspect using disposable
+text only, erase it and cancel; no credential submission. No prompt or exit 0 is
+not a cancellation pass. After recording the result, Ctrl+C in the agent terminal
+stops only that helper's child. Owned-agent checks remain separate and pending.
+
+Documentation-only update; `git diff --check` passes. UQC-201 remains In Progress.
+
+
+### Third-party authentication prompt/cancellation result — 2026-09-10
+
+User reports prompt works as expected with no issue and cancels it; challenge
+exits 127, helper agent exits -15 after termination. Read-back via authorized
+sudo -A confirms challenge.txt records Not authorized/exit_status=127 and agent.json
+records exit_status=-15 (SIGTERM), PID 106726, session 5 and the expected third-party
+executable/prefix. registration.json is present following the reported live PASS.
+Evidence: `/home/tux/uqc-auth-evidence/20260910T181636Z`. This establishes recorded
+cancellation/cleanup alongside positive user prompt feedback, not success based
+on exit code alone. Requested scale was 1; detailed created-control origin and
+actual scale correlation remain pending. Other scales/compositor gates stay open.
+
+Next user step is a fresh owned-agent preflight using owned-auth/auth-test.py in
+the same real tux login, after the third-party helper has exited. Review the new
+preflight before launching the owned agent; do not reuse the third-party run path.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or live
+input automation. UQC-201 remains In Progress.
+
+
+### Owned-agent preflight reviewed — 2026-09-10
+
+Reviewed `/home/tux/uqc-auth-evidence/20260910T192833Z` using user-authorized sudo -A.
+Snapshot confirms active local session 5, UID 1001, seat0/tty3, Type=wayland, with
+one tux graphical login. No known competing tux authentication agent appears in
+recorded processes/services; the earlier third-party agent is absent. Other users'
+agents remain untouched. Policy requires auth_admin; Qt/agent package versions
+match. Owned executable linkage resolves libholonight_config from the prepared
+prefix, with Qt6 and no missing dependencies. Collection commands reviewed exit 0.
+Journal contains prior denied challenge entries; these are historical, not proof
+of present registration status or a new preflight failure.
+
+Next step is owned-agent launch at embedded default, Qt scale 1, then registration
+verification in a second prepared terminal. No challenge before live registration
+PASS. This preflight does not establish prompt/registration acceptance.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product changes/tests or
+agent launch by the assistant. UQC-201 remains In Progress.
+
+
+### Owned-agent registration PASS — 2026-09-10
+
+User reports registration passed for owned-agent run
+`/home/tux/uqc-auth-evidence/20260910T192833Z`, after the reviewed preflight and
+requested embedded-default/Qt-scale-1 launch. Record reported live registration
+success; prompt behavior/cancellation and control-origin review remain pending.
+Next user step is owned-auth/auth-test.py challenge in the second prepared tux
+terminal. It rechecks registration before REGISTERED confirmation; inspect with
+disposable text only, erase and cancel without credential submission. Report
+challenge exit and then stop the helper's agent via Ctrl+C in its own terminal.
+No prompt or exit 0 is not cancellation acceptance.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. Documentation-only, no product
+tests or live input automation. UQC-201 remains In Progress.
+
+
+### Owned-agent prompt findings — 2026-09-10
+
+For `/home/tux/uqc-auth-evidence/20260910T192833Z`, user reports:
+
+- User dropdown is visually empty while reserving space for two users. Actual
+  model roles, delegate creation and geometry remain uninstrumented.
+- After entering a wrong password and activating Authenticate, an authentication
+  error appears and the password input disappears, but its Password label remains.
+- No other functional/rendering issues observed in the exercised prompt.
+
+This run included user-initiated failed authentication, beyond the requested
+cancellation-only sequence. Do not request further failed submissions or record
+cancellation success without a returned result. Final cancellation/challenge exit
+and agent cleanup remain pending. Submitted text is neither requested nor recorded.
+
+Read-only shell QML review finds IdentitySelector derives from HnIconComboBox but
+supplies its own avatar/text delegate requiring identity-model roles. Blank rows
+must be diagnosed separately from earlier default-delegate hover disappearance.
+AuthenticationDialog's promptLabel visibility depends only on nonempty text, while
+responseField requires lifecycleState == 2 and textInput. This differing visibility
+condition can retain the label after the input is hidden; runtime error-state and
+retry expectations need reproduction before repair. No product edit or test run.
+
+Next: cancel the remaining prompt if open, report challenge exit, and stop the
+helper's owned agent with Ctrl+C in its original terminal, reporting agent exit.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. UQC-201 remains In Progress;
+owned-agent prompt acceptance has unresolved findings.
+
+
+### Owned-agent cancellation completion failure — 2026-09-10
+
+User reports Cancel closes the prompt but the parent Python challenge helper keeps
+running and requires Ctrl+C. Stopping the agent reports exit 0. Read-back of run
+`/home/tux/uqc-auth-evidence/20260910T192833Z` confirms agent.json exit_status=0,
+PID 111916 and expected owned executable; challenge.txt is absent. Therefore no
+normal challenge exit/cancellation pass exists. This follows the reported failed
+password submission; cancellation without a preceding failure is not separately
+established. No further submissions requested.
+
+A current UID/PID/command process listing finds no pkexec or owned Polkit agent
+remaining. No process was killed by the assistant. Cancellation completion remains
+a separate functional failure from blank identities and orphaned prompt label.
+Read-only source review shows coordinator cancellation intends to complete the
+active request false and the listener bridge returns a GTask boolean; this does
+not establish where runtime completion was lost. The helper writes challenge.txt
+only after its blocking subprocess.run returns. No broad authentication log or
+submitted text was read/published; diagnosis needs bounded completion evidence.
+
+Next independent guided surface is owned askpass, direct invocation at default
+style/Qt scale 1 with stdout discarded, disposable text and cancellation only.
+Owned Polkit failure remains open; its other style/scale checks are deferred for
+investigation, not passed. GUIDED.md/TASKS.md updated; `git diff --check` passes.
+No product edits/tests or live UI automation. UQC-201 remains In Progress.
+
+
+### Owned askpass default scale-1 cancellation — 2026-09-10
+
+User reports cancellation with `askpass exit=1`, no observed issues, and expected
+keyboard/mouse behavior for the requested direct embedded-default/Qt-scale-1 run.
+Record positive user-operated cancellation and interaction feedback; actual
+control-origin/scale correlation remains pending. This is independent of the
+owned Polkit cancellation-completion failure and does not resolve it. No credential
+submission is reported; stdout was directed to /dev/null by the guided command.
+Log reference: askpass.log under the current UQC_SESSION_RUN (full path pending).
+
+Next comparison: direct askpass at default style/Qt scale 1.25, separate log,
+disposable text then cancellation only. Fusion and Sway remain pending.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+live UI automation. UQC-201 remains In Progress.
+
+
+### Owned askpass default scale-1.25 cancellation — 2026-09-10
+
+User reports exit code 1 and no issues for the requested embedded-default askpass
+run at Qt scale 1.25. Both tested default-style scales now have positive user
+cancellation observations; control-origin/actual-scale correlation remains pending.
+Log reference: askpass-scale125.log under current UQC_SESSION_RUN. Owned Polkit
+findings remain unresolved independently.
+
+Next is direct askpass Fusion at Qt scale 1 with a separate log and cancellation
+only. GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests
+or live UI automation. UQC-201 remains In Progress; Sway and other gates pending.
+
+
+### Owned askpass Fusion scale-1 cancellation — 2026-09-10
+
+User reports exit code 1 and no issues for the requested Fusion askpass run at Qt
+scale 1. Record positive cancellation/interaction observation, with control-origin
+and actual-scale correlation pending. Log: askpass-fusion-scale1.log under the
+current UQC_SESSION_RUN. Next is Fusion at Qt scale 1.25 with a separate log and
+cancellation only, completing this session's requested askpass style/scale cases.
+This does not complete Sway, activation or other outstanding integration gates.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+live UI automation. UQC-201 remains In Progress; prior failures remain open.
+
+
+### Owned askpass Fusion scale-1.25 border finding — 2026-09-10
+
+User reports cancellation exit 1, with one rendering failure: unfocused text field
+has an apparently clipped/thinner left border, roughly half the thickness of its
+other three edges. Focused border/ring is intact. Requested mode is Fusion at Qt
+scale 1.25; log is askpass-fusion-scale125.log under current UQC_SESSION_RUN. Record
+successful reported cancellation separately from failed border appearance; do not
+mark all askpass cases visually passed. Earlier default scale-1/1.25 and Fusion
+scale-1 observations remain as reported.
+
+Read-only source review identifies shell-owned AuthenticationPrompt.qml overriding
+Controls.TextField.background with a Rectangle, radius 5 and border width 1 when
+unfocused/2 when activeFocus. Thus this border is application-supplied, not Fusion's
+stock background. AuthenticationDialog has a clipping scroll area; fractional
+position/rasterization and ancestor clipping are candidates requiring geometry/
+rendering reproduction. Neither clipping nor exclusive Fusion applicability is
+proven from the visual report. No product edits/tests or live input automation.
+
+Next step is to obtain the current UQC_SESSION_RUN path and correlate retained
+application/askpass evidence before remaining activation/session gates. No user
+need to repeat this border failure now. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. UQC-201 remains In Progress; all existing failures open.
+
+
+### Hyprland run correlation checkpoint — 2026-09-10
+
+GUIDED.md now records the complete process selector/scale/exit inventory for
+hyprland-j97jound. Saved PID records correlate application runs to session 5 and
+prefix discovery; exact per-action origins remain incomplete. Selected logs add
+provider ComboBox implicitHeight binding loops, an initial Haruna SIGABRT and
+application/Kirigami diagnostics requiring classification. Missing separately named
+askpass-scale125.log is an evidence gap, not a retraction of the user's observation.
+Private summary: `.cache/uqc201-guided-qht3_tjs/review-20260910/session-summary.json`.
+See GUIDED.md for exact references and limits. No raw logs, credentials, product
+files or pins changed; read-only sudo -A used as requested. `git diff --check`
+passes. No product tests run. UQC-201 remains In Progress, initiative Accepted;
+next is connection/environment review before activation.
+
+
+### Connection verification / askpass log clarification — 2026-09-10
+
+User returns socket-peer helper output: XDG_SESSION_ID=5,
+XDG_RUNTIME_DIR=/run/user/1001, WAYLAND_DISPLAY=wayland-1,
+QT_QPA_PLATFORM=wayland and QT_QPA_PLATFORMTHEME=holonight. This matches the prepared
+login. Treat as returned helper verification, not evidence of activation delivery.
+
+User clarifies the default askpass scale-1.25 command was edited manually from the
+scale-1 command without changing the output filename. Thus askpass.log represents
+the later default scale-1.25 run by user correlation; shell redirection overwrote
+the original scale-1 log. The absent askpass-scale125.log is explained, not a missing
+scale-1.25 run. Original scale-1 cancellation/interaction remains user-reported,
+without a separately preserved log. Fusion logs remain separate. This supersedes
+the preceding filename ambiguity; no actual scale is inferred from log contents.
+
+Reviewed staged Settings D-Bus service: org.holonight.Settings Exec points directly
+to the configured /tmp prefix binary. Desktop entry is DBusActivatable=true with
+Exec=holonight-settings. Next user step imports the named compositor/discovery/
+disposable-profile variables into the private test bus only, keeping owned style
+selectors unset, then requests StartServiceByName for Settings after closing any
+existing Settings instance. Do not import into a systemd manager in this step.
+A returned service start and visible window still need actual PID/origin correlation.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+external activation performed by the assistant. UQC-201 remains In Progress.
+
+
+### Settings private-bus activation observed — 2026-09-10
+
+User reports Settings opened after StartServiceByName on the prepared private bus;
+returned value is `u 1` (service started). This follows the requested named-variable
+bus environment update. No systemd manager import was requested. Record successful
+user-observed D-Bus launch, not yet complete process/control-origin acceptance.
+Next: query GetConnectionUnixProcessID for org.holonight.Settings on that same bus,
+then collect the live process using guided-app.py collect and inspect its saved
+executable/environment/maps. Leave Settings open until collection completes.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+activation performed by the assistant. UQC-201 remains In Progress.
+
+
+### Settings D-Bus process correlation — reviewed 2026-09-11
+
+Read user-supplied `hyprland-j97jound/collect-1789074883533653402` via authorized
+sudo -A. pid-119183.json records collection at 2026-09-10T21:14:43Z, actual executable
+`/tmp/holonight-uqc201-8r1jtlln/prefix/bin/holonight-settings`, session 5, unset
+QT_QUICK_CONTROLS_STYLE/QT_QUICK_CONTROLS_CONF and unset QT_SCALE_FACTOR. Platform
+theme is holonight; QML/plugin/library and XDG_DATA_DIRS use the prepared prefix.
+Unset process scale is not an independent measurement of effective output/DPR.
+
+Saved maps confirm the prefix's Holonight style, Core/Controls/impl plugins,
+platform-theme plugin and libholonight_config, alongside system Qt 6.11.2. Basic
+library presence alone does not establish a rendered Basic control. Combined with
+reported StartServiceByName `u 1` and visible Settings, this verifies staged binary
+and native loading/environment for that private-bus launch. Individual created
+control-origin review remains pending; no complete activation matrix pass claimed.
+
+Next user step is desktop-entry launch of Settings after closing the current
+instance. gtk-launch is installed; staged desktop entry is DBusActivatable and
+Settings implements org.freedesktop.Application. Treat this as desktop-entry
+activation, not proof of a specific graphical launcher's behavior. Collect the
+resulting bus PID separately. No systemd manager environment changes performed.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+live UI automation. UQC-201 remains In Progress.
+
+
+### Settings desktop-entry process correlation — reviewed 2026-09-11
+
+User collected PID 123471 following the requested gtk-launch desktop-entry check.
+Read `hyprland-j97jound/collect-1789076121579441076/pid-123471.json` and maps via
+sudo -A. Collection timestamp is 2026-09-10T21:35:21Z; executable is the prepared
+Settings binary, session 5, style/conf and QT_SCALE_FACTOR unset. QML/plugin/library
+and XDG_DATA_DIRS point to the kit; platform theme is holonight. Maps confirm all
+four staged style/shared QML plugins, platform-theme plugin and config library.
+PID differs from the earlier direct D-Bus launch (119183).
+
+This correlates the new process to the expected staged installation following
+the requested desktop-entry action; no separate window-open observation or actual
+per-control origin review was supplied in this reply. Do not claim graphical
+launcher integration or complete activation acceptance from these maps alone.
+Next is owned AI's installed org.holonight.Chat D-Bus service, after closing Settings
+and any existing AI instance. Preserve disposable provider-disabled configuration.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+activation performed by the assistant. UQC-201 remains In Progress.
+
+
+### AI private-bus process correlation — reviewed 2026-09-11
+
+Reviewed user-supplied `hyprland-j97jound/collect-1789076363003755155` via sudo -A.
+PID 124120 metadata (2026-09-10T21:39:23Z) identifies prepared holonight-chat,
+session 5, style/conf and QT_SCALE_FACTOR unset, holonight platform theme and
+prefix QML/plugin/library/data discovery. Maps confirm staged Holonight style,
+Core/Controls/impl, platform-theme and config libraries. This matches the intended
+owned default installation following the requested D-Bus launch. The user did not
+separately supply StartServiceByName result or window-open observation; retain
+those limits and outstanding created-control-origin correlation.
+
+Next is third-party desktop-entry activation of NeoChat. Installed D-Bus metadata
+uses /usr/bin/neochat --dbus-activated. Set QT_QUICK_CONTROLS_STYLE=Holonight in the
+test terminal and update that one variable in its private bus for third-party
+selection; this deliberately differs from owned embedded-default checks. No systemd
+manager import. Inspect resulting process via bus PID and collect helper. This
+selector remains set for subsequent third-party checks; restore owned defaults
+before any later owned activation checks.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+activation by the assistant. UQC-201 remains In Progress.
+
+
+### NeoChat desktop-entry process correlation — reviewed 2026-09-11
+
+Reviewed `hyprland-j97jound/collect-1789076721712952633` via authorized sudo -A.
+PID 124786 metadata at 2026-09-10T21:45:21Z identifies /usr/bin/neochat, session 5,
+QT_QUICK_CONTROLS_STYLE=Holonight, unset conf/scale, holonight platform theme and
+prepared prefix discovery. Maps show the staged Quick style/Core/impl, platform
+theme, Widgets style and config library. This confirms selector propagation and
+native staged loading following the requested desktop-entry launch, not each
+rendered control's origin or a complete visual/activation pass. No separate
+window-open observation was included with the collection path.
+
+Next is Tokodon desktop-entry activation in the same test bus, retaining the
+explicit third-party selector. Close NeoChat and any existing Tokodon first,
+then collect Tokodon's bus-owned PID separately. No manager import or product
+changes. GUIDED.md/TASKS.md updated; `git diff --check` passes. No product tests;
+UQC-201 remains In Progress and outstanding evidence/acceptance gates stay open.
+
+
+### Tokodon desktop-entry process correlation — reviewed 2026-09-11
+
+Reviewed user-supplied `hyprland-j97jound/collect-1789076912749083724` via sudo -A.
+PID 125839 metadata at 2026-09-10T21:48:32Z identifies /usr/bin/tokodon in session 5,
+Holonight selector, unset conf/scale, holonight platform theme and prepared prefix
+QML/plugin/library/data paths. Maps confirm staged Quick style/Core/impl, platform
+theme, Widgets style and config library. This establishes expected process-level
+propagation/loading after requested desktop-entry activation; no individual-control
+origin or complete visual/activation pass inferred. No separate window-open
+observation was included with this collection path.
+
+Next is Haruna's desktop entry, which uses Exec=haruna %U and has no installed
+D-Bus activation service per the accepted inventory. Close previous instances,
+launch via gtk-launch, identify the tux-owned Haruna PID and collect it. Keep the
+explicit third-party selector. No user-manager import or external activation by
+the assistant. GUIDED.md/TASKS.md updated; `git diff --check` passes. No product
+changes/tests. UQC-201 remains In Progress; unresolved gates stay open.
+
+
+### Haruna desktop-entry process correlation — reviewed 2026-09-11
+
+Reviewed `hyprland-j97jound/collect-1789077252212066228` via authorized sudo -A.
+PID 126562 metadata at 2026-09-10T21:54:12Z identifies /usr/bin/haruna, session 5,
+explicit Holonight selector, unset conf/scale, holonight platform theme and prepared
+prefix discovery. Maps confirm staged Quick style/Core/impl, platform theme,
+Widgets style and config library. This verifies process-level propagation/loading
+following requested desktop-entry launch; it does not classify every created
+control or close the whole activation gate. No separate visible-window statement
+was supplied with this collection path.
+
+Next is read-only review of tux's systemd user-manager environment and shell-unit
+state before choosing the systemd test. Inspect selected variables only and retain
+exact prior values/absence before any imports. Do not start/restart the normal
+shell unit or modify manager state during preflight. Published kit includes shell
+and templated Polkit units; authentication failures remain independently open.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests,
+manager changes or activation by the assistant. UQC-201 remains In Progress.
+
+
+### Systemd preflight and transient shell preparation — 2026-09-11
+
+User returns loaded/inactive holonight-shell.service from /usr/share/systemd/user,
+with ExecStart /usr/bin/holonight-shell-systemd (remaining pager text truncated).
+Selected manager environment has runtime /run/user/1001, normal user bus
+unix:path=/run/user/1001/bus, DISPLAY=:2, WAYLAND_DISPLAY=wayland-1,
+XDG_CURRENT_DESKTOP=Hyprland and QT_QPA_PLATFORMTHEME=holonight. No manager mutation
+has occurred. The installed unit is not the staged kit service.
+
+Prepared /tmp/uqc201-systemd-shell.sh, retained privately as
+.cache/uqc201-guided-qht3_tjs/review-20260910/systemd-shell.sh. It refuses the wrong
+user/session/kit or an existing tux shell, then creates only transient
+uqc201-shell-hyprland.service with explicit test-bus/discovery/disposable-profile
+variables, unset style overrides, scale 1, no restart, and logs under the evidence
+session. It runs the staged shell binary directly. It does not change the manager
+environment or installed shell unit; no restoration of those is needed. Cleanup
+is stopping this transient unit only. This is a transient systemd route check,
+not shipped-unit/wrapper acceptance. The latter remains pending.
+
+Shell syntax and wrong-user refusal pass (expected exit 1); launch was not executed
+by the assistant. Next user step runs the helper, reports MainPID/ActiveState and
+shell behavior, then collects MainPID. GUIDED.md/TASKS.md updated;
+`git diff --check` passes. No product changes/tests. UQC-201 remains In Progress.
+
+
+### Transient systemd shell process correlation — reviewed 2026-09-11
+
+User reports uqc201-shell-hyprland.service ActiveState=active, MainPID=128370, then
+collects `hyprland-j97jound/collect-1789078279550643791`. Read-back via sudo -A confirms
+staged holonight-shell, collected 2026-09-10T22:11:19Z, QT_SCALE_FACTOR=1, unset
+style/conf, session environment ID 5 and prefix discovery/platform theme. Saved
+maps confirm staged style/Core/Controls/impl, platform-theme and config libraries,
+plus a QML cache in the disposable session directory. XDG_SESSION_ID is environment
+evidence, not proof of logind membership for a user-manager-launched service.
+
+Bounded systemd-shell.log search found no TypeError, ReferenceError, binding-loop
+or failed-component markers (rg exit 1 means no matches). This does not establish
+correct visual behavior. User has not separately reported shell interaction or
+confirmed test-unit cleanup in this reply. Transient launch/process propagation is
+verified; shipped service/wrapper and individual created-control origins remain
+pending. No manager environment or installed-unit changes were made.
+
+Next: stop only uqc201-shell-hyprland.service if still running, verify it is no
+longer active, and obtain the user's visual/interaction result for this route.
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product changes/tests or
+live UI automation. UQC-201 remains In Progress and all unresolved gates open.
+
+
+### Transient systemd shell cleanup confirmed — 2026-09-11
+
+User returns LoadState=not-found and ActiveState=inactive for
+uqc201-shell-hyprland.service. Record successful stop/collection of the temporary
+unit. Manager environment and installed shell unit were not modified by this
+check, so no restoration of those is required. Process propagation/loading passed;
+visual/interaction result for this specific systemd run remains unreported.
+Do not substitute earlier terminal-launch feedback or close shipped-unit/wrapper
+acceptance. Before choosing the next remaining integration batch, obtain this
+one outstanding user observation without relaunching solely for repetition.
+
+GUIDED.md/TASKS.md updated; `git diff --check` passes. No product edits/tests or
+live UI automation. UQC-201 remains In Progress and known defects remain open.
+
+
+### Transient systemd shell visual result / Sway handoff — 2026-09-11
+
+User confirms the systemd-launched shell behaved the same as the earlier scale-1
+run: functional interaction with known topbar frame/background defects. Combined
+with saved PID/environment/maps and confirmed unit cleanup, this completes this
+transient-route observation with explicit visual failures retained. It does not
+establish shipped-unit/wrapper acceptance or resolve scale-1.25 shell behavior.
+
+Next guided batch is Sway in a fresh real tux VT login. Close remaining test apps,
+exit the minimal Hyprland compositor and log tux out before logging in again and
+running guided-session.py sway. Start Settings default at Qt/output scale 1/1 and
+compare keyboard navigation, text editing, scrolling, selectors and placement.
+Record compositor-specific differences rather than requiring repetition of every
+known defect. The new session creates separate disposable configuration/evidence.
+
+Keep Hyprland evidence intact. Private test-bus changes end with that bus; the
+systemd manager was not modified. Existing repair findings, detailed control-origin
+correlation, remaining style/scale and palette checks, shipped-service/wrapper,
+owned Polkit completion and real pre-session greeter acceptance remain pending.
+No full Hyprland or ecosystem acceptance is claimed. Restored Sway config and READY
+marker remain present. GUIDED.md/TASKS.md updated; `git diff --check` passes.
+No product edits/tests or live UI automation. UQC-201 In Progress, initiative Accepted.
+
+
+### Findings consolidation and focus checkpoint — 2026-09-11
+
+[FINDINGS.md](FINDINGS.md) is the canonical register for current repair status,
+reproductions, owners, evidence limits and acceptance criteria. Chronological
+observations above and in GUIDED.md are retained unchanged as historical evidence;
+new observations are recorded once in the register. Broad manual acceptance is
+paused. UQC-204 scope includes both shared form wrappers; remaining repair order is
+Polkit cancellation completion, dropdown interaction, then the other owned packages.
+Sway Settings equivalence is recorded in the register with its evidence limits.
+UQC-201 remains In Progress and initiative Accepted; all existing failures and
+integration gates remain open. Provider handoff and fresh focus kit follow local
+verification and canonical publication.
