@@ -24,7 +24,7 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance pending. |
-| UQC-205 | `holonight-shell` | Owned Polkit completion first, then prompt/identity/askpass repairs | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | In Progress | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. [Manual direct-cancel gate](CANCELLATION.md) remains open. |
 | UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -1666,3 +1666,36 @@ helpers; no services, UI interactions or authentication were triggered on the de
 Next manual request is only [FOCUS.md](FOCUS.md): Settings and AI first/repeated
 Tab/Backtab, including Context → Temperature → Slider, under default/Fusion at
 1.25 in Sway. All unrelated defects remain open. UQC-201 In Progress; Accepted.
+
+
+### UQC-205 A03 cancellation checkpoint — 2026-09-11
+
+Shell baseline `1320f37093e2148a224a4e8fbfaf4ac1b536c6a8` was clean and confirmed
+on canonical origin/main before Ready → In Progress. Scope is A03 only; A01/A02/A04
+remain deferred until after the dropdown checkpoint. Provider `65c806f` and all
+other product gitlinks remain unchanged. The shell build/CI references now match
+that accepted provider.
+
+The [shell-local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md)
+records baseline reproduction, the missing-GError repair, exactly-once lifecycle
+coverage, actual D-Bus reply and bounded requester-exit assertions, four style/scale
+authentication checks, full suite and static/install verification. This checkpoint
+is a locally verified repair handoff, not A03 manual acceptance or ecosystem integration.
+
+[One manual direct-cancel check](CANCELLATION.md) is requested from the fresh kit
+`/tmp/holonight-uqc205-irzzhjcz`, default HoloNight at Qt scale 1.25 in a real tux Sway
+login. Installed private-authority cancellation/requester and shutdown checks pass;
+all 204 staged prefix file hashes and helper syntax are recorded in
+`.cache/holonight-uqc205-irzzhjcz/`. The challenge has a 60-second bound and records
+normal exit, timeout, signal exit and interruption distinctly. Only normal denied
+completion with prompt observation can support A03 closure. Manual observations
+will be recorded once in FINDINGS.md; no result is inferred from releasing the kit.
+
+UQC-201 remains In Progress, initiative Accepted, broad acceptance paused. UQC-206
+remains Planned until A03 acceptance; no dropdown assignment was made.
+
+Shell handoff `9a19a969b9ac7455e4947be40eecfaf1d25307a0` was published to canonical
+origin/main and revalidated with `git ls-remote`; the shell source tree was clean
+before pinning. Final local `task test`: 1163/1163 pass (229.84 s), including the
+installed-launch matrix. Remote CI is not asserted by this local handoff. The
+pre-existing focus-result documentation edits remain unstaged in this session.
