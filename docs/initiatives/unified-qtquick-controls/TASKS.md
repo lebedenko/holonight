@@ -1646,3 +1646,23 @@ Next: release a fresh, focused Settings/AI kit from this provider. Do not modify
 `/tmp/holonight-uqc201-8r1jtlln` or repeat broad Sway/application acceptance.
 UQC-205 Polkit cancellation and UQC-206 dropdown interaction are next; all other
 findings, shipped-service/compositor gates and real pre-session greeter remain open.
+
+
+### Fresh focus-only kit released — 2026-09-11
+
+New kit `/tmp/holonight-uqc201-focus-afv1kwth`, provider `65c806f`, configured
+Settings/AI at unchanged pins. Build/installation results and exact private scripts
+are in `.cache/holonight-uqc201-focus-afv1kwth`. Old released kit/evidence unchanged.
+
+All four installed provider focus style/scale cases pass with host QML/config
+masked; Settings and AI each pass all four installed selector/startup modes with
+private buses and forbidden build discovery. Settings initially could not create
+its private bus socket in the sandbox; rerun with permission passes. Syntax,
+configured service paths, provider-source byte comparison and prefix hashes pass.
+This is focused kit preparation, not an umbrella integration-suite rerun or a
+shipped-service acceptance result. The kit has fresh disposable profile/session
+helpers; no services, UI interactions or authentication were triggered on the desktop.
+
+Next manual request is only [FOCUS.md](FOCUS.md): Settings and AI first/repeated
+Tab/Backtab, including Context → Temperature → Slider, under default/Fusion at
+1.25 in Sway. All unrelated defects remain open. UQC-201 In Progress; Accepted.

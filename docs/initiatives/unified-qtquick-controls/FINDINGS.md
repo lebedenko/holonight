@@ -148,7 +148,8 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
 1. **UQC-204**, holonight-qt: F01–F03; baseline and implementation/verification in
    [local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md).
 2. **UQC-205**, holonight-shell: A03 first, then A01/A02/A04; prepare local lifecycle
-   reproduction and fake-backend completion tests before Ready assignment.
+   reproduction and fake-backend completion tests before Ready assignment. Only A03
+   precedes UQC-206; remaining authentication repairs follow the dropdown checkpoint.
 3. **UQC-206**, holonight-qt: D01–D04; separate popup geometry, delegates and dismissal
    reproductions; do not assume the binding loop explains every symptom.
 4. **UQC-207**, holonight-qt: R01–R04 and F04 investigation; **UQC-208** palette

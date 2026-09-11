@@ -1,7 +1,7 @@
 > Current checkpoint: broad manual acceptance is paused for repairs. Use the
 > [canonical findings register](FINDINGS.md) for current status. The batch requests
 > below are historical; the next request is limited to repaired Settings/AI focus
-> using a fresh kit after the published UQC-204 handoff.
+> using the [fresh focus kit](FOCUS.md) after the published UQC-204 handoff.
 
 # UQC-201 guided acceptance
 
