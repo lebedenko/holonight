@@ -33,7 +33,7 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `4dfa8030df59b896ee7d8ef6a8d6ff6ab960c040` | 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. F06 manual confirmation remains open. |
-| UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Planned | canonical baseline `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-12: inspected browse/search and shared API; Ready requires provider publication and isolated fake-service reproduction. |
+| UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 manual confirmation pending. |
 
 
 Allowed states:
@@ -1840,3 +1840,14 @@ was an earlier inference; preserve font coverage but target Weather for D02 manu
 confirmation. D01/D03/D04 acceptance remains valid. F06 repository work is Done;
 manual confirmation is pending. UQC-214 waits for its isolated reproduction/Ready
 assignment. UQC-201 remains In Progress, initiative Accepted; no broad integration.
+
+
+### Published launcher handoff — 2026-09-12
+
+Accepted shell `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235`, confirmed available on
+canonical origin/main with a clean shell tree. Provider remains published/pinned
+`4dfa803`. The local SDD records the failed stationary-pointer reproduction,
+1167/1167 full CTests, final 9-case compiled checks in both styles/scales, QML
+lint/type results and initial sandbox/import-path failures. Only shell gitlink
+changes at this checkpoint. F07 manual confirmation remains pending; UQC-201
+In Progress, initiative Accepted, broad integration still pending.
