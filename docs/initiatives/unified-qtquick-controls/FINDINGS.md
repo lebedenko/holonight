@@ -28,15 +28,48 @@ were supplied with the plan. Do not infer a complete Sway matrix pass.
 
 Automated repair accepted on 2026-09-11 at published provider `65c806f` (implementation
 `e97b646`). Baseline failed seven of eight cases per style/scale; repaired build and
-installed modules pass eight of eight in all four combinations. F01–F03 remain
-pending the short real Settings/AI keyboard regression; original observations are
-preserved below. No other finding is closed by this handoff.
+installed modules pass eight of eight in all four combinations. The short manual
+regression passed on 2026-09-11 as recorded below: F01/F02 are closed for the
+requested focus repair. F03 eligibility coverage passes automatically, but the
+original app-specific disabled-control attribution remains unconfirmed. Original
+observations are preserved below; unrelated findings remain open.
 
 | ID | Application / context; reproduction | Confirmed facts and suspected cause | Evidence | Acceptance |
 |---|---|---|---|---|
 | F01 | Settings H/F, 1/1.25; edit Weather City then Tab. AI H/F 1.25; first ComboBox traversal then full cycle | Text editing works; first-cycle indicator absent, later cycle restores it. Provider baseline reproduces lost visualFocus from parameterless wrapper forwarding. Sway Settings equivalence reported with limits above. | [Settings](GUIDED.md#evidence-review), [AI clarification](GUIDED.md#ai-fusion-comparison-and-switch-feedback--2026-09-10); private `.cache/uqc201-focus-probe/` | First and repeated Tab/Backtab entries retain owner, reason and visible indicator under both styles. |
 | F02 | AI providers H/F 1.25; Context value → invisible stop → Temperature value → Slider; reverse lacks extra stop | Direction asymmetry reported repeatedly. Labels match Ollama source; user did not confirm provider. HnFormField compound wrapper is a reproduction target. | [AI](GUIDED.md#ai-provider-form-observations--2026-09-10) | Natural child traversal in both directions, no invisible compound stop. |
 | F03 | AI H/F 1.25; traverse provider form | Disabled-control traversal is suspected only, not observed focus ownership. UQC-204 guards hidden/disabled/missing/non-tab children without claiming all app symptoms explained. | [AI](GUIDED.md#ai-provider-form-observations--2026-09-10) | Isolated eligibility regressions pass; app-specific attribution remains conditional. |
+
+### Manual focus acceptance — 2026-09-11
+
+The user reports **“No issues observed”** after all four requested runs from kit
+`/tmp/holonight-uqc201-focus-5ydxn45l`, in session `sway-950ccu53`. This accepts the
+requested Weather City editing and first/repeated forward/reverse focus checks,
+AI Context → Temperature → Slider and reverse, and first/repeated ComboBox entry,
+under default/Fusion at requested Qt scale 1.25 (prepared Sway output scale 1).
+No failing controls were reported. All four returned helper exits are 0.
+
+Evidence paths below are relative to `/home/tux/uqc-guided-evidence/sway-950ccu53/`:
+
+| Application | Requested style / Qt scale | PID | Evidence directory | User result / exit |
+|---|---|---|---|---|
+| Settings | default / 1.25 | 58347 | `settings-1789118907310613383` | Pass / 0 |
+| Settings | Fusion / 1.25 | 58547 | `settings-1789118993555599627` | Pass / 0 |
+| AI | default / 1.25 | 59046 | `ai-1789119657507072702` | Pass / 0 |
+| AI | Fusion / 1.25 | 59186 | `ai-1789119798617406618` | Pass / 0 |
+
+**F01 and F02 closed:** the requested manual behavior now passes alongside the
+previous automated owner/reason/eligibility regressions. **F03:** automated
+eligibility protection is verified; this report does not establish that disabled
+controls caused the original symptom, so that attribution remains unconfirmed.
+This is user-reported interaction and pasted helper evidence, not an independent
+review of saved logs/maps or measurement of effective DPR. Direct read access to
+the supplied evidence directory was denied; no saved-log claims are made.
+
+Providers remain disabled by the prepared profile; no provider requests were
+part of this check. Button activation feedback (F04), VT return (F05), checked
+Switch contrast, dropdown interaction and all other unrelated findings remain
+open. Broad acceptance stays paused; initiative Accepted and UQC-201 In Progress.
 
 Separate focus investigations (not included in UQC-204):
 
@@ -52,7 +85,90 @@ Separate focus investigations (not included in UQC-204):
 | D01 | Settings Appearance H 1.25; hover rows then click former positions. Greeter session selector H 1/1.25 | Rows disappear and cannot be selected there. Weather and Haruna scrollable font dropdown work; not every scrollable list fails. Fusion comparison works. Shared cause unproven. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10), [greeter](GUIDED.md#greeter-demo-default-scale-1-findings--2026-09-10) | Rows stay visible and selectable through hover/scroll; first/last selection works. |
 | D02 | Settings/NeoChat/Tokodon H logs; open selectors | Provider ComboBox.qml popup implicitHeight binding loops confirmed (12 in Settings); no proof this causes D01. | [log review](GUIDED.md#hyprland-evidence-correlation--2026-09-10) | Reproduce affected geometry; no height loop and bounded usable popup. |
 | D03 | Settings H 1.25, Haruna H 1/1.25, NeoChat H 1; open popup then click outside | Outside does not close; item choice/collapsed area/Escape close Settings. Haruna Fusion outside closes; NeoChat Fusion result unspecified. Sway Settings equivalent. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10), [Haruna](GUIDED.md#haruna-default-scale-1-observations--2026-09-10), [NeoChat](GUIDED.md#neochat-logged-out-settings--palette-transition--2026-09-10) | Outside click dismisses according to popup policy without selecting a row. |
-| D04 | Settings H 1.25; reopen selected ComboBox | Selected item not focused on opening; visibility, highlight and actual focus still need separation. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10) | Current row visible, correctly highlighted and keyboard navigation begins from expected selection. |
+| D04 | Settings H 1.25; reopen selected ComboBox | User clarifies list starts at the beginning; selected row may be onscreen or offscreen and is not highlighted. Strengthened baseline fixture reproduces an invisible selected row owned by the hidden inherited list; scroll reset itself remains unconfirmed automatically. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10) | Current row visible, correctly highlighted and keyboard navigation begins from expected selection. |
+
+### UQC-206 local dropdown repair checkpoint — 2026-09-12
+
+The [provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md)
+records isolated D01/D03 failures, the local repair and verification. A replaced
+inherited popup was consuming the active popup's delegates; both lists now guard
+model ownership. Overlay parenting made outside-parent dismissal ineffective;
+explicit outside-popup dismissal with modal, undimmed input fixes that route and
+prevents collapsed-click reopening. Ten interaction cases pass in each of four
+style/scale processes, and all 69 provider checks including installed consumers pass.
+
+D01/D03 remain open for manual acceptance. D02 binding loop is not reproduced by
+these fixtures; D04 isolated visibility/highlight/keyboard checks already pass on
+baseline, so app-specific interpretation remains pending. No finding is closed,
+no new kit is released and no gitlink changes. Retained source and evidence under
+`.cache/uqc206/` survive reboot; accepted focus and cancellation results stand.
+
+### D04 clarification and stronger reproduction — 2026-09-12
+
+User clarifies that reopening starts the list at the beginning, with no selected-row
+highlight whether that row is onscreen or offscreen. This supersedes the ambiguous
+"not focused" description; it is not a report about arrow-key starting position.
+
+The prior test checked highlight state and list-local coordinates but missed actual
+visibility and scene containment. Adding those assertions reproduces an invisible
+selected HnIconComboBox row on baseline under both mouse and keyboard opening.
+The hidden inherited list owns that delegate, linking this reproduced part of D04
+to D01. Mouse opening alone did not expose it. The existing ownership repair passes the stronger coverage: 12 dropdown cases in
+each style/scale process, composite/geometry and installed-consumer checks (7/7
+CTests). No new product QML change is needed.
+Scroll reset and full manual D04 acceptance remain open. See the provider SDD.
+
+### Manual dropdown acceptance and remaining height loop — 2026-09-12
+
+The user completed four runs (two applications × two styles) from candidate kit
+`/tmp/holonight-uqc206-wou7oqyf` and reports that dropdowns work well with both mouse
+and keyboard. This accepts the requested reopen/selected-row, hover/scroll,
+first/last selection and dismissal checks for the tested Settings Appearance and
+greeter demo selectors. All four exits are 0. D01, D03 and D04 are **closed for this
+owned-application dropdown checkpoint**; third-party and final ecosystem gates are
+not closed by it. The new stationary-pointer findings below remain separate.
+
+Paths are relative to `/home/tux/uqc-guided-evidence/sway-7m7cgmn7/`:
+
+| Application | Verified selector / requested Qt scale | PID | Evidence directory | User result / exit |
+|---|---|---|---|---|
+| Settings | embedded default / 1.25 | 329367 | `settings-1789234977224144508` | Pass / 0 |
+| Settings | Fusion / 1.25 | 329571 | `settings-1789235104546994351` | Pass / 0 |
+| Greeter demo | embedded default / 1.25 | 329701 | `greeter-1789235475914841486` | Pass / 0 |
+| Greeter demo | Fusion / 1.25 | 329776 | `greeter-1789235646987834678` | Pass / 0 |
+
+Read-only review via authorized sudo confirms executable paths, commands, selectors,
+scale environment and exits. Maps identify candidate Core/Controls/impl in all
+four and candidate HoloNight style in the default runs. This is loading evidence,
+not independent observation of interactions or measured DPR. `LD_LIBRARY_PATH` is
+absent in all saved process environments and config maps point to
+`/usr/lib/libholonight_config.so`; the manual kit did not preserve fully isolated
+config-library loading despite the staged paths used by preparation checks. Keep
+this deployment limitation explicit; do not claim a fully staged runtime pass.
+
+**D02 remains open:** Settings default has six `QML Popup: Binding loop detected
+for property "implicitHeight"` warnings at `qrc:/qt/qml/Holonight/ComboBox.qml:109:12`.
+The other three logs have no matches for the bounded binding-loop/type/reference/
+assignment/failed-component diagnostic search. User-reported functional success
+does not establish absence of warnings. Review summary is retained privately in
+`.cache/uqc206/manual-review.jsonl`; original logs remain in the tux evidence directory.
+The provider is still an unpublished working-tree candidate. No pin/publication or
+full UQC-206 completion follows from this acceptance.
+
+## Pointer and keyboard interaction — new findings, 2026-09-12
+
+| ID | Reproduction / observed result | Owner and evidence | Acceptance |
+|---|---|---|---|
+| F06 | Open a dropdown by keyboard with an unknown/stationary pointer over its rows, or switch from mouse to keyboard. Two rows look highlighted: keyboard selection and pointer hover. User reports visual-only impact and similar behavior across HoloNight apps. | holonight-qt investigates shared delegate feedback; broad app scope is user-reported, not independently enumerated. ItemDelegate and icon-composite backgrounds render hover separately from highlight/current state. | Keyboard interaction has one unambiguous active-row indication; a stationary pointer does not introduce a competing active-looking row. Deliberate pointer movement/click still restores normal mouse interaction. |
+| F07 | Open launcher with stationary pointer inside its unfiltered results, then Enter expecting the initial first item. Another item under the pointer can launch. | holonight-shell owns functional selection. Source review finds browse and search result `onHoveredChanged` handlers unconditionally calling `LauncherService.setSelectedIndex` on hover. Live event ordering and exact default selection still need isolated reproduction. This is selection change, not proof that keyboard focus moved. | Opening beneath a stationary pointer preserves intended initial selection/Enter target; keyboard navigation remains authoritative until deliberate pointer movement or click. Cover browse/search, filtering, reopen and pointer reentry without launching real applications. |
+
+Proposed shared input policy: keyboard opening/navigation retains control of the
+active row until deliberate pointer movement or clicking. Showing/moving content
+beneath an unchanged pointer must not count as that movement. Preserve mouse
+clicks and ordinary hover after intentional movement; avoid globally disabling
+hover or conflating selected/current/checked/keyboard-focus states. Provider visual
+feedback and shell selection need separate reproductions and repository-local SDDs
+before assignment. These findings do not reopen the accepted D01/D03/D04 repair.
 
 ## Shared rendering — holonight-qt investigation/repair package
 
@@ -181,7 +297,26 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
 5. **UQC-209**, holonight-settings: L01; **UQC-210**, holonight-ai: L02;
    **UQC-211**, holonight-shell: S01/S02; **UQC-212**, holonight-greeter: G01–G06.
 
-UQC-205 is Done for A03 only. Packages 206–212 remain Planned investigation/repair
-packages, not Ready assignments. UQC-206 [preparation](UQC-206.md) is available.
-Each needs its own local SDD, exact canonical baseline and reproduction before work
-starts. F05 and C01–C06 remain umbrella investigations until ownership is settled.
+UQC-205 is Done for A03 only. UQC-206 is In Progress with its [provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md),
+canonical baseline and isolated reproductions. Packages 207–212 remain Planned
+investigation/repair packages, not Ready assignments. Each needs its own local
+SDD, exact canonical baseline and reproduction before work starts. F05 and C01–C06 remain umbrella investigations until ownership is settled.
+F06 (provider visual input feedback) and F07 (shell launcher selection) are new
+planned investigations; no implementation assignment or baseline is implied.
+
+
+### D02 context correction and provider handoff — 2026-09-12
+
+Reading the surrounding original Settings log identifies all six warning sites
+as Weather page ComboBoxes (provider, location source, temperature, wind, pressure,
+refresh interval), not Appearance font selectors. The user reports no console
+warnings; the app helper redirected diagnostics to launch.log. The kit's verbose
+viewport logging exposes the sizing cycle during construction. Provider UQC-206
+records a failing reduced regression and the demand/viewport separation repair.
+Font model/reset/replacement coverage remains compatibility evidence.
+
+Published provider `4dfa803` includes D02 sizing and separate UQC-213 F06 policy.
+73/73 provider tests plus final focused/installed acceptance pass. D02 stays open
+until the actual Settings Weather path is warning-free in the fresh isolated kit.
+F06 stays open for manual confirmation. D01/D03/D04 remain accepted. F07 shell
+implementation and new kit preparation follow; no manual result is inferred.
