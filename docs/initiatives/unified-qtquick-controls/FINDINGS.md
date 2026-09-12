@@ -90,8 +90,32 @@ Separate focus investigations (not included in UQC-204):
 |---|---|---|---|---|
 | A01 | Owned Polkit H; open user selector in isolated run | Two reserved but blank identity rows. Custom avatar/text delegate uses model roles; independent from D01. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10), private auth run `20260910T192833Z` | Correct identity labels/avatars and selection from actual model roles. |
 | A02 | Same run; failed submission shows error | Input disappears, Password label remains. Label/input visibility conditions differ; lifecycle/retry needs reproduction. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10) | Label and editor visibility track supported prompt/error/retry lifecycle. Do not solicit another failed credential submission. |
-| A03 | Same run after failure; Cancel prompt | Prompt closes but Python challenge hangs until Ctrl+C. Agent exit 0 verified; challenge.txt absent, no normal completion. UQC-205 baseline reproduction locates missing listener GError: coordinator completion occurs, but libpolkit cannot reply. Typed cancellation error repairs the automated path. | [hang](GUIDED.md#owned-agent-cancellation-completion-failure--2026-09-10), [repair/verification](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Deterministic cancellation completes pending request exactly once and parent exits; cover failure-then-cancel and direct cancel with isolated fake backend. Automated checks pass; [fresh manual direct cancel](CANCELLATION.md) remains required. |
+| A03 | Same run after failure; Cancel prompt | Prompt closes but Python challenge hangs until Ctrl+C. Agent exit 0 verified; challenge.txt absent, no normal completion. UQC-205 baseline reproduction locates missing listener GError: coordinator completion occurs, but libpolkit cannot reply. Typed cancellation error repairs the automated path. | [hang](GUIDED.md#owned-agent-cancellation-completion-failure--2026-09-10), [repair/verification](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Deterministic cancellation completes pending request exactly once and parent exits; cover failure-then-cancel and direct cancel with isolated fake backend. **Closed**: automated completion checks and [manual cancellation result](#manual-polkit-cancellation-acceptance--2026-09-12) pass. |
 | A04 | Askpass F 1.25; inspect unfocused/focused editor then cancel | Left border appears half thickness; focused ring intact, cancel exit 1. Shell supplies Rectangle background; clipping/fractional position suspected only. | [border](GUIDED.md#owned-askpass-fusion-scale-125-border-finding--2026-09-10) | Uniform intended border at fractional scale without breaking cancellation/focus. |
+
+### Manual Polkit cancellation acceptance — 2026-09-12
+
+In response to the requested direct-cancel check from kit
+`/tmp/holonight-uqc205-irzzhjcz`, the user returned:
+
+- Challenge: `normal-exit`, exit `126`.
+- Evidence: `/home/tux/uqc-auth-evidence/20260912T002338Z/challenge.txt`.
+- After challenge completion, Ctrl+C stopped the agent with exit `0`.
+
+This is the returned result for the requested fresh real tux Sway login using
+default HoloNight at Qt scale 1.25, without credential entry. The challenge returned
+before agent cleanup; neither timeout nor Ctrl+C was needed to complete it.
+The supplied excerpt does not separately describe prompt closure or repeat the
+registration PASS line. The released helper requires verified live registration
+before requesting the challenge. Direct read access to the evidence file was denied;
+this records the user's pasted result, not independent saved-log inspection.
+
+**A03 closed:** the returned manual cancellation result, together with the verified
+exactly-once direct/failure-then-cancel, D-Bus reply, bounded requester exit, queued
+request and shutdown regressions in the [shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md),
+satisfies the completion gate. No repeat or failed credential submission is requested.
+A01/A02/A04 remain open after the dropdown checkpoint. UQC-201 remains In Progress,
+the initiative Accepted, and broad acceptance paused.
 
 ## Greeter — holonight-greeter (demo evidence only)
 
@@ -131,8 +155,9 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
   the user. Original default scale-1 interaction/cancel result is user-only;
   `askpass-scale125.log` never existed separately. Fusion logs are separate. See
   [clarification](GUIDED.md#connection-verification--askpass-log-clarification--2026-09-10).
-- Owned Polkit challenge completion record is absent. No cancellation success is
-  inferred from prompt closure or the agent's successful exit.
+- The original owned Polkit challenge completion record remains absent. A03 is
+  closed by the subsequent [manual cancellation result](#manual-polkit-cancellation-acceptance--2026-09-12)
+  and automated regression checks; the original failure evidence is preserved.
 - Positive package-manager and askpass observations retain their limited tested
   surfaces; no exhaustive pass. Account-dependent third-party surfaces untested.
 - Process maps prove native loading, not every created Control origin. Direct
@@ -140,16 +165,15 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
   shipped-service/wrapper acceptance. Transient unit cleanup is confirmed; manager
   environment was unchanged. Preserve earlier failures in INTEGRATION.md.
 - Remaining compositor/style/scale cases, palette round trips, shipped services,
-  owned Polkit completion and real pre-session greeter acceptance remain explicit
+  other authentication checks and real pre-session greeter acceptance remain explicit
   integration gates. No broad acceptance restart or full Sway repetition now.
 
 ## Repair order and repository packages
 
 1. **UQC-204**, holonight-qt: F01–F03; baseline and implementation/verification in
    [local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md).
-2. **UQC-205**, holonight-shell: A03 first, then A01/A02/A04; prepare local lifecycle
-   reproduction and fake-backend completion tests before Ready assignment. Only A03
-   precedes UQC-206; remaining authentication repairs follow the dropdown checkpoint.
+2. **UQC-205**, holonight-shell: A03 complete; see the manual acceptance above.
+   A01/A02/A04 remain pending after the UQC-206 dropdown checkpoint.
 3. **UQC-206**, holonight-qt: D01–D04; separate popup geometry, delegates and dismissal
    reproductions; do not assume the binding loop explains every symptom.
 4. **UQC-207**, holonight-qt: R01–R04 and F04 investigation; **UQC-208** palette
@@ -157,6 +181,7 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
 5. **UQC-209**, holonight-settings: L01; **UQC-210**, holonight-ai: L02;
    **UQC-211**, holonight-shell: S01/S02; **UQC-212**, holonight-greeter: G01–G06.
 
-Packages 205–212 are Planned investigation/repair packages, not Ready assignments.
+UQC-205 is Done for A03 only. Packages 206–212 remain Planned investigation/repair
+packages, not Ready assignments. UQC-206 [preparation](UQC-206.md) is available.
 Each needs its own local SDD, exact canonical baseline and reproduction before work
 starts. F05 and C01–C06 remain umbrella investigations until ownership is settled.

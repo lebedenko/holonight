@@ -1,6 +1,8 @@
 # UQC-205 — one manual direct-cancel check
 
-A03 only. A01/A02/A04 remain pending. Broad acceptance stays paused.
+Completed on 2026-09-12: see the [canonical manual result](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12).
+No repeat is requested. Instructions below are retained for reference.
+A01/A02/A04 remain pending. Broad acceptance stays paused.
 Ready kit: `/tmp/holonight-uqc205-irzzhjcz`. Installed private-authority cancellation and shutdown checks pass.
 Provider remains `65c806f`; default HoloNight, Qt scale 1.25, Sway output scale 1.
 

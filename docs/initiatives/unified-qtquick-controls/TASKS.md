@@ -24,8 +24,8 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance pending. |
-| UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | In Progress | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. [Manual direct-cancel gate](CANCELLATION.md) remains open. |
-| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
+| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | [Investigation preparation](UQC-206.md) available; local SDD, canonical baseline revalidation and reproductions required before Ready. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-209 | `holonight-settings` | Settings slider geometry investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -1613,7 +1613,7 @@ known defect. The new session creates separate disposable configuration/evidence
 Keep Hyprland evidence intact. Private test-bus changes end with that bus; the
 systemd manager was not modified. Existing repair findings, detailed control-origin
 correlation, remaining style/scale and palette checks, shipped-service/wrapper,
-owned Polkit completion and real pre-session greeter acceptance remain pending.
+other authentication checks and real pre-session greeter acceptance remain pending.
 No full Hyprland or ecosystem acceptance is claimed. Restored Sway config and READY
 marker remain present. GUIDED.md/TASKS.md updated; `git diff --check` passes.
 No product edits/tests or live UI automation. UQC-201 In Progress, initiative Accepted.
@@ -1699,3 +1699,21 @@ origin/main and revalidated with `git ls-remote`; the shell source tree was clea
 before pinning. Final local `task test`: 1163/1163 pass (229.84 s), including the
 installed-launch matrix. Remote CI is not asserted by this local handoff. The
 pre-existing focus-result documentation edits remain unstaged in this session.
+
+
+### UQC-205 accepted; UQC-206 preparation — 2026-09-12
+
+The [canonical manual result](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12)
+closes A03 and completes UQC-205's A03-only scope. Historical failed observations
+remain intact. No product files or gitlinks changed for this documentation update;
+shell remains `9a19a96`, provider `65c806f`.
+
+The [UQC-206 investigation preparation](UQC-206.md) separates D01–D04 reproductions
+and identifies existing provider ownership and coverage. It remains Planned: a
+provider-local SDD, canonical baseline revalidation and reproductions are still
+required before Ready assignment. No dropdown repair has started. A01/A02/A04 stay
+pending; UQC-201 In Progress, initiative Accepted, broad acceptance paused.
+
+Verification: documentation links and `git diff --check`. No product tests rerun
+for this documentation-only acceptance record. Existing focus-result edits remain
+unstaged and preserved.
