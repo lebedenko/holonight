@@ -320,3 +320,20 @@ Published provider `4dfa803` includes D02 sizing and separate UQC-213 F06 policy
 until the actual Settings Weather path is warning-free in the fresh isolated kit.
 F06 stays open for manual confirmation. D01/D03/D04 remain accepted. F07 shell
 implementation and new kit preparation follow; no manual result is inferred.
+
+### Next-iteration automated evidence / manual gate — 2026-09-12
+
+Fresh final kit: `/tmp/holonight-uqc206-qa20p_jh`, published provider `4dfa803` and
+shell `f55cb5f`. D02's actual Settings Appearance/Weather lifecycle is warning-free
+under the triggering viewport diagnostics in four style/scale cases. Twelve
+actual app processes show candidate-prefix HoloNight/config libraries; missing
+runtime evidence and host fallback now explicitly fail isolation. This resolves
+the previous kit's automated isolation limitation, not its historical evidence.
+
+F06 window policy and F07 deliberate launcher hit-testing have passing provider
+and fake-service/Enter-target regressions. Manual confirmation remains pending;
+use the fresh kit's README for Settings/greeter both styles and launcher
+browse/search, filtering and reopen with a stationary pointer. D01/D03/D04 remain
+accepted; repeat only checks affected by sizing/input changes. No unrelated
+UQC-207 finding or broad ecosystem gate is closed. The ledger records the exact
+archive, restore command, checksums and test logs.

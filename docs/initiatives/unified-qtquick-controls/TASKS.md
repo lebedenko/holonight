@@ -1851,3 +1851,53 @@ canonical origin/main with a clean shell tree. Provider remains published/pinned
 lint/type results and initial sandbox/import-path failures. Only shell gitlink
 changes at this checkpoint. F07 manual confirmation remains pending; UQC-201
 In Progress, initiative Accepted, broad integration still pending.
+
+### Fresh dropdown/input kit and isolation evidence — 2026-09-12
+
+Released `/tmp/holonight-uqc206-qa20p_jh` from published provider `4dfa803` and
+shell `f55cb5f`, with Settings/greeter at unchanged pins. The kit's generated
+`README.md` contains the concrete [targeted manual request](INPUT.md). Existing
+`wou7oqyf` kit/evidence and the intermediate `iipfhve5` archive are preserved.
+No broad integration tests or live desktop pointer/focus automation were run.
+
+Actual Settings acceptance enters Appearance and Weather with viewport debug
+logging enabled and passes without the reproduced binding loop in both styles
+at Qt scales 1 and 1.25. Twelve Settings/greeter/shell runtime inspections also
+pass: selected environment and actual mappings show staged HoloNight libraries,
+including config, and no host provider fallback. Shell inspections use a private
+headless compositor; no real app launch is used for launcher selection tests.
+Installed dropdown/input regressions, four Settings startup modes and four
+greeter startup modes pass with host HoloNight QML/libraries masked.
+
+The app-launch helper explicitly restores LD_LIBRARY_PATH for every child and
+writes `isolation.json`; missing evidence or host/outside-prefix mappings are
+incomplete checks. Five Python regressions cover mapping requirements/fallback
+and launcher supervisor termination. The initial wrapper lost evidence on Ctrl+C;
+the supervisor regression fails on the intermediate kit and passes with exec-based
+handoff. A new kit was built instead of mutating that released intermediate kit.
+
+Persistent archive:
+`.cache/holonight-uqc206-qa20p_jh/holonight-uqc206-qa20p_jh.tar.gz`
+
+Archive SHA-256:
+`0dca74b803e01bc18ee8f8221ec8cd40ad0a474cf47a926cee389b051f222759`
+
+Reboot restoration from the umbrella, before switching to tux:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-dropdown-kit.py \
+  .cache/holonight-uqc206-qa20p_jh/holonight-uqc206-qa20p_jh.tar.gz
+```
+
+The restore was exercised at the exact original path; 244 file hashes pass and
+its original directory is retained with `-before-restore` suffix. Four refusal
+checks protect wrong-session launches and existing released/restored kits.
+Preparation scripts, commands, initial sandbox failure, permitted rerun, runtime
+logs, final checks and refusal results are retained under that `.cache` directory
+and `.cache/uqc206/input-kit-*`. Prior kit checksums remain valid. Source syntax,
+Python tests and whitespace checks pass. The released directory is immutable.
+
+D02 has warning-free affected-application automated evidence; the targeted real
+session remains the confirmation checkpoint. F06/F07 remain open until returned
+manual observations support closure. D01/D03/D04 acceptance is preserved. UQC-201
+stays In Progress and initiative Accepted, with broad integration pending.

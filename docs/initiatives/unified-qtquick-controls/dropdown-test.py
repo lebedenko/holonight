@@ -15,11 +15,12 @@ def main():
     kit = Path(__file__).resolve().parent
     if os.environ.get("UQC_KIT") != str(kit) or not (kit / "READY").is_file():
         parser.error("run this kit's guided-session.py from a fresh tux VT login first")
-    print("Settings: Appearance font dropdowns. Greeter demo: session dropdown.\n"
-          "Select a middle or last row, close and reopen with mouse, then keyboard.\n"
-          "Check selected row visibility/highlight, hover/scroll, first/last selection,\n"
-          "outside dismissal and Escape. Record each result and exact selector.\n"
-          "Close the application when finished; retain its printed evidence path.", flush=True)
+    print("""Settings: visit Weather first (all six selectors), then Appearance fonts.
+Greeter demo: session dropdown. Check keyboard navigation with the pointer
+left over a different row; move within that row to restore hover.
+Check immediate clicks, selected-row visibility on reopen and dismissal.
+Compare one button and one selected delegate with keyboard authority.
+Close the application when finished; retain its printed evidence path.""", flush=True)
     return subprocess.call(["python3", str(kit / "guided-app.py"), args.application,
                             "--style", args.style, "--scale", args.scale])
 

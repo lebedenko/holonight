@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a fresh, unpublished dropdown candidate kit; retain commands across reboots."""
+"""Build a fresh dropdown/input verification kit; retain commands across reboots."""
 import argparse
 import ast
 import hashlib
@@ -57,14 +57,17 @@ def main():
     for name in ("settings", "greeter"):
         build = work / "build" / name
         run(name + "-configure", ["cmake", "-S", root / ("holonight-" + name), "-B", build,
-                                 "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Debug", "-DBUILD_TESTS=OFF",
+                                 "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Debug",
+                                 "-DBUILD_TESTS=" + ("ON" if name == "settings" else "OFF"),
                                  "-DBUILD_TESTING=OFF", "-DCMAKE_INSTALL_LIBDIR=lib",
                                  f"-DCMAKE_PREFIX_PATH={prefix}", f"-DCMAKE_INSTALL_PREFIX={prefix}"])
-        run(name + "-build", ["cmake", "--build", build, "-j", "4"])
+        targets = ["--target", "holonight-settings", "settings_controls_acceptance"] if name == "settings" else []
+        run(name + "-build", ["cmake", "--build", build, "-j", "4", *targets])
         run(name + "-install", ["cmake", "--install", build])
+    run("shell-install", ["cmake", "--install", root / "holonight-shell/build", "--prefix", prefix])
 
     # Keep the established real-VT/private-bus/disposable-profile session contract.
-    for name in ("guided-session.py", "guided-app.py", "dropdown-test.py"):
+    for name in ("guided-session.py", "guided-app.py", "dropdown-test.py", "launcher-test.py", "verify-input-kit.py"):
         shutil.copy2(docs / name, kit / name)
     shutil.copy2(root / "holonight-qt/docs/sdd/unified-qtquick-controls/audit/auth-test/terminal.sh", kit)
     terminal = f"/bin/sh {kit}/terminal.sh"
@@ -78,7 +81,7 @@ def main():
         "bind = SUPER SHIFT, E, exit,\nbind = SUPER, Q, killactive,\n")
     inventory = subprocess.check_output(["pacman", "-Q", "qt6-base", "qt6-declarative",
                                          "hyprpolkitagent", "sway", "hyprland"], text=True)
-    (kit / "PROVIDER.txt").write_text("UNPUBLISHED working-tree candidate, not an integration pin.\n" + inventory)
+    (kit / "PROVIDER.txt").write_text("Focused verification candidate from recorded revisions; not ecosystem integration.\n" + inventory)
     revisions = {}
     for name in ("holonight-config", "holonight-system-services", "holonight-shell", "holonight-qt",
                  "holonight-settings", "holonight-greeter"):
@@ -97,10 +100,11 @@ def main():
         for scale in ("1", "1.25"):
             run(f"dropdown-{style}-{scale}", mask + ["--", "env", "QT_QPA_PLATFORM=offscreen",
                 "QT_QPA_PLATFORMTHEME=", "QT_QUICK_BACKEND=software", "QT_QUICK_CONTROLS_CONF=",
+                "QT_LOGGING_RULES=qt.quick.viewport.debug=true",
                 f"QT_QUICK_CONTROLS_STYLE={style}", f"QT_SCALE_FACTOR={scale}",
                 f"UQC_IMPORT_PATH={prefix}/lib/qt6/qml",
                 root / "holonight-qt/build/tests/holonight_runtime_composite_tests",
-                "--gtest_filter=Controls/DropdownInteraction.*"], env)
+                "--gtest_filter=InputInteraction*.*:Controls/DropdownInteraction.*"], env)
     isolated = mask + ["--setenv", "UQC_ISOLATED", "1", "--", "python3",
                        root / "holonight-shell/scripts/run-isolated-test.py"]
     for mode in ("default", "environment", "command-line", "configuration"):
@@ -108,6 +112,10 @@ def main():
             prefix / "bin/holonight-settings", prefix / "lib/qt6/qml", mode, "--forbid-qml-root", root], env)
     run("greeter-launches", mask + ["--", "python3", root / "holonight-greeter/scripts/check-runtime-launches.py",
         prefix / "bin/holonight-greeter", prefix, "--forbid-path", root, "--logs", work / "logs/greeter-launches"], env)
+    run("runtime-isolation", isolated + ["python3", kit / "verify-input-kit.py", kit,
+        "--settings-acceptance", work / "build/settings/apps/settings/settings_controls_acceptance",
+        "--logs", work / "logs/runtime"], env)
+    run("evidence-regressions", ["python3", root / "tests/test_guided_app.py"])
     for source, installed in (("qml/ComboBox.qml", "Holonight/ComboBox.qml"),
                               ("qml/controls/HnIconComboBox.qml", "Holonight/Controls/HnIconComboBox.qml")):
         assert (root / "holonight-qt" / source).read_bytes() == (prefix / "lib/qt6/qml" / installed).read_bytes()
@@ -115,11 +123,11 @@ def main():
         ast.parse(path.read_text())
     run("terminal-syntax", ["sh", "-n", kit / "terminal.sh"])
     run("launcher-help", ["python3", kit / "dropdown-test.py", "--help"])
-    shutil.copy2(docs / "DROPDOWNS.md", kit / "README.md")
+    (kit / "README.md").write_text((docs / "INPUT.md").read_text().replace("__KIT__", str(kit)))
     checksums = [f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(kit)}"
                  for path in sorted(kit.rglob("*")) if path.is_file()]
     (kit / "SHA256SUMS").write_text("\n".join(checksums) + "\n")
-    (kit / "READY").write_text("Verified unpublished dropdown candidate; see provider.patch and revisions.json.\n")
+    (kit / "READY").write_text("Verified dropdown/input candidate; see revisions.json, SHA256SUMS and retained runtime evidence.\n")
     archive = work / (kit.name + ".tar.gz")
     with tarfile.open(archive, "w:gz") as saved:
         saved.add(kit, arcname=kit.name)
