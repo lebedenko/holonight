@@ -411,3 +411,46 @@ limit and the earlier failed reports. No new evidence paths were supplied and no
 runtime logs were inspected for this acceptance. Do not infer fresh Fusion,
 launcher F07, Weather D02, or broad ecosystem acceptance. UQC-201 remains In
 Progress and the initiative Accepted. Released kit/archive remain unchanged.
+
+### Settings and launcher manual results — 2026-09-13
+
+The user reports testing Settings and launcher under HoloNight and Fusion: everything
+works as expected, no visual defects, and the pointer did not steal focus. Accept
+the requested interaction/visual checks as user-confirmed; this wording does not
+establish a separate keyboard-focus defect or expand ecosystem acceptance.
+
+Recovered session `/home/tux/uqc-guided-evidence/sway-h9vkfryf` from `/tmp/res.txt`
+using user-authorized read-only `sudo -A`. Identity records active local tux UID 1001,
+seat0, tty3, session 7; command uses the immutable `06_tsrg6` Sway config (output
+scale 1). All three PID records show Qt scale 1.25 and staged executables, imports
+and libraries; all isolation.json results are verified with no problems.
+
+| Run directory under that session | PID / style | Result |
+|---|---|---|
+| `settings-1789325822693874587` | 229302 / embedded HoloNight | Exit 0; WeatherPage and selector activity present, 2476 viewport diagnostic lines, zero height binding loops or TypeError/ReferenceError/SyntaxError/assignment/type failures. D02 Settings checkpoint accepted with the user's successful visual result. |
+| `shell-1789326143300249901` | 229986 / embedded HoloNight | Verified staged loading; exit -2 matches saved Ctrl+C transcript. F07 interaction accepted for this style. |
+| `shell-1789328881496739096` | 240099 / explicit Fusion | Recovered third run; verified staged loading and user-confirmed interaction. exit.txt absent; log ends with broken Wayland connection. The user confirms deliberately ending the session after testing. Classify this as deliberate session shutdown; numeric exit remains unavailable. F07 accepted. |
+
+Settings Fusion is user-reported only; no separate Settings Fusion run is present
+in this session. It is not required for the targeted D02 HoloNight diagnostic gate.
+Settings retains a host-portal registration diagnostic unrelated to popup sizing.
+Shell logs retain missing Hyprland-signature warnings on Sway, one unexpected
+wl_keyboard.leave warning in HoloNight, and Fusion's final broken-connection warning.
+Compositor tail has DRM atomic/page-flip busy errors and client broken connections;
+the user independently confirms deliberately ending the session after testing.
+Do not treat these diagnostics as a launcher crash or erase them from later session review. Preserve
+these for session investigations without attributing an F07 selection failure.
+
+Log SHA-256 values, in table order:
+
+- `fcf6611f7a80053cabccb70d1b005e4a59a525fd958ad6eff581725f5afd0fe4`
+- `ee35328e5d325d994cb18bc49b96c33c8f36503b9b48d5aee8efd3ac127069b4`
+- `8b17e6432e2e138a4a27ecb5881aea2e689fb01fa67c3e28e892f64a4b82eb65`
+
+D01/D03/D04 and F06 acceptance is preserved. UQC-206's owned-application checkpoint
+is complete; NeoChat/Tokodon diagnostics remain UQC-201 gates. F07 behavior passes
+both styles. The user confirms: "I deliberately ended the session after testing".
+This resolves the shutdown classification while retaining missing numeric exit
+evidence as a limitation. F07 is closed and Batch 1 is complete. No repeated
+interaction run is requested. Batch 2 authentication follows; UQC-201 remains In
+Progress and the initiative Accepted.

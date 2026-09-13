@@ -25,6 +25,10 @@ Missing evidence leaves its gate pending. Do not automate desktop pointer or foc
 
 ## Batch 1 manual runs
 
+Update 2026-09-13: Batch 1 is complete. D02 and F07 are accepted, all three
+runtime paths were recovered, and the user confirms deliberate Fusion session
+shutdown (numeric exit unavailable). Do not repeat the checks below. See [results](FINDINGS.md#settings-and-launcher-manual-results--2026-09-13).
+
 Use the immutable `/tmp/holonight-uqc206-06_tsrg6` kit. READY, all 244 hashes and
 recorded package versions were verified on 2026-09-13. Implementation is provider
 `2965d8d`, shell `f55cb5f`; provider `68b7069` adds only tests/documentation.

@@ -7,8 +7,10 @@ Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greete
 UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is In Progress for automated integration and manual-kit work.
 
 Current execution order and remaining gates: [eight-batch roadmap](BATCHES.md).
-D01/D03/D04, A03 and the reported F06 sequence remain accepted. Batch 1 awaits D02
-Settings Weather evidence and F07 HoloNight/Fusion manual results. Dated entries below
+D01/D03/D04, A03 and the reported F06 sequence remain accepted. D02 Settings Weather and F07 both styles are accepted. The user confirms deliberate
+Fusion session shutdown; missing numeric exit evidence remains documented. Batch 1
+is complete; Batch 2 authentication follows. See the latest
+[manual results](FINDINGS.md#settings-and-launcher-manual-results--2026-09-13). Dated entries below
 retain historical states; current table entries and canonical FINDINGS.md acceptances take precedence.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
@@ -30,7 +32,7 @@ retain historical states; current table entries and canonical FINDINGS.md accept
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance completed for F01/F02; see [canonical result](FINDINGS.md#manual-focus-acceptance--2026-09-11). F03 app-specific attribution remains unconfirmed. |
 | UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
-| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | In Progress | `65c806fb6a65cae9652dde7a69d595813973c1a9`, canonical origin/main confirmed 2026-09-12 | Provider repairs published; D01/D03/D04 manually accepted. D02 actual Settings Weather diagnostics and bounded-popup confirmation remain pending; third-party warnings stay in UQC-201. |
+| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | Done | Repair `975bf09`; published provider handoff `68b7069` | Provider repairs published; D01/D03/D04 manually accepted. D02 Settings Weather manual result and completed diagnostic log accepted 2026-09-13; third-party warnings stay in UQC-201. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-209 | `holonight-settings` | Settings slider geometry investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -38,7 +40,7 @@ retain historical states; current table entries and canonical FINDINGS.md accept
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 reported Settings/greeter HoloNight sequence manually accepted 2026-09-13; see canonical findings. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. The later reported HoloNight sequence acceptance supersedes the historical pending status. |
-| UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 manual confirmation pending. |
+| UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 interaction manually passes both styles on 2026-09-13 with staged runtime verified; user confirms deliberate Fusion session shutdown (numeric exit unavailable). F07 accepted. |
 
 
 Allowed states:
@@ -2029,3 +2031,14 @@ Shell remains `f55cb5f`. Sandbox SSH access initially failed; permitted publicat
 and canonical confirmation succeeded. The umbrella checkpoint records clarification,
 F06 acceptance and this provider gitlink; earlier pending checkpoints are published
 with it. No D02/F07 result is inferred. Follow the three runs in [BATCHES.md](BATCHES.md).
+
+### Batch 1 manual evidence recovered — 2026-09-13
+
+[Canonical results](FINDINGS.md#settings-and-launcher-manual-results--2026-09-13)
+record the user observations, all three recovered paths, PID/style/isolation checks,
+Settings diagnostic scan, log hashes and remaining Fusion exit-evidence limitation.
+UQC-206 owned-app checkpoint is Done; third-party warnings remain in UQC-201.
+F07 behavior passes both styles; the user confirms deliberate Fusion session shutdown.
+Batch 1 is complete. No
+product changes, new tests, kit mutation or broad integration checks. Documentation
+links and whitespace checked. Batch 2 authentication follows; all later gates remain open.
