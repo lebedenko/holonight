@@ -159,7 +159,7 @@ full UQC-206 completion follows from this acceptance.
 
 | ID | Reproduction / observed result | Owner and evidence | Acceptance |
 |---|---|---|---|
-| F06 | Open a dropdown by keyboard with an unknown/stationary pointer over its rows, or switch from mouse to keyboard. Two rows look highlighted: keyboard selection and pointer hover. User reports visual-only impact and similar behavior across HoloNight apps. | holonight-qt investigates shared delegate feedback; broad app scope is user-reported, not independently enumerated. ItemDelegate and icon-composite backgrounds render hover separately from highlight/current state. | Keyboard interaction has one unambiguous active-row indication; a stationary pointer does not introduce a competing active-looking row. Deliberate pointer movement/click still restores normal mouse interaction. |
+| F06 (closed for reported Settings/greeter HoloNight sequence; see manual acceptance below) | Open a dropdown by keyboard with an unknown/stationary pointer over its rows, or switch from mouse to keyboard. Two rows look highlighted: keyboard selection and pointer hover. User reports visual-only impact and similar behavior across HoloNight apps. | holonight-qt investigates shared delegate feedback; broad app scope is user-reported, not independently enumerated. ItemDelegate and icon-composite backgrounds render hover separately from highlight/current state. | Keyboard interaction has one unambiguous active-row indication; a stationary pointer does not introduce a competing active-looking row. Deliberate pointer movement/click still restores normal mouse interaction. |
 | F07 | Open launcher with stationary pointer inside its unfiltered results, then Enter expecting the initial first item. Another item under the pointer can launch. | holonight-shell owns functional selection. Source review finds browse and search result `onHoveredChanged` handlers unconditionally calling `LauncherService.setSelectedIndex` on hover. Live event ordering and exact default selection still need isolated reproduction. This is selection change, not proof that keyboard focus moved. | Opening beneath a stationary pointer preserves intended initial selection/Enter target; keyboard navigation remains authoritative until deliberate pointer movement or click. Cover browse/search, filtering, reopen and pointer reentry without launching real applications. |
 
 Proposed shared input policy: keyboard opening/navigation retains control of the
@@ -301,8 +301,9 @@ UQC-205 is Done for A03 only. UQC-206 is In Progress with its [provider SDD](../
 canonical baseline and isolated reproductions. Packages 207–212 remain Planned
 investigation/repair packages, not Ready assignments. Each needs its own local
 SDD, exact canonical baseline and reproduction before work starts. F05 and C01–C06 remain umbrella investigations until ownership is settled.
-F06 (provider visual input feedback) and F07 (shell launcher selection) are new
-planned investigations; no implementation assignment or baseline is implied.
+F06 provider UQC-213 and F07 shell UQC-214 repairs are published and locally Done.
+F06 is accepted for the reported Settings/greeter HoloNight sequence below; F07
+awaits both launcher styles. See [current batch order](BATCHES.md).
 
 
 ### D02 context correction and provider handoff — 2026-09-12
@@ -374,3 +375,39 @@ settled-frame reopening, formatting and existing-only QML lint diagnostics.
 Canonical origin/main was independently confirmed before accepting its pin.
 F06 remains open pending the focused real-session retest; D02/F07 and unrelated
 integration gates retain their prior status. Old kits and evidence are preserved.
+
+### Manual sequence clarified — 2026-09-13
+
+The user identifies Settings and greeter under HoloNight. They report that Fusion
+has no hover visual feedback in the tested surfaces; this is their observation,
+not a general claim about all Fusion controls. The tested sequence is keyboard-only:
+Tab to focus, Space to open, stationary pointer steals selection, Space to close;
+the collapsed control contains the new value. Both highlight and committed value
+change. No Down/scroll step is required in this reported reproduction.
+
+The new provider test exercises Tab → Space → Space with a stationary pointer over
+a different future popup row. It passes with the repair but also with baseline
+`4dfa803` in the isolated offscreen fixture. Therefore this exact opening-time
+failure is not yet independently reproduced. The earlier failing scroll regression
+is related automated evidence, not a substitute for the clarified manual sequence.
+The released `06_tsrg6` kit remains unchanged; its runtime contains the same current
+repair. For its manual retest, first use exactly Tab → Space → Space without arrow
+keys and confirm the value is unchanged, then perform the guide's scrolling and
+pointer recovery checks. F06 stays open pending this result.
+
+### Manual stationary-pointer acceptance — 2026-09-13
+
+After receiving the exact `/tmp/holonight-uqc206-06_tsrg6` kit and Settings/greeter
+commands under default HoloNight, the user reports: "Fixed. Works as expected".
+Accept this as confirmation of the requested Tab → Space → Space sequence with
+a stationary pointer over another popup row: the intended highlight and committed
+value are preserved. F06 is closed for the reported Settings/greeter HoloNight
+behavior. The kit contains published implementation `2965d8d`; the pinned provider
+`927d9e9` differs only in documentation.
+
+This user confirmation resolves the manual gate despite the direct opening-time
+sequence not failing in the offscreen fixture. Preserve that automated evidence
+limit and the earlier failed reports. No new evidence paths were supplied and no
+runtime logs were inspected for this acceptance. Do not infer fresh Fusion,
+launcher F07, Weather D02, or broad ecosystem acceptance. UQC-201 remains In
+Progress and the initiative Accepted. Released kit/archive remain unchanged.

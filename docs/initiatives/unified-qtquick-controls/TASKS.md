@@ -6,6 +6,11 @@ UQC-103 settings and UQC-104 AI are Done with local acceptance and publication c
 Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greeter are Done.
 UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is In Progress for automated integration and manual-kit work.
 
+Current execution order and remaining gates: [eight-batch roadmap](BATCHES.md).
+D01/D03/D04, A03 and the reported F06 sequence remain accepted. Batch 1 awaits D02
+Settings Weather evidence and F07 HoloNight/Fusion manual results. Dated entries below
+retain historical states; current table entries and canonical FINDINGS.md acceptances take precedence.
+
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | UQC-001 | `holonight-qt` | Complete provider/consumer audit, application evidence and coverage proposal | — | [SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/SPEC.md) | Done | `033d6001fd088a96ac6e4ff936b6bafcf6ab5d4c` | 2026-09-07: user approved full REVIEW; manual observations and isolated authentication recorded with explicit limits. Audit build, six layout/palette cases, three installed-fixture modes, Python syntax and whitespace pass. Canonical publication confirmed. |
@@ -19,20 +24,20 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Final CI 34288860789 and licensing 34288860847 pass. |
-| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Initial AI Fusion geometry and installer package-ownership failures are retained in evidence; UQC-202/UQC-203 repairs are Done. Fresh recheck at published handoff `730be06`: installer --check exits 0 and explicit Fusion selection passes 59/59 (15.37 s). Third-party bounded loading verified; all human Hyprland/Sway and authentication gates unchecked. |
+| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Initial AI Fusion geometry and installer package-ownership failures are retained in evidence; UQC-202/UQC-203 repairs are Done. Fresh recheck at published handoff `730be06`: installer --check exits 0 and explicit Fusion selection passes 59/59 (15.37 s). Third-party bounded loading verified; subsequent focused manual acceptances are recorded in FINDINGS.md. Remaining ecosystem gates are retained in BATCHES.md. |
 | UQC-202 | umbrella | Verify installer Qt Wayland capabilities independently of package ownership | — (found during UQC-201) | [Design and evidence](UQC-202.md) | Done | `8af91cb173d6268e71ddb1b92afed8915a6ac658` | 2026-09-09: eight fixtures, syntax, licensing, whitespace and real installer --check pass. Installer CI 34380475124 and licensing 34380474984 are green. Canonical publication confirmed; original failure retained in INTEGRATION.md. |
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance completed for F01/F02; see [canonical result](FINDINGS.md#manual-focus-acceptance--2026-09-11). F03 app-specific attribution remains unconfirmed. |
 | UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
-| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | In Progress | `65c806fb6a65cae9652dde7a69d595813973c1a9`, canonical origin/main confirmed 2026-09-12 | Ready after isolated D01/D03 reproductions and consumer-model review; provider-only repair assigned. D02/D04 remain separate investigations. |
+| UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | In Progress | `65c806fb6a65cae9652dde7a69d595813973c1a9`, canonical origin/main confirmed 2026-09-12 | Provider repairs published; D01/D03/D04 manually accepted. D02 actual Settings Weather diagnostics and bounded-popup confirmation remain pending; third-party warnings stay in UQC-201. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-209 | `holonight-settings` | Settings slider geometry investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-210 | `holonight-ai` | Temperature row geometry | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
-| UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 manual retest pending. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. F06 manual confirmation remains open. |
+| UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 reported Settings/greeter HoloNight sequence manually accepted 2026-09-13; see canonical findings. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. The later reported HoloNight sequence acceptance supersedes the historical pending status. |
 | UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 manual confirmation pending. |
 
 
@@ -1978,3 +1983,49 @@ python3 /tmp/holonight-uqc206-06_tsrg6/guided-session.py sway
 Follow the kit README's focused [INPUT.md](INPUT.md) dropdown check only. F06,
 D02/F07 manual gates and broad integration remain open. Prior kits/archives and
 manual observations remain unchanged. UQC-201 In Progress; initiative Accepted.
+
+### User clarifies opening/Space commitment — 2026-09-13
+
+[Canonical clarification](FINDINGS.md#manual-sequence-clarified--2026-09-13) identifies
+Settings/greeter under HoloNight and Tab → Space → Space committing the stolen row
+without a scrolling prerequisite. Provider adds direct keyboard/open/Space-close
+coverage; both prior/current implementations pass that isolated sequence, including
+an unchanged-position mouse event. Exact opening-time failure remains unconfirmed
+offscreen; the earlier scroll regression must not substitute for this manual gate.
+INPUT.md adds that exact first step. Released `06_tsrg6` kit/archive stays immutable
+and usable; no product QML, publication or gitlink update in this clarification.
+
+Final clarification verification: 5/5 focused dropdown/installed CTests pass
+(42.53 s), including both styles at scales 1/1.25. Formatting, documentation
+links and whitespace pass. Test/documentation changes remain uncommitted; product
+implementation, published pins and released kit remain unchanged.
+
+### F06 reported sequence manually accepted — 2026-09-13
+
+[Canonical acceptance](FINDINGS.md#manual-stationary-pointer-acceptance--2026-09-13)
+records the user's successful retest of Settings/greeter under HoloNight in
+`06_tsrg6`. Close F06 for the reported stationary-pointer Tab → Space → Space
+behavior. UQC-213 repository work remains Done. D02/F07 and unrelated integration
+gates retain their existing status; UQC-201 In Progress, initiative Accepted.
+Documentation-only acceptance update; links and whitespace checked. No product
+tests rerun, publication, gitlink change or released-kit mutation. Existing
+uncommitted test/documentation follow-up remains preserved.
+
+### Batch 1 preparation and published provider handoff — 2026-09-13
+
+Accepted provider `68b7069cc10b85cf0ce591b89cf8c1494bf316b3` after canonical
+origin/main confirmation. This adds the clarified Tab → Space → Space test and
+acceptance documentation only; product behavior matches kit implementation `2965d8d`.
+The direct sequence passes both baseline and repaired offscreen implementations;
+the failing scroll regression remains separate evidence. The final source/object/log
+timestamps and retained `space-settled-verification.log` confirm the existing 5/5
+focused/installed results apply; test content and dependencies are unchanged.
+Formatting, relative documentation links and whitespace checked for the handoff.
+
+The existing `06_tsrg6` kit has READY and all 244 SHA256SUMS entries pass. Its recorded
+Qt base 6.11.2-3, Qt declarative 6.11.2-1, hyprpolkitagent 0.1.3-10, Sway 1:1.12-4
+and Hyprland 0.56.2-3 match installed packages. No kit/archive mutation or rebuild.
+Shell remains `f55cb5f`. Sandbox SSH access initially failed; permitted publication
+and canonical confirmation succeeded. The umbrella checkpoint records clarification,
+F06 acceptance and this provider gitlink; earlier pending checkpoints are published
+with it. No D02/F07 result is inferred. Follow the three runs in [BATCHES.md](BATCHES.md).
