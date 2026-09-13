@@ -32,7 +32,7 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 | UQC-210 | `holonight-ai` | Temperature row geometry | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
-| UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `4dfa8030df59b896ee7d8ef6a8d6ff6ab960c040` | 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. F06 manual confirmation remains open. |
+| UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 manual retest pending. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. F06 manual confirmation remains open. |
 | UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 manual confirmation pending. |
 
 
@@ -1901,3 +1901,31 @@ D02 has warning-free affected-application automated evidence; the targeted real
 session remains the confirmation checkpoint. F06/F07 remain open until returned
 manual observations support closure. D01/D03/D04 acceptance is preserved. UQC-201
 stays In Progress and initiative Accepted, with broad integration pending.
+
+### Pause for poweroff — 2026-09-13
+
+The user reports that an opened dropdown still selects the row under a stationary
+pointer. Record this as a failed manual input acceptance check, not closure of
+F06. See [the canonical manual failure and next-session handoff](FINDINGS.md#manual-dropdown-failure--next-session-handoff--2026-09-13).
+Investigation and repair are deferred at the user's request. Resume from provider
+`4dfa803` / shell `f55cb5f`, preserving working-tree changes and the immutable
+`qa20p_jh` kit/archive; use the restoration command above after reboot. F07 and
+D02 retain their existing pending manual-confirmation status.
+
+### Stationary-pointer provider handoff — 2026-09-13
+
+Accepted clean published provider `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` after
+canonical origin/main confirmation. UQC-213 was reopened Ready → In Progress after
+isolated reproduction at `4dfa803`; its follow-up is repository-locally Done.
+[Canonical findings](FINDINGS.md#stationary-pointer-selection-repair--2026-09-13)
+retain manual uncertainty and the outstanding F06 gate. Only provider gitlink
+changes. Shell stays `f55cb5f`; no consumer implementation or broad integration.
+
+Verification: 8/8 focused input/dropdown CTests, 73/73 provider suite (43.64 s),
+installed-consumer test, formatting and whitespace pass. QML lint exits 0 with
+existing warnings documented locally. Logs: `.cache/uqc206/stationary-*.log`.
+The initial sandbox SSH failures and successful permitted publication/confirmation
+are retained in session output. [INPUT.md](INPUT.md) now requests only dropdown
+keyboard scrolling, Enter target, settled reopen and pointer/click recovery.
+Existing poweroff/failure records are preserved in this checkpoint. UQC-201 remains
+In Progress and the initiative Accepted; F06 is not manually closed.

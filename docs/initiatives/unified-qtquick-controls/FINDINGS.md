@@ -337,3 +337,40 @@ browse/search, filtering and reopen with a stationary pointer. D01/D03/D04 remai
 accepted; repeat only checks affected by sizing/input changes. No unrelated
 UQC-207 finding or broad ecosystem gate is closed. The ledger records the exact
 archive, restore command, checksums and test logs.
+
+### Manual dropdown failure / next-session handoff — 2026-09-13
+
+The user reports: "doesn't work. in opened dropdown whatever selected what static
+mouse pointer points." An opened dropdown still selects the row beneath a
+stationary pointer. The input repair therefore does not satisfy this manual
+acceptance check; F06 remains open despite the passing automated regressions.
+The application/style and whether this changes the highlighted or committed
+selection were not specified. No new launcher result or height-warning evidence
+is inferred from this report.
+
+The user requested recording the failure and deferring further work until the
+next session before powering off. Resume by reproducing stationary-pointer
+selection in the actual dropdown and examining its selection handling as well
+as hover rendering. Add a failing regression before repairing it. Preserve the
+existing D01/D03/D04 evidence and all immutable kits/archives; the ledger contains
+the restoration command for the current candidate. No repair or new verification
+was performed after this report.
+
+### Stationary-pointer selection repair — 2026-09-13
+
+The provider follow-up reproduces a concrete functional failure: keyboard Down
+scrolls the popup beneath a stationary pointer, native delegate hover changes
+move the highlight back, and Enter commits the wrong row. Both owned dropdowns
+fail in HoloNight; the icon composite also fails in Fusion. This establishes a
+selection path independently of the still-unspecified app/style in the manual
+report; it does not reinterpret the earlier visual-only observation.
+
+Published provider `2965d8d` gates native delegate hover handling with the existing
+keyboard policy and suppresses stale hover when an owned popup opens. The local
+[UQC-213 record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md)
+owns baseline failures and repair verification: 8/8 focused CTests, 73/73 full
+provider tests including installed coverage, pointer recovery/immediate clicking,
+settled-frame reopening, formatting and existing-only QML lint diagnostics.
+Canonical origin/main was independently confirmed before accepting its pin.
+F06 remains open pending the focused real-session retest; D02/F07 and unrelated
+integration gates retain their prior status. Old kits and evidence are preserved.
