@@ -1929,3 +1929,52 @@ are retained in session output. [INPUT.md](INPUT.md) now requests only dropdown
 keyboard scrolling, Enter target, settled reopen and pointer/click recovery.
 Existing poweroff/failure records are preserved in this checkpoint. UQC-201 remains
 In Progress and the initiative Accepted; F06 is not manually closed.
+
+### Fresh stationary-pointer retest kit — 2026-09-13
+
+Released immutable kit `/tmp/holonight-uqc206-06_tsrg6`, built from published
+implementation `2965d8d` (empty provider.patch), shell `f55cb5f`, and unchanged
+Settings/greeter pins. Final provider pin `927d9e9` only corrects the documented
+regression count to 22 cases; canonical publication confirmed and provider clean.
+No product changes separate the kit implementation from that documentation pin.
+
+Preparation commands:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/prepare-dropdown-kit.py
+python3 docs/initiatives/unified-qtquick-controls/prepare-dropdown-kit.py --resume /tmp/holonight-uqc206-06_tsrg6
+```
+
+The first run failed at the sandbox-denied private D-Bus socket; the permitted
+resume passes. Full commands/results and logs persist in
+`.cache/holonight-uqc206-06_tsrg6/`; top-level logs are
+`.cache/uqc206/stationary-kit-preparation{,-permitted}.log`.
+Installed input/dropdown checks pass in both styles/scales with host provider
+modules/libraries masked. Settings and greeter each pass all four startup modes;
+actual Settings Appearance/Weather lifecycle passes in four styles/scales;
+12 Settings/greeter/shell runtime mappings pass staged-library isolation. Shell
+inspection uses a private headless compositor. Five evidence-helper regressions,
+Python/shell syntax, provider source parity, 244 final file hashes, documentation
+links and whitespace checks pass. No live desktop pointer/focus automation.
+
+Persistent archive:
+`.cache/holonight-uqc206-06_tsrg6/holonight-uqc206-06_tsrg6.tar.gz`
+
+SHA-256: `05a7fa0cb9afcc451e71db055efcf2ce9ed1f3b03f2cda3b7c47132c1a1cf03e`
+
+Restore after reboot from the umbrella if the original path is absent:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-dropdown-kit.py \
+  .cache/holonight-uqc206-06_tsrg6/holonight-uqc206-06_tsrg6.tar.gz
+```
+
+From a fresh real tux VT login, start:
+
+```sh
+python3 /tmp/holonight-uqc206-06_tsrg6/guided-session.py sway
+```
+
+Follow the kit README's focused [INPUT.md](INPUT.md) dropdown check only. F06,
+D02/F07 manual gates and broad integration remain open. Prior kits/archives and
+manual observations remain unchanged. UQC-201 In Progress; initiative Accepted.
