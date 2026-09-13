@@ -205,7 +205,7 @@ before assignment. These findings do not reopen the accepted D01/D03/D04 repair.
 | ID | Application / context; reproduction | Confirmed facts / suspected cause | Evidence | Acceptance |
 |---|---|---|---|---|
 | A01 | Owned Polkit H; open user selector in isolated run | Two reserved but blank identity rows. Custom avatar/text delegate uses model roles; independent from D01. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10), private auth run `20260910T192833Z` | Correct identity labels/avatars and selection from actual model roles. |
-| A02 | Same run; failed submission shows error | Input disappears, Password label remains. Label/input visibility conditions differ; lifecycle/retry needs reproduction. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10) | Label and editor visibility track supported prompt/error/retry lifecycle. Do not solicit another failed credential submission. |
+| A02 | Same run; failed submission shows error | Input disappears, Password label remains. Label/input visibility conditions differ; lifecycle/retry needs reproduction. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10) | **Closed** by the [Batch 2 synthetic lifecycle/rendered checkpoint](#batch-2-authentication-repair-checkpoint--2026-09-14). Label/editor/helper track supported prompt/error/retry lifecycle. No further failed credential submission. |
 | A03 | Same run after failure; Cancel prompt | Prompt closes but Python challenge hangs until Ctrl+C. Agent exit 0 verified; challenge.txt absent, no normal completion. UQC-205 baseline reproduction locates missing listener GError: coordinator completion occurs, but libpolkit cannot reply. Typed cancellation error repairs the automated path. | [hang](GUIDED.md#owned-agent-cancellation-completion-failure--2026-09-10), [repair/verification](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Deterministic cancellation completes pending request exactly once and parent exits; cover failure-then-cancel and direct cancel with isolated fake backend. **Closed**: automated completion checks and [manual cancellation result](#manual-polkit-cancellation-acceptance--2026-09-12) pass. |
 | A04 | Askpass F 1.25; inspect unfocused/focused editor then cancel | Left border appears half thickness; focused ring intact, cancel exit 1. Shell supplies Rectangle background; clipping/fractional position suspected only. | [border](GUIDED.md#owned-askpass-fusion-scale-125-border-finding--2026-09-10) | Uniform intended border at fractional scale without breaking cancellation/focus. |
 
@@ -454,3 +454,38 @@ This resolves the shutdown classification while retaining missing numeric exit
 evidence as a limitation. F07 is closed and Batch 1 is complete. No repeated
 interaction run is requested. Batch 2 authentication follows; UQC-201 remains In
 Progress and the initiative Accepted.
+
+
+### Batch 2 authentication repair checkpoint — 2026-09-14
+
+Published shell `fffb1715bac5a57127af5e671033ac33335ffc16`, provider `68b7069`.
+The [shell follow-up SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md#batch-2-follow-up--a01a02a04--2026-09-14)
+records reproduction, bounded shell repairs and verification. Prior manual failures,
+accepted A03 and Batch 1 results remain unchanged.
+
+- **A01 pending targeted manual acceptance:** compiled QML with the real prompt and
+  identity models renders labels and local/fallback avatar artwork under both styles
+  at scales 1/1.25. Profile updates, label fallbacks, stable-ID keyboard commitment,
+  constrained scrolling and reopening pass. Blank rows did not reproduce with the
+  current provider; no selector repair or historical-cause attribution is asserted.
+- **A02 closed:** all four baseline lifecycle regressions reproduced the orphaned
+  Password label after a synthetic session failure. A shared AwaitingInput visibility
+  condition repairs the whole input group. Rendered failure retains the error and
+  Retry/Cancel, retry waits without inputs, and a new prompt restores cleared,
+  unrevealed, focused input. Real coordinator/model and test-only sessions pass;
+  no PAM credential submission was used or requested.
+- **A04 repaired, targeted manual acceptance pending:** the graphics-backed scale
+  1.25 reproduction measured left/right coverage of 0.792/1.269 physical pixels
+  with the background on the scrolling clip. A shell background inset makes them
+  1.281/1.281, preserving palette, rounded appearance and intended border widths.
+  Focused/unfocused and constrained scrolling checks pass in both styles/scales.
+  Software-only captures had not reproduced this failure; their result is distinct.
+
+Final local suite: 1171/1171; supplemental rendered matrix, static checks and staged
+runtime verification pass. The fresh immutable kit and exact verification inventory
+are in the [coordination handoff](TASKS.md#batch-2-authentication-handoff-and-fresh-kit--2026-09-14).
+The [manual request](AUTHENTICATION-BATCH2.md) is two owned Polkit identity/prompt
+inspections with credential-free cancellation, then one Fusion Askpass border check,
+in a fresh real tux Hyprland login at output 1 / Qt 1.25. No manual observations
+have been returned for this kit. A01/A04 and manual shutdown classifications remain
+pending; Batch 2 is not closed and broader acceptance is not implied.

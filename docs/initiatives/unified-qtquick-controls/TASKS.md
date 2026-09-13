@@ -9,7 +9,8 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 Current execution order and remaining gates: [eight-batch roadmap](BATCHES.md).
 D01/D03/D04, A03 and the reported F06 sequence remain accepted. D02 Settings Weather and F07 both styles are accepted. The user confirms deliberate
 Fusion session shutdown; missing numeric exit evidence remains documented. Batch 1
-is complete; Batch 2 authentication follows. See the latest
+is complete; Batch 2 authentication repairs are published, with A01/A04 manual confirmation
+and manual shutdown classification pending. See the latest
 [manual results](FINDINGS.md#settings-and-launcher-manual-results--2026-09-13). Dated entries below
 retain historical states; current table entries and canonical FINDINGS.md acceptances take precedence.
 
@@ -32,6 +33,7 @@ retain historical states; current table entries and canonical FINDINGS.md accept
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance completed for F01/F02; see [canonical result](FINDINGS.md#manual-focus-acceptance--2026-09-11). F03 app-specific attribution remains unconfirmed. |
 | UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
+| UQC-205-B2 | `holonight-shell` | A01/A02/A04 follow-up; preserve accepted A03 and Batch 1 | UQC-205, UQC-206, UQC-214 | [Follow-up SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md#batch-2-follow-up--a01a02a04--2026-09-14) | Done | `fffb1715bac5a57127af5e671033ac33335ffc16` | 2026-09-14: real-model A02 failure and graphics-backed A04 clipping reproduced/repaired; A01 does not reproduce on current provider, no selector edit. 1171/1171 tests, four style/scale graphics runs, static/licensing and installed checks pass. Clean canonical publication confirmed. A01/A04 manual gates remain pending. |
 | UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | Done | Repair `975bf09`; published provider handoff `68b7069` | Provider repairs published; D01/D03/D04 manually accepted. D02 Settings Weather manual result and completed diagnostic log accepted 2026-09-13; third-party warnings stay in UQC-201. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -2042,3 +2044,62 @@ F07 behavior passes both styles; the user confirms deliberate Fusion session shu
 Batch 1 is complete. No
 product changes, new tests, kit mutation or broad integration checks. Documentation
 links and whitespace checked. Batch 2 authentication follows; all later gates remain open.
+
+
+### Batch 2 authentication handoff and fresh kit — 2026-09-14
+
+Starting umbrella `f505f0e`, shell `f55cb5f` and provider `68b7069` were clean and
+confirmed on canonical main. The shell-local follow-up records Ready → In Progress
+and its accepted scope. Accepted shell handoff `fffb1715bac5a57127af5e671033ac33335ffc16`
+was published and confirmed with `git ls-remote`; shell is clean. Only its gitlink
+changes; provider remains `68b7069`. Local work UQC-205-B2 is Done, not integration.
+
+[Canonical Batch 2 findings](FINDINGS.md#batch-2-authentication-repair-checkpoint--2026-09-14)
+close A02 using synthetic lifecycle/rendered evidence and retain A01/A04 manual
+gates. Final shell `task test`: 1171/1171 passes (251.65 seconds), including existing
+cancellation/queued/stale/shutdown, Askpass process and relocated launch checks.
+The supplemental private graphics matrix passes both styles at scales 1/1.25;
+formatting, QML lint/types, import/architecture, licensing and changed C++ analysis
+pass. Existing unrelated QML warnings and initial sandbox/harness failures are
+recorded in the local SDD. Remote CI 34785218986 was still running at kit release;
+its licensing job passed. No remote green result is inferred from local tests.
+
+Released `/tmp/holonight-uqc205-b2_vmvoyd51` from published sources. Its 218 hashes
+and restoration at the exact original prefix pass; the pre-restoration directory
+is preserved. Installed production Polkit cancellation/shutdown and compiled real
+model checks pass in four styles/scales. Eight staged production Askpass/Polkit
+inspections verify actual style, actual DPR, created QML origins and required
+libraries, including configuration, with host HoloNight modules/libraries masked.
+The existing build/relocated launch matrix also passes. Initial preparation supplied
+the kit prefix to the build-prefix comparison; correcting that invocation resolved
+the fixture mismatch. No product repair was inferred from that preparation failure.
+
+The kit reuses the established real-login preflight, registration reply and bounded
+challenge machinery. New helpers select style/scale, automatically index every
+session run, retain PID-tagged loader module evidence despite non-dumpable processes,
+and classify normal/signal/interrupted/timeout/forced cleanup separately. Five helper
+regressions pass, including interrupted-agent evidence preservation; four actual
+wrong-user/released-kit refusal checks pass. Python/shell syntax and whitespace pass.
+Previous kits and historical instructions remain intact. No real credentials or
+live desktop input were automated.
+
+Persistent archive:
+`.cache/holonight-uqc205-b2_vmvoyd51/holonight-uqc205-b2_vmvoyd51.tar.gz`
+
+SHA-256: `510fc35dff132554841fe4024251405d609945ae7c69b8fba2798c7495ed73a8`
+
+Preparation/verification commands and logs persist in the adjacent `.cache`
+directory; reproduction and graphics evidence are in `.cache/uqc205-batch2/`.
+Restore after reboot, only if the original kit path is absent:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-authentication-kit.py \
+  .cache/holonight-uqc205-b2_vmvoyd51/holonight-uqc205-b2_vmvoyd51.tar.gz
+```
+
+Follow the [three targeted manual runs](AUTHENTICATION-BATCH2.md) in one fresh real
+tux Hyprland login at output scale 1 / Qt scale 1.25. A02 requires no further failed
+submission; A03 remains accepted. Record returned observations once in FINDINGS.md.
+Batch 2 remains open for A01/A04 and manual shutdown outcomes. Other compositor,
+successful-authentication and activation gates remain in Batch 8; Batch 3 follows
+with Haruna crash/diagnostic classification. UQC-201 In Progress, initiative Accepted.

@@ -85,6 +85,16 @@ Both styles need successful observations and staged shell/provider runtime evide
 Distinguish deliberate shutdown from crashes or missing exit evidence. Return the
 three evidence paths and observations. Batch 2 follows only after Batch 1 acceptance.
 
+## Batch 2 manual checkpoint
+
+Update 2026-09-14: shell repairs are published at `fffb171`, provider remains
+`68b7069`. A02 is closed by synthetic lifecycle/rendered tests. A01/A04 await the
+[three targeted authentication runs](AUTHENTICATION-BATCH2.md) from immutable kit
+`/tmp/holonight-uqc205-b2_vmvoyd51` in one fresh real tux Hyprland login at output 1 /
+Qt 1.25. Runs are automatically indexed; no evidence path copying is required.
+Preserve A03 and Batch 1 acceptance. No failed credential submission is requested.
+Batch 2 remains open until those observations and shutdown outcomes are classified.
+
 ## Final acceptance coverage
 
 Batch 8 must cover Haruna, NeoChat, Tokodon and compatible Qt hyprpolkitagent with
