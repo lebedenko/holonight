@@ -126,3 +126,6 @@ Batch 3 remains open. Preserve Batches 1–2; broader integration remains Batch 
 Latest Batch 3 manual review: [results and external ownership](FINDINGS.md#batch-3-manual-review-and-external-ownership--2026-09-14).
 This records failed acceptance, external dispositions and remaining unknowns;
 Batch 3 and UQC-207 remain open. Earlier implementation checkpoints are historical.
+
+Focused repair candidate: [canonical findings](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
+Batch 3 remains open pending actual-app acceptance.

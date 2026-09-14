@@ -76,6 +76,11 @@ def main():
         targets = ['holonight-chat', 'test_runtime_controls'] if name == 'ai' else ['holonight-settings', 'settings_controls_acceptance']
         run(name + '-build', ['cmake', '--build', build, '-j', '4', '--target', *targets])
         run(name + '-install', ['cmake', '--install', build])
+    observer = root / 'holonight-qt/docs/sdd/unified-qtquick-controls/audit/render-diagnostics.cpp'
+    flags = subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Qml'], text=True).split()
+    run('render-observer-build', ['g++', '-std=c++23', '-shared', '-fPIC', observer,
+                                 '-o', prefix / 'lib/render-diagnostics.so', *flags])
+    shutil.copy2(observer, kit / 'render-diagnostics.cpp')
     for name in ('guided-session.py', 'guided-app.py', 'rendering-test.py', 'FINDINGS.md'):
         shutil.copy2(docs / name, kit / name)
     shutil.copy2(root / 'holonight-qt/docs/sdd/unified-qtquick-controls/audit/auth-test/terminal.sh', kit)
@@ -100,7 +105,7 @@ def main():
             run(f'settings-{style}-{scale}', isolated + [f'HOLONIGHT_APPEARANCE_FILE={case}/appearance.toml',
                 f'PATH={case}/empty-path', work / 'build/settings/apps/settings/settings_controls_acceptance'], env)
     run('actual-staged-processes', ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
-        'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime'], env)
+        'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime', '--diagnostics'], env)
     run('collector-tests', ['python3', root / 'tests/test_guided_app.py'])
     for path in kit.glob('*.py'):
         ast.parse(path.read_text())

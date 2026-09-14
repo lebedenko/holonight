@@ -20,6 +20,19 @@ app = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(app)
 
 
+class RenderingObservations(unittest.TestCase):
+    def test_only_actual_window_records_establish_dpr(self):
+        self.assertIsNone(app.render_observations('QT_SCALE_FACTOR=1.25')['actual_window_dpr'])
+        text = '\n'.join([
+            'HN_RENDER invalid',
+            'HN_RENDER {"id":"window", "activeFocusItem":"button", "dpr":1.5, "phase":"state"}',
+            'HN_RENDER {"id":"popup", "dpr":1.25, "phase":"state"}',
+            'HN_RENDER {"id":"button", "phase":"space-before-release"}',
+        ])
+        self.assertEqual(app.render_observations(text),
+                         {'actual_window_dpr': {'window': 1.5}, 'space_observations': 1})
+
+
 class RuntimeIsolation(unittest.TestCase):
     prefix = Path("/tmp/candidate")
 

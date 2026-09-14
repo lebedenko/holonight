@@ -749,3 +749,45 @@ actual DPR 1/1.25 using offscreen software rendering, without desktop interactio
 Probe and logs: `.cache/uqc207/review-switch.qml` and `review-switch-stderr*.log`.
 No product code changed or product suite rerun. Batch 3 and UQC-207 remain open;
 UQC-201 remains In Progress, initiative Accepted, and Batches 1–2 remain accepted.
+
+
+### Batch 3 focused repair iteration — 2026-09-14
+
+Ownership review checkpoint `93d1190` preserves the four pending documentation
+changes. Provider started clean at canonical `fbffc872c31ad8c8c22d499a08c8259e781f0a51`.
+Verified repair `a7e50b05d38a6dc8ed24151685803c75fb16824c` is published on canonical
+origin/main and clean before the umbrella pin update. Initiative stays **Accepted**;
+UQC-201 and UQC-207 stay **In Progress**. Batches 1–2 and prior kits remain preserved.
+
+| Finding | This iteration's evidence and acceptance boundary |
+|---|---|
+| R01 icons | **Repair candidate; human menu/navigation acceptance pending.** Staged Haruna selects HoloNight, fallback Papirus, with /usr/share/icons in its paths. HoloNight inherits missing Papirus variants then installed breeze-dark; the baseline resolver never visits that parent. On the bounded comparison path Qt finds icons that HnIcon cannot read: 29 of 31 unique inputs fail, including contrast, tools-report-bug and media-seek-forward. Repaired lookup resolves all 31 names; logged image failures fall from 100 to zero. Indexed inheritance includes symlinks and cycle protection; caches follow resolved source content and image URLs carry a content revision. Semantic SVG colors and URL inputs remain covered. No non-SVG failure was demonstrated, so this iteration does not claim raster-format support. These bounded launches compare icon resolution, not historical crash causality. |
+| R02/R03 menus and Shortcuts | **Actual-app acceptance open.** Inherited-theme named/URL fixture, menu insertion/removal/visibility/mirroring and explicit row selection pass. The optional observer now records actual delegate identity, context origin, highlighted/checked/current/visualFocus when the human visits Shortcuts. No application selection result is inferred from the reduced regression. |
+| R04 Switch | **Repair candidate; human AI/Settings acceptance pending.** Replaced the full-widget rectangle with a transparent pill outside the indicator track, with a two-logical-pixel gap and existing focus color/width tokens. Rendered regression measures track-centered feedback while keeping track interior unchanged, across both states, all four size roles and mirroring. Hit area, label, implicit sizing and thumb animation remain preserved. |
+| R05 popup transparency | **Open; not reproduced, no palette/geometry edit.** Installed FormComboBoxDelegate settles to a visible opaque background at (12,110), 372x92 logical pixels, opacity 1, color #ff131a24, measured DPR 1; the style/scale matrix verifies background pixels at DPR 1/1.25. The earlier 8-pixel pre-layout height was rejected as incomplete measurement. Explicit translucent owner palette and explicit popup override remain preserved. New observer records actual-app background origin/dimensions/visibility/opacity, palette roles and rendered pixels for the next human session. |
+| Provider ScrollBar null orientation | **Open; not reproduced, no source repair claimed.** Repeated popup creation/open/close/destruction during animation and garbage collection, both orientations, plus application-engine teardown pass without the diagnostic. The historical actual-app warning remains valid evidence and needs its exact lifecycle trigger. |
+| F04 button focus | **Open; evidence tooling verified, actual AI timeline pending.** Opt-in observer records labeled button identity, enabled/down, focus owner/reason, visualFocus and Space before press/release and after delivery. A headless busy/always-enabled two-button fixture verifies 34 observations per style, including transient disabled/down states. This verifies the observer, not AI ownership. F03's accepted reported traversal is preserved. |
+| Original Haruna crash | **Open; evidence preserved.** Core SHA-256 and current executable hash are retained in iteration-crash-identities.sha256. Original core module listing and current executable both identify Haruna build ID `7af55f8ac3daad32fea4225cf4e89f86e1523db6`; this strengthens binary identity but does not identify the initiating thread/lifetime defect. No new crash occurred during the bounded icon comparison. |
+
+Verification (2026-09-14), evidence under `.cache/uqc207/`:
+
+- Failing baselines: `iteration-switch-baseline.log` (both HoloNight scales) and
+  `iteration-icon-baseline.log` (inherited lookup/source-cache regression).
+- `ctest --test-dir holonight-qt/build -R 'holonight_shared_rendering|^holonight_tests$' --output-on-failure`:
+  5/5 pass, `iteration-focused-final.log`. This includes the installed Kirigami
+  composition on this host; systems without that optional module skip its fixture.
+- Installed-package acceptance passes. `ctest --test-dir holonight-qt/build --output-on-failure`:
+  77/77 pass, `iteration-full-provider.log`. An earlier overlapping build prevented
+  four test processes from starting; the completed-build rerun above supersedes it.
+- AI and Settings acceptance binaries against staged provider: both styles × scales
+  1/1.25, all eight pass (`iteration-{ai,settings}-*.log`). The first Settings harness
+  invocation lacked its required disposable appearance path; the corrected run passes.
+- clang-format dry-run, provider/demo/gallery import policy, `all_qmllint`, and REUSE
+  lint pass. QML lint retains pre-existing diagnostics; no new Switch warning.
+  Logs: `iteration-qmllint.log`, `iteration-reuse-final.log`.
+- Collector tests: 8/8 pass, including rejection of requested scale as measured DPR.
+  Diagnostic observer compiles and its two-style behavioral check passes.
+
+No external application/Kirigami or AI/Settings source changed. Unresolved Fusion
+hover, external preferences and previously classified external defects retain their
+prior dispositions. Actual-app acceptance is still required; none is silently closed.

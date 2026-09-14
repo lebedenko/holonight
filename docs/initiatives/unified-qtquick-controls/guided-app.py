@@ -12,7 +12,7 @@ import time
 
 KEYS = ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QPA_PLATFORMTHEME",
         "QML_IMPORT_PATH", "QT_PLUGIN_PATH", "LD_LIBRARY_PATH", "QT_SCALE_FACTOR",
-        "XDG_SESSION_ID", "XDG_DATA_DIRS")
+        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD")
 
 
 def assess_isolation(evidence, mappings, prefix):
@@ -68,6 +68,26 @@ def collect(pid, destination, prefix):
     return isolation["status"] == "verified"
 
 
+def render_observations(text):
+    """Keep actual window measurements separate from requested scale."""
+    windows = {}
+    space_events = 0
+    for line in text.splitlines():
+        if 'HN_RENDER ' not in line:
+            continue
+        try:
+            record = json.loads(line.split('HN_RENDER ', 1)[1])
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(record, dict):
+            continue
+        if 'activeFocusItem' in record and isinstance(record.get('id'), str) and isinstance(record.get('dpr'), (int, float)):
+            windows[record['id']] = record['dpr']
+        if str(record.get('phase', '')).startswith('space-'):
+            space_events += 1
+    return dict(actual_window_dpr=windows or None, space_observations=space_events)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("surface", choices=("haruna", "neochat", "tokodon", "settings",
@@ -76,6 +96,7 @@ def main():
     parser.add_argument("--scale", choices=("1", "1.25"), default="1")
     parser.add_argument("--pid", type=int)
     parser.add_argument("--index", choices=("batch3",))
+    parser.add_argument("--render-diagnostics", action="store_true")
     args = parser.parse_args()
     if os.getuid() != 1001 or not os.environ.get("UQC_SESSION_RUN") or not os.environ.get("WAYLAND_DISPLAY"):
         parser.error("run in the prepared tux compositor terminal")
@@ -111,6 +132,12 @@ def main():
     env["LD_LIBRARY_PATH"] = str(prefix / "lib")
     env["QML_IMPORT_PATH"] = str(prefix / "lib/qt6/qml")
     env["QT_PLUGIN_PATH"] = str(prefix / "lib/qt6/plugins")
+    if args.render_diagnostics:
+        observer = prefix / "lib/render-diagnostics.so"
+        if not observer.is_file():
+            parser.error("this kit has no rendering observer")
+        env["HOLONIGHT_RENDER_DIAGNOSTICS"] = "1"
+        env["LD_PRELOAD"] = str(observer)
     isolated = False
     (evidence / "command.json").write_text(json.dumps(command) + "\n")
     def index(status, code=None):
@@ -118,9 +145,10 @@ def main():
             return
         record = dict(status=status, run=str(evidence), application=args.surface,
                       style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
-                      process_exit=code)
+                      process_exit=code, render_diagnostics=args.render_diagnostics)
         if status == "finished":
             record["log_sha256"] = hashlib.sha256((evidence / "launch.log").read_bytes()).hexdigest()
+            record.update(render_observations((evidence / "launch.log").read_text(errors="replace")))
         with (run / (args.index + "-index.jsonl")).open("a") as output:
             output.write(json.dumps(record) + "\n")
     index("running")

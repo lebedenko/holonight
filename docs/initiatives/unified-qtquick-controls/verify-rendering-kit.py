@@ -2,6 +2,9 @@
 """Check staged loading and runtime-selected origins with bounded private launches."""
 import argparse
 import hashlib
+import importlib.util
+import sys
+sys.dont_write_bytecode = True
 import json
 import os
 from pathlib import Path
@@ -14,7 +17,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('kit', type=Path)
     parser.add_argument('--logs', type=Path, required=True)
+    parser.add_argument("--diagnostics", action="store_true")
     args = parser.parse_args()
+    spec = importlib.util.spec_from_file_location("render_collector", Path(__file__).with_name("guided-app.py"))
+    collector = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(collector)
     prefix = args.kit.resolve() / 'prefix'
     args.logs.mkdir(parents=True, exist_ok=True)
     for style in ('Holonight', 'Fusion'):
@@ -35,6 +42,9 @@ def main():
                         path = profile_root / key
                         path.mkdir(mode=0o700)
                         env[key] = str(path)
+                    if args.diagnostics:
+                        env['HOLONIGHT_RENDER_DIAGNOSTICS'] = '1'
+                        env['LD_PRELOAD'] = str(prefix / 'lib/render-diagnostics.so')
                     log_path = destination / 'launch.log'
                     mappings = ''
                     premature_exit = False
@@ -80,7 +90,7 @@ def main():
                         process_exit=child.returncode, premature_exit=premature_exit, forced_kill=forced_kill,
                         reason='early exit' if premature_exit else 'terminated after bounded inspection',
                         modules=owned, origin_marker=marker, errors=errors,
-                        log_sha256=hashlib.sha256(log_path.read_bytes()).hexdigest(), actual_window_dpr=None)
+                        log_sha256=hashlib.sha256(log_path.read_bytes()).hexdigest(), **collector.render_observations(text))
                     (destination / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
                     if errors:
                         raise RuntimeError(f'{app}/{style}/{scale}: {errors}')

@@ -11,12 +11,14 @@ def main():
     parser.add_argument('application', choices=('haruna', 'ai', 'settings', 'neochat', 'tokodon'))
     parser.add_argument('--style', choices=('Holonight', 'Fusion'), required=True)
     parser.add_argument('--scale', choices=('1', '1.25'), required=True)
+    parser.add_argument('--diagnostics', action='store_true', help='observe focus, selection, popup pixels and actual DPR')
     args = parser.parse_args()
     kit = Path(__file__).resolve().parent
     if os.getuid() != 1001 or os.environ.get('UQC_KIT') != str(kit) or not (kit / 'READY').is_file():
         parser.error('use this kit\'s guided-session.py in a fresh tux VT login first')
     os.execv(sys.executable, [sys.executable, str(kit / 'guided-app.py'), args.application,
-                             '--style', args.style, '--scale', args.scale, '--index', 'batch3'])
+                             '--style', args.style, '--scale', args.scale, '--index', 'batch3',
+                             *(['--render-diagnostics'] if args.diagnostics else [])])
 
 
 
