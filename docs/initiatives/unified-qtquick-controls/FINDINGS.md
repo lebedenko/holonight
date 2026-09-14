@@ -791,3 +791,35 @@ Verification (2026-09-14), evidence under `.cache/uqc207/`:
 No external application/Kirigami or AI/Settings source changed. Unresolved Fusion
 hover, external preferences and previously classified external defects retain their
 prior dispositions. Actual-app acceptance is still required; none is silently closed.
+
+
+Fresh immutable kit: `/tmp/holonight-uqc207-5j2ew840` (READY).
+Archive: `.cache/holonight-uqc207-5j2ew840/holonight-uqc207-5j2ew840.tar.gz`.
+SHA-256: `02e6af10f58a84b815c3b68de8d5dda0171c7116e0e4714bdd73f268b7edff11`.
+All 33 preparation steps pass, including fresh AI/Settings builds, twelve staged
+provider/consumer style-scale cases, collector tests, and restoration at the exact
+configured prefix. Read-only post-restoration verification matches all 200 kit
+file hashes. The installed FormCombo fixture actually ran in all four kit cases.
+Logs/results: `.cache/holonight-uqc207-5j2ew840/`.
+
+Twenty bounded staged application checks (five apps × both styles × both scales)
+verify module isolation and runtime-selected origins; all indexed log hashes match.
+Sixteen processes exit -15 after the planned SIGTERM deadline and four exit 0;
+none exits prematurely or needs a forced kill. All twenty have measured window DPR
+records (1 or 1.25), stored independently of requested scale. No new hnicons image
+failure or provider ScrollBar orientation error appears on those limited paths.
+This is loading/observation validation, not interactive acceptance or an explanation
+of the historical crash. Existing external diagnostics remain outside repair scope.
+
+From a fresh local tux VT, start:
+
+```sh
+python3 /tmp/holonight-uqc207-5j2ew840/guided-session.py hyprland
+```
+
+Follow the kit's README for human-operated Haruna icons/Shortcuts, AI button/Switch
+focus, Settings Switch focus, and NeoChat/Tokodon popup backgrounds under both styles
+and scales. Use `--diagnostics` to retain the state timeline. No desktop pointer/focus
+was automated. Accepted authentication, dropdown navigation and F03 traversal are
+excluded; deferred Fusion hover/external preferences remain recorded. Manual results
+are pending, so the initiative and work-package states are unchanged.

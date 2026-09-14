@@ -2166,3 +2166,8 @@ Batch 3 and UQC-207 remain open. Earlier implementation checkpoints are historic
 Canonical publication and clean provider confirmed before pinning `a7e50b0`.
 Results and remaining evidence gaps: [canonical findings](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
 UQC-201/UQC-207 remain In Progress and the initiative Accepted.
+
+Fresh kit and restoration/measurement results are recorded once in the
+[focused iteration findings](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
+Use [focused human instructions](RENDERING-BATCH3.md); no Batch 3 closure or Batch 8
+integration is claimed by this checkpoint.
