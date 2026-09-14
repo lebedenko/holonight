@@ -109,3 +109,15 @@ deployment fixtures and shared-contract review at clean canonical published pins
 Record final versions, evidence, limitations and date before marking UQC-201 Done
 and the initiative Integrated. Account-dependent surfaces retain prerequisites;
 the accepted logged-out scope does not add account sign-in.
+
+
+## Batch 3 implementation checkpoint — 2026-09-14
+
+Published provider `fbffc87` repairs shared icons, conditional menu spacing,
+explicit delegate selection and the whole-control Switch focus outline. Automated
+verification and ownership/evidence limits are recorded once in
+[FINDINGS.md](FINDINGS.md#batch-3-investigation-and-rendering-repair--2026-09-14).
+The fresh immutable kit and restoration command are in the
+[ledger](TASKS.md#batch-3-focused-kit--2026-09-14); use the
+[focused manual instructions](RENDERING-BATCH3.md).
+Batch 3 remains open. Preserve Batches 1–2; broader integration remains Batch 8.

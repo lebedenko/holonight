@@ -5,6 +5,9 @@ sys.dont_write_bytecode = True
 import importlib.util
 from pathlib import Path
 import unittest
+from unittest.mock import Mock, patch
+import hashlib
+import json
 import os
 import signal
 import subprocess
@@ -49,8 +52,38 @@ class RuntimeIsolation(unittest.TestCase):
         self.assertEqual(app.assess_isolation(self.evidence("Fusion"), self.mappings()[1:2], self.prefix)["status"],
                          "incomplete")
 
+    def test_foreign_fusion_requires_its_style_and_config_without_unused_core(self):
+        evidence = dict(self.evidence("Fusion"), executable="/usr/bin/haruna")
+        maps = self.mappings()[:1] + ["0-1 r-xp 0 00:00 1 /usr/lib/qt6/qml/QtQuick/Controls/Fusion/libqtquickcontrols2fusionstyleplugin.so"]
+        self.assertEqual(app.assess_isolation(evidence, maps, self.prefix)["status"], "verified")
+        self.assertEqual(app.assess_isolation(evidence, maps[:1], self.prefix)["status"], "incomplete")
+        evidence["executable"] = "/tmp/candidate/bin/holonight-settings"
+        self.assertEqual(app.assess_isolation(evidence, maps, self.prefix)["status"], "incomplete")
+
 
 class LauncherSupervisor(unittest.TestCase):
+    def test_batch3_index_retains_process_failure_and_log_hash(self):
+        with tempfile.TemporaryDirectory(prefix="uqc-batch3-index-") as directory:
+            run = Path(directory)
+            child = Mock(pid=12345)
+            child.poll.return_value = None
+            child.wait.return_value = -6
+            env = dict(UQC_SESSION_RUN=str(run), UQC_PREFIX="/tmp/candidate",
+                       UQC_KIT="/tmp/kit", WAYLAND_DISPLAY="test-only")
+            argv = [str(SCRIPT), "haruna", "--style", "Fusion", "--scale", "1.25", "--index", "batch3"]
+            with patch.dict(os.environ, env), patch.object(sys, "argv", argv), \
+                    patch.object(app.os, "getuid", return_value=1001), \
+                    patch.object(app.subprocess, "Popen", return_value=child), \
+                    patch.object(app.time, "sleep"), patch.object(app, "collect", return_value=True):
+                self.assertEqual(app.main(), -6)
+            records = [json.loads(line) for line in (run / "batch3-index.jsonl").read_text().splitlines()]
+            self.assertEqual([record["status"] for record in records], ["running", "finished"])
+            self.assertIsNone(records[0]["process_exit"])
+            self.assertEqual(records[1]["process_exit"], -6)
+            self.assertEqual(records[1]["requested_scale"], "1.25")
+            self.assertEqual(records[1]["log_sha256"], hashlib.sha256(b"").hexdigest())
+            self.assertEqual(Path(records[1]["run"]).joinpath("exit.txt").read_text(), "-6\n")
+
     def test_interrupt_allows_the_helper_to_finish_evidence(self):
         with tempfile.TemporaryDirectory(prefix="uqc-supervisor-") as directory:
             kit = Path(directory)

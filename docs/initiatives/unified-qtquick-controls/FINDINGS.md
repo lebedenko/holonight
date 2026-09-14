@@ -646,3 +646,50 @@ published and canonical availability was confirmed before the umbrella pin.
 All 77 provider CTests pass, including installed-package acceptance. Formatting,
 provider/demo/gallery import policy and licensing pass; QML lint has only existing
 unrelated diagnostics. This verifies implementation, not pending manual findings.
+
+
+Fresh isolated compatibility reruns against the staged published provider resolve
+the earlier fractional-scale fixture inconsistency: HoloNight check controls measure
+width 16 with label x=24 at both DPRs; Fusion measures width 0, indicator x=-7/width 14
+and label x=8 at both DPRs. Logs are `.cache/uqc207/compatibility-isolated-*.log`.
+These runs use separate empty configuration/cache/data/runtime directories, explicit
+staged libraries and report actual fixture Window.devicePixelRatio (1 or 1.25).
+The earlier non-isolated observation remains retained and is not used for acceptance.
+
+
+Read-only recovery of original AI focus events adds historical owner evidence.
+HoloNight run `ai-1789029827393494892` has log SHA-256
+`a1929f292c04ce19b62b20c3a92400cc81d1482b15d4a0fcf8a30a27309cd1f0`;
+Fusion run `ai-1789039726877575859` has
+`53b12319ce105d1464fa43bc1118216612ddc218f7f0c7f7dabaec0057dc5b78`. Selected focus records are privately retained as
+`.cache/uqc207/investigation/ai-*-focus.txt` with original line numbers.
+HoloNight lines 117762–119011 show Context-window editor → Temperature RowLayout →
+Temperature editor, followed by Slider at 120324. This observed intermediate owner
+is a layout, not evidence of a disabled Control receiving focus. Both styles also
+show an HnFormField Loader stop before the subsequent action button. This is
+historical evidence preceding UQC-204, not proof of a present failure.
+HoloNight lines 137903–138898 show ProviderActionButton ↔ enclosing Loader changes;
+Space-event/reason correlation and exact button label are not established by the
+selected records. Do not claim the button kept focus or assign a new consumer repair
+from those transitions alone. The fresh actual-app F03/F04 retest remains required.
+
+Final manual kit `/tmp/holonight-uqc207-8jhojhzb` contains published provider `fbffc87`.
+Provider, newly built AI and Settings acceptance passes at both styles/scales;
+twenty actual staged launches pass module-path/origin checks. The harness sends
+SIGTERM after inspection: sixteen children exit -15; all four NeoChat runs handle
+termination and exit 0. These are supervised shutdowns, not user-completed sessions. The helper records missing actual application DPR as null;
+these launches do not supply the plan's complete per-window DPR/focus-owner evidence.
+Seven evidence-helper tests pass, including foreign Fusion module requirements and
+preservation of a -6 outcome in the run index. Restoration and file hashes pass.
+The initial `i0u2klt7` kit/archive remains preserved; use the replacement above.
+[Focused manual instructions](RENDERING-BATCH3.md) follow. No manual Batch 3 result
+has been received; no finding is closed by kit preparation alone.
+
+
+Final bounded startup log review finds NeoChat RoomDrawer.roomDrawerWidth binding
+loops under both styles at both scales, at NeoChat Main.qml:153. The remaining
+sixteen logs have none of the scanned TypeError/ReferenceError/assignment/binding-loop
+markers. The RoomDrawer diagnostics remain C06 compatibility evidence; successful
+loading is not a warning-free claim. No new MessageDialog/AboutItem reproduction
+was observed on those limited startup paths. The scan is retained in
+`.cache/uqc207/final-runtime-diagnostics.json`.

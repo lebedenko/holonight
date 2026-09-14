@@ -2,6 +2,7 @@
 """Launch an acceptance surface or collect selected evidence from its actual PID."""
 import argparse
 import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -32,7 +33,13 @@ def assess_isolation(evidence, mappings, prefix):
             libraries.add(str(path))
             if not path.is_absolute() or not path.resolve().is_relative_to(prefix):
                 problems.append("host/outside-prefix HoloNight mapping: " + str(path))
-    required = {"libholonight_config.so", "libholonight_core_qml.so"}
+    required = {"libholonight_config.so"}
+    foreign_fusion = (evidence.get("executable") in ("/usr/bin/haruna", "/usr/bin/neochat", "/usr/bin/tokodon")
+                      and evidence["environment"].get("QT_QUICK_CONTROLS_STYLE") == "Fusion")
+    if not foreign_fusion:
+        required.add("libholonight_core_qml.so")
+    elif not any("libqtquickcontrols2fusionstyleplugin.so" in line for line in mappings):
+        problems.append("missing runtime Fusion style plugin")
     if evidence["environment"].get("QT_QUICK_CONTROLS_STYLE") != "Fusion":
         required.add("libholonight_qml.so")
     names = {Path(path).name for path in libraries}
@@ -53,7 +60,8 @@ def collect(pid, destination, prefix):
     (destination / f"pid-{pid}.json").write_text(json.dumps(evidence, indent=2) + "\n")
     lines = (proc / "maps").read_text().splitlines()
     (destination / f"pid-{pid}.maps").write_text("\n".join(
-        line for line in lines if "holonight" in line.lower() or "libQt6" in line) + "\n")
+        line for line in lines if "holonight" in line.lower() or "libQt6" in line
+        or "/QtQuick/Controls/" in line) + "\n")
     isolation = assess_isolation(evidence, lines, prefix)
     (destination / "isolation.json").write_text(json.dumps(isolation, indent=2) + "\n")
     print("Runtime isolation:", isolation["status"], flush=True)
@@ -67,6 +75,7 @@ def main():
     parser.add_argument("--style", choices=("default", "Holonight", "Fusion"), default="default")
     parser.add_argument("--scale", choices=("1", "1.25"), default="1")
     parser.add_argument("--pid", type=int)
+    parser.add_argument("--index", choices=("batch3",))
     args = parser.parse_args()
     if os.getuid() != 1001 or not os.environ.get("UQC_SESSION_RUN") or not os.environ.get("WAYLAND_DISPLAY"):
         parser.error("run in the prepared tux compositor terminal")
@@ -104,6 +113,17 @@ def main():
     env["QT_PLUGIN_PATH"] = str(prefix / "lib/qt6/plugins")
     isolated = False
     (evidence / "command.json").write_text(json.dumps(command) + "\n")
+    def index(status, code=None):
+        if not args.index:
+            return
+        record = dict(status=status, run=str(evidence), application=args.surface,
+                      style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
+                      process_exit=code)
+        if status == "finished":
+            record["log_sha256"] = hashlib.sha256((evidence / "launch.log").read_bytes()).hexdigest()
+        with (run / (args.index + "-index.jsonl")).open("a") as output:
+            output.write(json.dumps(record) + "\n")
+    index("running")
     with (evidence / "launch.log").open("w") as log:
         child = subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT)
         print("PID:", child.pid, flush=True)
@@ -124,6 +144,7 @@ def main():
                 child.kill()
                 code = child.wait()
     (evidence / "exit.txt").write_text(str(code) + "\n")
+    index("finished", code)
     print("Exit:", code, flush=True)
     return code if code else (0 if isolated else 2)
 
