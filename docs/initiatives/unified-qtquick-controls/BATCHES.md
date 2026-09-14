@@ -88,12 +88,13 @@ three evidence paths and observations. Batch 2 follows only after Batch 1 accept
 ## Batch 2 manual checkpoint
 
 Update 2026-09-14: shell repairs are published at `fffb171`, provider remains
-`68b7069`. A02 is closed by synthetic lifecycle/rendered tests. A01/A04 await the
-[three targeted authentication runs](AUTHENTICATION-BATCH2.md) from immutable kit
-`/tmp/holonight-uqc205-b2_vmvoyd51` in one fresh real tux Hyprland login at output 1 /
-Qt 1.25. Runs are automatically indexed; no evidence path copying is required.
-Preserve A03 and Batch 1 acceptance. No failed credential submission is requested.
-Batch 2 remains open until those observations and shutdown outcomes are classified.
+`68b7069`, and shell CI passes. A01/A04 are manually accepted; A02 is closed by
+synthetic lifecycle/rendered tests. See the
+[canonical acceptance and saved outcomes](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14).
+Saved process outcomes are classified and **Batch 2 is complete**. A03 and Batch 1
+stay accepted. The immutable kit and previous kits remain preserved; the
+[targeted instructions](AUTHENTICATION-BATCH2.md) are retained as run provenance.
+Batch 3 follows with Haruna crash/diagnostic classification.
 
 ## Final acceptance coverage
 

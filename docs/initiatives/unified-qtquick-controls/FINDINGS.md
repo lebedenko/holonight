@@ -204,10 +204,10 @@ before assignment. These findings do not reopen the accepted D01/D03/D04 repair.
 
 | ID | Application / context; reproduction | Confirmed facts / suspected cause | Evidence | Acceptance |
 |---|---|---|---|---|
-| A01 | Owned Polkit H; open user selector in isolated run | Two reserved but blank identity rows. Custom avatar/text delegate uses model roles; independent from D01. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10), private auth run `20260910T192833Z` | Correct identity labels/avatars and selection from actual model roles. |
+| A01 | Owned Polkit H; open user selector in isolated run | Two reserved but blank identity rows. Custom avatar/text delegate uses model roles; independent from D01. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10), private auth run `20260910T192833Z` | **Closed** by the [Batch 2 manual acceptance](#batch-2-authentication-manual-acceptance--2026-09-14), supported by real-model rendering tests. Historical blank rows remain recorded without an inferred cause. |
 | A02 | Same run; failed submission shows error | Input disappears, Password label remains. Label/input visibility conditions differ; lifecycle/retry needs reproduction. | [prompt](GUIDED.md#owned-agent-prompt-findings--2026-09-10) | **Closed** by the [Batch 2 synthetic lifecycle/rendered checkpoint](#batch-2-authentication-repair-checkpoint--2026-09-14). Label/editor/helper track supported prompt/error/retry lifecycle. No further failed credential submission. |
 | A03 | Same run after failure; Cancel prompt | Prompt closes but Python challenge hangs until Ctrl+C. Agent exit 0 verified; challenge.txt absent, no normal completion. UQC-205 baseline reproduction locates missing listener GError: coordinator completion occurs, but libpolkit cannot reply. Typed cancellation error repairs the automated path. | [hang](GUIDED.md#owned-agent-cancellation-completion-failure--2026-09-10), [repair/verification](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Deterministic cancellation completes pending request exactly once and parent exits; cover failure-then-cancel and direct cancel with isolated fake backend. **Closed**: automated completion checks and [manual cancellation result](#manual-polkit-cancellation-acceptance--2026-09-12) pass. |
-| A04 | Askpass F 1.25; inspect unfocused/focused editor then cancel | Left border appears half thickness; focused ring intact, cancel exit 1. Shell supplies Rectangle background; clipping/fractional position suspected only. | [border](GUIDED.md#owned-askpass-fusion-scale-125-border-finding--2026-09-10) | Uniform intended border at fractional scale without breaking cancellation/focus. |
+| A04 | Askpass F 1.25; inspect unfocused/focused editor then cancel | Left border appears half thickness; focused ring intact, cancel exit 1. Shell supplies Rectangle background; clipping/fractional position suspected only. | [border](GUIDED.md#owned-askpass-fusion-scale-125-border-finding--2026-09-10) | **Closed** by the [Batch 2 manual acceptance](#batch-2-authentication-manual-acceptance--2026-09-14), supported by rendered edge-coverage checks. |
 
 ### Manual Polkit cancellation acceptance — 2026-09-12
 
@@ -489,3 +489,52 @@ inspections with credential-free cancellation, then one Fusion Askpass border ch
 in a fresh real tux Hyprland login at output 1 / Qt 1.25. No manual observations
 have been returned for this kit. A01/A04 and manual shutdown classifications remain
 pending; Batch 2 is not closed and broader acceptance is not implied.
+
+
+### Batch 2 authentication manual acceptance — 2026-09-14
+
+The user reports: “all tests passed, no issues observed” for the fresh immutable kit
+`/tmp/holonight-uqc205-b2_vmvoyd51`. **A01 and A04 are accepted** for the targeted
+identity/prompt inspections in HoloNight and Fusion and the Fusion Askpass border/ring
+inspection. A02 remains closed by synthetic lifecycle/rendered tests; no additional
+failed credential submission is required. Historical A03 and Batch 1 acceptance stand.
+A01 acceptance establishes current behavior, without attributing the historical blank
+rows to an unproven repair.
+
+Read-only inspection correlates the report with
+`/home/tux/uqc-auth-evidence/session-9.jsonl`. All three runs belong to fresh local
+tux session 9 (UID 1001, seat0, tty3, Wayland, leader 412438), with eDP-1 output
+scale 1 and actual Qt DPR 1.25. Requested and actual styles match. Every required
+module is verified from the immutable kit prefix, using PID-tagged loader records.
+No ReferenceError, TypeError, binding-loop, assignment or required-property diagnostic
+was found in the three process logs.
+
+| Indexed run under `/home/tux/uqc-auth-evidence/` | PID | Registration and bounded result |
+|---|---|---|
+| `9-001-polkit-Holonight-1.25` | 414942 | Exclusive registration with authority `:1.28`, agent `:1.11191`, serial 9. Challenge timed out after 60.063 seconds, exit 124. Agent supervisor interrupted; child terminated with exit 0. |
+| `9-002-polkit-Fusion-1.25` | 416228 | Exclusive registration with authority `:1.28`, agent `:1.11293`, serial 9. Challenge normally exited 126 (Request dismissed) after 25.657 seconds. Agent supervisor interrupted; child terminated with exit 0. |
+| `9-003-askpass-Fusion-1.25` | 416707 | Normal exit 1, zero stdout bytes, consistent with cancellation. |
+
+Both Polkit executables match SHA-256
+`70155604f039965621511609baf40f80033dd75a56db3a22162d97e452c96b8b`;
+Askpass matches `0097e31c38f8196c72dffa39a02467af9068df99602bf6b1e33454e5266aec88`.
+Process-log SHA-256 values, in run order:
+
+- `d11e79cab1ddf752bc633be87d48210c7e70aeafb8b748113c691ac4ffe34ea4`
+- `a1ff54a46865027e9f32a2d5889b92f9e322dd3d2935e018a28ef37de0cd4cc4`
+- `108d6d2348026ce9691baf44e16d99bb553b3b7108d4744e9d8f4898e633c2be`
+
+The HoloNight log contains BeginAuthentication, CancelAuthentication and agent
+unregistration. The user clarifies: “Inspection took over 60 seconds.” Its exit 124
+is therefore classified as the visual inspection exceeding the harness deadline;
+it is not normal requester completion and does not establish a cancellation regression.
+Fusion provides normal bounded cancellation evidence, and the accepted A03 automated
+and earlier manual completion checks remain intact. Both test agents stopped cleanly;
+Askpass cancelled normally. The user reports no shutdown issue; no separate numeric
+compositor exit result is asserted.
+
+**Batch 2 is closed:** A01/A02/A04 have supported acceptance, the shell implementation
+and umbrella pin are published, and the saved process outcomes are classified. No
+repeat visual checks or failed credential submission are needed. Batch 3 follows with
+Haruna crash/diagnostic classification. Broader compositor, successful-authentication
+and activation gates remain Batch 8; UQC-201 stays In Progress and the initiative Accepted.

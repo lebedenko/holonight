@@ -9,9 +9,9 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 Current execution order and remaining gates: [eight-batch roadmap](BATCHES.md).
 D01/D03/D04, A03 and the reported F06 sequence remain accepted. D02 Settings Weather and F07 both styles are accepted. The user confirms deliberate
 Fusion session shutdown; missing numeric exit evidence remains documented. Batch 1
-is complete; Batch 2 authentication repairs are published, with A01/A04 manual confirmation
-and manual shutdown classification pending. See the latest
-[manual results](FINDINGS.md#settings-and-launcher-manual-results--2026-09-13). Dated entries below
+and Batch 2 are complete; A01/A02/A04 are accepted and saved process outcomes are
+classified. Batch 3 follows with Haruna crash/diagnostic classification. See the latest
+[authentication results](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14). Dated entries below
 retain historical states; current table entries and canonical FINDINGS.md acceptances take precedence.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
@@ -33,7 +33,7 @@ retain historical states; current table entries and canonical FINDINGS.md accept
 
 | UQC-204 | `holonight-qt` | Shared form keyboard focus in HnSettingsRow and HnFormField | UQC-109; found during UQC-201 | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md) | Done | `65c806fb6a65cae9652dde7a69d595813973c1a9` (repair `e97b646`) | 2026-09-11: final regressions fail on baseline (7/8 per style/scale), pass after repair (8/8 × four); all 65 provider checks pass after correcting stale local patchelf path. Installed four-case matrix, QML/import checks, format, focused tidy and licensing pass. Canonical origin/main revalidated before pinning. Manual focus acceptance completed for F01/F02; see [canonical result](FINDINGS.md#manual-focus-acceptance--2026-09-11). F03 app-specific attribution remains unconfirmed. |
 | UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
-| UQC-205-B2 | `holonight-shell` | A01/A02/A04 follow-up; preserve accepted A03 and Batch 1 | UQC-205, UQC-206, UQC-214 | [Follow-up SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md#batch-2-follow-up--a01a02a04--2026-09-14) | Done | `fffb1715bac5a57127af5e671033ac33335ffc16` | 2026-09-14: real-model A02 failure and graphics-backed A04 clipping reproduced/repaired; A01 does not reproduce on current provider, no selector edit. 1171/1171 tests, four style/scale graphics runs, static/licensing and installed checks pass. Clean canonical publication confirmed. A01/A04 manual gates remain pending. |
+| UQC-205-B2 | `holonight-shell` | A01/A02/A04 follow-up; preserve accepted A03 and Batch 1 | UQC-205, UQC-206, UQC-214 | [Follow-up SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md#batch-2-follow-up--a01a02a04--2026-09-14) | Done | `fffb1715bac5a57127af5e671033ac33335ffc16` | 2026-09-14: real-model A02 failure and graphics-backed A04 clipping reproduced/repaired; A01 does not reproduce on current provider, no selector edit. 1171/1171 tests, four style/scale graphics runs, static/licensing and installed checks pass. Clean canonical publication confirmed. A01/A04 manually accepted; process outcomes classified and Batch 2 closed (see canonical findings). |
 | UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | Done | Repair `975bf09`; published provider handoff `68b7069` | Provider repairs published; D01/D03/D04 manually accepted. D02 Settings Weather manual result and completed diagnostic log accepted 2026-09-13; third-party warnings stay in UQC-201. |
 | UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
@@ -2103,3 +2103,19 @@ submission; A03 remains accepted. Record returned observations once in FINDINGS.
 Batch 2 remains open for A01/A04 and manual shutdown outcomes. Other compositor,
 successful-authentication and activation gates remain in Batch 8; Batch 3 follows
 with Haruna crash/diagnostic classification. UQC-201 In Progress, initiative Accepted.
+
+
+### Batch 2 manual evidence review — 2026-09-14
+
+[Canonical acceptance and saved outcomes](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14)
+close A01/A04 alongside already verified A02 and classify the saved process outcomes.
+Batch 2 is closed; A03 and Batch 1 stay accepted. Batch 3 follows with Haruna
+crash/diagnostic classification. Broader UQC-201 integration gates remain open.
+
+Shell CI [34785218986](https://github.com/lebedenko/holonight-shell/actions/runs/34785218986)
+is now completed successfully at the published implementation revision `fffb171`.
+This supersedes the running-at-release status in the dated kit handoff above.
+No product edits, gitlink changes or kit mutations accompany this acceptance record.
+Verification: indexed session/runtime/registration/result evidence inspected read-only;
+document links and `git diff --check` checked. Product tests were not repeated for
+this documentation-only checkpoint.

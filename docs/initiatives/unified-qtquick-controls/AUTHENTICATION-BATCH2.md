@@ -1,5 +1,11 @@
 # Batch 2 — targeted authentication checkpoint
 
+Status 2026-09-14: **Batch 2 complete.** A01/A04 manually accepted, A02 verified
+and saved process outcomes classified; see the
+[canonical evidence review](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14).
+The instructions below are retained as run provenance, not a request to repeat the
+accepted visual checks.
+
 Fresh kit: `/tmp/holonight-uqc205-b2_vmvoyd51`. A03 and Batch 1 stay accepted. A02 is verified synthetically;
 no failed password submission is requested. Use one fresh real **tux VT login**,
 outside a compositor, then start this kit's Hyprland session (output scale 1):
