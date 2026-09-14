@@ -1,7 +1,11 @@
 # Batch 4 — palette navigation and pickers, scale 1
 
+These checks are complete. [Manual acceptance](FINDINGS.md#batch-4-manual-visual-acceptance--2026-09-15)
+records P02 acceptance and P01 external ownership. Do not repeat these runs; the
+commands below preserve the completed procedure.
+
 Results and ownership are recorded once in [FINDINGS.md](FINDINGS.md#batch-4-palette-investigation-and-repair--2026-09-14).
-UQC-208/UQC-201 remain In Progress and the initiative Accepted. This kit repairs
+UQC-208 is Done for scoped provider work; UQC-201 remains In Progress and the initiative Accepted. This kit repairs
 the provider's missing Light palette role. It does not patch the external default
 scheme alternation or reopen accepted rendering, chevron, layout or greeter work.
 

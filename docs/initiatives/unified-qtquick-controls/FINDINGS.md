@@ -329,8 +329,8 @@ historical evidence, not current assignments.
 - UQC-207 remains In Progress for unresolved diagnostics/classification. Its
   icon/menu/selection, Switch and background repairs are accepted; busy-button
   focus is expected Qt behavior and Tokodon chevron is deferred.
-- UQC-208 (P01/P02 palette transitions/pickers) is In Progress; see the
-  [Batch 4 investigation](#batch-4-palette-investigation-and-repair--2026-09-14).
+- UQC-208 (P01/P02 palette transitions/pickers) is Done for scoped provider work;
+  [manual acceptance](#batch-4-manual-visual-acceptance--2026-09-15) preserves the external P01 defect.
 - UQC-209/UQC-210 (L01/L02) are Superseded and removed from this initiative.
   Future Settings/AI sessions must address their incorrect layouts in local SDDs.
 - UQC-211 (S01/S02 shell) and UQC-212 (remaining greeter-specific checks after the
@@ -1228,3 +1228,88 @@ python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cach
 
 The kit's README substitutes its concrete path into [PALETTE-BATCH4.md](PALETTE-BATCH4.md).
 Request only those user-operated scale-1 checks; no unrelated acceptance is reopened.
+
+### Batch 4 manual visual acceptance — 2026-09-15
+
+The user confirms that all nine requested runs displayed consistent colors,
+including pickers, throughout the dark/light/dark checks and without diagnostics.
+The only observed issue is NeoChat/Tokodon still changing colors on Appearance
+navigation without deliberate scheme selection.
+
+- **P02 visual acceptance: passed** for all nine reported runs at scale 1.
+  NeoChat/Tokodon used HoloNight Dark / HoloNight Light; Haruna used HoloNight
+  Cyber D / HoloNight Cyber L. No mixed dark/light picker surfaces were observed.
+- **P01 persists**, consistent with the previously reproduced external activation
+  mechanism. No provider navigation repair is claimed. Retain the KDE and
+  application-specific follow-ups documented above.
+- Haruna's scheme dropdown was too narrow to read full names, prompting the
+  alternative scheme pair. This is a separate sizing observation, with ownership
+  uninvestigated; it does not invalidate the dark/light palette comparison.
+
+Session: `hyprland-jk9unwh0`, kit `holonight-uqc208-y6y4sz52`. User notes in
+`/tmp/res.txt` list the nine requested runs with reported isolation verified and
+exit 0. The readable session index additionally contains three Tokodon attempts:
+all twelve finished entries report normal exit 0. Instrumented entries record
+DPR 1; uninstrumented entries provide no measured DPR. Notes and index are
+preserved in `.cache/uqc208/manual-review/`.
+
+After the user corrected ownership recursively, all twelve raw log hashes match
+the finished index entries; all twelve raw exit files match exit 0, and recomputed
+runtime module isolation passes. Palette sample counts match the index. All eight
+instrumented runs measure DPR 1; the four uninstrumented runs remain without a
+measured DPR. These include the nine requested runs and three extra Tokodon attempts.
+
+Actual-app observations establish:
+
+- NeoChat and Tokodon under both styles repeatedly alternate application Window
+  `#ff202326` / Light `#ff393e43` (Breeze Dark) with Window `#ff0c1118` / Light
+  `#ff202b39` (provider default) before explicit selection. Explicit selection
+  then produces the recorded dark/light/dark application palette sequence.
+- Tokodon's font picker uses `QQuickPlatformFontDialog` and Qt's
+  `quickimpl/qml/FontDialog.qml`; the observed picker instances follow the default
+  palette states. Its explicit selected-scheme visual acceptance is the user's
+  report, not a claim of a complete per-picker measured transition timeline.
+- Haruna uses `QQuickPlatformFileDialog` / `QQuickPlatformColorDialog` with Qt's
+  `quickimpl/qml/FileDialog.qml` / `ColorDialog.qml` under both styles. Both picker
+  implementations record the initial provider default and Cyber D/Cyber L roles.
+  Runtime-selected HoloNight/Fusion controls and declared Basic fallback origins
+  coexist with these Qt-owned dialog implementations; appearance alone is not
+  used to assign ownership.
+- Explicit KDE-exported HoloNight schemes supply their own Light role (for example
+  Dark `#ffd2dcef`, Cyber D `#ffd5dbef`), whereas the provider default supplies
+  `#ff202b39`. Those explicit application palettes are preserved; do not replace
+  them with provider defaults. The user accepts their appearance across all nine runs.
+
+Session versions match the kit inventory: NeoChat/Tokodon **26.08.1-1**, Haruna
+1.8.1-2, Qt base 6.11.2-3 and declarative 6.11.2-1. The earlier ownership inspection
+used 26.08.0 source; the exact 26.08.1
+[NeoChat callback](https://github.com/KDE/neochat/blob/v26.08.1/src/settings/ColorScheme.qml)
+and [Tokodon Appearance](https://github.com/KDE/tokodon/blob/v26.08.1/src/qml/Settings/AppearancePage.qml)
+files were fetched and compare byte-for-byte equal to those inspected earlier.
+This resolves that version-attribution gap without changing the external disposition.
+
+The logs retain **12** provider ScrollBar null-orientation warnings across the
+HoloNight NeoChat/Tokodon runs, including uninstrumented runs, and **30** Kirigami
+null-flickable warnings. Haruna has neither TypeError nor ReferenceError in its
+three logs. These findings remain separate UQC-207 diagnostics; successful visual
+acceptance does not close them or the historical Haruna crash.
+
+The read-only analysis script and per-run summaries are preserved in
+`.cache/uqc208/manual-review/`. Notes SHA-256:
+`dc90ed83117987235c2dff87f7719c24941cbf15a82b839380c3b0342b39dc34`;
+index SHA-256: `8b0a7742afa09b70aacadb761c5f60c6c32baca3970ec73de081ffdb8cc7d088`.
+
+**UQC-208 / Batch 4: Done for scoped provider work.** P02 is accepted; P01 remains
+an external defect with documented owner-specific follow-ups, not a repaired
+navigation behavior. No further Batch 4 visual runs or speculative provider fixes
+are requested. UQC-201 remains In Progress and the initiative Accepted. Batch 5
+stays removed, Batch 7 retains its reviewed scope, and unrelated accepted results
+and deferred findings remain unchanged. Only documentation and the published
+provider documentation checkpoint/pin change; no product or immutable-kit mutation.
+Verification for this closure: raw evidence analysis, exact-version source
+comparison, local documentation links and whitespace; no product tests repeated
+for documentation-only changes.
+
+Provider documentation closure `638eec25c0934538e747b969b37ab8f63d1722de` was
+published and confirmed on canonical origin/main before updating the umbrella pin.
+The provider is clean; implementation remains `5d3f06e`.

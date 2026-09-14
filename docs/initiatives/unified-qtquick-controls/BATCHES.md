@@ -9,7 +9,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 1 | D02, F07; publication | Complete: Settings Weather diagnostics and both launcher styles accepted; published handoffs recorded. |
 | 2 | A01, A02, A04 | Complete: shell Polkit identity rows, password/error visibility and fractional Askpass borders accepted; A03 cancellation preserved. |
 | 3 | Remaining UQC-207 / compatibility dispositions | Icons/menu/selection, Switch focus and dropdown backgrounds accepted; busy-button focus classified as expected Qt behavior. Remaining provider ScrollBar diagnostic, historical Haruna crash and Fusion hover need resolution or explicit disposition. Tokodon chevron deferred; established external findings are not provider repairs. |
-| 4 | P01, P02 | Reproduce NeoChat/Tokodon navigation palette changes and mixed picker palettes; identify application/provider/backend ownership; dark/light round trips and overrides. |
+| 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | Fractional shell stability/topbar; investigate AI keyboard delivery and activation after VT return; repair the demonstrated owner. |
 | 7 | Remaining greeter-specific G01–G06 checks | Preserve accepted dropdown/focus/hover work and existing shared avatar use. Verify user-selector reachability and keyboard reveal; review remaining disabled/password appearance, selector composition and power presentation. See the reviewed finding dispositions before assigning repairs. |
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
@@ -130,7 +130,7 @@ See [canonical findings](FINDINGS.md#batch-3-dropdown-background-manual-acceptan
 and [chevron deferral](FINDINGS.md#tokodon-intermittent-chevron--investigation-deferred-2026-09-14).
 [RENDERING-BATCH3.md](RENDERING-BATCH3.md) preserves the completed session commands;
 it is not a request to repeat accepted checks. Earlier publication/kit history
-remains in TASKS.md. Batch 4 is In Progress; see the [palette findings](FINDINGS.md#batch-4-palette-investigation-and-repair--2026-09-14)
+remains in TASKS.md. Batch 4 is complete for scoped provider work; see the [palette findings](FINDINGS.md#batch-4-palette-investigation-and-repair--2026-09-14)
 and [scoped instructions](PALETTE-BATCH4.md).
 
 ## Batch 7 review — 2026-09-14
