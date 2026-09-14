@@ -5,7 +5,10 @@ until repairs are available. This register is authoritative for current findings
 [GUIDED.md](GUIDED.md) and [TASKS.md](TASKS.md) retain chronological evidence,
 including superseded interpretations. Add new observations here once, and link
 from the ledger rather than copying the narrative into both historical documents.
-All findings below remain open unless an explicit repair/acceptance result says otherwise.
+Current scope and dispositions below take precedence over dated historical reports.
+Batches 1–2 and Batch 3 rendering/background repairs are accepted. Remaining Batch 3
+diagnostics are separate; Tokodon chevron is deferred. Batch 5 is removed from this
+initiative, and Batch 7 is narrowed by the greeter review below.
 
 ## Evidence and interpretation
 
@@ -186,12 +189,20 @@ before assignment. These findings do not reopen the accepted D01/D03/D04 repair.
 | P01 | NeoChat H 1/1.25, F 1: open Settings General, Appearance, close/reopen and repeat. Tokodon same requested comparisons, Appearance first | Appearance toggles two schemes repeatedly without explicit selection; both windows change. Other pages do not trigger NeoChat. Not just lazy initialization; ownership unresolved. | [toggle](GUIDED.md#neochat-appearance-palette-toggle-clarification--2026-09-10), [Tokodon](GUIDED.md#tokodon-default-scale-1-findings--2026-09-10) | Measure palette roles/state/origins across sequence; navigation alone preserves intended palette and application overrides. |
 | P02 | Haruna file/color pickers H 1/1.25; Tokodon font picker H 1/1.25; compare palette states | Mixed light surfaces/dark controls when H-looking scheme applied; alternate scheme consistent by user correlation. Haruna F dark. Palette state confounds style comparison; backend/roles unknown. Tokodon button resemblance to Basic is unverified. | [Haruna](GUIDED.md#haruna-default-scale-1-observations--2026-09-10), [state clarification](GUIDED.md#tokodon-scale-125--picker-palette-state-clarification--2026-09-10) | Same picker remains coherent before/after palette transitions while honoring app palette; record actual backend/control origins. |
 
-## Application layouts
+## Application layouts — removed from initiative scope
+
+User correction, 2026-09-14: L01/L02 are caused by incorrect layout implementation
+in Settings and AI, not holonight-qt controls unification. Batch 5 is removed;
+UQC-209/UQC-210 are Superseded rather than completed repairs. Preserve these reports
+for separate follow-up sessions: create/update each application’s local SDD with
+reproduction, layout ownership and focused verification before implementing there.
+Do not schedule, repair or gate UQC integration on these items. No application
+source or local follow-up SDD is created in this documentation-only scope update.
 
 | ID | Application / context; reproduction | Facts / hypothesis; owner | Evidence | Acceptance |
 |---|---|---|---|---|
-| L01 | Settings H 1.25; press/drag slider (exact page pending); Sway equivalent | Width shrinks and value jumps. Not reported in F comparison. holonight-settings investigates measured layout/provider interaction. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10) | Stable usable track width through press/drag; no geometry-induced value jump. |
-| L02 | AI provider Temperature H/F 1.25 | H knob-only, F track visible but too short; layout suspected. holonight-ai owns form measurement/repair. | [AI](GUIDED.md#ai-fusion-comparison-and-switch-feedback--2026-09-10) | Adequate stable track alongside SpinBox at supported widths/scales under both styles. |
+| L01 | Settings H 1.25; press/drag slider (exact page pending); Sway equivalent | Width shrinks and value jumps. Not reported in F comparison. Incorrect Settings-owned layout; separate Settings-local SDD follow-up. | [Settings](GUIDED.md#settings-continuation-observations--2026-09-10) | Stable usable track width through press/drag; no geometry-induced value jump. |
+| L02 | AI provider Temperature H/F 1.25 | H knob-only, F track visible but too short; Incorrect AI-owned row layout; separate AI-local SDD follow-up. | [AI](GUIDED.md#ai-fusion-comparison-and-switch-feedback--2026-09-10) | Adequate stable track alongside SpinBox at supported widths/scales under both styles. |
 
 ## Shell — holonight-shell
 
@@ -238,7 +249,31 @@ the initiative Accepted, and broad acceptance paused.
 All rows refer to H 1/1.25 and general F 1 comparison in
 [demo findings](GUIDED.md#greeter-demo-default-scale-1-findings--2026-09-10) and
 [Fusion follow-up](GUIDED.md#greeter-demo-fusion-scale-1-comparison--2026-09-10).
-Origins/geometry remain uninstrumented; real pre-session login is a separate gate.
+The original reports are retained below, with current dispositions from review of
+pinned greeter `b082d82` and the subsequent shared-provider acceptance records.
+Source: [LoginPanel.qml](../../../holonight-greeter/qml/LoginPanel.qml),
+[FooterSelector.qml](../../../holonight-greeter/qml/FooterSelector.qml),
+[Main.qml](../../../holonight-greeter/qml/Main.qml), and
+[runtime tests](../../../holonight-greeter/tests/runtime/controls_test.cpp).
+Real pre-session login remains a separate Batch 8 gate.
+
+**Already implemented/accepted:** session dropdown disappearance, dismissal and
+selection (D01/D03/D04) and the reported stationary-pointer feedback sequence (F06).
+The avatar display already uses `HnAvatar` in LoginPanel.qml, introduced by greeter
+commit `9130c9c` and verified by its runtime-control origin test. Do not assign
+these again. G05's requested avatar *selector* is distinct from that existing display.
+
+**Still not established as fixed:** G01's custom user-selector Tab/focus behavior
+and G02's keyboard reveal lack specific acceptance. LoginPanel still bypasses the
+user selector in password Backtab/power Tab links and gives the selector empty
+background/indicator items. Reveal still depends on `reveal.pressed`; generic
+Button tests do not prove this greeter lifecycle. FooterSelector still supplies
+its own colors/hover background, so G03 is not closed by shared hover fixes. G04
+remains a palette question, not a proven defect. Main.qml's SystemActionButton
+still paints `HoloniightPalette.surface` normally and uses the same text font size
+for both power glyphs, so G06's transparency/larger-poweroff request is not already
+implemented merely because its inner Button has an empty background.
+
 
 | ID | Reproduction | Confirmed facts / suspected cause | Acceptance |
 |---|---|---|---|
@@ -246,7 +281,7 @@ Origins/geometry remain uninstrumented; real pre-session login is a separate gat
 | G02 | Focus password reveal; hold/release Space | Mouse reveal works; keyboard does not; lifecycle unknown | Keyboard hold-to-reveal matches documented behavior and remasks on release/focus loss. |
 | G03 | Inspect disabled layout selector without configured choice | Correctly disabled but unexpected colors and hover appearance | Appropriate disabled appearance, no interactive hover feedback. |
 | G04 | Inspect password background | User questions palette alignment; no proven color defect | Identify semantic palette source and validate intended contrast/state. |
-| G05 | Inspect user selector | User requests existing avatar selector; component identity/API not yet located. F selector unusually large (collapsed/popup unknown) | Adopt appropriate existing component after contract review; bounded geometry and keyboard reachability. |
+| G05 | Inspect user selector | Shared HnAvatar display already implemented; user selector remains a separate Controls.ComboBox. Requested selector composition and reported Fusion sizing are unaccepted | Review only remaining selector composition/sizing and keyboard reachability; do not redo shared avatar adoption. |
 | G06 | Inspect reboot/poweroff without activating | Requests transparent normal backgrounds, larger poweroff icon; reboot size correct | Requested normal presentation; no power-action execution needed to verify appearance. |
 
 Session-row disappearance belongs only to D01, not a duplicate greeter finding.
@@ -286,24 +321,28 @@ Session-row disappearance belongs only to D01, not a duplicate greeter finding.
 
 ## Repair order and repository packages
 
-1. **UQC-204**, holonight-qt: F01–F03; baseline and implementation/verification in
-   [local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-204.md).
-2. **UQC-205**, holonight-shell: A03 complete; see the manual acceptance above.
-   A01/A02/A04 remain pending after the UQC-206 dropdown checkpoint.
-3. **UQC-206**, holonight-qt: D01–D04; separate popup geometry, delegates and dismissal
-   reproductions; do not assume the binding loop explains every symptom.
-4. **UQC-207**, holonight-qt: R01–R04 and F04 investigation; **UQC-208** palette
-   investigation P01/P02; settle origins before accepting implementation scope.
-5. **UQC-209**, holonight-settings: L01; **UQC-210**, holonight-ai: L02;
-   **UQC-211**, holonight-shell: S01/S02; **UQC-212**, holonight-greeter: G01–G06.
+The [current roadmap](BATCHES.md) controls execution; dated checkpoints below are
+historical evidence, not current assignments.
 
-UQC-205 is Done for A03 only. UQC-206 is In Progress with its [provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md),
-canonical baseline and isolated reproductions. Packages 207–212 remain Planned
-investigation/repair packages, not Ready assignments. Each needs its own local
-SDD, exact canonical baseline and reproduction before work starts. F05 and C01–C06 remain umbrella investigations until ownership is settled.
-F06 provider UQC-213 and F07 shell UQC-214 repairs are published and locally Done.
-F06 is accepted for the reported Settings/greeter HoloNight sequence below; F07
-awaits both launcher styles. See [current batch order](BATCHES.md).
+- UQC-204/205/205-B2/206/213/214 are Done for their recorded scopes. Preserve
+  accepted focus, authentication, dropdown and launcher behavior.
+- UQC-207 remains In Progress for unresolved diagnostics/classification. Its
+  icon/menu/selection, Switch and background repairs are accepted; busy-button
+  focus is expected Qt behavior and Tokodon chevron is deferred.
+- UQC-208 (P01/P02 palette transitions/pickers) remains Planned, the next planned
+  investigation batch.
+- UQC-209/UQC-210 (L01/L02) are Superseded and removed from this initiative.
+  Future Settings/AI sessions must address their incorrect layouts in local SDDs.
+- UQC-211 (S01/S02 shell) and UQC-212 (remaining greeter-specific checks after the
+  review above) remain Planned. F05 remains an umbrella/AI session-delivery
+  investigation. Established external compatibility dispositions do not become
+  speculative provider repair assignments.
+- UQC-201 remains In Progress for final ecosystem integration at clean published
+  pins. The initiative remains Accepted, not Integrated.
+
+Planned packages need a local SDD, exact canonical baseline, settled ownership and
+Ready state before implementation. See TASKS.md for package states and historical
+handoffs; no new implementation assignment is made by this documentation update.
 
 
 ### D02 context correction and provider handoff — 2026-09-12
@@ -724,7 +763,7 @@ ownership remains open; occurrence under both styles alone is insufficient evide
 | F04 — Space removes button ring | **Open; owner unresolved.** User reproduces it in both styles immediately on Space, with subsequent Tab/Backtab working. That traversal is not sufficient to establish the exact activeFocusItem or focusReason during activation. Plain-button regressions pass; AI Test connection disables while busy. Current log inspection does not establish a Space-correlated owner/reason timeline. Do not mark Qt, Hyprland or the provider unfixable from this evidence. |
 | C01 — Settings page differences | **Known composite boundary, not established external bug.** Appearance uses HnIconComboBox with an explicit HoloNight frame; Weather uses ordinary Controls.ComboBox, hence different Fusion appearance. Public composite APIs and accepted fallback boundaries remain preserved. The missing visible Fusion hover remains **open**: installed Fusion ButtonPanel does consume `control.hovered`, so “Fusion never implements hover” would be false. Need actual hovered state/contrast evidence before classifying this symptom. Small text padding remains a preference. Haruna Fusion menu hover also remains unverified. |
 | C02 — Fusion check/radio label gap | **Not fixable within HoloNight: Kirigami FormCard/Fusion layout incompatibility.** FormCard replaces the control content with null and removes padding/spacing. Fusion's implicit width then ignores its indicator. Existing isolated measurements at both DPRs show control width 0, indicator width 14/x=-7, external label x=8, leaving only one logical pixel. An upstream composition/sizing fix is needed; do not change Fusion globally. |
-| C02 — Tokodon Fusion Switch extends past row | **Not fixable within HoloNight: same upstream composition/sizing incompatibility.** Installed FormSwitchDelegate uses a zero-padding, null-content Controls.Switch. A new stock-Fusion offscreen fixture at actual DPR 1 and 1.25 reproduces control width 0, indicator width 40/x=-20. In a 400-wide row, the content starts at 12 and the switch at content x=376: indicator right edge is 408, eight pixels outside the row. No HoloNight QML override is required to reproduce this. |
+| C03 — Tokodon Fusion Switch extends past row | **Not fixable within HoloNight: same upstream composition/sizing incompatibility.** Installed FormSwitchDelegate uses a zero-padding, null-content Controls.Switch. A new stock-Fusion offscreen fixture at actual DPR 1 and 1.25 reproduces control width 0, indicator width 40/x=-20. In a 400-wide row, the content starts at 12 and the switch at content x=376: indicator right edge is 408, eight pixels outside the row. No HoloNight QML override is required to reproduce this. |
 | C02 — tall / HoloNight-looking Fusion popups | **Stock/composite behavior, no demonstrated sizing bug.** Installed Fusion owns the popup, Kirigami supplies delegates. Prior 30-row probe reaches first/last rows and uses available-height scrolling. Appearance alone is not mixed-style evidence. Keep actual-app reachability acceptance open where not explicitly reported; do not classify functional tall popups as unfixable defects. |
 | C04 — Haruna warning corners | **External visual composition; outside provider repair scope.** Kirigami InlineMessage draws its own nested background rectangles with a reduced-radius inset fill. HoloNight does not own these corners. This establishes the owner, not that the subjective corner mismatch is an upstream defect; visual acceptance remains open. |
 | C05 — concurrent Haruna help popups | **External application behavior / preference, not a confirmed bug.** Haruna ToolTipButton intentionally binds each popup to its independent checked state with no timeout or auto-close. Exclusivity would require a Haruna product change. No provider requirement or silent user acceptance is inferred. |
@@ -944,9 +983,9 @@ Evidence under `.cache/uqc207/`:
   the sandbox. Collector tests: 8/8 pass, including logging metadata, inherited
   observer removal, process status and indexed hashes.
 
-Actual-app visual acceptance remains pending. See
-[RENDERING-BATCH3.md](RENDERING-BATCH3.md) for the five scale-1 runs, including the
-NeoChat uninstrumented comparison and Fusion reference. UQC-201/UQC-207 remain
+Actual-app background acceptance is now recorded in the manual acceptance section
+below. [RENDERING-BATCH3.md](RENDERING-BATCH3.md) preserves the completed five
+scale-1 runs, including the NeoChat uninstrumented comparison and Fusion reference. UQC-201/UQC-207 remain
 In Progress and the initiative remains Accepted.
 
 Provider candidate `33d1d51b2f57b1a18fc8ef42ff077b6d62bc21ce` is published on canonical
@@ -968,4 +1007,98 @@ processes exit -15 at the planned SIGTERM deadline, and both NeoChat processes e
 0 after the termination request. None exits prematurely or requires a forced kill.
 These are loading/process observations, not interactive background acceptance.
 Records: `.cache/holonight-uqc207-qvyy2hq9/results.jsonl`, `runtime/`, and
-`post-restoration.json`. Actual-app results for the five README runs remain pending.
+`post-restoration.json`. The subsequent manual results are recorded below.
+
+### Batch 3 dropdown background manual acceptance — 2026-09-14
+
+User notes: `/tmp/res.txt`, SHA-256 `624639279b689324cf7f9b5ed6b3439446361cebd4d9f2b69a62c6ad96abeb3b`;
+preserved as `.cache/uqc207/background-manual-notes.txt`. Session:
+`hyprland-6_c43c5q`, kit `holonight-uqc207-qvyy2hq9`. The five reported runs are
+NeoChat HoloNight with diagnostics, NeoChat HoloNight without diagnostics/debug
+logging, NeoChat Fusion with diagnostics, Tokodon HoloNight and Haruna HoloNight,
+all at requested scale 1. The notes report verified isolation and exit 0 for each.
+
+- **R05 background coverage: accepted for the tested paths.** The user confirms
+  that dropdown backgrounds and geometry are correct and the controls work well
+  in NeoChat, Tokodon and Haruna. Tokodon's exception concerns its chevron, not
+  its background or geometry. Preserve this acceptance without repeating it.
+- **Tokodon chevron: deferred.** The screenshot identifies the closed Color theme
+  ComboBox on Appearance. The user reports intermittent disappearance and requests
+  no further investigation without a concrete actionable defect. Ownership remains
+  unresolved; see the detailed review and deferral below.
+- **ScrollBar lifecycle: remains open.** Reviewed logs contain eight null-orientation
+  warnings, including uninstrumented NeoChat. Successful exits do not close it.
+
+
+The user supplied a readable copy at `/tmp/uqc207-background-evidence`. All eight
+finished index records (the five reported checks plus three additional attempts)
+match recomputed log hashes and exit files (exit 0). Recomputed module isolation
+passes for all eight. Seven instrumented runs have measured window DPR 1, matching
+the index; the uninstrumented NeoChat run has no measured DPR and is not assigned
+one from its requested scale. Recorded provider ComboBox backgrounds match popup
+width and height. Haruna has no popup observation, so its visual background
+acceptance comes from the user's report, not inferred measurements.
+
+**Chevron investigation:** Tokodon's two observed Appearance-page ComboBoxes are
+510x32. Their provider Shape indicators settle at (490,10), size 12x12. Shape-sync
+logs show the intended (2,4) → (6,8) → (10,4) path triangulated and an opaque stroke
+updated to #fcfcfc. This rules out a missing object, zero size and an empty path in
+those records; it does not establish visible pixels or rule out clipping, opacity,
+scene-graph or driver behavior. The application uses OpenGL on Intel/Mesa.
+
+A new reduced rendered check exercises the installed FormComboBoxDelegate in a
+secondary window. It passes HoloNight and Fusion at scale 1 with Qt debug logging
+on/off. It also passes HoloNight with broad logging under OpenGL/software Mesa in
+a private headless Wayland compositor. The actual Intel rendering failure is not
+reproduced, and no indicator source repair is claimed. The initial offscreen
+OpenGL attempt could not create QRhi; the Wayland probe supplies the usable OpenGL
+comparison. No desktop input/focus was automated.
+
+**ScrollBar:** the null-orientation warning occurs eight times across five
+HoloNight NeoChat/Tokodon runs, including one occurrence in uninstrumented NeoChat.
+It therefore cannot be dismissed as requiring the observer or broad debug logging.
+It remains a separate open lifecycle finding. Known Kirigami null-flickable errors
+are also retained without claiming provider ownership.
+
+Evidence: `.cache/uqc207/background-manual-analysis/` contains per-run summaries
+and extracted popup/error records; `chevron-baseline-*.log`,
+`chevron-final-{Holonight,Fusion}-{off,all}.log`, and `chevron-wayland.log` retain
+rendering probe results. Added provider test/SDD only; production QML, public APIs,
+published pins and immutable kits are unchanged. Focused rendered checks and
+clang-format/diff checks pass. The cause remains unestablished; see the user-directed deferral below.
+
+Accepted icon, Switch, Haruna selection and background results remain preserved.
+Busy-button focus remains expected Qt behavior; the historical crash remains open.
+The initiative remains Accepted and UQC-201/UQC-207 remain In Progress.
+
+### Tokodon intermittent chevron — investigation deferred, 2026-09-14
+
+The user supplied `/tmp/screenshot-first.png`: Tokodon Appearance → General →
+Color theme → Default, with the closed ComboBox chevron absent. The screenshot
+confirms the visible symptom, not its cause. The user reports repeated HoloNight
+runs sometimes show the chevron and sometimes do not, with no identified trigger.
+Fusion was proposed only as a diagnostic comparison; the reported defect is in
+HoloNight. No Tokodon Fusion visual result is claimed.
+
+Latest notes identify HoloNight at scale 1, kit `holonight-uqc207-qvyy2hq9`, run
+`hyprland-srty6z57/tokodon-1789407284589954509`, PID 177519, reported isolation
+verified and exit 0. This run's full log is not in the supplied readable evidence
+and its original tux directory remains inaccessible. Its raw diagnostics have
+therefore not been independently reviewed. Notes and screenshot are preserved as
+`.cache/uqc207/chevron-latest-notes.txt` and `chevron-missing.png`.
+
+**Disposition: deferred intermittent actual-app rendering symptom, ownership
+unresolved.** Earlier readable logs establish correct indicator geometry, a
+triangulated chevron path and an opaque stroke; the reduced rendered probes pass.
+There is no sufficiently established provider defect to justify a repair. This is
+not a claim that Tokodon itself is at fault. At the user's explicit request, stop
+investigation here: no further comparison runs, evidence-copy requests, new kits
+or speculative rendering changes. Revisit only if a concrete reproducible trigger
+or independently actionable defect becomes available.
+
+Background coverage remains accepted in NeoChat, Tokodon and Haruna. Other accepted
+results and the separate ScrollBar/historical-crash dispositions remain unchanged.
+Only findings/coordination records and the provider investigation SDD are updated
+in this review; existing exploratory test work is retained. Screenshot inspection,
+notes inspection, bounded search for the latest log and documentation diff checks
+were performed. No additional product tests or source repair were needed.

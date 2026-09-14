@@ -6,13 +6,15 @@ UQC-103 settings and UQC-104 AI are Done with local acceptance and publication c
 Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greeter are Done.
 UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is In Progress for automated integration and manual-kit work.
 
-Current execution order and remaining gates: [eight-batch roadmap](BATCHES.md).
+Current execution order and remaining gates: [current batch roadmap](BATCHES.md).
 D01/D03/D04, A03 and the reported F06 sequence remain accepted. D02 Settings Weather and F07 both styles are accepted. The user confirms deliberate
 Fusion session shutdown; missing numeric exit evidence remains documented. Batch 1
 and Batch 2 are complete; A01/A02/A04 are accepted and saved process outcomes are
-classified. Batch 3 follows with Haruna crash/diagnostic classification. See the latest
-[authentication results](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14). Dated entries below
-retain historical states; current table entries and canonical FINDINGS.md acceptances take precedence.
+classified. Batch 3 rendering/background repairs are accepted; remaining diagnostic
+and compatibility dispositions are in FINDINGS.md. Batch 5 is removed from scope;
+UQC-209/UQC-210 are Superseded application-local follow-ups. Batch 7 preserves
+already accepted shared-control work and existing HnAvatar use. Dated entries
+below retain historical states; current rows and canonical findings take precedence.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
@@ -35,12 +37,12 @@ retain historical states; current table entries and canonical FINDINGS.md accept
 | UQC-205 | `holonight-shell` | A03 only: owned Polkit cancellation completion; A01/A02/A04 deferred after dropdown checkpoint | UQC-204 | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md) | Done | `9a19a969b9ac7455e4947be40eecfaf1d25307a0` | 2026-09-11: baseline failure reproduced; typed cancellation error repairs actual D-Bus reply/requester exit. Final 1163/1163 tests, four authentication style/scale cases, static/install checks pass. Canonical publication and clean shell confirmed before pinning. 2026-09-12: [manual cancellation accepted](FINDINGS.md#manual-polkit-cancellation-acceptance--2026-09-12); A03 closed, other authentication findings deferred. |
 | UQC-205-B2 | `holonight-shell` | A01/A02/A04 follow-up; preserve accepted A03 and Batch 1 | UQC-205, UQC-206, UQC-214 | [Follow-up SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-205.md#batch-2-follow-up--a01a02a04--2026-09-14) | Done | `fffb1715bac5a57127af5e671033ac33335ffc16` | 2026-09-14: real-model A02 failure and graphics-backed A04 clipping reproduced/repaired; A01 does not reproduce on current provider, no selector edit. 1171/1171 tests, four style/scale graphics runs, static/licensing and installed checks pass. Clean canonical publication confirmed. A01/A04 manually accepted; process outcomes classified and Batch 2 closed (see canonical findings). |
 | UQC-206 | `holonight-qt` | Dropdown delegate, height-loop, dismissal and selection investigation/repair | UQC-205 A03 acceptance | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-206.md) | Done | Repair `975bf09`; published provider handoff `68b7069` | Provider repairs published; D01/D03/D04 manually accepted. D02 Settings Weather manual result and completed diagnostic log accepted 2026-09-13; third-party warnings stay in UQC-201. |
-| UQC-207 | `holonight-qt` | Shared icon/menu/selection/focus rendering | UQC-204 (repair order) | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-207.md) | In Progress | `a7e50b05d38a6dc8ed24151685803c75fb16824c` | User reports Haruna icon/menu/Shortcuts and Switch repairs accepted; popup transparency and button activation remain open. All twenty logs verified; popup sizing evidence, busy-button focus lifecycle and recurring ScrollBar diagnostic recorded. See [latest manual results](FINDINGS.md#batch-3-focused-repair-manual-results--2026-09-14). |
+| UQC-207 | `holonight-qt` | Shared rendering acceptance and remaining diagnostic classification | UQC-204 (repair order) | [Local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-207.md) | In Progress | `33d1d51b2f57b1a18fc8ef42ff077b6d62bc21ce` | Icons/menu/selection, Switch focus and dropdown backgrounds accepted. Busy-button focus is expected Qt behavior. Tokodon chevron deferred; ScrollBar lifecycle, historical Haruna crash and unclassified Fusion hover remain. See [current findings](FINDINGS.md#batch-3-dropdown-background-manual-acceptance--2026-09-14). |
 | UQC-208 | `holonight-qt` | Palette transitions and picker-state investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
-| UQC-209 | `holonight-settings` | Settings slider geometry investigation | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
-| UQC-210 | `holonight-ai` | Temperature row geometry | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-209 | `holonight-settings` | Settings slider geometry investigation | — (removed from initiative) | Future repository-local SDD, outside UQC | Superseded | — | 2026-09-14 user scope correction: incorrect application layout, unrelated to shared-controls unification. Document and implement in a separate app-local follow-up session; not an integration gate. |
+| UQC-210 | `holonight-ai` | Temperature row geometry | — (removed from initiative) | Future repository-local SDD, outside UQC | Superseded | — | 2026-09-14 user scope correction: incorrect application layout, unrelated to shared-controls unification. Document and implement in a separate app-local follow-up session; not an integration gate. |
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
-| UQC-212 | `holonight-greeter` | Keyboard reachability/reveal and requested appearance | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Preserve evidence; ownership is investigative where specified in register. |
+| UQC-212 | `holonight-greeter` | Remaining greeter-specific keyboard/appearance verification and scoped repairs | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Review [current greeter dispositions](FINDINGS.md#greeter--holonight-greeter-demo-evidence-only) first. Shared dropdown/hover repairs accepted and HnAvatar display already implemented; do not reassign them. Remaining specific checks are not yet accepted. |
 | UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 reported Settings/greeter HoloNight sequence manually accepted 2026-09-13; see canonical findings. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. The later reported HoloNight sequence acceptance supersedes the historical pending status. |
 | UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 interaction manually passes both styles on 2026-09-13 with staged runtime verified; user confirms deliberate Fusion session shutdown (numeric exit unavailable). F07 accepted. |
 
@@ -2184,3 +2186,17 @@ record reproduction, verification, remaining lifecycle uncertainty and acceptanc
 kit evidence once. Follow [the focused instructions](RENDERING-BATCH3.md) for
 scale-1 NeoChat/Tokodon/Haruna checks. Actual-app acceptance is pending; UQC-201
 and UQC-207 remain In Progress, and the initiative remains Accepted.
+
+### Dropdown background manual handoff — 2026-09-14
+
+The user accepts background coverage and geometry in all three applications at
+scale 1. Tokodon's missing chevron is a separate open finding. See the
+[acceptance record](FINDINGS.md#batch-3-dropdown-background-manual-acceptance--2026-09-14)
+for the notes, verified earlier raw evidence and deferred chevron investigation. Do not
+repeat accepted checks.
+UQC-201/UQC-207 remain In Progress; the initiative remains Accepted.
+
+The user has stopped the intermittent Tokodon chevron investigation unless a
+concrete reproducible defect emerges. See the [deferral record](FINDINGS.md#tokodon-intermittent-chevron--investigation-deferred-2026-09-14).
+This deferral neither reopens accepted background coverage nor establishes an
+upstream or provider cause. No further manual comparison is requested.

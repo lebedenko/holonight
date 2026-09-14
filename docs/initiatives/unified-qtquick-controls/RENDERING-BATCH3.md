@@ -1,5 +1,10 @@
 # Batch 3 dropdown background checks
 
+The user has completed these checks and accepted dropdown backgrounds and geometry
+in all three apps. See the [manual acceptance record](FINDINGS.md#batch-3-dropdown-background-manual-acceptance--2026-09-14).
+Do not repeat these accepted checks. Tokodon’s intermittent missing chevron is deferred at the user’s request; no further
+comparison is requested. The commands below describe the completed session.
+
 Results are recorded once in [FINDINGS.md](FINDINGS.md#batch-3-dropdown-background-repair--2026-09-14).
 The initiative remains Accepted and UQC-201/UQC-207 remain In Progress.
 Check dropdown backgrounds only, at scale 1. Preserve accepted icon, Switch,

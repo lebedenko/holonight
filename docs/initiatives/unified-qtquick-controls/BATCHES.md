@@ -1,21 +1,27 @@
 # Completion batches
 
-Accepted execution order from the user plan, 2026-09-13. UQC-201 remains In Progress;
+Execution order from the user plan, updated with scope corrections on 2026-09-14. UQC-201 remains In Progress;
 the initiative remains Accepted. Preserve existing accepted results unless affected
 by a later change. Record observations once in FINDINGS.md and link local SDDs.
 
 | Batch | Gates | Exit criteria |
 |---|---|---|
-| 1 | D02, F07; publication | Close Settings Weather diagnostics and both launcher styles using the verified kit; publish provider handoff and umbrella checkpoints. |
-| 2 | A01, A02, A04 | Shell Polkit identity rows, password/error visibility and fractional Askpass borders; failed-authentication tests; preserve A03 cancellation acceptance. |
-| 3 | F03, F04, R01–R04, C01, C02, C04–C06 | Classify Haruna crash/diagnostics first; resolve icons, conditional menu spacing, selection/keyboard feedback, Fusion ownership and help-popup behavior. F03 needs attribution, not an assumed focus repair. |
+| 1 | D02, F07; publication | Complete: Settings Weather diagnostics and both launcher styles accepted; published handoffs recorded. |
+| 2 | A01, A02, A04 | Complete: shell Polkit identity rows, password/error visibility and fractional Askpass borders accepted; A03 cancellation preserved. |
+| 3 | Remaining UQC-207 / compatibility dispositions | Icons/menu/selection, Switch focus and dropdown backgrounds accepted; busy-button focus classified as expected Qt behavior. Remaining provider ScrollBar diagnostic, historical Haruna crash and Fusion hover need resolution or explicit disposition. Tokodon chevron deferred; established external findings are not provider repairs. |
 | 4 | P01, P02 | Reproduce NeoChat/Tokodon navigation palette changes and mixed picker palettes; identify application/provider/backend ownership; dark/light round trips and overrides. |
-| 5 | L01, L02, C03 | Settings slider and AI Temperature geometry in their owners; classify Tokodon Switch overflow before repair. |
 | 6 | S01, S02, F05 | Fractional shell stability/topbar; investigate AI keyboard delivery and activation after VT return; repair the demonstrated owner. |
-| 7 | G01–G06 | Greeter keyboard/reveal, disabled/password appearance, avatar selector and power buttons; demo before real pre-session gate. |
+| 7 | Remaining greeter-specific G01–G06 checks | Preserve accepted dropdown/focus/hover work and existing shared avatar use. Verify user-selector reachability and keyboard reveal; review remaining disabled/password appearance, selector composition and power presentation. See the reviewed finding dispositions before assigning repairs. |
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
-For batches 2–7, reproduce and confirm ownership, prepare the repository-local SDD,
+Batch numbers remain stable for historical references. **Batch 5 is removed.**
+L01/L02 are incorrect application layouts, outside controls-unification scope.
+Future Settings and AI sessions must address them in their own local SDDs; they
+are not dependencies of this initiative. UQC-209/UQC-210 are Superseded. C03
+Tokodon Fusion Switch overflow was already classified as external FormCard/Fusion
+composition and does not become an application-layout repair here.
+
+For remaining repair batches, reproduce and confirm ownership, prepare the repository-local SDD,
 confirm the exact canonical baseline and set the package Ready before implementation.
 Keep one repository per implementation handoff. Each batch ends with local
 verification, published commits, an umbrella checkpoint and scoped manual checks.
@@ -111,23 +117,27 @@ and the initiative Integrated. Account-dependent surfaces retain prerequisites;
 the accepted logged-out scope does not add account sign-in.
 
 
-## Batch 3 implementation checkpoint — 2026-09-14
+## Current Batch 3 disposition — 2026-09-14
 
-Published provider `fbffc87` repairs shared icons, conditional menu spacing,
-explicit delegate selection and the whole-control Switch focus outline. Automated
-verification and ownership/evidence limits are recorded once in
-[FINDINGS.md](FINDINGS.md#batch-3-investigation-and-rendering-repair--2026-09-14).
-The fresh immutable kit and restoration command are in the
-[ledger](TASKS.md#batch-3-focused-kit--2026-09-14); use the
-[focused manual instructions](RENDERING-BATCH3.md).
-Batch 3 remains open. Preserve Batches 1–2; broader integration remains Batch 8.
+Provider popup-background repair is published and pinned. Haruna icons, menu and
+selection, Switch feedback and backgrounds in all three third-party apps are
+accepted. Busy-button focus is expected Qt behavior. Tokodon's intermittent
+chevron is deferred at the user's request, with no further comparison requested.
+The recurring provider ScrollBar warning, historical Haruna crash and unclassified
+Fusion hover remain separate from accepted rendering and external limitations.
 
+See [canonical findings](FINDINGS.md#batch-3-dropdown-background-manual-acceptance--2026-09-14)
+and [chevron deferral](FINDINGS.md#tokodon-intermittent-chevron--investigation-deferred-2026-09-14).
+[RENDERING-BATCH3.md](RENDERING-BATCH3.md) preserves the completed session commands;
+it is not a request to repeat accepted checks. Earlier publication/kit history
+remains in TASKS.md. Batch 4 is the next planned investigation batch.
 
-Latest Batch 3 manual review: [results and external ownership](FINDINGS.md#batch-3-manual-review-and-external-ownership--2026-09-14).
-This records failed acceptance, external dispositions and remaining unknowns;
-Batch 3 and UQC-207 remain open. Earlier implementation checkpoints are historical.
+## Batch 7 review — 2026-09-14
 
-Focused repair candidate: [canonical findings](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
-Batch 3 remains open pending actual-app acceptance.
-
-Latest user acceptance and remaining failures: [manual results](FINDINGS.md#batch-3-focused-repair-manual-results--2026-09-14).
+Use the [reviewed greeter dispositions](FINDINGS.md#greeter--holonight-greeter-demo-evidence-only).
+D01/D03/D04 and the reported F06 sequence are accepted; do not retest them as open
+repairs. The avatar display already uses HnAvatar, while the user selector remains
+a separate ComboBox. Shared avatar use does not prove the requested avatar-selector
+composition or user-selector keyboard reachability. Do not treat generic focus or
+authentication acceptance as acceptance of greeter-specific reveal/Tab behavior.
+Real pre-session acceptance remains in Batch 8.

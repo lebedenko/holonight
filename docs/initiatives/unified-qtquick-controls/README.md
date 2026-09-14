@@ -2,6 +2,16 @@
 
 Status: Accepted
 
+Current scope and progress (2026-09-14): Batches 1–2 and Batch 3 rendering/background
+repairs are accepted; unresolved diagnostics and final integration remain open.
+Tokodon’s intermittent chevron is deferred at the user’s request. **Batch 5 is
+removed:** Settings slider and AI Temperature layout defects belong to separate
+application-local SDD follow-ups, not this controls-unification initiative.
+Batch 7 excludes accepted shared dropdown/hover work and existing avatar-display
+adoption; remaining greeter-specific checks are listed in the reviewed findings.
+See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md).
+The sections labelled as dated checkpoints below preserve historical evidence.
+
 ## Goal
 
 Make compatible third-party Qt 6 Quick applications use verified HoloNight control implementations in HoloNight
@@ -122,6 +132,10 @@ UQC-102 shell is Done with published local acceptance and green final-revision C
 UQC-201 is In Progress for automated integration and manual verification preparation. Gitlinks remain authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
 
 ## Integration acceptance criteria
+
+This is the final integrated-revision checklist, not a list of outstanding local
+repairs. Preserve existing accepted results; use the roadmap/findings for remaining
+work and reverify only the coverage required at the final published revisions.
 
 - [ ] Every repository work package has a published commit, a linked local SDD, and passed local verification.
 - [ ] Participating submodules are clean and pinned to published commits with compatible shared contracts.
