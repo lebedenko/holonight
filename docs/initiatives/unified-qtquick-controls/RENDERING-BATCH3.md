@@ -1,7 +1,11 @@
 # Batch 3 focused manual checks
 
 Results and open evidence gaps are recorded once in
-[FINDINGS.md](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
+[FINDINGS.md](FINDINGS.md#batch-3-focused-repair-manual-results--2026-09-14).
+The latest user review accepts the icon/menu/Shortcuts and Switch repairs. The
+instructions below describe the completed kit session; do not repeat accepted
+checks. Its diagnostics have been reviewed; see the findings for popup-sizing evidence
+and the busy-button focus lifecycle before preparing further targeted checks.
 This kit is for rendering repair acceptance and investigation. Batch 3 is still open.
 Do not repeat accepted authentication, dropdown navigation or F03 traversal checks.
 Fusion hover and external visual preferences remain recorded for later classification.

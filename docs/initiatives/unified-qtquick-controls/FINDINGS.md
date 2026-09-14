@@ -823,3 +823,58 @@ and scales. Use `--diagnostics` to retain the state timeline. No desktop pointer
 was automated. Accepted authentication, dropdown navigation and F03 traversal are
 excluded; deferred Fusion hover/external preferences remain recorded. Manual results
 are pending, so the initiative and work-package states are unchanged.
+
+
+### Batch 3 focused repair manual results — 2026-09-14
+
+User notes: `/tmp/res.txt`, SHA-256 `c610779c30b570ce1abca07528d768d3a9ea88d2528b5c486765945e57dd4b27`;
+preserved at `.cache/uqc207/manual-latest-notes.txt`. The notes identify session
+`hyprland-ma02h33q` and twenty runs covering five applications, both styles and
+requested scales 1/1.25. All twenty finished records independently match their log hashes and exit files
+(exit 0). Recomputed module-isolation checks pass for all twenty using saved PID
+maps/environment; every run identifies kit `holonight-uqc207-5j2ew840`. Actual DPR
+was recomputed from window observations and matches the indexed measurements
+(1 or 1.25). The initial permissions limitation was resolved by the user copying
+the evidence to `/tmp/uqc207-manual-evidence`. Analysis and extracted state/event
+records are retained in `.cache/uqc207/manual-analysis/`.
+
+
+| Finding | Latest manual disposition |
+|---|---|
+| R01/R02/R03 — Haruna icons, menu layout, Shortcuts selection | **Accepted for the tested paths.** For HoloNight at both scales, the user reports that everything except ComboBox transparency is fixed. This accepts the requested icon/menu/Shortcuts checks within the focused instructions. Fusion has no new issues at either scale. The original crash finding is separate and is not closed by this statement. |
+| R04 — Switch outline | **Accepted for the tested paths.** AI explicitly reports the Switch focus ring fixed at both HoloNight scales; Settings reports Switch focus good at both scales. Fusion comparisons are also reported good. |
+| R05 — ComboBox transparency | **Open; actual-app measurements point to background sizing.** Every recorded HoloNight popup in Haruna/NeoChat/Tokodon has a visible 120×8 background, opacity 1, alpha 255, and sampled pixels matching its surface color (#ff131a24 or #ff141618). Its origin is provider ComboBox.qml. No later larger background sample is recorded for those popup IDs. NeoChat/Tokodon Fusion backgrounds measure 510×528. This supports a geometry investigation; it does not prove a persistent height binding failure because the observer lacks popup/content/model dimensions and continuous visibility history. Do not repair this by forcing palette alpha. |
+| F04 — button activation focus feedback | **Open; the busy-action lifecycle is now established.** In all four AI runs, Test connection and Refresh models retain keyboard visualFocus through Space press and just before release. After release they become disabled, focus moves to a Loader, and the same button regains focus with reason 7 (OtherFocusReason), visualFocus=false, once enabled. Test connection returns in 18–54 ms after the initial press snapshot. The captured always-enabled Reset activation (Fusion, scale 1) retains owner, reason 1 (TabFocusReason), and visualFocus=true. Do not generalize this Reset comparison to unobserved controls/style-scale cases. |
+| Provider ScrollBar diagnostic | **Open; reproduced in the new actual-app logs.** ScrollBar.qml:45 null-orientation occurs five times across the four HoloNight NeoChat/Tokodon runs (NeoChat scale 1.25 has two occurrences). There are no matching Fusion occurrences. The exact destruction trigger still needs a failing reduced regression; no source repair is claimed. |
+| Historical Haruna crash | **Open; root cause unresolved.** Four reported Haruna exits are 0, but they do not explain the preserved SIGABRT. No new crash is reported. |
+
+Previously accepted checks and external classifications remain preserved. No
+product source changes accompany this review; a disposable headless focus fixture
+was run to test the observed lifecycle. The
+initiative stays Accepted; UQC-201/UQC-207 stay In Progress because R05, F04 and
+remaining diagnostic/crash investigations are open. Follow-up should reproduce the measured popup geometry and ScrollBar lifecycle
+without repeating accepted icon/Switch checks.
+
+**Focus ownership check:** AI's `ProviderFormActionRow.qml` owns the action Loader;
+`OllamaSettingsPanel.qml` explicitly disables Test connection and Refresh models
+while their operations run. The affected buttons are not inside the provider's
+HnFormField/HnSettingsRow control Loaders. A disposable stock-Fusion Loader/Button
+fixture with temporary disabling reproduces re-entry with OtherFocusReason and no
+visualFocus; an always-enabled button retains keyboard focus. This establishes an
+ordinary disabled/re-enabled focus lifecycle, not a global Space or HoloNight
+Button rendering defect. Preserving keyboard feedback across the busy action is
+an AI interaction requirement: any repair needs a separate AI-local SDD and Ready
+work package, and must avoid stealing focus after the user navigates elsewhere.
+Fixture/build/log: `manual-analysis/focus-loader-*` under `.cache/uqc207/`.
+
+**Haruna selection check:** all four runs contain actual delegates originating at
+`qrc:/qt/qml/org/kde/haruna/qml/Settings/ShortcutsSettings.qml`. Current rows report
+`current=true`, `highlighted=false`, `checked=false`, `visualFocus=false`, supporting
+the user's visual acceptance. No hnicons image failure is found in the twenty logs.
+Successful process exits still do not close the historical crash investigation.
+
+Verification: saved hashes/exits, recomputed isolation and window DPR for all twenty
+runs; actual popup/delegate/Space-state inspection; stock-Fusion focus-lifecycle
+probe exits 0; documentation diff check passes. No product suite was rerun because
+only the umbrella acceptance record changed. Released kits and provider pins remain
+unchanged.

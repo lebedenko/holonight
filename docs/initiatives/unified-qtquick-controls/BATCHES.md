@@ -129,3 +129,5 @@ Batch 3 and UQC-207 remain open. Earlier implementation checkpoints are historic
 
 Focused repair candidate: [canonical findings](FINDINGS.md#batch-3-focused-repair-iteration--2026-09-14).
 Batch 3 remains open pending actual-app acceptance.
+
+Latest user acceptance and remaining failures: [manual results](FINDINGS.md#batch-3-focused-repair-manual-results--2026-09-14).
