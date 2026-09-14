@@ -130,7 +130,8 @@ See [canonical findings](FINDINGS.md#batch-3-dropdown-background-manual-acceptan
 and [chevron deferral](FINDINGS.md#tokodon-intermittent-chevron--investigation-deferred-2026-09-14).
 [RENDERING-BATCH3.md](RENDERING-BATCH3.md) preserves the completed session commands;
 it is not a request to repeat accepted checks. Earlier publication/kit history
-remains in TASKS.md. Batch 4 is the next planned investigation batch.
+remains in TASKS.md. Batch 4 is In Progress; see the [palette findings](FINDINGS.md#batch-4-palette-investigation-and-repair--2026-09-14)
+and [scoped instructions](PALETTE-BATCH4.md).
 
 ## Batch 7 review — 2026-09-14
 

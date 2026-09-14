@@ -12,7 +12,8 @@ import time
 
 KEYS = ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QPA_PLATFORMTHEME",
         "QML_IMPORT_PATH", "QT_PLUGIN_PATH", "LD_LIBRARY_PATH", "QT_SCALE_FACTOR",
-        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD", "QT_LOGGING_RULES")
+        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS",
+        "XDG_CONFIG_HOME", "HOLONIGHT_APPEARANCE_FILE", "LD_PRELOAD", "QT_LOGGING_RULES")
 
 
 def assess_isolation(evidence, mappings, prefix):
@@ -88,6 +89,28 @@ def render_observations(text):
     return dict(actual_window_dpr=windows or None, space_observations=space_events)
 
 
+def palette_observations(text):
+    windows, origins = {}, set()
+    events = samples = 0
+    for line in text.splitlines():
+        if 'HN_PALETTE ' not in line:
+            continue
+        try:
+            record = json.loads(line.split('HN_PALETTE ', 1)[1])
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(record, dict):
+            continue
+        samples += 1
+        events += int('event' in record)
+        if isinstance(record.get('dpr'), (int, float)) and isinstance(record.get('id'), str):
+            windows[record['id']] = record['dpr']
+        if record.get('origin'):
+            origins.add(record['origin'])
+    return dict(palette_samples=samples, palette_events=events,
+                palette_window_dpr=windows or None, palette_origins=sorted(origins))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("surface", choices=("haruna", "neochat", "tokodon", "settings",
@@ -95,8 +118,9 @@ def main():
     parser.add_argument("--style", choices=("default", "Holonight", "Fusion"), default="default")
     parser.add_argument("--scale", choices=("1", "1.25"), default="1")
     parser.add_argument("--pid", type=int)
-    parser.add_argument("--index", choices=("batch3",))
+    parser.add_argument("--index", choices=("batch3", "batch4"))
     parser.add_argument("--render-diagnostics", action="store_true")
+    parser.add_argument("--palette-diagnostics", action="store_true")
     args = parser.parse_args()
     if os.getuid() != 1001 or not os.environ.get("UQC_SESSION_RUN") or not os.environ.get("WAYLAND_DISPLAY"):
         parser.error("run in the prepared tux compositor terminal")
@@ -122,7 +146,7 @@ def main():
         command += ["--demo", "--config", str(run / "demo-greeter.toml"), "--state", str(run / "demo-state.json")]
     env = os.environ.copy()
     for key in ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QUICK_CONTROLS_FALLBACK_STYLE",
-                "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD"):
+                "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "LD_PRELOAD"):
         env.pop(key, None)
     style = args.style if args.style != "default" else (None if owned else "Holonight")
     if style:
@@ -133,11 +157,27 @@ def main():
     env["LD_LIBRARY_PATH"] = str(prefix / "lib")
     env["QML_IMPORT_PATH"] = str(prefix / "lib/qt6/qml")
     env["QT_PLUGIN_PATH"] = str(prefix / "lib/qt6/plugins")
+    if args.index == "batch4":
+        # Identical empty initial state for each comparison; keep each run's writes.
+        for key in ("XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME", "XDG_CONFIG_DIRS"):
+            path = evidence / key.lower()
+            path.mkdir(mode=0o700)
+            env[key] = str(path)
+        env["HOLONIGHT_APPEARANCE_FILE"] = str(evidence / "appearance.toml")
+        env["QT_LOGGING_RULES"] = "*.debug=false;*.info=true;qt.quick.dialogs=true"
+        env["QML_IMPORT_TRACE"] = "0"
+        env["QT_DEBUG_PLUGINS"] = "0"
     if args.render_diagnostics:
         observer = prefix / "lib/render-diagnostics.so"
         if not observer.is_file():
             parser.error("this kit has no rendering observer")
         env["HOLONIGHT_RENDER_DIAGNOSTICS"] = "1"
+        env["LD_PRELOAD"] = str(observer)
+    if args.palette_diagnostics:
+        observer = prefix / "lib/palette-diagnostics.so"
+        if not observer.is_file() or args.render_diagnostics:
+            parser.error("palette diagnostics requires its observer and cannot be combined with render diagnostics")
+        env["HOLONIGHT_PALETTE_DIAGNOSTICS"] = "1"
         env["LD_PRELOAD"] = str(observer)
     isolated = False
     (evidence / "command.json").write_text(json.dumps(command) + "\n")
@@ -147,12 +187,16 @@ def main():
         record = dict(status=status, run=str(evidence), application=args.surface,
                       style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
                       process_exit=code, render_diagnostics=args.render_diagnostics,
-                      qt_logging_rules=env.get("QT_LOGGING_RULES"))
+                      qt_logging_rules=env.get("QT_LOGGING_RULES"), palette_diagnostics=args.palette_diagnostics,
+                      initial_profile="empty" if args.index == "batch4" else "session",
+                      outcome=outcome if status == "finished" else None)
         if status == "finished":
             record["log_sha256"] = hashlib.sha256((evidence / "launch.log").read_bytes()).hexdigest()
             record.update(render_observations((evidence / "launch.log").read_text(errors="replace")))
+            record.update(palette_observations((evidence / "launch.log").read_text(errors="replace")))
         with (run / (args.index + "-index.jsonl")).open("a") as output:
             output.write(json.dumps(record) + "\n")
+    outcome = None
     index("running")
     with (evidence / "launch.log").open("w") as log:
         child = subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -166,11 +210,14 @@ def main():
                     (evidence / "collection-error.txt").write_text(str(error) + "\n")
                     print("PID collection unavailable; retain launch log:", error, flush=True)
             code = child.wait()
+            outcome = "normal" if code >= 0 else "signal"
         except KeyboardInterrupt:
+            outcome = "interrupted"
             child.terminate()
             try:
                 code = child.wait(timeout=5)
             except subprocess.TimeoutExpired:
+                outcome = "forced cleanup"
                 child.kill()
                 code = child.wait()
     (evidence / "exit.txt").write_text(str(code) + "\n")

@@ -21,6 +21,17 @@ spec.loader.exec_module(app)
 
 
 class RenderingObservations(unittest.TestCase):
+    def test_palette_evidence_uses_observed_dpr_and_retains_origins(self):
+        text = '\n'.join(['HN_PALETTE invalid', 'HN_PALETTE []',
+                          'HN_PALETTE {"id":"window", "dpr":1, "origin":"qrc:/picker.qml"}',
+                          'HN_PALETTE {"id":"application", "event":38}'])
+        result = app.palette_observations(text)
+        self.assertEqual(result['palette_samples'], 2)
+        self.assertEqual(result['palette_events'], 1)
+        self.assertEqual(result['palette_window_dpr'], {'window': 1})
+        self.assertEqual(result['palette_origins'], ['qrc:/picker.qml'])
+        self.assertIsNone(app.palette_observations('QT_SCALE_FACTOR=1')['palette_window_dpr'])
+
     def test_only_actual_window_records_establish_dpr(self):
         self.assertIsNone(app.render_observations('QT_SCALE_FACTOR=1.25')['actual_window_dpr'])
         text = '\n'.join([
@@ -75,6 +86,37 @@ class RuntimeIsolation(unittest.TestCase):
 
 
 class LauncherSupervisor(unittest.TestCase):
+    def test_batch4_comparisons_start_empty_and_remove_inherited_observers(self):
+        with tempfile.TemporaryDirectory(prefix="uqc-batch4-index-") as directory:
+            run = Path(directory)
+            child = Mock(pid=12345)
+            child.poll.return_value = None
+            child.wait.return_value = 0
+            env = dict(UQC_SESSION_RUN=str(run), UQC_PREFIX="/tmp/candidate", UQC_KIT="/tmp/kit",
+                       WAYLAND_DISPLAY="test-only", HOLONIGHT_PALETTE_DIAGNOSTICS="1",
+                       HOLONIGHT_RENDER_DIAGNOSTICS="1", LD_PRELOAD="/tmp/old.so")
+            profiles = []
+            for style in ('Holonight', 'Fusion'):
+                argv = [str(SCRIPT), 'neochat', '--style', style, '--index', 'batch4']
+                with patch.dict(os.environ, env), patch.object(sys, 'argv', argv), \
+                        patch.object(app.os, 'getuid', return_value=1001), \
+                        patch.object(app.subprocess, 'Popen', return_value=child), \
+                        patch.object(app.time, 'sleep'), patch.object(app, 'collect', return_value=True):
+                    self.assertEqual(app.main(), 0)
+                    launched = app.subprocess.Popen.call_args.kwargs['env']
+                    profile = Path(launched['XDG_CONFIG_HOME'])
+                    self.assertEqual(list(profile.iterdir()), [])
+                    profiles.append(profile)
+                    for key in ('LD_PRELOAD', 'HOLONIGHT_RENDER_DIAGNOSTICS', 'HOLONIGHT_PALETTE_DIAGNOSTICS'):
+                        self.assertNotIn(key, launched)
+            self.assertNotEqual(*profiles)
+            records = [json.loads(line) for line in (run / 'batch4-index.jsonl').read_text().splitlines()]
+            for record in records[1::2]:
+                self.assertEqual(record['initial_profile'], 'empty')
+                self.assertEqual(record['outcome'], 'normal')
+                self.assertEqual(record['process_exit'], 0)
+                self.assertEqual(record['log_sha256'], hashlib.sha256(b'').hexdigest())
+
     def test_batch3_index_retains_process_failure_and_log_hash(self):
         with tempfile.TemporaryDirectory(prefix="uqc-batch3-index-") as directory:
             run = Path(directory)

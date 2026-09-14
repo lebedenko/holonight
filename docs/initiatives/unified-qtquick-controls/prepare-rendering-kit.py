@@ -16,12 +16,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
     parser.add_argument('--dropdown-only', action='store_true', help='prepare scale-1 dropdown acceptance without consumer rebuilds')
+    parser.add_argument('--palette-only', action='store_true', help='prepare Batch 4 palette checks at scale 1')
     args = parser.parse_args()
+    if args.palette_only and args.dropdown_only:
+        parser.error('choose one focused batch')
+    focused = args.dropdown_only or args.palette_only
+    kit_prefix = 'holonight-uqc208-' if args.palette_only else 'holonight-uqc207-'
     docs = Path(__file__).resolve().parent
     root = docs.parents[2]
-    kit = args.resume.resolve() if args.resume else Path(tempfile.mkdtemp(prefix='holonight-uqc207-', dir='/tmp'))
-    if kit.parent != Path('/tmp') or not kit.name.startswith('holonight-uqc207-'):
-        parser.error('expected /tmp/holonight-uqc207-*')
+    kit = args.resume.resolve() if args.resume else Path(tempfile.mkdtemp(prefix=kit_prefix, dir='/tmp'))
+    if kit.parent != Path('/tmp') or not kit.name.startswith(kit_prefix):
+        parser.error('expected /tmp/' + kit_prefix + '*')
     if (kit / 'READY').exists():
         parser.error('preserve released kits; create a fresh kit')
     kit.mkdir(exist_ok=True)
@@ -30,7 +35,7 @@ def main():
     work.mkdir(exist_ok=True)
     (work / 'logs').mkdir(exist_ok=True)
     prefix = kit / 'prefix'
-    (root / '.cache/uqc207-kit').write_text(str(kit) + '\n')
+    (root / ('.cache/uqc208-kit' if args.palette_only else '.cache/uqc207-kit')).write_text(str(kit) + '\n')
 
     def run(name, command, env=None):
         command = list(map(str, command))
@@ -43,7 +48,7 @@ def main():
             raise SystemExit(f'{name} failed; inspect {work}/logs/{name}.log; resume with --resume {kit}')
 
     revisions = {}
-    repositories = ('holonight-config', 'holonight-qt') if args.dropdown_only else (
+    repositories = ('holonight-config', 'holonight-qt') if focused else (
         'holonight-config', 'holonight-qt', 'holonight-ai', 'holonight-settings',
         'holonight-system-services', 'holonight-shell')
     for name in repositories:
@@ -62,7 +67,7 @@ def main():
     for name in ('config', 'qt'):
         run(name + '-build', ['cmake', '--build', root / ('holonight-' + name) / 'build', '-j', '4'])
         run(name + '-install', ['cmake', '--install', root / ('holonight-' + name) / 'build', '--prefix', prefix])
-    for name, source in (() if args.dropdown_only else (('system-services', root / 'holonight-system-services'),
+    for name, source in (() if focused else (('system-services', root / 'holonight-system-services'),
                          ('shell-config', root / 'holonight-shell/libs/holonight-shell-config'))):
         build = work / 'build' / name
         run(name + '-configure', ['cmake', '-S', source, '-B', build, '-G', 'Ninja',
@@ -70,7 +75,7 @@ def main():
             f'-DCMAKE_INSTALL_PREFIX={prefix}', f'-DCMAKE_PREFIX_PATH={prefix}'])
         run(name + '-build', ['cmake', '--build', build, '-j', '4'])
         run(name + '-install', ['cmake', '--install', build])
-    for name in (() if args.dropdown_only else ('ai', 'settings')):
+    for name in (() if focused else ('ai', 'settings')):
         build = work / 'build' / name
         run(name + '-configure', ['cmake', '-S', root / ('holonight-' + name), '-B', build,
             '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Debug', '-DBUILD_TESTS=ON', '-DBUILD_TESTING=ON',
@@ -84,6 +89,10 @@ def main():
     run('render-observer-build', ['g++', '-std=c++23', '-shared', '-fPIC', observer,
                                  '-o', prefix / 'lib/render-diagnostics.so', *flags])
     shutil.copy2(observer, kit / 'render-diagnostics.cpp')
+    if args.palette_only:
+        shutil.copy2(root / 'holonight-qt/build/tests/palette-diagnostics.so', prefix / 'lib/palette-diagnostics.so')
+        shutil.copy2(observer.with_name('palette-diagnostics.cpp'), kit / 'palette-diagnostics.cpp')
+        shutil.copy2(docs / 'palette-test.py', kit / 'palette-test.py')
     for name in ('guided-session.py', 'guided-app.py', 'rendering-test.py', 'FINDINGS.md'):
         shutil.copy2(docs / name, kit / name)
     shutil.copy2(root / 'holonight-qt/docs/sdd/unified-qtquick-controls/audit/auth-test/terminal.sh', kit)
@@ -92,10 +101,10 @@ def main():
         f'bind = SUPER, Return, exec, {terminal}\nbind = SUPER SHIFT, E, exit,\nbind = SUPER, Q, killactive,\n')
     packages = ['haruna', 'neochat', 'tokodon', 'qt6-base', 'qt6-declarative', 'kirigami', 'kirigami-addons', 'hyprpolkitagent', 'hyprland']
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    (kit / 'README.md').write_text((docs / 'RENDERING-BATCH3.md').read_text().replace('__KIT__', str(kit)))
+    (kit / 'README.md').write_text((docs / ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md')).read_text().replace('__KIT__', str(kit)))
     env = dict(os.environ, LD_LIBRARY_PATH=str(prefix / 'lib'), PYTHONDONTWRITEBYTECODE='1')
     for style in ('Holonight', 'Fusion'):
-        for scale in (('1',) if args.dropdown_only else ('1', '1.25')):
+        for scale in (('1',) if focused else ('1', '1.25')):
             case = work / f'acceptance-{style}-{scale}'
             case.mkdir(exist_ok=True)
             (case / 'empty-path').mkdir(exist_ok=True)
@@ -105,8 +114,14 @@ def main():
                         'QT_LOGGING_RULES=qt.quick.viewport.debug=true']
             run(f'provider-{style}-{scale}', isolated + [root / 'holonight-qt/build/tests/holonight_runtime_composite_tests',
                 '--gtest_filter=' + ('SharedRendering.*Popup*:SharedRendering.Scroll*Teardown'
-                                    if args.dropdown_only else 'SharedRendering.*')], env)
-            if args.dropdown_only:
+                                    if focused else 'SharedRendering.*')], env)
+            if args.palette_only:
+                run(f'palette-{style}', isolated + ['QT_QPA_PLATFORMTHEME=holonight',
+                    f'QT_PLUGIN_PATH={prefix}/lib/qt6/plugins', root / 'holonight-qt/build/tests/holonight_quick_palette_tests',
+                    '--gtest_filter=QuickPalette.FallbackPicker*:QuickPalette.CreatingAndDestroying*'], env)
+                run(f'palette-observer-{style}', isolated + ['HOLONIGHT_PALETTE_DIAGNOSTICS=1',
+                    root / 'holonight-qt/build/tests/holonight_palette_diagnostics_check'], env)
+            if focused:
                 run(f'observer-{style}', isolated + ['HOLONIGHT_RENDER_DIAGNOSTICS=1',
                     'QT_LOGGING_RULES=qt.quick.viewport.debug=true',
                     root / 'holonight-qt/build/tests/holonight_render_diagnostics_check'], env)
@@ -116,7 +131,7 @@ def main():
                 f'PATH={case}/empty-path', work / 'build/settings/apps/settings/settings_controls_acceptance'], env)
     run('actual-staged-processes', ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
         'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime', '--diagnostics',
-        *(['--dropdown-only'] if args.dropdown_only else [])], env)
+        *(['--dropdown-only'] if focused else []), *(['--palette-diagnostics'] if args.palette_only else [])], env)
     run('collector-tests', ['python3', root / 'tests/test_guided_app.py'])
     for path in kit.glob('*.py'):
         ast.parse(path.read_text())
@@ -124,7 +139,7 @@ def main():
     (kit / 'SHA256SUMS').write_text('\n'.join(
         f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(kit)}'
         for path in sorted(kit.rglob('*')) if path.is_file()) + '\n')
-    (kit / 'READY').write_text('Verified rendering candidate; manual findings and actual-app evidence gaps remain open.\n')
+    (kit / 'READY').write_text('Verified candidate; manual findings and actual-app evidence gaps remain open.\n')
     archive = work / (kit.name + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as saved:
         saved.add(kit, arcname=kit.name)

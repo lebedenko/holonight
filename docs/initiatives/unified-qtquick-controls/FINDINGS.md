@@ -329,8 +329,8 @@ historical evidence, not current assignments.
 - UQC-207 remains In Progress for unresolved diagnostics/classification. Its
   icon/menu/selection, Switch and background repairs are accepted; busy-button
   focus is expected Qt behavior and Tokodon chevron is deferred.
-- UQC-208 (P01/P02 palette transitions/pickers) remains Planned, the next planned
-  investigation batch.
+- UQC-208 (P01/P02 palette transitions/pickers) is In Progress; see the
+  [Batch 4 investigation](#batch-4-palette-investigation-and-repair--2026-09-14).
 - UQC-209/UQC-210 (L01/L02) are Superseded and removed from this initiative.
   Future Settings/AI sessions must address their incorrect layouts in local SDDs.
 - UQC-211 (S01/S02 shell) and UQC-212 (remaining greeter-specific checks after the
@@ -1102,3 +1102,97 @@ Only findings/coordination records and the provider investigation SDD are update
 in this review; existing exploratory test work is retained. Screenshot inspection,
 notes inspection, bounded search for the latest log and documentation diff checks
 were performed. No additional product tests or source repair were needed.
+
+### Batch 4 palette investigation and repair — 2026-09-14
+
+UQC-208 was Ready before assignment, then In Progress, with the
+[local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-208.md) and
+canonical provider baseline `cae1213f8204d58d3da8e6cf6da9494a4c5e4bd9`.
+The preceding chevron test/deferral checkpoint was verified, published and confirmed
+on canonical main before umbrella `873ab0a` pinned it. No chevron repair is claimed.
+Batch 5 stays removed; the reviewed Batch 7 scope and all prior acceptances remain.
+
+**P01: external default-scheme activation reproduced; actual-app timeline pending.**
+Versioned NeoChat and Tokodon Appearance components call their scheme manager from
+`onCurrentValueChanged`, including construction-time value changes. A reduced
+installed FormComboBoxDelegate fixture creates/destroys that selection lifecycle
+three times without user selection. It alternates application Window between
+`#0c1118` (HoloNight, resolve mask 0) and `#202326` (Breeze Dark, explicit mask
+`9222809086632918911`) under both Quick styles. The observer is absent and debug
+logging disabled. Its parentless FormCard emits a known `visibleChildren` diagnostic;
+this is not evidence about actual-app teardown or a provider palette cause.
+
+A second probe calls only installed KColorSchemeManager default activation under
+QApplication/Fusion with the HoloNight platform theme absent and no QML loaded.
+It alternates Qt's `#efefef` and Breeze Light `#eff0f1` after initialization. This
+confirms the activation mechanism independently of HoloNight. In KDE 6.30,
+`automaticColorSchemeId()` returns an empty default when `KDE_COLOR_SCHEME_PATH`
+is populated; `activateSchemeInternal()` then clears that property and resets
+QPalette. The next activation selects Breeze again and repopulates the property.
+Application callbacks make page construction reach that non-idempotent operation.
+
+Owner-specific follow-ups (documented here, **not submitted**): KDE KColorScheme
+should distinguish its own last activation from a platform-provided scheme path
+and make repeated Default activation idempotent. NeoChat/Tokodon should apply
+schemes on deliberate activation rather than construction-time value changes;
+Tokodon also persists configuration from this callback. No application patch or
+provider workaround is made. Actual NeoChat General → Appearance and Tokodon
+Appearance-first three-cycle timelines still require the scoped human check.
+
+Primary source evidence:
+[NeoChat ColorScheme.qml](https://github.com/KDE/neochat/blob/v26.08.0/src/settings/ColorScheme.qml),
+[NeoChat scheme bridge](https://github.com/KDE/neochat/blob/v26.08.0/src/settings/colorschemer.cpp),
+[Tokodon Appearance](https://github.com/KDE/tokodon/blob/v26.08.0/src/qml/Settings/AppearancePage.qml),
+[Tokodon scheme bridge](https://github.com/KDE/tokodon/blob/v26.08.0/src/utils/colorschemer.cpp),
+[KColorSchemeManager 6.30](https://github.com/KDE/kcolorscheme/blob/v6.30.0/src/kcolorschememanager.cpp).
+Downloaded versioned files, probe source/runner and three comparison logs are
+preserved in `.cache/uqc208/`; no third-party code is modified or linked into the provider.
+
+**P02: demonstrated provider palette omission repaired; actual-app acceptance pending.**
+`buildPalette()` did not assign Light. Qt's default Quick FontDialog, ColorDialog
+and FileDialog use `palette.light` for their footer fills and header palette.
+The installed fallback implementation fixture opens all three and measures opaque
+white footers against a dark provider surface. The failed-before logs are
+`light-role-before.log` (all 16 scheme cases fail) and `picker-before.log` (all
+three footer assertions fail), following `regression-build.log`.
+
+The smallest repair assigns Light to existing `surfaceRaised` in Active and
+Disabled; Inactive is copied from Active. The shared builder supplies both platform
+and Quick defaults. Existing application roles still resolve over defaults;
+ControlPalette inheritance/update and QStyle reload paths are unchanged. No new
+token, public API, dependency or blanket palette replacement is introduced.
+This fixes a demonstrated cause; it does not assert that every reported picker
+has this backend. Haruna source uses QtQuick.Dialogs for file/subtitle-color
+pickers; Tokodon uses it for font selection. The provider supplies no native dialog
+helper, and the reduced fixture confirms Qt Quick fallback objects and their
+installed implementations. Actual-app backend/origin evidence remains pending.
+See [Qt dialog backend selection](https://github.com/qt/qtdeclarative/blob/v6.11.2/src/quickdialogs/quickdialogs/qquickabstractdialog.cpp).
+
+**Verification:** initial focused provider palette checks pass 4/4. After repair,
+focused palette/observer checks pass 8/8, then full provider CTest passes **87/87**
+(50.41 s), including installed-package acceptance. Tests cover all scheme groups,
+three picker footers, dark/light/dark palette changes, translucent local overrides,
+reopening and navigation/control creation without application mutation. Existing
+application/window/control override, sibling isolation and appearance reload tests
+remain passing. Picker teardown initially exposed known FontDialogContent/Basic
+GroupBox/ScrollBar warnings when the window was destroyed during closing; settling
+the close animation fixes the fixture without filtering diagnostics or changing
+those components. This is not closure of the separate ScrollBar finding.
+
+Formatting and three provider Core/style/composite qmllint targets pass; existing
+QML warnings remain. Provider/demo/gallery import-policy checks pass. REUSE passes
+after permitting its worker socket outside the sandbox. The initial SSH/DNS reads
+also required escalation; corrected commands succeeded. Collector tests pass 10/10,
+including independent empty comparison profiles, inherited observer removal,
+measured DPR/origins, index/log hashes and saved process outcomes. The new opt-in
+palette observer passes HoloNight/Fusion on/off checks without deferred popup
+creation or changes to palette roles/resolve masks. It captures numeric color groups
+0 Active, 1 Disabled, 2 Inactive, preserving ARGB and origins for existing objects.
+Logs are in `.cache/uqc208/`; failed preparation attempts are retained there too.
+
+Follow [the Batch 4 instructions](PALETTE-BATCH4.md) only after the immutable kit
+handoff below. UQC-208 remains In Progress until scoped manual criteria or explicit
+external dispositions are accepted. UQC-201 stays In Progress, initiative Accepted.
+
+Provider repair `5d3f06e895be5b5a93ed07f8fe717a0fa6cc6cbb` is published and
+confirmed on canonical origin/main; provider working tree is clean.
