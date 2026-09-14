@@ -1196,3 +1196,35 @@ external dispositions are accepted. UQC-201 stays In Progress, initiative Accept
 
 Provider repair `5d3f06e895be5b5a93ed07f8fe717a0fa6cc6cbb` is published and
 confirmed on canonical origin/main; provider working tree is clean.
+
+**Immutable acceptance kit:** `/tmp/holonight-uqc208-y6y4sz52`, prepared from
+published provider/config sources with umbrella harness checkpoint `4dad111`.
+Archive: `.cache/holonight-uqc208-y6y4sz52/holonight-uqc208-y6y4sz52.tar.gz`.
+SHA-256: `504e12cc6a07d636cef13c49cf16c3fe87a617f79bcb6b68e191023af4731bf6`.
+All 172 file hashes pass after restoration at the exact original prefix; READY
+exists, and the original pre-restoration directory is preserved. Existing-path
+restoration and wrong-user launch refusals pass. Python and terminal syntax pass.
+The palette mode extends the existing preparation/restore/collector harness;
+earlier released kits are unchanged.
+
+Installed provider palette/picker and observer checks pass under both styles at
+scale 1. Six bounded real-app launches and six repeated launches after restoration
+verify staged HoloNight libraries, runtime-selected origins, observed palette
+records and actual main-window DPR 1. Haruna/Tokodon exit -15 after the deliberate
+SIGTERM deadline; NeoChat exits 0 after the request. None exits prematurely or
+requires forced killing. These are startup/loading observations; Settings and
+pickers were not navigated by automation. Actual-app dialog backend and visual
+acceptance remain pending. Diagnostic files contain palette metadata and origins,
+not user-entered text. Run evidence is indexed with exact log hashes and process
+outcomes; each Batch 4 comparison starts from an independent empty profile.
+
+Preparation results/logs, both six-process matrices and restoration/refusal checks
+persist under `.cache/holonight-uqc208-y6y4sz52/`; the preparation transcript is
+`.cache/uqc208/kit-preparation.log`. Restore after reboot only if the kit path is absent:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc208-y6y4sz52/holonight-uqc208-y6y4sz52.tar.gz
+```
+
+The kit's README substitutes its concrete path into [PALETTE-BATCH4.md](PALETTE-BATCH4.md).
+Request only those user-operated scale-1 checks; no unrelated acceptance is reopened.
