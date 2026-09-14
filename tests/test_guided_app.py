@@ -82,18 +82,24 @@ class LauncherSupervisor(unittest.TestCase):
             child.poll.return_value = None
             child.wait.return_value = -6
             env = dict(UQC_SESSION_RUN=str(run), UQC_PREFIX="/tmp/candidate",
-                       UQC_KIT="/tmp/kit", WAYLAND_DISPLAY="test-only")
+                       UQC_KIT="/tmp/kit", WAYLAND_DISPLAY="test-only",
+                       QT_LOGGING_RULES="*.debug=false", HOLONIGHT_RENDER_DIAGNOSTICS="1",
+                       LD_PRELOAD="/tmp/old-observer.so")
             argv = [str(SCRIPT), "haruna", "--style", "Fusion", "--scale", "1.25", "--index", "batch3"]
             with patch.dict(os.environ, env), patch.object(sys, "argv", argv), \
                     patch.object(app.os, "getuid", return_value=1001), \
                     patch.object(app.subprocess, "Popen", return_value=child), \
                     patch.object(app.time, "sleep"), patch.object(app, "collect", return_value=True):
                 self.assertEqual(app.main(), -6)
+                launched_env = app.subprocess.Popen.call_args.kwargs["env"]
+                self.assertNotIn("LD_PRELOAD", launched_env)
+                self.assertNotIn("HOLONIGHT_RENDER_DIAGNOSTICS", launched_env)
             records = [json.loads(line) for line in (run / "batch3-index.jsonl").read_text().splitlines()]
             self.assertEqual([record["status"] for record in records], ["running", "finished"])
             self.assertIsNone(records[0]["process_exit"])
             self.assertEqual(records[1]["process_exit"], -6)
             self.assertEqual(records[1]["requested_scale"], "1.25")
+            self.assertEqual(records[1]["qt_logging_rules"], "*.debug=false")
             self.assertEqual(records[1]["log_sha256"], hashlib.sha256(b"").hexdigest())
             self.assertEqual(Path(records[1]["run"]).joinpath("exit.txt").read_text(), "-6\n")
 

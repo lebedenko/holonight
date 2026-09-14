@@ -878,3 +878,94 @@ runs; actual popup/delegate/Space-state inspection; stock-Fusion focus-lifecycle
 probe exits 0; documentation diff check passes. No product suite was rerun because
 only the umbrella acceptance record changed. Released kits and provider pins remain
 unchanged.
+
+### Batch 3 dropdown background repair — 2026-09-14
+
+Primary reproduction: NeoChat at scale 1. The user confirms that all tested
+ComboBoxes in NeoChat, Tokodon and Haruna show the same missing background with
+both mouse and keyboard, independently of the preceding action.
+
+The saved NeoChat run `neochat-1789394424258792979` contains additional Qt geometry
+records beyond the old observer snapshot: popup item `55ca66581e50` reaches
+510x232, content `55ca66582e60` reaches 502x224, but background `55ca66801d60`
+remains 120x8. Its opaque color is correct; coverage is not.
+
+A deterministic reduced regression now reproduces that exact 120x8 background
+with `QT_LOGGING_RULES=qt.quick.viewport.debug=true`. The original guided session
+sets `*.debug=true;*.info=true`, which enables this category. Both an installed
+FormComboBoxDelegate and a ComboBox populated/attached after creation fail full
+coverage and reopening assertions. With debug logging disabled they pass. Enabling
+only QML, control item-management, dirty, effectiveclip, focus, pointer or window
+logging does not reproduce the failure. The observer is not needed to trigger it.
+This is a deferred-geometry/diagnostic interaction, not palette transparency or
+scale conversion. No new fractional-scale acceptance is required.
+
+The provider candidate binds its ComboBox popup background dimensions to the
+popup dimensions minus public insets. Coverage remains live under the demonstrated
+logging condition; explicit translucent owner palettes, explicit popup palette
+precedence and transition policy remain intact. The existing pixel test samples
+beyond the old strip and now requires full dimensions. Reopening and nonzero insets
+are checked too. No public API or dependency changes.
+
+The observer had a separate reproducible defect: reading every visual control's
+`popup` property instantiated an unopened deferred popup. The retained old observer
+fails the new check with exit 3. The replacement traverses existing QObject/visual
+trees, observes only existing popups, and adds owner, popup, content and background
+parent geometry plus open/closed state. Checks with the observer on/off and both
+styles pass without instantiating the unopened popup. The collector now records Qt
+logging rules and clears inherited observer activation for uninstrumented runs.
+
+ScrollBar remains **open, unreproduced in reduced fixtures**. Popup creation and
+destruction during animation, application-engine destruction, ScrollView page
+destruction and settled vertical/horizontal scrollbar window destruction do not
+reproduce the actual-app null-orientation warning, even with broad debug logging.
+No ScrollBar source change or lifecycle repair is claimed. Record the exact
+preceding action if the warning recurs in the new kit.
+
+Busy-button focus is **expected Qt disable/re-enable behavior**, as established in
+the preceding ownership check; this task makes no focus-restoration change. Accepted
+icon, Switch, Haruna menu/selection, authentication and navigation results remain
+preserved. The historical Haruna crash remains unresolved.
+
+Evidence under `.cache/uqc207/`:
+
+- `background-logging.log`: failing coverage/reopening baseline; the background is
+  120x8 despite larger settled popup/content dimensions.
+- `background-category-*.log` and `background-qt.quick.*.log`: logging-category
+  isolation; `background-baseline.log` and `background-staged-baseline.log`: ordinary
+  logging baseline passes without explaining the actual-app failure.
+- `background-observer-baseline.log`: old observer creates the unopened popup.
+- `background-focused.log`: six diagnostic/observer CTests pass, including Fusion.
+- `background-installed.log`: installed-package acceptance passes.
+- `background-full-provider.log`: full provider suite passes, 83/83 CTests.
+- `background-static.log`: format-check and all_qmllint pass with existing warnings;
+  provider/demo/gallery import policy also passes. `background-reuse.log`: REUSE
+  passes after its sandbox-blocked multiprocessing socket check was rerun outside
+  the sandbox. Collector tests: 8/8 pass, including logging metadata, inherited
+  observer removal, process status and indexed hashes.
+
+Actual-app visual acceptance remains pending. See
+[RENDERING-BATCH3.md](RENDERING-BATCH3.md) for the five scale-1 runs, including the
+NeoChat uninstrumented comparison and Fusion reference. UQC-201/UQC-207 remain
+In Progress and the initiative remains Accepted.
+
+Provider candidate `33d1d51b2f57b1a18fc8ef42ff077b6d62bc21ce` is published on canonical
+`origin/main`; `ls-remote` confirms availability before the umbrella pin update.
+
+Fresh immutable kit: `/tmp/holonight-uqc207-qvyy2hq9` (READY).
+Archive: `.cache/holonight-uqc207-qvyy2hq9/holonight-uqc207-qvyy2hq9.tar.gz`.
+SHA-256: `41c806053a0ab41937a217de8e305b0d921ef6368b738d9b1712026760668bd7`.
+Prepared with `prepare-rendering-kit.py --dropdown-only`; this mode stages the
+published config/provider without unrelated consumer rebuilds or fractional-scale
+acceptance. All 13 preparation steps pass, including staged coverage and observer
+checks in both styles, collector tests, and restoration at the original prefix.
+Independent post-restoration verification matches all 169 manifest hashes.
+
+Six bounded native launches cover NeoChat, Tokodon and Haruna under both styles at
+scale 1 with the viewport diagnostic trigger enabled. All staged module/origin
+checks and saved log hashes pass; measured window DPR is 1 in each run. Four
+processes exit -15 at the planned SIGTERM deadline, and both NeoChat processes exit
+0 after the termination request. None exits prematurely or requires a forced kill.
+These are loading/process observations, not interactive background acceptance.
+Records: `.cache/holonight-uqc207-qvyy2hq9/results.jsonl`, `runtime/`, and
+`post-restoration.json`. Actual-app results for the five README runs remain pending.

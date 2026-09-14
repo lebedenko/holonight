@@ -2173,3 +2173,14 @@ Use [focused human instructions](RENDERING-BATCH3.md); no Batch 3 closure or Bat
 integration is claimed by this checkpoint.
 
 Latest verified manual results and diagnostic conclusions: [canonical findings](FINDINGS.md#batch-3-focused-repair-manual-results--2026-09-14).
+
+### Dropdown background repair checkpoint — 2026-09-14
+
+The provider's diagnostic-triggered ComboBox background repair is published and
+pinned after local verification and canonical availability confirmation. Its
+[local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-207.md)
+records scope; [findings](FINDINGS.md#batch-3-dropdown-background-repair--2026-09-14)
+record reproduction, verification, remaining lifecycle uncertainty and acceptance
+kit evidence once. Follow [the focused instructions](RENDERING-BATCH3.md) for
+scale-1 NeoChat/Tokodon/Haruna checks. Actual-app acceptance is pending; UQC-201
+and UQC-207 remain In Progress, and the initiative remains Accepted.

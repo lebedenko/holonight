@@ -12,7 +12,7 @@ import time
 
 KEYS = ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QPA_PLATFORMTHEME",
         "QML_IMPORT_PATH", "QT_PLUGIN_PATH", "LD_LIBRARY_PATH", "QT_SCALE_FACTOR",
-        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD")
+        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD", "QT_LOGGING_RULES")
 
 
 def assess_isolation(evidence, mappings, prefix):
@@ -121,7 +121,8 @@ def main():
     if args.surface == "greeter":
         command += ["--demo", "--config", str(run / "demo-greeter.toml"), "--state", str(run / "demo-state.json")]
     env = os.environ.copy()
-    for key in ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QUICK_CONTROLS_FALLBACK_STYLE"):
+    for key in ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QUICK_CONTROLS_FALLBACK_STYLE",
+                "HOLONIGHT_RENDER_DIAGNOSTICS", "LD_PRELOAD"):
         env.pop(key, None)
     style = args.style if args.style != "default" else (None if owned else "Holonight")
     if style:
@@ -145,7 +146,8 @@ def main():
             return
         record = dict(status=status, run=str(evidence), application=args.surface,
                       style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
-                      process_exit=code, render_diagnostics=args.render_diagnostics)
+                      process_exit=code, render_diagnostics=args.render_diagnostics,
+                      qt_logging_rules=env.get("QT_LOGGING_RULES"))
         if status == "finished":
             record["log_sha256"] = hashlib.sha256((evidence / "launch.log").read_bytes()).hexdigest()
             record.update(render_observations((evidence / "launch.log").read_text(errors="replace")))

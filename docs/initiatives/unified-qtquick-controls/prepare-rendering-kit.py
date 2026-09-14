@@ -15,6 +15,7 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
+    parser.add_argument('--dropdown-only', action='store_true', help='prepare scale-1 dropdown acceptance without consumer rebuilds')
     args = parser.parse_args()
     docs = Path(__file__).resolve().parent
     root = docs.parents[2]
@@ -42,8 +43,10 @@ def main():
             raise SystemExit(f'{name} failed; inspect {work}/logs/{name}.log; resume with --resume {kit}')
 
     revisions = {}
-    for name in ('holonight-config', 'holonight-qt', 'holonight-ai', 'holonight-settings',
-                 'holonight-system-services', 'holonight-shell'):
+    repositories = ('holonight-config', 'holonight-qt') if args.dropdown_only else (
+        'holonight-config', 'holonight-qt', 'holonight-ai', 'holonight-settings',
+        'holonight-system-services', 'holonight-shell')
+    for name in repositories:
         repo = root / name
         if subprocess.check_output(['git', '-C', str(repo), 'status', '--porcelain'], text=True):
             raise SystemExit('Uncommitted source: ' + name)
@@ -59,15 +62,15 @@ def main():
     for name in ('config', 'qt'):
         run(name + '-build', ['cmake', '--build', root / ('holonight-' + name) / 'build', '-j', '4'])
         run(name + '-install', ['cmake', '--install', root / ('holonight-' + name) / 'build', '--prefix', prefix])
-    for name, source in (('system-services', root / 'holonight-system-services'),
-                         ('shell-config', root / 'holonight-shell/libs/holonight-shell-config')):
+    for name, source in (() if args.dropdown_only else (('system-services', root / 'holonight-system-services'),
+                         ('shell-config', root / 'holonight-shell/libs/holonight-shell-config'))):
         build = work / 'build' / name
         run(name + '-configure', ['cmake', '-S', source, '-B', build, '-G', 'Ninja',
             '-DCMAKE_BUILD_TYPE=Debug', '-DBUILD_TESTING=OFF', '-DCMAKE_INSTALL_LIBDIR=lib',
             f'-DCMAKE_INSTALL_PREFIX={prefix}', f'-DCMAKE_PREFIX_PATH={prefix}'])
         run(name + '-build', ['cmake', '--build', build, '-j', '4'])
         run(name + '-install', ['cmake', '--install', build])
-    for name in ('ai', 'settings'):
+    for name in (() if args.dropdown_only else ('ai', 'settings')):
         build = work / 'build' / name
         run(name + '-configure', ['cmake', '-S', root / ('holonight-' + name), '-B', build,
             '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Debug', '-DBUILD_TESTS=ON', '-DBUILD_TESTING=ON',
@@ -92,20 +95,28 @@ def main():
     (kit / 'README.md').write_text((docs / 'RENDERING-BATCH3.md').read_text().replace('__KIT__', str(kit)))
     env = dict(os.environ, LD_LIBRARY_PATH=str(prefix / 'lib'), PYTHONDONTWRITEBYTECODE='1')
     for style in ('Holonight', 'Fusion'):
-        for scale in ('1', '1.25'):
+        for scale in (('1',) if args.dropdown_only else ('1', '1.25')):
             case = work / f'acceptance-{style}-{scale}'
             case.mkdir(exist_ok=True)
             (case / 'empty-path').mkdir(exist_ok=True)
             isolated = ['python3', root / 'holonight-shell/scripts/run-isolated-test.py', 'env',
                         f'LD_LIBRARY_PATH={prefix}/lib', f'QT_QUICK_CONTROLS_STYLE={style}', f'QT_SCALE_FACTOR={scale}',
-                        f'UQC_IMPORT_PATH={prefix}/lib/qt6/qml', f'QML_IMPORT_PATH={prefix}/lib/qt6/qml']
+                        f'UQC_IMPORT_PATH={prefix}/lib/qt6/qml', f'QML_IMPORT_PATH={prefix}/lib/qt6/qml',
+                        'QT_LOGGING_RULES=qt.quick.viewport.debug=true']
             run(f'provider-{style}-{scale}', isolated + [root / 'holonight-qt/build/tests/holonight_runtime_composite_tests',
-                '--gtest_filter=SharedRendering.*'], env)
+                '--gtest_filter=' + ('SharedRendering.*Popup*:SharedRendering.Scroll*Teardown'
+                                    if args.dropdown_only else 'SharedRendering.*')], env)
+            if args.dropdown_only:
+                run(f'observer-{style}', isolated + ['HOLONIGHT_RENDER_DIAGNOSTICS=1',
+                    'QT_LOGGING_RULES=qt.quick.viewport.debug=true',
+                    root / 'holonight-qt/build/tests/holonight_render_diagnostics_check'], env)
+                continue
             run(f'ai-{style}-{scale}', isolated + [work / 'build/ai/tests/runtime/test_runtime_controls'], env)
             run(f'settings-{style}-{scale}', isolated + [f'HOLONIGHT_APPEARANCE_FILE={case}/appearance.toml',
                 f'PATH={case}/empty-path', work / 'build/settings/apps/settings/settings_controls_acceptance'], env)
     run('actual-staged-processes', ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
-        'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime', '--diagnostics'], env)
+        'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime', '--diagnostics',
+        *(['--dropdown-only'] if args.dropdown_only else [])], env)
     run('collector-tests', ['python3', root / 'tests/test_guided_app.py'])
     for path in kit.glob('*.py'):
         ast.parse(path.read_text())

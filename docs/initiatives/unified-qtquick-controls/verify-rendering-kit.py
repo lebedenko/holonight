@@ -18,6 +18,7 @@ def main():
     parser.add_argument('kit', type=Path)
     parser.add_argument('--logs', type=Path, required=True)
     parser.add_argument("--diagnostics", action="store_true")
+    parser.add_argument('--dropdown-only', action='store_true')
     args = parser.parse_args()
     spec = importlib.util.spec_from_file_location("render_collector", Path(__file__).with_name("guided-app.py"))
     collector = importlib.util.module_from_spec(spec)
@@ -25,8 +26,8 @@ def main():
     prefix = args.kit.resolve() / 'prefix'
     args.logs.mkdir(parents=True, exist_ok=True)
     for style in ('Holonight', 'Fusion'):
-        for scale in ('1', '1.25'):
-            for app in ('haruna', 'neochat', 'tokodon', 'settings', 'ai'):
+        for scale in (('1',) if args.dropdown_only else ('1', '1.25')):
+            for app in (('neochat', 'tokodon', 'haruna') if args.dropdown_only else ('haruna', 'neochat', 'tokodon', 'settings', 'ai')):
                 destination = args.logs / f'{app}-{style}-{scale}'
                 destination.mkdir(exist_ok=True)
                 binary = prefix / 'bin' / {'ai': 'holonight-chat', 'settings': 'holonight-settings'}[app] if app in ('ai', 'settings') else Path('/usr/bin') / app
@@ -35,6 +36,7 @@ def main():
                     env = dict(os.environ, HOME=temporary, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
                         QT_QPA_PLATFORMTHEME='holonight', QT_STYLE_OVERRIDE='', QT_QUICK_CONTROLS_STYLE=style,
                         QT_SCALE_FACTOR=scale, QT_FORCE_STDERR_LOGGING='1', QML_IMPORT_TRACE='1',
+                        QT_LOGGING_RULES='qt.quick.viewport.debug=true',
                         QT_PLUGIN_PATH=str(prefix / 'lib/qt6/plugins'), QML_IMPORT_PATH=str(prefix / 'lib/qt6/qml'),
                         LD_LIBRARY_PATH=str(prefix / 'lib'), LD_DEBUG='libs',
                         XDG_DATA_DIRS=str(prefix / 'share') + ':/usr/share', HOLONIGHT_APPEARANCE_FILE=str(profile_root / 'appearance.toml'))
