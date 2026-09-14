@@ -121,3 +121,8 @@ The fresh immutable kit and restoration command are in the
 [ledger](TASKS.md#batch-3-focused-kit--2026-09-14); use the
 [focused manual instructions](RENDERING-BATCH3.md).
 Batch 3 remains open. Preserve Batches 1–2; broader integration remains Batch 8.
+
+
+Latest Batch 3 manual review: [results and external ownership](FINDINGS.md#batch-3-manual-review-and-external-ownership--2026-09-14).
+This records failed acceptance, external dispositions and remaining unknowns;
+Batch 3 and UQC-207 remain open. Earlier implementation checkpoints are historical.

@@ -1,7 +1,7 @@
 # Batch 3 focused manual checks
 
 Results and open evidence gaps are recorded once in
-[FINDINGS.md](FINDINGS.md#batch-3-investigation-and-rendering-repair--2026-09-14).
+[FINDINGS.md](FINDINGS.md#batch-3-manual-review-and-external-ownership--2026-09-14).
 This kit is for rendering repair acceptance and investigation. Batch 3 is still open.
 Do not repeat accepted authentication or dropdown checks.
 
@@ -33,7 +33,7 @@ python3 __KIT__/rendering-test.py tokodon --style Holonight --scale 1
 - **AI:** Settings → Ollama, focus “Test connection”, press Space and wait for the
   operation to finish; compare the ring before, during and after, then Tab/Backtab.
   Also activate a button that stays enabled. For Enabled and Enable tool calling,
-  inspect the whole-control focus outline in both states. Record the precise next
+  inspect a pill-shaped outline around the switch track, excluding its label, in both states. Record the precise next
   control at any invisible focus stop near Context window/Temperature. No credentials
   or chat requests are needed; do not change non-test configuration.
 - **Settings:** inspect the reported Fusion hover/spacing surfaces. Preserve Fusion's

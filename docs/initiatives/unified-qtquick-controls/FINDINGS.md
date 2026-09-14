@@ -693,3 +693,59 @@ markers. The RoomDrawer diagnostics remain C06 compatibility evidence; successfu
 loading is not a warning-free claim. No new MessageDialog/AboutItem reproduction
 was observed on those limited startup paths. The scan is retained in
 `.cache/uqc207/final-runtime-diagnostics.json`.
+
+
+### Batch 3 manual review and external ownership — 2026-09-14
+
+This review supersedes the pending-manual wording in the preceding checkpoint,
+without replacing its historical evidence. User notes: `/tmp/res.txt`, SHA-256
+`254267165f6c32a2b8ad1d83b2dc5069d476cbc67970b3815b2cf572426df17e`.
+Session: `hyprland-fpyxbe1q`, kit `holonight-uqc207-8jhojhzb`, provider `fbffc87`.
+The twenty reported runs cover five applications, both styles and requested scales
+1/1.25. All exit 0. Read-only verification matched all 21 indexed log hashes,
+including an additional Settings run `settings-1789382239077263155`: that run exits
+0 but has incomplete isolation and no PID snapshot, so it is excluded from acceptance.
+Actual per-window DPR is still not established by the manual run index. Successful
+current exits do not explain or erase the original Haruna SIGABRT.
+
+**Disposition terminology:** “Not fixable within HoloNight” means that the demonstrated
+fault belongs to external application/library code and needs an upstream change under
+the agreed no-third-party-patches scope. It does not mean impossible to fix upstream.
+An external preference or stock-style convention is not automatically a bug. Unknown
+ownership remains open; occurrence under both styles alone is insufficient evidence.
+
+| Finding | Reviewed disposition and evidence |
+|---|---|
+| R01 — Haruna menu/navigation icons | **Open; HoloNight repair required.** Both HoloNight runs log failures from `Holonight/Core/HnIcon.qml:54` and `image://hnicons`, including `configure`, `media-seek-forward`, `contrast` and `tools-report-bug`. Fusion displays the application icons. The provider's `IconThemeResolver` searches `.svg` files in a fixed theme list; it does not implement standard theme inheritance or non-SVG fallback. The prior self-contained SVG fixture did not validate real application resolution. Determine the exact failing lookup path before the next repair; this is not an external-bug exemption. |
+| R02 — menu icon column | **Open actual-app acceptance.** Haruna supplies icons for most entries, so reserving the shared column is correct even when R01 prevents painting them. Blank space is not proof the new conditional-column logic failed. Preserve its passing insertion/removal/mirroring regressions; retest actual menus after R01. |
+| R03 — persistent Shortcuts row | **Open.** “Nothing really changed” does not provide a successful row-selection retest. The prior reduced regression passes, but no actual-app repair acceptance is claimed. |
+| R04 — Switch keyboard outline | **Open; HoloNight repair required.** The whole-widget rectangle in `Switch.qml` includes the label and fails the clarified requirement. The focus outline must follow the pill-shaped switch track, exclude its label, and remain visible checked/unchecked. This corrects the earlier interpretation of “whole control”; the existing whole-widget rendered test asserts the wrong acceptance target. |
+| F03 — hidden/disabled traversal | **Reported traversal accepted for the tested AI path.** User confirms no hidden stop between Context window and Temperature and the Enabled control remains enabled. No disabled-control owner was ever demonstrated; do not invent an additional disabled-focus repair. This does not close F04. |
+| F04 — Space removes button ring | **Open; owner unresolved.** User reproduces it in both styles immediately on Space, with subsequent Tab/Backtab working. That traversal is not sufficient to establish the exact activeFocusItem or focusReason during activation. Plain-button regressions pass; AI Test connection disables while busy. Current log inspection does not establish a Space-correlated owner/reason timeline. Do not mark Qt, Hyprland or the provider unfixable from this evidence. |
+| C01 — Settings page differences | **Known composite boundary, not established external bug.** Appearance uses HnIconComboBox with an explicit HoloNight frame; Weather uses ordinary Controls.ComboBox, hence different Fusion appearance. Public composite APIs and accepted fallback boundaries remain preserved. The missing visible Fusion hover remains **open**: installed Fusion ButtonPanel does consume `control.hovered`, so “Fusion never implements hover” would be false. Need actual hovered state/contrast evidence before classifying this symptom. Small text padding remains a preference. Haruna Fusion menu hover also remains unverified. |
+| C02 — Fusion check/radio label gap | **Not fixable within HoloNight: Kirigami FormCard/Fusion layout incompatibility.** FormCard replaces the control content with null and removes padding/spacing. Fusion's implicit width then ignores its indicator. Existing isolated measurements at both DPRs show control width 0, indicator width 14/x=-7, external label x=8, leaving only one logical pixel. An upstream composition/sizing fix is needed; do not change Fusion globally. |
+| C02 — Tokodon Fusion Switch extends past row | **Not fixable within HoloNight: same upstream composition/sizing incompatibility.** Installed FormSwitchDelegate uses a zero-padding, null-content Controls.Switch. A new stock-Fusion offscreen fixture at actual DPR 1 and 1.25 reproduces control width 0, indicator width 40/x=-20. In a 400-wide row, the content starts at 12 and the switch at content x=376: indicator right edge is 408, eight pixels outside the row. No HoloNight QML override is required to reproduce this. |
+| C02 — tall / HoloNight-looking Fusion popups | **Stock/composite behavior, no demonstrated sizing bug.** Installed Fusion owns the popup, Kirigami supplies delegates. Prior 30-row probe reaches first/last rows and uses available-height scrolling. Appearance alone is not mixed-style evidence. Keep actual-app reachability acceptance open where not explicitly reported; do not classify functional tall popups as unfixable defects. |
+| C04 — Haruna warning corners | **External visual composition; outside provider repair scope.** Kirigami InlineMessage draws its own nested background rectangles with a reduced-radius inset fill. HoloNight does not own these corners. This establishes the owner, not that the subjective corner mismatch is an upstream defect; visual acceptance remains open. |
+| C05 — concurrent Haruna help popups | **External application behavior / preference, not a confirmed bug.** Haruna ToolTipButton intentionally binds each popup to its independent checked state with no timeout or auto-close. Exclusivity would require a Haruna product change. No provider requirement or silent user acceptance is inferred. |
+| R05 — transparent HoloNight ComboBox dropdowns in NeoChat/Tokodon (new) | **Open; investigate HoloNight rendering first.** Reported in both applications with HoloNight. Provider ComboBox supplies a Rectangle background using popup ControlPalette.surface; Kirigami FormComboBoxDelegate supplies item delegates. Neither the exact background alpha nor a replacement popup has yet been measured in these applications. Do not mark this external or silently defer a missing background to Batch 4 palette transitions. |
+
+C06 is split by diagnostic rather than given one blanket disposition:
+
+| Diagnostic | Disposition |
+|---|---|
+| Haruna `ImageAdjustmentSlider.qml:35`, missing `activeControl` | **Not fixable within HoloNight: Haruna style-specific API assumption.** Matching release source writes an undeclared property on a standard Slider background. Reproduces eight times in each current HoloNight run. A provider shim would endorse a non-public contract. |
+| Haruna `Main.qml:106`, string assigned to integer audioId | **Not fixable within HoloNight: Haruna/mpv property contract.** Matching release source assigns `"auto"` to the integer property. Historical evidence retained; no new occurrence established in this manual review. |
+| Kirigami `AboutItem.qml:381`, null window height | **Not fixable within HoloNight: Kirigami null-window handling.** Current Fusion Haruna run `haruna-1789380199968060819` reproduces it twice. Installed source dereferences `parent.Window.window.height` without a null guard. Associated OverlaySheet binding loops remain separately recorded; no crash causality is claimed. |
+| Kirigami Addons `MessageDialog.qml:45` undefined Success; lines 96/97/111 null dimensions; AboutPage null width | **Not fixable within HoloNight: external Kirigami Addons/application lifecycle or type-resolution defects.** Current NeoChat and Tokodon reproduce these under stock Fusion as well as HoloNight. Source owns both the self-type enum lookup and unguarded popup-parent dimensions. The precise upstream enum-resolution trigger remains unresolved; no HoloNight control patch is justified. |
+| Kirigami ScrollablePage null flickable, FormDelegateBackground null visibleChildren | **External diagnostics; not fixable within HoloNight under this scope.** Current Fusion runs reproduce the same external-source errors. Exact lifecycle trigger and user-visible consequences remain unestablished; do not equate them with popup transparency. |
+| NeoChat RoomDrawer.roomDrawerWidth binding loop | **External application diagnostic; not fixable within HoloNight under this scope.** NeoChat Main.qml:153 owns the binding; retained staged startup evidence reproduces it in both styles. No provider repair or visual consequence is claimed. |
+| HoloNight ScrollBar.qml:45 null orientation (new) | **Open; provider-owned diagnostic.** Current HoloNight NeoChat/Tokodon logs dereference a null root in the height Binding. Keep separate from external teardown errors and R05; occurrence near teardown does not exempt the provider. |
+| Original Haruna SIGABRT / cross-thread QML connection | **Open; root cause unresolved.** Historical core reaches generated HoloNight ItemDelegate code; initiating thread/lifetime fault is unknown. New Fusion Haruna log also reports an event-filter thread warning, but that is not proof of the same cause. Neither successful retries nor external diagnostics permit marking this crash unfixable upstream. |
+
+Verification for this review: read-only source ownership inspection; all saved
+index/log hashes matched; stock Fusion FormSwitchDelegate geometry reproduced at
+actual DPR 1/1.25 using offscreen software rendering, without desktop interaction.
+Probe and logs: `.cache/uqc207/review-switch.qml` and `review-switch-stderr*.log`.
+No product code changed or product suite rerun. Batch 3 and UQC-207 remain open;
+UQC-201 remains In Progress, initiative Accepted, and Batches 1–2 remain accepted.
