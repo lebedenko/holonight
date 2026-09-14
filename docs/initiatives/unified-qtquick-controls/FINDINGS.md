@@ -538,3 +538,111 @@ and umbrella pin are published, and the saved process outcomes are classified. N
 repeat visual checks or failed credential submission are needed. Batch 3 follows with
 Haruna crash/diagnostic classification. Broader compositor, successful-authentication
 and activation gates remain Batch 8; UQC-201 stays In Progress and the initiative Accepted.
+
+
+### Batch 3 investigation and rendering repair — 2026-09-14
+
+Baseline umbrella `5822417dca1b8735bf4afbdb49ac7604ce283dca`, provider
+`68b7069cc10b85cf0ce591b89cf8c1494bf316b3`: both clean and equal to canonical
+origin/main before UQC-207 assignment. Local repair requirements and regressions
+belong to [UQC-207](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-207.md).
+Batches 1–2 remain accepted; UQC-201 remains In Progress and the initiative Accepted.
+
+**C06 original crash recovered, cause still open.** Original run
+`/home/tux/uqc-guided-evidence/hyprland-j97jound/haruna-1789046055724363325`,
+PID 72625, tux session 5, exited -6. The retained core records SIGABRT at
+2026-09-10 13:25:58 UTC, about eleven minutes after the saved PID metadata.
+The final log diagnostic is `QQmlEngine: Illegal attempt to connect to QQuickRectangle`
+in a different thread from the QML engine. The stack reaches
+`QQmlPropertyCapture::captureNonBindableProperty`, AOT scope-property lookup,
+and provider ItemDelegate background construction. The retained provider module's
+build ID `425b2b87f8a0e9cf8a990581c6fb5edceac5a944` exactly matches the core.
+Addresses `0x2c4791` / `0x2c4833` resolve to the generated `anchors.fill: parent`
+binding at original ItemDelegate.qml line 84. This identifies the fatal path;
+it does not establish the initiating lifetime/threading defect or prove that
+R03's selection change repairs it.
+
+Read-only original copies, extracted core, module inventory and crash metadata are
+retained privately in `.cache/uqc207/investigation/`. Original launch-log SHA-256:
+`c324c2a00b458d4864ce18f53fb34b05818ec575b559a6d190048ee7ec0186fb`.
+PID-map SHA-256: `2e958194631d73ad5b5a1a9b844444c595c30c049e2a633b6847cd27ec71ad79`.
+The source logs and released kits were not overwritten.
+
+Twelve fresh-profile, private-bus, offscreen/software Haruna launches (three per
+style at Qt scale 1 and 1.25) all reached the ten-second deadline; the harness
+then terminated each with SIGTERM (-15). These are bounded survivals, not normal
+exits or a crash explanation. `.cache/uqc207/launches/` retains per-run logs,
+PID maps, outcomes and log hashes; `.cache/uqc207/launch-matrix.py` records the
+procedure. HoloNight maps identify the staged provider/config libraries. The
+software renderer and lack of the original settings interaction limit this comparison.
+No crash stack exists for those non-crashing runs. Scale factors in these launch
+records are requested values, not independently measured application DPRs.
+
+Separate diagnostic classification from matching Haruna 1.8.1 release source:
+
+| Diagnostic | Owner and evidence | Status |
+|---|---|---|
+| ImageAdjustmentSlider.qml:35 `activeControl` | Haruna unconditionally assigns `background.activeControl` on a standard Slider, assuming a style-specific background API. | Application compatibility boundary; no provider property shim added. Independent of the fatal diagnostic. |
+| Main.qml:106 QString-to-int | Haruna assigns `"auto"` to `mpv.audioId` when preferredTrack is zero. | Application/backend type contract; not a provider rendering repair. |
+| AboutItem.qml:381 null height | Original stack-independent Kirigami AboutItem diagnostic. | Historical evidence retained; current reproduction/acceptance still open. |
+| MessageDialog undefined Success/null size | Historical NeoChat/Tokodon diagnostics also reported under Fusion. | Separate Kirigami/consumer investigation remains open; no palette attribution. |
+
+Current package snapshot: Haruna `1.8.1-2`, NeoChat/Tokodon `26.08.1-1`,
+Qt base `6.11.2-3`, declarative `6.11.2-1`, Kirigami `6.30.0-1`,
+Kirigami Addons `1.13.1-1`. The third-party/Kirigami versions differ from discovery;
+do not present new comparisons as identical historical-package reproductions.
+
+**R01/R02/R03:** Haruna SettingsWindow delegates use Action.icon.name and explicit
+navigation highlighting. Its ShortcutsSettings reuses ItemDelegates with custom
+RowLayout/IconTitleSubtitle/KeySequenceItem content and no explicit selection flag.
+Baseline regressions fail for named menu/navigation icons, unconditional menu icon
+space, and current-row-only selection. The repaired HoloNight controls render names
+and URLs through HnIcon, reserve an icon column per visible menu contents, and render
+selection from explicit highlighted/checked states. Mirroring, dynamic item/icon/
+visibility changes, checked menu activation, explicit selection and keyboard focus
+are covered. Fusion comparisons retain Fusion conventions. Manual actual-app
+acceptance remains pending.
+
+**R04 clarified by the user:** any checked Switch demonstrates the concern; the
+thumb focus ring blends with the track. The requested ring surrounds the whole
+control. The provider moves it to the full-control background, preserving track,
+thumb and public sizing APIs. The rendered baseline difference covers only the
+thumb; repaired coverage surrounds the control in both states and at both scales.
+Manual AI acceptance remains pending.
+
+**F04 clarified:** the user believes any keyboard-activated button is affected,
+with “Test connection” as an example. A plain Button's Tab → Space → Tab → Backtab
+regression retains actual focus owner, Tab/Backtab reason and visualFocus in both
+styles/scales. This does not reproduce the reported problem. AI's Test connection
+button disables itself during the asynchronous operation; actual application owner/
+reason evidence during that lifecycle is still required. No speculative Button or
+AI repair is claimed. F03's suspected disabled stop likewise remains unattributed.
+
+**C05 ownership established:** Haruna ToolTipButton.qml independently binds each
+ToolTip.visible to its own checkable button, sets timeout -1 and Popup.NoAutoClose,
+and does not use a shared exclusivity group. Concurrent help popups are therefore
+application-controlled behavior. No provider exclusivity requirement is introduced;
+focused manual classification/acceptance remains pending.
+
+**C01/C02/C04:** installed-source compatibility probes retain their logs in
+`.cache/uqc207/compatibility-*.log`; these are reduced fixtures, not actual application
+acceptance. Fusion FormCard check/radio delegates replace contentItem with null,
+set spacing/padding to zero and add an external label margin. At DPR 1/1.25 the
+indicator-only Fusion control measures width 0, indicator width 14 and x=-7, while
+the label starts at x=8: the visible gap is only one logical pixel. These are
+Kirigami composition plus Fusion sizing conventions, not HoloNight geometry.
+Fusion's 30-row popup measures height 468, viewport 466 and contentHeight 1080;
+first/last scroll positions are 0/614. Its runtime origin is Fusion ComboBox and
+Kirigami's supplied delegate; HoloNight-like appearance does not establish a mixed
+style. This is available-height scrolling, with no reduced-fixture unreachable rows.
+Haruna's warning is Kirigami.InlineMessage, whose own background composes nested
+rectangles and a 60%-radius inset fill. Visual corner acceptance remains open.
+The HoloNight fractional-scale reduced probe has inconsistent indicator geometry
+and needs isolation review before being used as acceptance evidence.
+
+
+Provider rendering implementation `fbffc872c31ad8c8c22d499a08c8259e781f0a51` is
+published and canonical availability was confirmed before the umbrella pin.
+All 77 provider CTests pass, including installed-package acceptance. Formatting,
+provider/demo/gallery import policy and licensing pass; QML lint has only existing
+unrelated diagnostics. This verifies implementation, not pending manual findings.
