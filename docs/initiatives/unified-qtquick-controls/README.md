@@ -10,6 +10,8 @@ application-local SDD follow-ups, not this controls-unification initiative.
 Batch 7 excludes accepted shared dropdown/hover work and existing avatar-display
 adoption; remaining greeter-specific checks are listed in the reviewed findings.
 See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md).
+Batch 4 scoped palette work is accepted. Batch 6 has a verified investigation kit;
+continue with [the manual checklist](SHELL-BATCH6.md) and [release evidence](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

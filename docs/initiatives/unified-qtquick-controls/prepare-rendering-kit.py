@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tarfile
@@ -114,16 +115,31 @@ def main():
     if args.batch6:
         (kit / 'sway.conf').write_text(f'output * scale 1\nexec {terminal}\n'
             f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\n')
-    packages = ['haruna', 'neochat', 'tokodon', 'qt6-base', 'qt6-declarative', 'kirigami', 'kirigami-addons', 'hyprpolkitagent', 'hyprland']
+    packages = ['haruna', 'neochat', 'tokodon', 'qt6-base', 'qt6-declarative', 'kirigami', 'kirigami-addons', 'hyprpolkitagent', 'hyprland', 'sway']
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    (kit / 'README.md').write_text((docs / ('SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit)))
+    guide = (docs / ('SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit))
+    if args.batch6:
+        guide = re.sub(r'/tmp/holonight-uqc211-[a-z0-9_]+', str(kit), guide)
+    (kit / 'README.md').write_text(guide)
     env = dict(os.environ, LD_LIBRARY_PATH=str(prefix / 'lib'), PYTHONDONTWRITEBYTECODE='1')
+    mask = []
+    if args.batch6:
+        mask = ['bwrap', '--die-with-parent', '--bind', '/', '/', '--dev', '/dev', '--proc', '/proc']
+        for base in ('/usr/lib', '/usr/local/lib'):
+            module = Path(base) / 'qt6/qml/Holonight'
+            if module.is_dir():
+                mask += ['--tmpfs', str(module)]
+            for pattern in ('*holonight*.so*', '*HoloNight*.so*'):
+                for path in Path(base).glob(pattern):
+                    if path.is_file() and not path.is_symlink():
+                        mask += ['--ro-bind', '/dev/null', str(path)]
+        mask += ['--']
     for style in ('Holonight', 'Fusion'):
         for scale in (('1',) if focused else ('1', '1.25')):
             case = work / f'acceptance-{style}-{scale}'
             case.mkdir(exist_ok=True)
             (case / 'empty-path').mkdir(exist_ok=True)
-            isolated = ['python3', root / 'holonight-shell/scripts/run-isolated-test.py', 'env',
+            isolated = mask + ['python3', root / 'holonight-shell/scripts/run-isolated-test.py', 'env',
                         f'LD_LIBRARY_PATH={prefix}/lib', f'QT_QUICK_CONTROLS_STYLE={style}', f'QT_SCALE_FACTOR={scale}',
                         f'UQC_IMPORT_PATH={prefix}/lib/qt6/qml', f'QML_IMPORT_PATH={prefix}/lib/qt6/qml',
                         'QT_LOGGING_RULES=qt.quick.viewport.debug=true']
@@ -150,7 +166,7 @@ def main():
             run(f'settings-{style}-{scale}', isolated + [f'HOLONIGHT_APPEARANCE_FILE={case}/appearance.toml',
                 f'PATH={case}/empty-path', work / 'build/settings/apps/settings/settings_controls_acceptance'], env)
     if args.batch6:
-        run('batch6-staged-processes', ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
+        run('batch6-staged-processes', mask + ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
             'python3', docs / 'verify-shell-kit.py', kit, work / 'runtime'])
         run('batch6-observer-tests', ['python3', docs / 'verify-session-observer.py', prefix, work / 'observer'])
     else:

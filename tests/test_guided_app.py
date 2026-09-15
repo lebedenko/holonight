@@ -180,6 +180,60 @@ class LauncherSupervisor(unittest.TestCase):
 
 
 class Batch6Evidence(unittest.TestCase):
+    def test_real_child_outcomes_preserve_final_index_and_hashes(self):
+        for outcome, expected in [('normal', 0), ('signal', -signal.SIGABRT),
+                                  ('interrupted', -signal.SIGTERM), ('forced cleanup', -signal.SIGKILL)]:
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                prefix = root / 'prefix'
+                binary = prefix / 'bin/holonight-shell'
+                binary.parent.mkdir(parents=True)
+                binary.write_text('#!/usr/bin/python3\n'
+                    'import os, resource, signal, time\n'
+                    'resource.setrlimit(resource.RLIMIT_CORE, (0, 0))\n'
+                    + ('signal.signal(signal.SIGTERM, signal.SIG_IGN)\n' if outcome == 'forced cleanup' else '')
+                    + 'print("CHILD_READY", flush=True)\n'
+                    + ('time.sleep(4)\n' if outcome in ('normal', 'signal') else 'time.sleep(60)\n')
+                    + ('os.kill(os.getpid(), signal.SIGABRT)\n' if outcome == 'signal' else ''))
+                binary.chmod(0o755)
+                # Bypass only the manual-login guard in this disposable fixture.
+                # Process supervision, collection, polling and indexing are real.
+                wrapper = root / 'wrapper.py'
+                wrapper.write_text('import os, runpy\nos.getuid = lambda: 1001\n'
+                                   f'runpy.run_path({str(SCRIPT)!r}, run_name="__main__")\n')
+                run = root / 'run'
+                run.mkdir()
+                env = dict(os.environ, UQC_SESSION_RUN=str(run), UQC_PREFIX=str(prefix),
+                           UQC_KIT=str(root), WAYLAND_DISPLAY='fixture')
+                with (root / 'supervisor.log').open('w') as log:
+                    child = subprocess.Popen([sys.executable, str(wrapper), 'shell', '--index', 'batch6'],
+                                             env=env, stdout=log, stderr=subprocess.STDOUT)
+                    try:
+                        if outcome in ('interrupted', 'forced cleanup'):
+                            deadline = time.monotonic() + 5
+                            while time.monotonic() < deadline:
+                                launches = list(run.glob('shell-*/launch.log'))
+                                if launches and 'CHILD_READY' in launches[0].read_text():
+                                    break
+                                self.assertIsNone(child.poll())
+                                time.sleep(.02)
+                            else:
+                                self.fail('fixture child did not start')
+                            child.send_signal(signal.SIGINT)
+                        child.wait(timeout=15)
+                    finally:
+                        if child.poll() is None:
+                            child.kill()
+                            child.wait()
+                records = [json.loads(line) for line in (run / 'batch6-index.jsonl').read_text().splitlines()]
+                final = records[-1]
+                self.assertEqual(final['status'], 'finished')
+                self.assertEqual(final['outcome'], outcome)
+                self.assertEqual(final['process_exit'], expected)
+                evidence = Path(final['run'])
+                for field, name in [('log_sha256', 'launch.log'), ('session_sha256', 'session.jsonl')]:
+                    self.assertEqual(final[field], hashlib.sha256((evidence / name).read_bytes()).hexdigest())
+
     def test_navigation_summary_requires_observed_window_dpr(self):
         records = ['HN_SESSION invalid', 'HN_SESSION []',
                    'HN_SESSION {"kind":"window","id":"w","dpr":1.25}',

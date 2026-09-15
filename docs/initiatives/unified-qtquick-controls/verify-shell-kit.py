@@ -4,6 +4,7 @@ import argparse
 import importlib.util
 import json
 import os
+import signal
 from pathlib import Path
 import subprocess
 import tempfile
@@ -28,6 +29,8 @@ def main():
     kit = args.kit.resolve()
     prefix = kit / 'prefix'
     args.logs.mkdir(parents=True, exist_ok=True)
+    args.logs = Path(tempfile.mkdtemp(prefix='attempt-', dir=args.logs))
+    failures = []
     spec = importlib.util.spec_from_file_location('guided', kit / 'guided-app.py')
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
@@ -95,14 +98,21 @@ def main():
                                         code, forced = stop(child)
                                 text = (case / 'launch.log').read_text(errors='replace')
                                 result = dict(isolated=isolated, exit=code, forced=forced,
+                                              outcome=('forced cleanup' if forced else
+                                                       'normal' if code == 0 else
+                                                       'terminated' if code == -signal.SIGTERM else 'failed'),
                                               observations=helper.session_observations(text))
                                 (case / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
-                                assert isolated and not forced, result
+                                # SIGTERM is the requested bounded stop. A different
+                                # signal (especially SIGSEGV) is a failed run.
+                                if not (isolated and not forced and code in (0, -signal.SIGTERM)):
+                                    failures.append(case.name)
                                 dprs = result['observations']['session_window_dpr']
                                 assert (dprs and float(scale) in dprs.values()) if observed else not dprs
                                 print(case.name, code, 'isolated', flush=True)
             finally:
                 stop(compositor)
+    assert not failures, f'Failed staged runs: {failures}; evidence: {args.logs}'
 
 
 if __name__ == '__main__':

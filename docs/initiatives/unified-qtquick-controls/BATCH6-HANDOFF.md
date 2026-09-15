@@ -1,6 +1,13 @@
 # Batch 6 — next-session handoff
 
-## Stop instruction
+## Resume completed — 2026-09-15
+
+Shell tests are published and pinned; the fresh Batch 6 kit passed automated
+preparation and restoration. Continue with the [human checklist](SHELL-BATCH6.md)
+and record results against the [release evidence](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
+The stop instruction and exact state below are the historical starting checkpoint.
+
+## Original stop instruction
 
 On 2026-09-15 the user requested: **make commits, do not generate the Batch 6 kit,
 and leave a note to proceed next session**. No kit preparation command was run.

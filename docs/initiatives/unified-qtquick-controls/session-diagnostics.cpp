@@ -197,8 +197,10 @@ extern "C" int wl_proxy_add_listener(wl_proxy *proxy,
     listener.observed.enter = enter;
     listener.observed.leave = leave;
     listener.observed.key = key;
-    return original(
+    const auto result = original(
         proxy, reinterpret_cast<void (**)(void)>(&listener.observed), data);
+    report({{"kind", "wayland-keyboard-listener"}, {"installed", result == 0}});
+    return result;
   }
   return original(proxy, implementation, data);
 }

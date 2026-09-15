@@ -2238,3 +2238,12 @@ Corrected the proposed coordinate investigation to UQC-215: UQC-213 already
 identifies the completed F06 package. Historical shell SDD references to the
 proposed UQC-213 mean UQC-215; its scope/state remains Planned. Batch 6 harness
 review and fresh kit preparation continue; no manual acceptance is implied.
+
+
+### Batch 6 verified kit handoff — 2026-09-15
+
+[Canonical release evidence](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15)
+records the exact kit/archive/hash, 16 installed checks, 16 staged runtime
+comparisons, observer/collector tests, restoration/refusals and remaining keyboard
+observation gaps. Follow [SHELL-BATCH6.md](SHELL-BATCH6.md) for the focused manual
+sequence. UQC-211/UQC-201 remain In Progress; UQC-215 Planned; initiative Accepted.

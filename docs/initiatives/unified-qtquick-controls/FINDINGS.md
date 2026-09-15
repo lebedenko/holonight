@@ -1410,3 +1410,77 @@ manual run was performed**. Do not treat draft instructions as a released kit.
 UQC-211 and F05 remain open; UQC-201 stays In Progress and the initiative Accepted.
 Batch 4/P02 acceptance, external P01, removed Batch 5, reviewed Batch 7 and deferred
 Batch 3 findings remain unchanged.
+
+
+### Batch 6 verified investigation kit — 2026-09-15
+
+Resumed from umbrella `a34d9db`. Canonical shell main was still `fffb171`;
+published preserved test/SDD commits `954a721` and `ab780d5`, confirmed canonical
+`ab780d5d477400cdc70195d37783e9e080ee1d05`, and checkpointed its gitlink in
+`8b7b9a3`. No product repair was made. The proposed provider coordinate package
+is now [UQC-215](UQC-215.md), correcting its collision with completed F06 UQC-213.
+Historical shell SDD references to the proposed package retain the old number.
+
+Fresh immutable kit: `/tmp/holonight-uqc211-hhs633yu`.
+Archive: `.cache/holonight-uqc211-hhs633yu/holonight-uqc211-hhs633yu.tar.gz`.
+SHA-256: `1f15cf407c35644102c45f94731bf70177f8a0307c6b35b67471f051dbb0123b`.
+Exact sources are in `revisions.json`; all five source repositories were clean
+and matched canonical main at preparation. Gitlinks remain authoritative.
+
+Preparation:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/prepare-rendering-kit.py --batch6
+python3 docs/initiatives/unified-qtquick-controls/prepare-rendering-kit.py --batch6 --resume /tmp/holonight-uqc211-hhs633yu
+```
+
+The first sandbox attempt failed at SSH configuration access before building;
+the permitted resume passed all 40 preparation commands. Logs, commands/results,
+harness snapshots and runtime records remain in `.cache/holonight-uqc211-hhs633yu/`.
+No earlier released kit was modified.
+
+- Built/installed provider dependencies, AI and shell at the candidate prefix.
+  All 16 provider/AI/shell/compiled-topbar acceptance invocations pass across
+  HoloNight/Fusion and Qt scales 1/1.25 with host HoloNight modules/libraries masked.
+- All 16 actual shell/AI headless Sway startup comparisons pass runtime mapping
+  isolation, covering both styles/scales with observation on/off. All were stopped
+  deliberately with SIGTERM and returned -15; no forced cleanup or shutdown crash.
+  Observed window DPR matches each requested scale. Unobserved runs emit no session
+  observations. These are bounded startup checks, not normal user-close acceptance.
+- The runtime verifier now rejects unexpected shutdown codes and retains each
+  attempt separately. The observer records listener-installation success explicitly.
+  Eight offscreen observer on/off cases pass navigation forwarding, unchanged
+  fixture acceptance, measured DPR and exclusion of entered text.
+- All 13 collector tests pass. New disposable real-child cases cover normal exit,
+  abort, interrupted termination and forced cleanup with completed/hash-verified
+  indexes. These exercise process supervision, not manual AI/shell close behavior.
+- Exact-path archive restoration and all 225 file hashes pass. Four actual refusal
+  checks pass: wrong user for session/app, preparing over READY, and restoring over
+  an existing kit. Python/shell syntax, relative documentation links and whitespace
+  checks pass. No full product suite was rerun beyond the recorded installed checks.
+
+**Observation limits:** headless Sway produced window/focus/geometry records but
+no keyboard-listener records. Actual Wayland listener and Tab callback coverage
+remains unverified; missing navigation records cannot prove missing compositor
+delivery. Final Qt event acceptance remains explicitly unavailable. User-operated
+VT return, form navigation and observer-off comparisons remain necessary for F05.
+No input, focus or VT interaction was automated. Private AI profiles retain disabled
+providers; no credentials or model requests were used.
+
+From a fresh real tux VT login:
+
+```sh
+python3 /tmp/holonight-uqc211-hhs633yu/guided-session.py hyprland
+```
+
+Follow the kit README's [focused checklist](SHELL-BATCH6.md). If reboot removed
+the kit, restore only when its original path is absent:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc211-hhs633yu/holonight-uqc211-hhs633yu.tar.gz
+```
+
+S01/S02/F05 and UQC-211/UQC-201 remain open. UQC-215 stays Planned and initiative
+status Accepted. Preserve accepted batches, the removed Batch 5, reviewed Batch 7
+scope and deferred Batch 3 findings. This kit prepares the focused human sequence;
+it does not establish manual acceptance or final integration.

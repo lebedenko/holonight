@@ -1,11 +1,11 @@
 # Batch 6 — shell geometry and AI VT-return evidence
 
-**Draft: no Batch 6 kit has been generated.** Preparation is deferred to the next
-session at the user’s request. Follow [the handoff](BATCH6-HANDOFF.md) first;
-`__KIT__` is an unresolved placeholder, not a runnable path.
+**Released kit: `/tmp/holonight-uqc211-hhs633yu`.** Preparation, runtime checks,
+archive restoration and all 225 hashes pass; see the
+[release evidence](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
 
 Use only the new immutable kit identified in the
-[Batch 6 findings](FINDINGS.md#batch-6-investigation--2026-09-15).
+[Batch 6 findings](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
 Earlier kits and accepted batches remain unchanged. These are investigation runs;
 no shell rendering repair is claimed. Keep every output at scale **1**.
 
@@ -14,7 +14,7 @@ no shell rendering repair is claimed. Keep every output at scale **1**.
 From a fresh real **tux VT login**, outside any compositor:
 
 ```sh
-python3 __KIT__/guided-session.py hyprland
+python3 /tmp/holonight-uqc211-hhs633yu/guided-session.py hyprland
 ```
 
 The terminal opens in an isolated configuration and private session bus. Every
@@ -27,10 +27,10 @@ All clicks, focus changes and VT switching below are performed by the user.
 Run each command in the kit terminal, one at a time:
 
 ```sh
-python3 __KIT__/guided-app.py shell --style Holonight --scale 1 --index batch6 --session-diagnostics
-python3 __KIT__/guided-app.py shell --style Fusion --scale 1 --index batch6 --session-diagnostics
-python3 __KIT__/guided-app.py shell --style Holonight --scale 1.25 --index batch6 --session-diagnostics
-python3 __KIT__/guided-app.py shell --style Fusion --scale 1.25 --index batch6 --session-diagnostics
+python3 /tmp/holonight-uqc211-hhs633yu/guided-app.py shell --style Holonight --scale 1 --index batch6 --session-diagnostics
+python3 /tmp/holonight-uqc211-hhs633yu/guided-app.py shell --style Fusion --scale 1 --index batch6 --session-diagnostics
+python3 /tmp/holonight-uqc211-hhs633yu/guided-app.py shell --style Holonight --scale 1.25 --index batch6 --session-diagnostics
+python3 /tmp/holonight-uqc211-hhs633yu/guided-app.py shell --style Fusion --scale 1.25 --index batch6 --session-diagnostics
 ```
 
 For each run:
@@ -54,7 +54,7 @@ occurs, make one uninstrumented HoloNight/1.25 comparison.
 Then exit Hyprland with Super+Shift+E. From the VT, start:
 
 ```sh
-python3 __KIT__/guided-session.py sway
+python3 /tmp/holonight-uqc211-hhs633yu/guided-session.py sway
 ```
 
 Repeat only the two **scale-1** shell commands for the previously reported frame
@@ -66,7 +66,7 @@ new evidence. Exit Sway with Super+Shift+E.
 Start another isolated Hyprland session with the first command above. Run:
 
 ```sh
-python3 __KIT__/guided-app.py ai --style Holonight --scale 1.25 --index batch6 --session-diagnostics
+python3 /tmp/holonight-uqc211-hhs633yu/guided-app.py ai --style Holonight --scale 1.25 --index batch6 --session-diagnostics
 ```
 
 1. Open **Settings → Providers → Ollama**. Confirm it remains disabled. Record the
@@ -85,7 +85,7 @@ python3 __KIT__/guided-app.py ai --style Holonight --scale 1.25 --index batch6 -
 6. Repeat the same two style runs without `--session-diagnostics`, using the same
    form/control and VT sequence. Stop after this confirming comparison.
 
-The observer records Wayland Tab delivery and keyboard enter/leave when available,
+The observer records Wayland keyboard-listener installation, Tab delivery and keyboard enter/leave when available,
 Qt navigation receipt, window activation, active focus identities, actual DPR and
 queued focus state after dispatch. Session activation/compositor active-window
 metadata are collected separately. No entered text is recorded. Qt event filters
@@ -98,7 +98,7 @@ missing compositor delivery; verify observer coverage before assigning ownership
 Report the session/evidence paths printed by the helpers and observations keyed by
 style, scale and run. Include the exact F05 form/control and VT numbers. Keep raw
 logs/index files for hash verification. Results belong once in
-[FINDINGS.md](FINDINGS.md#batch-6-investigation--2026-09-15); link this checklist,
+[FINDINGS.md](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15); link this checklist,
 [ledger](TASKS.md) and [shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-211.md).
 
 S01/S02 acceptance and F05 ownership remain pending until review. The initiative
