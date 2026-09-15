@@ -1673,3 +1673,76 @@ UQC-211/UQC-201 remain In Progress and the initiative Accepted, not Integrated.
 Verification for this documentation review: hashes, mappings, observer absence,
 exit codes, package versions and VT session transitions pass; relative links and
 whitespace pass. No product implementation changed or product tests were repeated.
+
+
+### S01 provider repair and F05 reduced diagnosis — 2026-09-15
+
+The completed manual sequence was checkpointed as umbrella `cf0cc80`. Canonical
+baselines were revalidated unchanged before assignment: provider `638eec2`,
+shell `ab780d5`, AI `7e25e78`. UQC-215's provider-local coordinate contract was
+marked Ready before implementation. The [provider SDD](../../../holonight-qt/docs/sdd/layer-surface-logical-coordinates/SPEC.md)
+and [verification](../../../holonight-qt/docs/sdd/layer-surface-logical-coordinates/TASKS.md)
+record the repair and caller audit.
+
+**Provider repair is published and locally verified.** Commit
+`0e0f92efe1517bc07c577299f07b51117f25f05a` was confirmed on canonical main before
+umbrella checkpoint `0ee4ef5` updated its pin. All public geometry stays in Qt
+logical coordinates; Qt boundary conversion now handles initial/later size,
+configure, margins, zones and custom input regions. Anchored zeros and zone
+sentinels retain their meaning. Scale refresh uses logical originals. No shell
+compensation, consumer source edit, public signature change or system install.
+
+The regression failed before repair at Qt 1.25 with output scale 1 and 2; Qt 1
+passed both. The repaired four-case matrix passes, including zero-width bar,
+zero-height panel, repeated configure, rounded input boundaries, deterministic
+scale refresh/reversal and orderly reopen/teardown. Provider CTest **87/87**,
+shell hosting **164/164**, AI panel **11/11**, installed package checks, formatting,
+QML policy, syntax, whitespace and licensing pass. Clang-tidy completes with
+existing code/header warnings. Raw logs are retained in `.cache/uqc215/`.
+The reduced probe orders application/context/window teardown explicitly; the
+ordinary stack-application context teardown defect is separately documented,
+not repaired or hidden by accepting a crash.
+
+**Fresh immutable repair kit:** `/tmp/holonight-uqc211-8ptiz_ko`.
+
+- Archive: `.cache/holonight-uqc211-8ptiz_ko/holonight-uqc211-8ptiz_ko.tar.gz`.
+- SHA-256: `041ff28e0f4f241bcd79450ef3260d09b6f4f45b6893f8e7e7d11d7f1894211f`.
+- All **230 file hashes** pass after exact-path restoration. Restoring over the
+  existing released kit is refused (exit 2). The prior `hhs633yu` kit is preserved;
+  all its **225 hashes** still pass.
+- **40 preparation commands** pass, including **16 installed comparisons**
+  (provider, AI controls, shell controls/composition × two styles/two Qt scales),
+  **16 isolated staged process comparisons**, **8 observer checks**, **13 collector
+  tests**, terminal syntax and restoration. Actual staged mappings are verified
+  with host provider modules hidden. All 16 bounded runtime processes end by the
+  requested SIGTERM (-15), classified **terminated**, with no forced cleanup or
+  shutdown crash; these are not normal-close acceptance results.
+- Independent staged-shell geometry review verifies all four observed cases:
+  TopBar stays **1920×64** Qt units at scale 1 and **1536×64** at 1.25 on the
+  1920-wide native output. The latter sends Wayland height/exclusive zone **80**.
+  Evidence: `.cache/uqc215/installed-shell-geometry.json` and kit runtime logs.
+  This does not establish human hover, click or popup acceptance.
+- The new `--s01-repair` preparation mode selects the repair-only guide and stages
+  reduced F05 sources. The in-flight candidate received those source files
+  before hashing; released kit contents were not edited afterward. Detailed
+  logs/results are under `.cache/holonight-uqc211-8ptiz_ko/`.
+
+**F05 remains an ownership diagnosis.** [The reduced fixture and source analysis](f05/README.md)
+identify Qt's keyboard-destruction/cached-focus path as consistent with the
+retained Hyprland/Sway difference. No HoloNight repair owner is demonstrated.
+The exact capability/enter/toplevel/Qt-cache sequence and its presentation effect
+remain unresolved. Plain Qt, plain Qt with staged platform theme, and
+HnApplicationWindow all pass headless fixture verification under Fusion at DPR
+1.25; actual mappings prove the plain run loads no HoloNight libraries. Navigation
+forwarding/acceptance and text exclusion pass. These results validate the
+reproducer, not real VT behavior or new-observer physical keyboard forwarding.
+Final installed-kit evidence is preserved at
+`.cache/uqc215/f05-kit-evidence/`. The kit includes sources for a user-operated
+**plain-Qt reduced VT check first**, without repeating the completed AI matrix.
+No forced focus, synthetic pointer, repaint workaround or external patch.
+
+**Remaining gates:** follow only [S01 repair acceptance](S01-REPAIR.md) for the
+fractional Hyprland shell. S02's passing scale-1 comparison stays accepted.
+S01/F05 and UQC-211/UQC-201 remain open; UQC-215 is Done locally. Initiative remains
+Accepted, not Integrated. Batch 7, deferred Batch 3 issues and final integration
+were not reopened.

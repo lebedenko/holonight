@@ -16,10 +16,13 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
+    parser.add_argument('--s01-repair', action='store_true', help='release the provider repair with a repair-only checklist')
     parser.add_argument('--batch6', action='store_true', help='prepare shell and AI VT-return investigation')
     parser.add_argument('--dropdown-only', action='store_true', help='prepare scale-1 dropdown acceptance without consumer rebuilds')
     parser.add_argument('--palette-only', action='store_true', help='prepare Batch 4 palette checks at scale 1')
     args = parser.parse_args()
+    if args.s01_repair:
+        args.batch6 = True
     if sum((args.palette_only, args.dropdown_only, args.batch6)) > 1:
         parser.error('choose one focused batch')
     focused = args.dropdown_only or args.palette_only
@@ -102,6 +105,9 @@ def main():
         run('session-observer-build', ['g++', '-std=c++23', '-shared', '-fPIC', session_observer,
             '-o', prefix / 'lib/session-diagnostics.so', *flags, '-lwayland-client', '-ldl'])
         shutil.copy2(session_observer, kit)
+        if args.s01_repair:
+            shutil.copytree(docs / 'f05', kit / 'f05', dirs_exist_ok=True)
+            shutil.copy2(docs / 'verify-session-observer.py', kit)
     if args.palette_only:
         shutil.copy2(root / 'holonight-qt/build/tests/palette-diagnostics.so', prefix / 'lib/palette-diagnostics.so')
         shutil.copy2(observer.with_name('palette-diagnostics.cpp'), kit / 'palette-diagnostics.cpp')
@@ -117,7 +123,7 @@ def main():
             f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\n')
     packages = ['haruna', 'neochat', 'tokodon', 'qt6-base', 'qt6-declarative', 'kirigami', 'kirigami-addons', 'hyprpolkitagent', 'hyprland', 'sway']
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    guide = (docs / ('SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit))
+    guide = (docs / ('S01-REPAIR.md' if args.s01_repair else 'SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit))
     if args.batch6:
         guide = re.sub(r'/tmp/holonight-uqc211-[a-z0-9_]+', str(kit), guide)
     (kit / 'README.md').write_text(guide)

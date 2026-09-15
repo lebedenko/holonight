@@ -2284,3 +2284,13 @@ verifies both final Hyprland AI runs and reproduces both reported recovery
 behaviors without the observer. No manual repetitions remain for this kit.
 S02 comparison accepted; S01 and F05 fail. UQC-211/UQC-201 remain In Progress;
 UQC-215 Planned, with F05 ownership unresolved. Initiative remains Accepted.
+
+
+### S01 provider repair and F05 reduced diagnosis — 2026-09-15
+
+[Canonical handoff and release evidence](FINDINGS.md#s01-provider-repair-and-f05-reduced-diagnosis--2026-09-15)
+record published/pinned provider `0e0f92e`, completed local UQC-215 verification,
+the immutable `8ptiz_ko` repair kit and the unresolved F05 activation boundary.
+UQC-215 is Done; S01 human acceptance and F05 ownership remain open. Preserve
+S02 and all completed manual comparisons. UQC-211/UQC-201 stay In Progress and
+the initiative Accepted; no final integration or unrelated-batch work.

@@ -2,7 +2,7 @@
 
 Status: Accepted
 
-Current scope and progress (2026-09-14): Batches 1–2 and Batch 3 rendering/background
+Current scope and progress (2026-09-15): Batches 1–2 and Batch 3 rendering/background
 repairs are accepted; unresolved diagnostics and final integration remain open.
 Tokodon’s intermittent chevron is deferred at the user’s request. **Batch 5 is
 removed:** Settings slider and AI Temperature layout defects belong to separate
@@ -10,8 +10,10 @@ application-local SDD follow-ups, not this controls-unification initiative.
 Batch 7 excludes accepted shared dropdown/hover work and existing avatar-display
 adoption; remaining greeter-specific checks are listed in the reviewed findings.
 See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md).
-Batch 4 scoped palette work is accepted. Batch 6 has a verified investigation kit;
-continue with [the manual checklist](SHELL-BATCH6.md) and [release evidence](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
+Batch 4 scoped palette work is accepted. Batch 6 manual comparisons are complete.
+UQC-215 provider coordinate repair is published and locally verified; S01 awaits
+[repair acceptance](S01-REPAIR.md). [F05 reduced diagnosis](f05/README.md) retains
+an unresolved Qt/Hyprland activation boundary. See [the current handoff](BATCH6-HANDOFF.md).
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

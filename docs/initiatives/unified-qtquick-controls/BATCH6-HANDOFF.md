@@ -1,6 +1,26 @@
 # Batch 6 — next-session handoff
 
-## Latest manual review — 2026-09-15
+## Provider repair and reduced F05 diagnosis — 2026-09-15
+
+Provider repair `0e0f92e` is published and pinned by umbrella `0ee4ef5`.
+[UQC-215](UQC-215.md) is Done locally: coordinate matrix, 87 provider CTests,
+164 shell hosting tests and 11 AI panel tests pass. No consumer source changes.
+Fresh immutable kit `/tmp/holonight-uqc211-8ptiz_ko` is released: 230 hashes,
+16 installed checks, 16 staged runtime checks, observer/collector checks and
+restoration pass. See [release evidence](FINDINGS.md#s01-provider-repair-and-f05-reduced-diagnosis--2026-09-15)
+and the [S01 repair checklist](S01-REPAIR.md).
+
+[F05 diagnosis and fixture](f05/README.md) compare plain Qt, platform theme and
+HnApplicationWindow with Fusion. Qt's keyboard-destruction/cache path matches the
+retained Hyprland/Sway difference, but exact ownership remains unresolved. Only
+a reduced plain-Qt VT check is pending; the completed AI matrix is not repeated.
+No focus or repaint workaround was implemented. S01 and F05 remain open;
+UQC-211/UQC-201 In Progress, initiative Accepted. Batch 7, deferred Batch 3 work
+and final ecosystem integration remain outside this handoff.
+
+The entries below are historical checkpoints.
+
+## Completed manual review — 2026-09-15
 
 [The manual sequence is complete](FINDINGS.md#batch-6-uninstrumented-confirmation-and-manual-sequence-complete--2026-09-15).
 No repeat runs are requested. Scale-1 shell frame checks pass on both compositors;
