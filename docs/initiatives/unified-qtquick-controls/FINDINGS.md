@@ -1746,3 +1746,38 @@ fractional Hyprland shell. S02's passing scale-1 comparison stays accepted.
 S01/F05 and UQC-211/UQC-201 remain open; UQC-215 is Done locally. Initiative remains
 Accepted, not Integrated. Batch 7, deferred Batch 3 issues and final integration
 were not reopened.
+
+
+### S01 repair accepted on Hyprland — 2026-09-15
+
+User results `/tmp/res.txt` report **no issues** for both requested fractional
+repair checks in session `/tmp/hyprland-6p_j_ox6`. This completes the
+[S01 checklist](S01-REPAIR.md): startup/bar stability, hover/tooltips, right-edge
+bounds, popup placement, click alignment and reserved space. These interaction
+results come from the user's manual review; logs corroborate identity and
+geometry rather than independently measuring every interaction.
+
+| Run | Style | Measured DPR | Topbar Qt geometry | Outcome |
+|---|---|---|---|---|
+| `1789483471242990444` | HoloNight | 1.25 | 2048×64 | No issues; deliberate Ctrl+C (-2). |
+| `1789483615617702032` | Fusion | 1.25 | 2048×64 | No issues; deliberate Ctrl+C (-2). |
+
+Both final records match independently recomputed launch/session hashes and
+saved exits. Rechecked PID mappings use the released `8ptiz_ko` kit's staged
+provider; style selection and actual DPR are verified. Recorded package versions
+match the kit. Identity and launch records establish a real local tux session
+on tty3 running Hyprland. All sampled TopBar roots retain the geometry above.
+SIGINT exits are intentional interruptions, not crashes or normal-close tests.
+Selected evidence and verification summaries are preserved under
+`.cache/uqc211-manual/hyprland-6p_j_ox6/`; profiles and cookies were excluded.
+
+**S01 is accepted and UQC-211 is Done.** S02's accepted scale-1 comparison remains
+valid; no shell repetition is requested. Provider UQC-215 remains Done, with
+published repair `0e0f92e` and unchanged shell pin `ab780d5`. No product code or
+submodule pins changed during this review. Hashes, mappings, package versions,
+geometry, outcomes, documentation links and whitespace were checked; product
+tests were not repeated for documentation-only acceptance.
+
+No reduced F05 evidence was supplied. F05/UQC-201 remain open pending the
+[plain-Qt reduced VT check](f05/README.md). The initiative remains Accepted,
+not Integrated; no unrelated batches or final integration were reopened.

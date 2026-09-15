@@ -1,5 +1,9 @@
 # S01 fractional shell repair acceptance
 
+**Accepted — 2026-09-15, both styles. No repeat runs requested.**
+[Verified manual results](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15).
+The checklist below is retained for provenance.
+
 **Verified kit: `/tmp/holonight-uqc211-8ptiz_ko`.**
 [Release evidence](FINDINGS.md#s01-provider-repair-and-f05-reduced-diagnosis--2026-09-15). Keep previous kits and completed Batch 6 comparisons.
 This kit contains the provider coordinate repair; no shell compensation or F05
@@ -31,5 +35,4 @@ Perform every pointer/focus action yourself. Stop each shell using Ctrl+C and
 allow the collector to finish. Record pass/fail for each check and the session
 path printed by the helper. Scale-1 comparisons and the completed AI VT matrix
 remain accepted evidence and are not requested again. F05 is a separate reduced
-fixture diagnosis, not an AI acceptance run in this kit. S01 remains open until
-these checks pass. Final ecosystem integration remains open.
+fixture diagnosis, not an AI acceptance run in this kit. S01 passed these checks. F05 and final ecosystem integration remain open.

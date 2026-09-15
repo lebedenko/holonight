@@ -1,5 +1,13 @@
 # Batch 6 — next-session handoff
 
+## S01 accepted — 2026-09-15
+
+[Verified repair results](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15)
+pass both fractional Hyprland styles. S01 accepted; S02 preserved; UQC-211 and
+UQC-215 Done. No shell repetition is requested. F05/UQC-201 remain open; next
+manual evidence is the [plain-Qt reduced VT check](f05/README.md). Initiative
+remains Accepted, not Integrated. The repair-preparation entries below are historical.
+
 ## Provider repair and reduced F05 diagnosis — 2026-09-15
 
 Provider repair `0e0f92e` is published and pinned by umbrella `0ee4ef5`.

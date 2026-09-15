@@ -11,8 +11,8 @@ Batch 7 excludes accepted shared dropdown/hover work and existing avatar-display
 adoption; remaining greeter-specific checks are listed in the reviewed findings.
 See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md).
 Batch 4 scoped palette work is accepted. Batch 6 manual comparisons are complete.
-UQC-215 provider coordinate repair is published and locally verified; S01 awaits
-[repair acceptance](S01-REPAIR.md). [F05 reduced diagnosis](f05/README.md) retains
+UQC-215 provider coordinate repair is published and locally verified;
+[S01 repair acceptance](S01-REPAIR.md) passed in both styles. UQC-211 is Done. [F05 reduced diagnosis](f05/README.md) retains
 an unresolved Qt/Hyprland activation boundary. See [the current handoff](BATCH6-HANDOFF.md).
 The sections labelled as dated checkpoints below preserve historical evidence.
 
