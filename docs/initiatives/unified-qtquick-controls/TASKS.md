@@ -43,7 +43,7 @@ below retain historical states; current rows and canonical findings take precede
 | UQC-210 | `holonight-ai` | Temperature row geometry | — (removed from initiative) | Future repository-local SDD, outside UQC | Superseded | — | 2026-09-14 user scope correction: incorrect application layout, unrelated to shared-controls unification. Document and implement in a separate app-local follow-up session; not an integration gate. |
 | UQC-211 | `holonight-shell` | Fractional-scale shell stability and topbar rendering | UQC-204 (repair order) | [Local SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-211.md) | In Progress | Baseline `fffb1715bac5a57127af5e671033ac33335ffc16` | 2026-09-15: canonical baseline and clean checkouts verified; Ready → In Progress before implementation. S01/S02 investigation; F05 remains umbrella/AI evidence work. |
 | UQC-212 | `holonight-greeter` | Remaining greeter-specific keyboard/appearance verification and scoped repairs | UQC-204 (repair order) | [Findings/scope](FINDINGS.md#repair-order-and-repository-packages); local SDD required before Ready | Planned | Exact canonical baseline required before assignment | Review [current greeter dispositions](FINDINGS.md#greeter--holonight-greeter-demo-evidence-only) first. Shared dropdown/hover repairs accepted and HnAvatar display already implemented; do not reassign them. Remaining specific checks are not yet accepted. |
-| UQC-213 | `holonight-qt` | Investigate demonstrated layer-surface configure/Qt coordinate mismatch | UQC-211 evidence | [Proposed package](UQC-213.md); provider-local SDD required before Ready | Planned | Fresh canonical assignment required | Separate provider work; no provider repair in Batch 6. S01 remains open. |
+| UQC-215 | `holonight-qt` | Investigate demonstrated layer-surface configure/Qt coordinate mismatch | UQC-211 evidence | [Proposed package](UQC-215.md); provider-local SDD required before Ready | Planned | Fresh canonical assignment required | Separate provider work; no provider repair in Batch 6. S01 remains open. |
 | UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 reported Settings/greeter HoloNight sequence manually accepted 2026-09-13; see canonical findings. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. The later reported HoloNight sequence acceptance supersedes the historical pending status. |
 | UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 interaction manually passes both styles on 2026-09-13 with staged runtime verified; user confirms deliberate Fusion session shutdown (numeric exit unavailable). F07 accepted. |
 
@@ -2224,4 +2224,17 @@ and remaining publication, harness, installation and manual work. Canonical
 investigation results are recorded once in [findings](FINDINGS.md#batch-6-investigation--2026-09-15).
 The shell has two local test commits; publication is unconfirmed after the push
 request was interrupted. Its umbrella gitlink remains `fffb171`. UQC-211/UQC-201
-remain In Progress, UQC-213 Planned, and the initiative Accepted.
+remain In Progress, UQC-215 Planned, and the initiative Accepted.
+
+
+### Batch 6 publication resumed — 2026-09-15
+
+Canonical shell main was still `fffb171` on resume. Published the two preserved
+test/SDD commits and confirmed canonical `ab780d5d477400cdc70195d37783e9e080ee1d05`
+with `git ls-remote` before updating the shell gitlink. Shell is clean; the prior
+local verification remains applicable. No product implementation changed.
+
+Corrected the proposed coordinate investigation to UQC-215: UQC-213 already
+identifies the completed F06 package. Historical shell SDD references to the
+proposed UQC-213 mean UQC-215; its scope/state remains Planned. Batch 6 harness
+review and fresh kit preparation continue; no manual acceptance is implied.

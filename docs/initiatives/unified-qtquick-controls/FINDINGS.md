@@ -1343,7 +1343,7 @@ is in compositor surface coordinates, not just buffer pixels. Repeated window
 samples are stable: this does not reproduce the original Hyprland jitter. The
 headless Hyprland attempt exited before creating a display (`CBackend::create()
 failed`). No Hyprland reproduction or shell compensation is claimed. Proposed
-provider [UQC-213](UQC-213.md) stays Planned; the provider repair branch stops here.
+provider [UQC-215](UQC-215.md) stays Planned; the provider repair branch stops here.
 
 The reduced client exits -11 during shutdown. Explicitly closing its host before
 quitting removes the first attempt's surface/role-order protocol error, but the

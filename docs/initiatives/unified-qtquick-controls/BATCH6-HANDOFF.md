@@ -21,12 +21,12 @@ This document is the continuation entry point, not acceptance or a kit release.
   `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c`. Neither repository was modified.
 - Umbrella `git status` intentionally reports the shell checkout ahead of its
   pinned gitlink. Do not discard those commits with `git submodule update`.
-- UQC-211 and UQC-201 remain In Progress; UQC-213 is Planned; initiative Accepted.
+- UQC-211 and UQC-201 remain In Progress; UQC-215 is Planned; initiative Accepted.
 
 Canonical results and limitations are recorded once in
 [FINDINGS.md](FINDINGS.md#batch-6-investigation--2026-09-15). See the
 [ledger](TASKS.md), [shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-211.md),
-[proposed provider package](UQC-213.md), and [draft human checklist](SHELL-BATCH6.md).
+[proposed provider package](UQC-215.md), and [draft human checklist](SHELL-BATCH6.md).
 Raw probes, captures, observer checks and build/test logs remain in `.cache/uqc211/`.
 
 ## Continue in this order
@@ -57,7 +57,7 @@ Raw probes, captures, observer checks and build/test logs remain in `.cache/uqc2
    instructions only after those checks. Then request user-operated Hyprland
    shell comparisons, scale-1 Sway frame confirmation, and Hyprland F05 comparisons
    at Qt scale 1.25. Output scale stays 1. No pointer/focus/VT automation.
-5. Keep S01's provider repair branch stopped under UQC-211. UQC-213 needs a
+5. Keep S01's provider repair branch stopped under UQC-211. UQC-215 needs a
    provider-local SDD and a Ready assignment before implementation. S02 remains
    unconfirmed outside fixtures. F05 remains an umbrella/AI ownership gate.
 6. Record returned evidence once in FINDINGS.md. Do not close UQC-211 or F05
