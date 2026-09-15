@@ -2302,3 +2302,31 @@ the initiative Accepted; no final integration or unrelated-batch work.
 accept both fractional styles from the repaired kit. S01 accepted, S02 acceptance
 preserved, UQC-211 Done. UQC-215 remains Done; F05/UQC-201 and final integration
 remain open. No product edits, changed pins or repeated product tests.
+
+### F05 activation diagnosis setup — 2026-09-15
+
+[Canonical setup audit and missing evidence](FINDINGS.md#f05-activation-diagnosis-setup--2026-09-15)
+record successful released-kit hash/package/source checks and reuse of retained
+three-mode Fusion/DPR/mapping/exit verification. The manual checklist now captures
+session identity and output scale. Plain-Qt physical-keyboard VT evidence remains
+pending; no external disposition, upstream submission or product repair is claimed.
+S01/S02 and completed AI comparisons remain accepted. UQC-201 stays In Progress
+and the initiative Accepted; Batch 7, remaining Batch 3 diagnostics and integration
+are excluded. Documentation links and whitespace checked; no product tests repeated
+because the diagnostic sources and recorded dependencies are unchanged.
+
+### F05 external reproduction and report draft — 2026-09-15
+
+[Canonical plain-Qt result](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
+establishes an external Qt/Hyprland compatibility boundary: verified Fusion,
+DPR 1.25/output scale 1, no HoloNight mappings, real keyboard callback delivery
+after recreation, persistent null Qt focus and exit 0. User confirms failure
+before pointer action and click recovery. Raw evidence is preserved and hashed;
+the [unsubmitted upstream draft](f05/UPSTREAM-REPORT.md) includes sanitized trace
+and explicitly unproven hypotheses. Diagnosis iteration complete; exact upstream
+mechanism/repair unresolved. No HoloNight repair package or theme/hn repeats.
+Source/kit identity, mappings, event/frame correlation, trace derivation, hashes,
+documentation links and whitespace checked. Retained automated verification
+reused; no product edits/tests or pins changed. S01/S02 and AI comparisons remain
+accepted; UQC-201 In Progress, initiative Accepted. Other batches and final
+integration remain outside this iteration.

@@ -13,7 +13,9 @@ See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md
 Batch 4 scoped palette work is accepted. Batch 6 manual comparisons are complete.
 UQC-215 provider coordinate repair is published and locally verified;
 [S01 repair acceptance](S01-REPAIR.md) passed in both styles. UQC-211 is Done. [F05 reduced diagnosis](f05/README.md) retains
-an unresolved Qt/Hyprland activation boundary. See [the current handoff](BATCH6-HANDOFF.md).
+an [external Qt/Hyprland reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
+in plain Qt. The [upstream-report draft](f05/UPSTREAM-REPORT.md) is prepared, not submitted;
+exact mechanism and repair remain open. See [the current handoff](BATCH6-HANDOFF.md).
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

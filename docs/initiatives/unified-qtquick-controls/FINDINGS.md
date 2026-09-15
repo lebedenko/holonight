@@ -79,7 +79,7 @@ Separate focus investigations (not included in UQC-204):
 | ID | Application / context; reproduction | Facts / hypothesis; investigation owner | Evidence | Acceptance |
 |---|---|---|---|---|
 | F04 | AI H 1.25; focus button, Space, Tab then Shift+Tab | Action works but ring disappears until reentry; exact button/owner unknown. holonight-qt investigates activation reason, AI supplies reproduction. | [AI](GUIDED.md#ai-provider-form-observations--2026-09-10) | Identify button and focus lifecycle; keyboard activation retains appropriate feedback. |
-| F05 | AI H 1.25; tux VT3 → VT1 → back | Tab/Backtab stop until user clicks; event delivery/compositor focus unknown. Umbrella investigates session delivery with AI; do not connect to wrapper or earlier VT freeze. | [AI](GUIDED.md#ai-provider-form-observations--2026-09-10) | Correlate delivered events and active window; keyboard navigation resumes on VT return. |
+| F05 | AI H 1.25; tux VT3 → VT1 → back | External Qt/Hyprland compatibility defect reproduced in plain Qt/Fusion at DPR 1.25. Keyboard re-enters and navigation reaches the settings window while Qt focus stays null. Exact upstream mechanism unresolved; no HoloNight repair owner. | [Plain-Qt evidence and disposition](#f05-plain-qt-external-reproduction--2026-09-15) | Upstream follow-up remains open; no repair or restored VT navigation claimed. |
 
 ## Dropdowns — holonight-qt investigation/repair package
 
@@ -1781,3 +1781,119 @@ tests were not repeated for documentation-only acceptance.
 No reduced F05 evidence was supplied. F05/UQC-201 remain open pending the
 [plain-Qt reduced VT check](f05/README.md). The initiative remains Accepted,
 not Integrated; no unrelated batches or final integration were reopened.
+
+### F05 activation diagnosis setup — 2026-09-15
+
+**Unresolved; plain-Qt real-keyboard evidence is pending.** This iteration starts
+at umbrella `f2fae57` with a clean working tree and all twelve submodule checkouts
+matching their pins. The umbrella is four commits ahead of its local tracking
+reference; this read-only inspection does not reconfirm remote publication.
+No product sources or gitlinks changed.
+
+The released `/tmp/holonight-uqc211-8ptiz_ko` exists: all **230 file hashes** pass,
+and its retained archive SHA-256 still equals
+`041ff28e0f4f241bcd79450ef3260d09b6f4f45b6893f8e7e7d11d7f1894211f`.
+All ten `PROVIDER.txt` package entries match the installed versions, including
+Qt base `6.11.2-3`, Qt declarative `6.11.2-2`, Hyprland `0.56.2-3` and Sway
+`1:1.12-4`. Restoration was unnecessary; the released kit is unchanged.
+
+All three reduced sources are byte-identical to the released copies. Retained
+`.cache/uqc215/f05-kit-evidence/` results were rechecked: Fusion mappings, both
+windows at actual DPR 1.25 and exit 0 in all three modes; plain has no HoloNight
+library mappings, and theme/hn mappings use the released prefix. Existing
+navigation forwarding/acceptance and text-exclusion verification is reused.
+No diagnostic source or dependency change required another `f05/run.py --verify`.
+These are headless fixture results, not evidence of real VT behavior.
+
+Persistent setup audit: `.cache/uqc-f05-activation/setup-audit.json`, SHA-256
+`1f7f4fe8e90bb2b88c210f0f5860313e853d4693d6a0601da8c14f31029ca25a`.
+It records pins, all kit file hashes, package comparisons, source identity and
+retained per-variant evidence hashes.
+
+**Bounded next experiment:** one user-operated plain/Fusion run in isolated
+Hyprland, Qt scale 1.25/output scale 1, numeric editor and Tab/Backtab before and
+after VT3 → VT1 → VT3, tested before pointer movement. The
+[checklist](f05/README.md#one-focused-manual-check-when-ready) includes session and
+output capture. Required missing evidence is the user's observation plus actual
+keyboard callbacks, capability/enter/leave/toplevel records, Qt focus/navigation,
+frame-swap counts, mappings, session/package identity and exit outcome.
+
+An external reproduction boundary cannot yet be assigned. No upstream report is
+ready and no HoloNight repair owner is demonstrated; the Qt private-cache path
+remains a hypothesis. Frame-swap signals cannot establish physical presentation,
+and observer events cannot establish final key acceptance. Only a passing plain
+run calls for theme/hn comparisons. S01/S02 and completed AI comparisons are
+preserved; UQC-201 remains In Progress, initiative Accepted. Batch 7, remaining
+Batch 3 diagnostics and final integration remain outside this iteration.
+
+### F05 plain-Qt external reproduction — 2026-09-15
+
+**Supported disposition: external Qt/Hyprland compatibility defect.** The reduced
+plain Qt fixture reproduces without HoloNight libraries. This resolves the
+HoloNight ownership gate for this iteration; it does not prove the precise Qt
+cache mechanism or repair F05. The [upstream-report draft](f05/UPSTREAM-REPORT.md)
+is prepared and **not submitted**. No HoloNight repair package is warranted by
+this evidence.
+
+User transcript `/tmp/res.txt` identifies `/tmp/f05-reduced-6q2p2_fg`, plain mode,
+and normal completion. The user subsequently confirms Tab/Shift+Tab worked before
+VT3 → VT1 → VT3, stopped visibly updating focus after return before any pointer
+movement/click, and recovered after a later click. These are manual observations;
+pointer actions are not recorded by the observer.
+
+Session copy `/tmp/hyprland-3evu_xyg` establishes a real local tux seat0/tty3 login
+and the released kit's isolated Hyprland configuration. Session packages match
+the kit: Qt base `6.11.2-3`, declarative `6.11.2-2`, Hyprland `0.56.2-3`.
+The monitor capture is 2560×1600 at output scale **1**. Both fixture windows report
+actual DPR **1.25**. Independently inspected PID `194332` mappings contain Fusion,
+Qt Wayland and xdg-shell, with **no HoloNight library/QML mappings**. Compositor
+log records that fixture PID's session-bus request, corroborating the session
+association. Saved `outcome.json` records plain mode and **exit 0**.
+
+The new observer's real-keyboard coverage is established: successful listener
+installation, keyboard enter, physical Tab callbacks and corresponding Qt
+Tab/Backtab events occur before and after capability loss.
+
+| Time (epoch ms) | Correlated evidence |
+|---|---|
+| Before `1789490119935` | Tab/Backtab reach the settings window and item receivers, focus items change, and frame counters advance. The settings toplevel's last configure is activated. |
+| `1789490119935` | Seat loses keyboard capability. No settings keyboard-leave precedes it; the run's only leave was the earlier workspace-to-settings transition. |
+| `1789490119999` | Application focus null/state 2; settings inactive, focus item null, frame counter 60. |
+| `1789490127582`–`1789490127583` | Keyboard capability returns, replacement listener installs with reused protocol ID 28, and enter targets the same surface 55. |
+| `1789490153538`, `1789490154228`, `1789490159118`–`1789490159119` | Two Tab presses and one Backtab reach Wayland callbacks and the Qt settings-window observer. No item receiver is logged for these presses. |
+| Through `1789490170199` | Settings frame counter stays 60; Qt application focus and settings focus item remain null. |
+| `1789490170299`–`1789490171499` | Settings frame signals resume and reach 70; an item focus appears at `1789490171399`. Application focus remains null/settings inactive in the final samples. |
+
+No xdg-toplevel configure or keyboard-leave occurs at/after capability loss.
+Protocol and Qt IDs have no direct native join in this observer; settings
+association uses lifecycle order, dimensions and navigation delivery. The user's
+click-recovery report is retained even though the final Qt application samples
+remain inactive; there is no recorded post-click navigation sequence establishing
+its internal routing. FrameSwapped counts are Qt signals, not physical scanout,
+and event-filter observations do not establish final key-event acceptance.
+
+Selected raw files, user confirmation and independent analysis persist in
+`.cache/uqc-f05-activation/hyprland-3evu_xyg/`, excluding profiles and cookies.
+Its `SHA256SUMS` manifest hash is
+`8df5761f3171476cb780290c555fb55430bdf8732d9f00a3577b1c3834bdf94a`.
+The report links a [sanitized 196-record trace](f05/evidence/plain-vt-trace.jsonl)
+(SHA-256 `ece59a81b739aa6fd4e0f2c0231be284ed353b09b2326bbc3afc9a672938cf5c`):
+relative timestamps, aliased Qt addresses, no local paths or entered text, and
+unchanged protocol IDs. Repeated identical Qt samples are omitted.
+
+**Bounded follow-up:** upstream Qt Wayland triage can instrument the private
+keyboard-focus cache across capability loss/same-surface enter and compare normal
+leave/enter. An uninstrumented reduced run would separately confirm observer
+independence for this exact fixture; the completed AI observer-off matrix remains
+valid. Neither experiment is required to repeat now or claimed completed.
+Theme/hn variants are unnecessary because plain already fails. No source changes,
+external patches, installation, public API changes or focus/repaint workaround.
+
+Verification: raw/retained hashes, source identity, session/package association,
+Fusion and provider isolation, actual DPR, callback/focus/frame correlation,
+normal exit, sanitized trace derivation, documentation links and whitespace.
+Diagnostic sources and dependencies are unchanged, so retained runner/observer
+verification is reused and product suites are not repeated. S01/S02 and completed
+AI comparisons remain accepted; UQC-211/UQC-215 Done, UQC-201 In Progress,
+initiative Accepted. F05's upstream repair and final integration remain open;
+Batch 7 and remaining Batch 3 diagnostics stay outside this iteration.

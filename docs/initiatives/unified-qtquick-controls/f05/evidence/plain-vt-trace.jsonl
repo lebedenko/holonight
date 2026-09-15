@@ -1,0 +1,196 @@
+{"id": 4, "installed": true, "interface": "wl_seat", "kind": "listener", "relative_ms": -68204}
+{"keyboard": true, "kind": "seat-capabilities", "relative_ms": -68203}
+{"id": 28, "installed": true, "interface": "wl_keyboard", "kind": "listener", "relative_ms": -68203}
+{"id": 50, "installed": true, "interface": "xdg_toplevel", "kind": "listener", "relative_ms": -68132}
+{"activated": false, "height": 1560, "id": 50, "kind": "toplevel-configure", "relative_ms": -68131, "width": 1260}
+{"keyboard": 28, "kind": "keyboard-enter", "relative_ms": -68100, "surface": 45}
+{"activated": true, "height": 1558, "id": 50, "kind": "toplevel-configure", "relative_ms": -68100, "width": 1253}
+{"focusWindow": "workspace", "kind": "application", "relative_ms": -68035, "state": 4}
+{"active": true, "dpr": 1.25, "focusItem": "item-0", "framesSwapped": 0, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -68035, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-0", "framesSwapped": 1, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -50236, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-0", "framesSwapped": 2, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -50136, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-0", "framesSwapped": 3, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -49836, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-1", "framesSwapped": 4, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -49336, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "none", "framesSwapped": 0, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -49256, "visible": true, "width": 520}
+{"id": 60, "installed": true, "interface": "xdg_toplevel", "kind": "listener", "relative_ms": -49256}
+{"activated": false, "height": 0, "id": 60, "kind": "toplevel-configure", "relative_ms": -49256, "width": 0}
+{"active": true, "dpr": 1.25, "focusItem": "none", "framesSwapped": 1, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -49225, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-1", "framesSwapped": 5, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -49225, "visible": true, "width": 1002}
+{"kind": "keyboard-leave", "relative_ms": -49223, "surface": 45}
+{"keyboard": 28, "kind": "keyboard-enter", "relative_ms": -49223, "surface": 55}
+{"activated": true, "height": 450, "id": 60, "kind": "toplevel-configure", "relative_ms": -49220, "width": 650}
+{"activated": false, "height": 1558, "id": 50, "kind": "toplevel-configure", "relative_ms": -49220, "width": 1253}
+{"focusWindow": "settings", "kind": "application", "relative_ms": -49136, "state": 4}
+{"active": true, "dpr": 1.25, "focusItem": "item-2", "framesSwapped": 6, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -49136, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "none", "framesSwapped": 6, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -49136, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-2", "framesSwapped": 9, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -30036, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "none", "framesSwapped": 7, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": -30036, "visible": true, "width": 1002}
+{"active": true, "dpr": 1.25, "focusItem": "item-2", "framesSwapped": 10, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -29836, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 11, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -29336, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 12, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -28836, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 13, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -28436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 14, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -27935, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 15, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -27635, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 16, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -27436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 17, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -26936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 18, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -26436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 19, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -25936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 20, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -25436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 21, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -24936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 22, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -24436, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -23998}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-3", "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-4", "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -23994}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -23994}
+{"active": true, "dpr": 1.25, "focusItem": "item-4", "framesSwapped": 24, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -23936, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -22317}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-4", "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-6", "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -22317}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -22317}
+{"active": true, "dpr": 1.25, "focusItem": "item-6", "framesSwapped": 25, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -22236, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -21328}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -21328}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -21328}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-6", "relative_ms": -21328}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -21327}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-7", "relative_ms": -21327}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -21327}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -21327}
+{"active": true, "dpr": 1.25, "focusItem": "item-7", "framesSwapped": 26, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -21236, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -20502}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -20502}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -20502}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-7", "relative_ms": -20502}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -20501}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-8", "relative_ms": -20501}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -20501}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -20501}
+{"active": true, "dpr": 1.25, "focusItem": "item-8", "framesSwapped": 27, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -20436, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -18657}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -18657}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -18657}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-8", "relative_ms": -18657}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -18656}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-3", "relative_ms": -18656}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-9", "relative_ms": -18656}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -18656}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -18656}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 28, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -18636, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 29, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -18036, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -17832}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -17832}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -17832}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-3", "relative_ms": -17832}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -17831}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-4", "relative_ms": -17831}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -17831}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -17831}
+{"active": true, "dpr": 1.25, "focusItem": "item-4", "framesSwapped": 30, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -17736, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -17277}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -17277}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -17277}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-4", "relative_ms": -17277}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -17276}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-6", "relative_ms": -17276}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -17276}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -17276}
+{"active": true, "dpr": 1.25, "focusItem": "item-6", "framesSwapped": 31, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -17236, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -15807}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -15807}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -15806}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "item-6", "relative_ms": -15806}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -15806}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-7", "relative_ms": -15806}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -15806}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -15806}
+{"active": true, "dpr": 1.25, "focusItem": "item-7", "framesSwapped": 32, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -15736, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -13152}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -13152}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -13152}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "item-7", "relative_ms": -13152}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -13152}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-6", "relative_ms": -13152}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -13151}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -13151}
+{"active": true, "dpr": 1.25, "focusItem": "item-6", "framesSwapped": 33, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -13136, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -12537}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -12537}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -12537}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "item-6", "relative_ms": -12536}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -12536}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-4", "relative_ms": -12536}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -12536}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -12536}
+{"active": true, "dpr": 1.25, "focusItem": "item-4", "framesSwapped": 33, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -12536, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-4", "framesSwapped": 34, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -12436, "visible": true, "width": 520}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": -11922}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": -11922}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": -11922}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "item-4", "relative_ms": -11922}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": -11921}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-3", "relative_ms": -11921}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-9", "relative_ms": -11921}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-5", "relative_ms": -11921}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "item-2", "relative_ms": -11921}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 35, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -11836, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 36, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -11436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 37, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -10936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 38, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -10436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 39, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -9936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 40, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -9436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 41, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -8936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 42, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -8436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 43, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -7935, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 44, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -7436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 45, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -6936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 46, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -6436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 47, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -5936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 48, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -5436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 49, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -4936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 50, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -4436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 51, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -3935, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 52, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -3435, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 53, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -2936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 54, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -2436, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 56, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -2036, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 57, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -1536, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 58, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -936, "visible": true, "width": 520}
+{"active": true, "dpr": 1.25, "focusItem": "item-3", "framesSwapped": 59, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": -436, "visible": true, "width": 520}
+{"keyboard": true, "kind": "seat-capabilities", "relative_ms": 0}
+{"keyboard": false, "kind": "seat-capabilities", "relative_ms": 0}
+{"focusWindow": "none", "kind": "application", "relative_ms": 64, "state": 2}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 60, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 64, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 7, "height": 1246, "id": "workspace", "kind": "window", "name": "workspace", "relative_ms": 64, "visible": true, "width": 1002}
+{"keyboard": true, "kind": "seat-capabilities", "relative_ms": 7647}
+{"id": 28, "installed": true, "interface": "wl_keyboard", "kind": "listener", "relative_ms": 7648}
+{"keyboard": true, "kind": "seat-capabilities", "relative_ms": 7648}
+{"keyboard": 28, "kind": "keyboard-enter", "relative_ms": 7648, "surface": 55}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": 33603}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": 33603}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": 33603}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": 33603}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": 34293}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": 34293}
+{"key": "Tab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": 34293}
+{"key": "Tab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": 34293}
+{"kind": "wayland-tab", "pressed": true, "relative_ms": 39183}
+{"kind": "wayland-tab", "pressed": false, "relative_ms": 39183}
+{"key": "Backtab", "kind": "navigation", "press": true, "receiver": "settings", "relative_ms": 39184}
+{"key": "Backtab", "kind": "navigation", "press": false, "receiver": "settings", "relative_ms": 39184}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 62, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50364, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 63, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50465, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 64, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50564, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 65, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50665, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 66, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50765, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 67, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 50865, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 68, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 51065, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "none", "framesSwapped": 69, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 51165, "visible": true, "width": 520}
+{"active": false, "dpr": 1.25, "focusItem": "item-8", "framesSwapped": 70, "height": 360, "id": "settings", "kind": "window", "name": "settings", "relative_ms": 51464, "visible": true, "width": 520}

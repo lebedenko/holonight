@@ -1,5 +1,34 @@
 # Batch 6 — next-session handoff
 
+## F05 external reproduction established — 2026-09-15
+
+[Plain Qt reproduces](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
+in Fusion at actual DPR 1.25/output scale 1 with no HoloNight library mappings.
+Real keyboard callbacks show capability loss without leave, replacement enter
+and navigation delivery while Qt focus remains null. The user confirms failure
+before pointer movement and later click recovery; exit 0 is verified.
+[The upstream-report draft](f05/UPSTREAM-REPORT.md) includes sanitized evidence
+and a bounded private-cache investigation. It is not submitted. Exact upstream
+mechanism remains unresolved; F05 is not repaired and no HoloNight repair owner
+is assigned. This diagnosis iteration is complete; no theme/hn or AI repeats.
+S01/S02 remain accepted, UQC-211/UQC-215 Done, UQC-201 In Progress, initiative
+Accepted. Upstream follow-up, other batches and final integration remain open.
+
+The setup and earlier handoffs below are historical checkpoints.
+
+## F05 activation diagnosis — 2026-09-15
+
+[Setup revalidation](FINDINGS.md#f05-activation-diagnosis-setup--2026-09-15) passes:
+230 released kit hashes, archive checksum, all recorded package versions and
+unchanged reduced sources. Retained three-mode automated verification is reused.
+The [plain-Qt manual checklist](f05/README.md#one-focused-manual-check-when-ready)
+now includes session identity/output capture and required returned evidence.
+Real-keyboard VT evidence is pending; no external disposition or HoloNight owner
+is established. Collect plain first, correlate callbacks/focus/frame signals if
+it fails, and run theme/hn only if it passes. Keep F05 unresolved if evidence is
+incomplete. S01/S02 remain accepted, UQC-211/UQC-215 Done, UQC-201 In Progress,
+initiative Accepted. Other batches and final integration stay outside this work.
+
 ## S01 accepted — 2026-09-15
 
 [Verified repair results](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15)

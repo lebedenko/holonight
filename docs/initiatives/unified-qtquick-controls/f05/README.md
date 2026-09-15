@@ -1,9 +1,18 @@
 # F05: reduced activation diagnosis
 
-Status: **ownership unresolved**. No AI/provider workaround or external patch.
+Status: **external Qt/Hyprland reproduction established; exact mechanism unresolved**.
+The [plain-Qt result](../FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
+and [upstream-report draft](UPSTREAM-REPORT.md) complete this diagnosis iteration.
+The report is not submitted and F05 is not repaired. No HoloNight implementation
+owner is demonstrated. No AI/provider workaround or external patch.
 The completed AI matrix is preserved; it is not requested again.
 
 ## Evidence and source boundary — 2026-09-15
+
+The analysis below predates the reduced manual run. That run now establishes
+capability loss without leave, same-surface re-entry and persistent null Qt focus
+in plain Qt. The private cache itself is still unmeasured; see the canonical
+result above for the supported disposition and frame-signal limitations.
 
 Hyprland's observed runs keep delivering navigation after VT return while Qt's
 application focus is null. In the retained HoloNight run, the replacement
@@ -41,12 +50,11 @@ its implementation and the platform-theme source contain no activation or
 keyboard-lifecycle handling. This audit supplies no demonstrated HoloNight
 implementation owner.
 
-**Unresolved boundary:** whether real Hyprland removes keyboard capability
-without a preceding leave, Qt retains mLastKeyboardFocus, and re-entering that
-same settings window suppresses activation; and whether absent frame swaps
-explain the visible navigation failure. A plain Qt real-VT reproduction is
-needed before assigning an external compatibility disposition. No speculative
-AI repair package is Ready.
+**Remaining mechanism question:** whether Qt retains mLastKeyboardFocus and its
+equality check suppresses activation after same-surface re-entry. Capability
+loss without leave and absent frame swaps during failed navigation are now
+recorded in plain Qt; causality and physical presentation remain unproven.
+No speculative AI repair package is Ready.
 
 ## Reduced fixture
 
@@ -88,16 +96,29 @@ Final installed-kit evidence: `/tmp/f05-reduced-aqxfh2gw`, preserved under
 `.cache/uqc215/f05-kit-evidence/`; summary `.cache/uqc215/f05-kit-verification.log`.
 Earlier local-prefix evidence is `/tmp/f05-reduced-pxdzxa_b`. These checks validate the
 reproducer and its isolation, **not VT-return behavior**. Headless Sway has no
-physical keyboard; the new observer's real keyboard-listener forwarding still
-needs the reduced manual run. The initial verification
+physical keyboard; the completed plain-Qt manual run separately verifies real
+keyboard listener/enter/Tab callbacks and Qt navigation delivery. The initial verification
 attempt exposed an incorrect platform-theme filename check in the runner; its
 corrected check uses the mapped platformthemes directory.
 
 ## One focused manual check, when ready
 
+**Completed: plain Qt fails. Do not repeat this checklist or run theme/hn for
+this iteration.** The commands remain here for reproduction provenance.
+
+The released kit and retained verification were
+[revalidated for this iteration](../FINDINGS.md#f05-activation-diagnosis-setup--2026-09-15).
+From a fresh real tux login on VT3, outside a compositor, start the isolated session:
+
+```sh
+python3 /tmp/holonight-uqc211-8ptiz_ko/guided-session.py hyprland
+```
+
 Within the isolated Hyprland session, start with **plain only** (output scale 1):
 
 ```sh
+printf '%s\n' "$UQC_SESSION_RUN"
+hyprctl -j monitors > "$UQC_SESSION_RUN/f05-monitors.json"
 python3 /tmp/holonight-uqc211-8ptiz_ko/f05/run.py --prefix /tmp/holonight-uqc211-8ptiz_ko/prefix --mode plain
 ```
 
@@ -108,3 +129,27 @@ printed evidence directory. If plain Qt reproduces, that is the first external
 compatibility gate; inspect its capability/activation/frame correlation before
 requesting another run. Only if plain passes is the theme/Hn split needed. Do not
 repeat the original AI matrix or automate pointer, focus or VT actions.
+
+Report both printed directories, navigation before/after the VT switch, whether
+the pointer moved or a click occurred after return, and the quit outcome. Retain
+the session's `identity.txt`, `versions.txt`, `command.json`, compositor log and
+`f05-monitors.json`, and the fixture's `events.log`, `mappings.txt` and
+`outcome.json`. Copy selected evidence to persistent umbrella `.cache/` storage
+and hash it; exclude profiles and cookies. Sanitize paths and unrelated session
+details before attaching any evidence to an upstream-report draft.
+
+### Decision gate
+
+- **Plain fails:** require real keyboard listener/enter/Tab callbacks, correlate
+  capability changes, activation, Qt focus and frame-swap counts, then draft an
+  external compatibility report. The private Qt focus-cache mechanism remains a
+  hypothesis unless directly measured. Do not submit the report in this iteration.
+- **Plain passes:** repeat the same sequence with `--mode theme`, then `--mode hn`;
+  verify each variant's staged mappings before assigning a HoloNight owner.
+- **All pass or evidence is incomplete:** keep F05 unresolved and name the missing
+  condition. Missing physical-keyboard evidence cannot be replaced by smoke tests.
+
+Product repair requires a subsequent repository-local SDD and published baseline.
+S01/S02 and the completed AI comparisons remain accepted; UQC-201 stays In Progress
+and the initiative Accepted. Batch 7, remaining Batch 3 diagnostics and final
+integration are outside this iteration.
