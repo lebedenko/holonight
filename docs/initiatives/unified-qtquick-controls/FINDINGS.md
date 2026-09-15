@@ -1313,3 +1313,100 @@ for documentation-only changes.
 Provider documentation closure `638eec25c0934538e747b969b37ab8f63d1722de` was
 published and confirmed on canonical origin/main before updating the umbrella pin.
 The provider is clean; implementation remains `5d3f06e`.
+
+
+### Batch 6 investigation — 2026-09-15
+
+**Checkpoint only; no kit generated, no S01/S02/F05 acceptance.** The user stopped
+kit work and requested commits plus [a next-session handoff](BATCH6-HANDOFF.md).
+[Ledger](TASKS.md), [shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-211.md)
+and [draft instructions](SHELL-BATCH6.md) retain the scope and remaining gates.
+
+Initial umbrella `eb9b80c` and every submodule were clean. Canonical `ls-remote`
+confirmed shell `fffb171`, provider `638eec2` and AI `7e25e78` before work. UQC-211
+was recorded Ready → In Progress before test implementation.
+
+**S01 — provider coordinate mismatch demonstrated; historical jitter unresolved.**
+A reduced provider `LayerSurfaceHost` client, linked against the installed Batch 4
+provider, was run in headless Sway with output 1920×1080 at scale 1, fixed profile,
+top/left/right anchors, requested size 0×64 and exclusive zone 64. It uses a plain
+Rectangle, with no shell QML, Controls or hover:
+
+| Qt scale / measured DPR | Configure | Qt window/root | Buffer | Surface destination | Exclusive zone |
+|---|---|---|---|---|---|
+| 1 / 1 | 1920×64 | 1920×64 | 1920×64 | 1920×64 | 64 |
+| 1.25 / 1.25 | 1920×64 | 1920×64 | 2400×80 | 2400×80 | 64 |
+
+Provider `WaylandLayerSurfaceBackend::applyConfigureSize` copies protocol width
+and height directly into Qt window dimensions. The measured surface destination
+is in compositor surface coordinates, not just buffer pixels. Repeated window
+samples are stable: this does not reproduce the original Hyprland jitter. The
+headless Hyprland attempt exited before creating a display (`CBackend::create()
+failed`). No Hyprland reproduction or shell compensation is claimed. Proposed
+provider [UQC-213](UQC-213.md) stays Planned; the provider repair branch stops here.
+
+The reduced client exits -11 during shutdown. Explicitly closing its host before
+quitting removes the first attempt's surface/role-order protocol error, but the
+later crash persists with context destruction after Qt display teardown. This is
+retained as a probe limitation, not a proved lifecycle diagnosis or acceptance
+pass. No teardown repair was attempted. Sources, runner and protocol logs are in
+`.cache/uqc211/host-probe.cpp`, `run-sway-probe.py`, `host-1.log` and `host-1.25.log`;
+the failed Hyprland startup log is `hyprland.log` in that directory.
+
+**S02 — no demonstrated shell rendering defect in focused fixtures.** Compiled
+HoloNight/Fusion checks at Qt scales 1/1.25 verify stable in-bounds sections,
+resting status fills matching the isolated frame, complete right-edge coverage,
+and active feedback returning to transparency. Whole-bar and isolated-section
+inspection used fixed fake services. No product artwork, overlap, geometry or
+popup behavior was changed. This is not real-compositor/manual acceptance.
+
+Initial QtTest `grabImage()` captures were cropped in logical coordinates at DPR
+1.25. The test harness now reuses its existing image wrapper with physical-pixel
+window crops, and feedback assertions sample a border strip. The final six focused
+CTest entries (four compiled comparisons plus both source suites) pass. The shell
+also gains the missing popup/tray metadata in its service fakes; fixture-specific
+undefined-property diagnostics are resolved.
+
+**Verification:** underlying full shell CMake build succeeds. The isolated full
+1171-entry suite passed 1164, failed six NetworkManager cases on service-name
+registration, and skipped one portal case. All nine related NetworkManager/portal
+entries pass serially, resolving those shared-bus parallel-run failures. Four new
+compiled composition entries were then registered, and all six final focused
+entries pass. Formatting, QML lint/types, import policy, architecture and REUSE
+pass, with existing QML lint warnings. The task wrapper's existing provider
+`68b7069` guard blocks `task test`/task formatting; individual dependency and
+underlying CMake/check commands used requested provider `638eec2` without changing
+pins or dependencies. The first unrestricted-environment/sandbox test attempt
+also hit socket restrictions and host import contamination; the private wrapper
+resolved those. Logs remain under `.cache/uqc211/`.
+
+**F05 — ownership and reproduction pending.** Draft opt-in observation records
+navigation receipt, queued focus metadata, actual DPR, and Wayland keyboard
+enter/leave/Tab callbacks. It does not read event text, synthesize input or restore
+focus. Eight offscreen observer on/off cases pass for forwarding, measured DPR,
+unchanged fixture acceptance behavior, and exclusion of a text sentinel. These
+are observer fixtures, not actual AI style/form/VT acceptance. The twelve collector
+tests pass, including mocked normal/interrupted/forced outcomes, independent
+profiles, inherited-observer removal and hashes. Actual-process interruption and
+forced cleanup in a released Batch 6 kit remain unverified.
+
+Qt's protected `QGuiApplication::notify` symbol did not support the attempted
+interposition. The implemented event filter observes pre-dispatch acceptance and
+queued post-dispatch focus only; **final event acceptance is unavailable** and
+explicitly labelled as such. Wayland callback coverage, compositor/session
+correlation, and observer-enabled versus uninstrumented real VT behavior remain
+to verify. Do not infer missing compositor delivery from missing observer records
+or classify delivered-but-unhandled navigation from queued focus alone. AI and
+provider product code were not modified.
+
+Shell local commits: `954a721410804b429f43b0cd65df5dc252a387a1` and
+`ab780d5d477400cdc70195d37783e9e080ee1d05`. The push request was interrupted;
+publication is unconfirmed and local origin/main still reports `fffb171`. The
+umbrella pin stays at the published baseline. The shell working tree is clean.
+Draft preparation/restore/verification scripts are committed for continuation,
+but **no Batch 6 staged installation, immutable kit, archive, restoration or live
+manual run was performed**. Do not treat draft instructions as a released kit.
+
+UQC-211 and F05 remain open; UQC-201 stays In Progress and the initiative Accepted.
+Batch 4/P02 acceptance, external P01, removed Batch 5, reviewed Batch 7 and deferred
+Batch 3 findings remain unchanged.
