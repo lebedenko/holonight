@@ -1,5 +1,18 @@
 # Batch 6 — next-session handoff
 
+## Latest manual review — 2026-09-15
+
+[The manual sequence is complete](FINDINGS.md#batch-6-uninstrumented-confirmation-and-manual-sequence-complete--2026-09-15).
+No repeat runs are requested. Scale-1 shell frame checks pass on both compositors;
+fractional shell failure persists. AI VT-return behavior passes the observed Sway
+comparison and fails Hyprland in both styles with and without observation.
+
+Next work: settle the provider-local UQC-215 coordinate contract/SDD and exact
+canonical assignment before repair; investigate F05 compositor/Qt activation
+ownership using the retained evidence before assigning an AI/provider repair.
+S01/F05 remain open; UQC-211/UQC-201 In Progress, UQC-215 Planned, initiative Accepted.
+The original checkpoint and preparation instructions below are historical.
+
 ## Resume completed — 2026-09-15
 
 Shell tests are published and pinned; the fresh Batch 6 kit passed automated

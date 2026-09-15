@@ -6,6 +6,13 @@ archive restoration and all 225 hashes pass; see the
 
 Use only the new immutable kit identified in the
 [Batch 6 findings](FINDINGS.md#batch-6-verified-investigation-kit--2026-09-15).
+**Manual sequence complete. No repeat runs are requested.**
+The scale-1 shell comparisons pass. Fractional shell geometry and Hyprland AI
+VT-return behavior fail; both AI failures also occur without observation.
+See [final confirmation](FINDINGS.md#batch-6-uninstrumented-confirmation-and-manual-sequence-complete--2026-09-15)
+and [the next-session handoff](BATCH6-HANDOFF.md).
+The original sequence below is retained for provenance, not as outstanding work.
+
 Earlier kits and accepted batches remain unchanged. These are investigation runs;
 no shell rendering repair is claimed. Keep every output at scale **1**.
 

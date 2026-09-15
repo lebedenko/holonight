@@ -1484,3 +1484,192 @@ S01/S02/F05 and UQC-211/UQC-201 remain open. UQC-215 stays Planned and initiativ
 status Accepted. Preserve accepted batches, the removed Batch 5, reviewed Batch 7
 scope and deferred Batch 3 findings. This kit prepares the focused human sequence;
 it does not establish manual acceptance or final integration.
+
+
+### Batch 6 shell manual results — 2026-09-15
+
+User notes: `/tmp/res.txt`. Copied raw session: `/tmp/hyprland-adyjrxc6`.
+Selected evidence and independently checked summaries persist under
+`.cache/uqc211-manual/hyprland-adyjrxc6/`; profile data and cookies were excluded.
+The session is a real active local tux login on tty3, running Hyprland with the
+released `hhs633yu` kit. Recorded package versions match the kit inventory.
+
+| Run suffix | Style / Qt scale | Observer | User result |
+|---|---|---|---|
+| `1789458964731044325` | HoloNight / 1 | On | No issues observed. |
+| `1789459155885339201` | Fusion / 1 | On | No issues observed. |
+| `1789459330961040129` | HoloNight / 1.25 | On | Jitter/jumping, apparent height changes around tooltip interactions, right-side overflow and displaced click regions; popups could not be reliably opened. |
+| `1789466878712474502` | HoloNight / 1.25 | Off | Same failure; observation removal does not improve it. |
+| `1789467128652116817` | Fusion / 1.25 | On | Same failure. |
+| `1789467182313919431` | Fusion / 1.25 | Off | Same failure. |
+
+All six final index records have matching launch/session hashes, PID evidence,
+independently rechecked staged mappings, and matching saved exit codes. All exits
+are -2 (SIGINT), recorded as interrupted and consistent with deliberate Ctrl+C.
+They are not crashes or normal application closes. Unobserved runs have no
+session-observer records. Four observed runs verify actual DPR 1 or 1.25 and
+successful Wayland keyboard-listener installation. Scale-1 runs also contain
+keyboard enter/leave callbacks; this proves those callbacks in these shell runs,
+not AI Tab delivery or final Qt event acceptance.
+
+The observed topbar Qt window/root stays 2560×64 at both DPRs; it does not show
+sampled root-height oscillation. Active-window section widths do change, including
+in passing scale-1 runs, so width changes alone do not establish the reported
+failure mechanism. Manual fractional-scale jitter/overflow/hit mismatch is now
+reproduced on real Hyprland with both styles and with/without observation. The
+prior provider coordinate mismatch remains a concrete lead for UQC-215; these
+logs do not independently prove the complete configure/buffer/input-region cause.
+No shell compensation or speculative rendering repair is justified by this review.
+
+S01 fails fractional-scale acceptance. Preserve both passing Hyprland scale-1
+observations for S02; the requested scale-1 Sway frame comparison has not been
+reported here. UQC-211/UQC-201 remain In Progress and initiative Accepted.
+
+**AI/F05 evidence is pending:** the notes list two observed AI scale-1.25 runs
+under `sway-wgdjbln0` (`1789467311521572433`, `1789467780332669788`) and report no
+issues, both interrupted with Ctrl+C. That session has not been copied to `/tmp`;
+its hashes, actual compositor, navigation/VT sequence and runtime evidence have
+not been verified. The requested F05 sequence was Hyprland, with both observed
+and unobserved comparisons. Do not close F05 from general no-issue observations.
+The exact form/control and VT sequence need clarification.
+
+The reported Ctrl+Q behavior is not evidence of an application defect: the kit's
+Hyprland window-close binding is **Super+Q**, and its Sway configuration defines
+no window-close binding. Ctrl+Q is application-specific, not a session-wide close
+shortcut. The recorded Ctrl+C exits remain valid deliberate interruptions.
+
+
+### Batch 6 Sway AI evidence review — 2026-09-15
+
+The user clarified that Sway was accidental: the scale-1 Sway shell checks were
+skipped and AI was tested there instead. The user confirms navigation worked
+before and after the VT round trip with no issues. This is a passing observed
+Sway comparison, not the requested Hyprland F05 acceptance.
+
+Copied session `/tmp/sway-wgdjbln0` is verified as a real tux Sway session on tty3.
+Selected evidence and verification summaries are preserved under
+`.cache/uqc211-manual/sway-wgdjbln0/`, excluding profile data/cookies. Both indexed
+AI runs match launch/session hashes, independently rechecked staged mappings,
+recorded package versions and deliberate Ctrl+C exits (-2, interrupted).
+Actual chat/settings window DPR is 1.25 in both styles.
+
+| Run suffix | Style | Wayland Tab callbacks before / after VT return | Qt navigation |
+|---|---|---|---|
+| `1789467311521572433` | HoloNight | 20 / 60 | Tab and Backtab recorded before and after. |
+| `1789467780332669788` | Fusion | 30 / 18 | Tab and Backtab recorded before and after. |
+
+Counts include press/release callbacks, not distinct physical keystrokes. Each
+session poll records Active yes → no → yes on VT3. Both runs record successful
+Wayland keyboard-listener installation at startup and again after return, plus
+enter/leave callbacks. This resolves the prior actual-AI listener/Tab-observation
+gap for these runs. Final Qt event acceptance remains unavailable; passing
+interaction comes from the user's observation, corroborated by delivery/focus
+records. Focus origins include the selected style's SpinBox and the Ollama form;
+the exact starting numeric field and destination VT are not independently
+established by these metadata and are not inferred.
+
+No repeat of these observed Sway AI runs is needed. Remaining planned manual
+coverage is two scale-1 Sway shell comparisons and the Hyprland AI F05 sequence
+at Qt scale 1.25 in both styles, with and without observation. Preserve the six
+already reviewed Hyprland shell outcomes. S01/UQC-211 and F05/UQC-201 remain open;
+initiative status remains Accepted. No product changes or product tests accompany
+this evidence review; hashes, mappings, session/navigation correlation, links
+and whitespace were checked.
+
+
+### Batch 6 Sway shell acceptance and Hyprland AI failure — 2026-09-15
+
+Latest user notes `/tmp/res.txt` accompany copied sessions `/tmp/sway-mwtwu9yx`
+and `/tmp/hyprland-j_eu8uj6`. Selected evidence and verification summaries persist
+under `.cache/uqc211-manual/` in matching directories. All four final records have
+verified launch/session hashes, independently checked staged mappings, matching
+exit files, expected measured DPR and package versions matching the released kit.
+Both sessions are real tux logins on tty3 with their declared compositors.
+
+**S02 scale-1 comparison passes.** Sway shell runs `1789468962405320633` (HoloNight)
+and `1789469048777333728` (Fusion) both work as expected with no issues reported.
+Actual DPR is 1; both exit -2 on deliberate Ctrl+C. Combined with the accepted
+Hyprland scale-1 observations, this completes the requested scale-1 frame check.
+No S02 product repair is demonstrated or required for this reported comparison.
+S01 fractional jitter/overflow remains a separate failing gate; UQC-211 stays open.
+
+**F05 reproduces under observed Hyprland in both styles.** Both AI runs use actual
+DPR 1.25 and exit normally with code 0:
+
+- HoloNight `1789469179039733593`: Tab/Backtab works initially. After VT3 → VT1 →
+  VT3, the settings window appears focused but its internal focus disappears and
+  navigation has no visible effect. Clicking Context window's numeric editor
+  restores visible traversal.
+- Fusion `1789469397554349022`: after return, the focus ring appears unchanged
+  and the text cursor stops blinking. Tab/Backtab has no visible effect until a
+  small pointer movement over empty space makes the ring appear on another
+  control. The user suspects traversal continued without visual updates; this
+  remains an observation/hypothesis, not a measured rendering diagnosis.
+
+**Correlated evidence:** HoloNight records one inactive/active VT cycle; Fusion
+records three. On return, Hyprland's active-window metadata retains the settings
+window and AI PID. Wayland keyboard listeners reinstall successfully and receive
+enter and Tab callbacks. Qt records the settings window as `active:false`, with
+application focusWindow/activeFocusItem null. Nevertheless, Qt key events reach
+the settings window and its per-window activeFocusItem subsequently changes among
+text inputs, sliders, switches and buttons. After the first return there are 78
+HoloNight and 156 Fusion Wayland Tab press/release callbacks. The corresponding
+Qt event counts include propagation through multiple receivers and are not
+physical-keystroke counts.
+
+This demonstrates disagreement between compositor active-window metadata and
+Qt activation, with navigation delivery still occurring. It does not prove a
+pure redraw defect, final event acceptance, or that every focus change preceded
+the reported click/pointer recovery: pointer actions were not timestamped by this
+observer. Do not infer that all Tab events were lost or unhandled, and do not
+force focus as a speculative repair. AI/provider/Qt/compositor ownership still
+requires investigation at the demonstrated activation boundary.
+
+The two requested **uninstrumented Hyprland AI comparisons are not present** in
+the notes/index. Run only those remaining comparisons, preserving the same
+Context window numeric editor and VT3 → VT1 → VT3 sequence. No shell or observed
+AI repetition is requested. Preserve the passing observed Sway AI comparisons.
+F05 and UQC-201 remain open; initiative Accepted. This review changes evidence
+and checklist documentation only; hashes/mappings/session correlation, links and
+whitespace are checked, with no product tests repeated.
+
+
+### Batch 6 uninstrumented confirmation and manual sequence complete — 2026-09-15
+
+User notes `/tmp/res.txt` and copied session `/tmp/hyprland-fnpkrlmc` complete the
+requested observer-off comparisons. Selected raw evidence and verification
+summaries persist in `.cache/uqc211-manual/hyprland-fnpkrlmc/`, excluding profiles
+and cookies. The session is verified as real tux Hyprland on tty3 using the
+released kit; recorded package versions match its inventory.
+
+| Run suffix | Style / requested Qt scale | User result | Exit |
+|---|---|---|---|
+| `1789470643682165773` | HoloNight / 1.25 | Same failure after VT return; clicking is required to restore focus behavior. | 0, normal |
+| `1789470750460305585` | Fusion / 1.25 | Same failure after VT return; pointer movement is required to restore visible focus behavior. | 0, normal |
+
+Both final records match launch/session hashes and saved exit codes. PID evidence
+independently verifies staged mappings, selected styles and configured Qt scale
+1.25. LD_PRELOAD and session-observer flags are absent, and no HN_SESSION records
+appear. The session poll records inactive/active transitions in both runs. Actual
+DPR is unavailable in these uninstrumented runs and is not inferred from the
+scale setting; the earlier observed comparisons measured 1.25.
+
+F05 therefore reproduces under Hyprland in both styles with and without the
+observer. Observation is not required to trigger the reported behavior. Preserve
+the earlier observed evidence of compositor/Qt activation disagreement and
+continuing navigation delivery. The uninstrumented logs do not independently
+measure focus or rendering state, so the precise repair owner remains unresolved.
+Passing observed Sway results remain a separate compositor comparison.
+
+**The planned Batch 6 manual sequence is complete. No repeat runs are requested.**
+S02's scale-1 frame comparison is accepted on both compositors. S01 fractional
+shell geometry and F05 VT-return behavior remain failures requiring bounded
+ownership investigation and repair, not further repetition of this kit sequence.
+UQC-215 remains the Planned provider coordinate package; F05 remains an umbrella
+ownership gate until the AI/provider/Qt/compositor boundary is established. Do
+not compensate for either issue by speculative shell geometry or forced focus.
+UQC-211/UQC-201 remain In Progress and the initiative Accepted, not Integrated.
+
+Verification for this documentation review: hashes, mappings, observer absence,
+exit codes, package versions and VT session transitions pass; relative links and
+whitespace pass. No product implementation changed or product tests were repeated.

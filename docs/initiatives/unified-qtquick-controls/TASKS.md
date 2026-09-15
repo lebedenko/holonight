@@ -2247,3 +2247,40 @@ records the exact kit/archive/hash, 16 installed checks, 16 staged runtime
 comparisons, observer/collector tests, restoration/refusals and remaining keyboard
 observation gaps. Follow [SHELL-BATCH6.md](SHELL-BATCH6.md) for the focused manual
 sequence. UQC-211/UQC-201 remain In Progress; UQC-215 Planned; initiative Accepted.
+
+
+### Batch 6 manual shell review — 2026-09-15
+
+[Canonical results](FINDINGS.md#batch-6-shell-manual-results--2026-09-15) verify
+six Hyprland shell runs and deliberate SIGINT exits. Both scale-1 styles pass;
+both fractional styles fail with and without observation. S01 remains open;
+Sway frame confirmation and AI/F05 raw evidence/sequence remain pending.
+No product edits or repeated product tests; hashes, mappings, versions,
+documentation links and whitespace checked. UQC-211/UQC-201 stay In Progress.
+
+
+### Batch 6 Sway AI clarification — 2026-09-15
+
+[Verified Sway AI results](FINDINGS.md#batch-6-sway-ai-evidence-review--2026-09-15)
+record passing user-observed VT return/navigation in both styles at DPR 1.25,
+verified callbacks/hashes/mappings and deliberate interruptions. Sway was
+unintentional; preserve these results while retaining the requested Hyprland F05
+and skipped scale-1 Sway shell checks. UQC-211/UQC-201 remain In Progress.
+
+
+### Batch 6 remaining compositor results — 2026-09-15
+
+[Canonical review](FINDINGS.md#batch-6-sway-shell-acceptance-and-hyprland-ai-failure--2026-09-15)
+accepts the S02 scale-1 shell comparison and records observed Hyprland F05 failure
+in both styles, with compositor/Qt activation disagreement and continuing key
+delivery. Two uninstrumented Hyprland AI comparisons remain. S01/UQC-211 and
+F05/UQC-201 stay open; no product repair or final integration acceptance.
+
+
+### Batch 6 manual sequence complete — 2026-09-15
+
+[Uninstrumented confirmation](FINDINGS.md#batch-6-uninstrumented-confirmation-and-manual-sequence-complete--2026-09-15)
+verifies both final Hyprland AI runs and reproduces both reported recovery
+behaviors without the observer. No manual repetitions remain for this kit.
+S02 comparison accepted; S01 and F05 fail. UQC-211/UQC-201 remain In Progress;
+UQC-215 Planned, with F05 ownership unresolved. Initiative remains Accepted.
