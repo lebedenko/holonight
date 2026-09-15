@@ -2006,3 +2006,46 @@ identity, versions, exits, released hashes, documentation links and whitespace.
 No product source, gitlink or released kit changed; product tests were not repeated
 for this documentation-only acceptance record. F05 and other integration gates
 retain their existing dispositions.
+
+### G07 rendered investigation and diagnostic handoff — 2026-09-15
+
+**G07 remains open; no production QML repair.** UQC-216 takes the planned bounded
+diagnostic path because the focused empty production password caret is visible
+in the automated software and private Sway/OpenGL comparisons. Clipping is still
+unproven. UQC-212 remains Done, G01–G06 accepted and Batch 7 closed. UQC-201 stays
+In Progress and the initiative Accepted; no provider assignment or integration
+acceptance follows from this result.
+
+Clean canonical requested baselines were confirmed before Ready/assignment.
+Greeter implementation `66228b73789f9f678b68e59d4b45e371c95264ba` and documentation
+handoff `b7277a63625e07e74f491839ce5b5f6dd4dfdad6` are published on canonical
+origin/main, confirmed with `git ls-remote` before pinning. UQC-216 is Done for
+local diagnostic delivery. Provider/configuration revisions remain unchanged.
+The [local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-216.md)
+records requirements, owner boundaries, detailed tests and failures.
+
+The extended production fixture compares full-window caret-on/off pixels around
+the mapped native cursor, with test-only blink suppression/restoration. Both
+styles and actual DPR 1/1.25 pass empty → populated → cleared, focus loss/re-entry,
+reveal/remasking and normal/compact transforms. Native masking and the selected
+palette remain unchanged. No ancestor clipping is observed. A minimal selected-
+style field with equivalent font/padding/transforms also passes the graphics
+comparison. A separate unscaled-minimal-field software/DPR-1.25 zero-pixel case
+is retained as diagnostic evidence, not classified as the reported scale-1 G07.
+No shared-provider repair is justified by it.
+
+Verification: 8/8 greeter CTests (43 core tests per style; 19 runtime tests per
+style/DPR); four graphics cases with the staged platform theme; 16 build/relocated
+selector/scale launch cases; import policy, formatting, QML lint/types, 15-unit
+static analysis and REUSE all pass. Observer compilation with warnings-as-errors
+and its passive installed-demo smoke check pass. Umbrella collector tests pass
+14/14. Failed environment/harness attempts and successful evidence are retained
+under `.cache/uqc216/`; no failed attempt is represented as acceptance. The passive
+observer samples at 5 Hz for five minutes at most, retains bounded empty-caret
+crops across native blink phases, and never logs entered text or changes input.
+
+A fresh immutable G07 kit is being prepared from this published handoff. Four
+short human-operated Sway comparisons remain: both styles at Qt scales 1/1.25,
+compositor scale 1, using only the [G07 checklist](GREETER-G07.md). Preserve the
+released Batch 7 kit and completed checklist. F05, Batch 3 and real pre-session
+login remain outside this iteration.
