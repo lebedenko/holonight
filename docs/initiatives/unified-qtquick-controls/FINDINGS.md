@@ -2121,3 +2121,32 @@ Verification covers identity/output scale, versions, released hashes, mappings,
 origins, actual DPR, exits, geometry, and every saved empty-field crop. This is an
 evidence/documentation update; product tests are not repeated and no gitlinks or
 released kit files change. F05, Batch 3 and real pre-session login stay outside scope.
+
+
+### G07 exact-geometry reproduction and QtQuick handoff — 2026-09-16
+
+UQC-217 reproduces the recorded failure in both styles and both software/OpenGL
+backends with asserted window dimensions, DPR, panel scale and cursor mapping.
+The equivalent plain QtQuick TextInput also fails, without a Controls import or
+greeter ancestors. This establishes the shared QtQuick rendering boundary;
+the precise rasterization mechanism remains for the next owner to diagnose.
+
+The [local handoff](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-217.md)
+contains the failing regression, comparison variants, commands, pixel results,
+verification and evidence manifest. The test remains explicitly opt-in until a
+repair is available; ordinary CI passing does not imply G07 acceptance.
+The private Sway harness now waits for initial configuration and prevents tiling
+from overriding requested test dimensions. Failed startup/geometry attempts are
+retained separately from the verified reproduction.
+
+This completes the planned external-owner reproduction branch. No production QML
+or provider change, unchanged diagnostic kit, or new human observation is claimed.
+A later proven repair must complete release checks and the four focused human
+comparisons. G07 stays open; G01–G06 and Batch 7 remain accepted/closed,
+UQC-216 remains Done, UQC-201 In Progress and the initiative Accepted.
+
+Published greeter handoff `501d50cf29e2c3adbf1df3c7048d2637bc9c6924` was confirmed
+on canonical origin/main before the umbrella pin update. Its clean checkout,
+8/8 standard CTests, 4/4 normal/compact graphics cases, and static/licensing checks
+pass. All eight exact cases produce the expected failing/passing scale split;
+this is reproduction delivery, not a repair or manual acceptance.
