@@ -11,7 +11,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 3 | Remaining UQC-207 / compatibility dispositions | Icons/menu/selection, Switch focus and dropdown backgrounds accepted; busy-button focus classified as expected Qt behavior. Remaining provider ScrollBar diagnostic, historical Haruna crash and Fusion hover need resolution or explicit disposition. Tokodon chevron deferred; established external findings are not provider repairs. |
 | 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | S01/S02 accepted. F05 diagnosis complete: [external plain-Qt reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15), report draft prepared but not submitted. Exact upstream mechanism/repair remain open; no HoloNight repair owner or further variant runs. |
-| 7 | Remaining greeter-specific G01–G06 checks | Preserve accepted dropdown/focus/hover work and existing shared avatar use. Verify user-selector reachability and keyboard reveal; review remaining disabled/password appearance, selector composition and power presentation. See the reviewed finding dispositions before assigning repairs. |
+| 7 | Remaining greeter-specific G01–G06 checks | UQC-212 implementation published and locally verified. [Results](FINDINGS.md#batch-7-greeter-implementation-and-verification--2026-09-15); four focused isolated-Sway demo runs pending from a fresh kit. |
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
 Batch numbers remain stable for historical references. **Batch 5 is removed.**

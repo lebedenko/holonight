@@ -16,6 +16,7 @@ UQC-215 provider coordinate repair is published and locally verified;
 an [external Qt/Hyprland reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
 in plain Qt. The [upstream-report draft](f05/UPSTREAM-REPORT.md) is prepared, not submitted;
 exact mechanism and repair remain open. See [the current handoff](BATCH6-HANDOFF.md).
+Batch 7 greeter implementation is published and locally verified; [G01–G06 manual acceptance](GREETER-BATCH7.md) remains open. UQC-212 is Done.
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

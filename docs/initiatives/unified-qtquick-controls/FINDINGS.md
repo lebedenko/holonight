@@ -1897,3 +1897,43 @@ verification is reused and product suites are not repeated. S01/S02 and complete
 AI comparisons remain accepted; UQC-211/UQC-215 Done, UQC-201 In Progress,
 initiative Accepted. F05's upstream repair and final integration remain open;
 Batch 7 and remaining Batch 3 diagnostics stay outside this iteration.
+
+### Batch 7 greeter implementation and verification — 2026-09-15
+
+UQC-212 local work is **Done**; G01–G06 human acceptance is **pending**. Canonical
+clean greeter handoff `abb1ecc86bec382b3cb21b238844e5a5d3207443` includes implementation
+`9cd5501` and its publication record. Provider `0e0f92e` and configuration `fe69a59`
+remain unchanged. F05 documentation was checkpointed separately as `e264286`.
+The [local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-212.md)
+records requirements, failing regressions, source decisions and verification.
+
+Production-QML/fake-service reproduction confirms password Backtab skips the
+account selector and auto-repeat Space release remasks while the key remains
+held. Basic hold/release and focus-loss behavior passed before the repair; this
+does not establish the exact cause of the original physical-keyboard report.
+The local fixes add the complete availability-aware bidirectional cycle and an
+explicit reveal hold lifecycle. The 132-pixel portrait is retained; account popup
+rows compose HnAvatar and runtime ItemDelegate inside HnIconComboBox. Footer colors
+are semantic and disabled feedback suppressed. Enabled idle power backgrounds
+are transparent; only the poweroff glyph grows by 25%.
+
+The inherited password palette is verified rather than overridden. Under isolated
+runtime palettes, HoloNight renders enabled #131a24/#e7edf5 background/text and
+Fusion white/black; focus preserves the fill. Disabled states retain selected-style
+appearance. These are fixture palette observations, not a claim about all platform
+themes. Real Sway visual acceptance remains necessary.
+
+Verification: 8/8 CTest entries pass (43 core tests per style, 18 runtime tests per
+style/DPR process and import-policy checks), format/QML lint, generated types,
+15-unit clang-tidy, REUSE 81/81 and whitespace. Eight build and eight relocated
+installed launches verify selected QML/plugin origins, no build discovery after
+relocation, and deliberately terminated/reaped outcomes. Baseline/verification
+logs persist in `.cache/uqc212/`. The initial fake-socket and REUSE multiprocessing
+failures were sandbox restrictions; unrestricted runs pass. An initial Fusion
+render capture preceded layout completion; waiting for geometry fixes the test.
+
+No physical keyboard, desktop pointer or window focus automation was used; test
+input targets only disposable offscreen windows with fake services. Follow the
+[four Sway demo checks](GREETER-BATCH7.md) after the fresh kit is released. Preserve
+accepted dropdown/hover results and F05's external disposition. UQC-201 remains
+In Progress, initiative Accepted, and Batch 7 stays open until manual acceptance.
