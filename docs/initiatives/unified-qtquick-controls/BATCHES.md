@@ -14,6 +14,10 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [Acceptance and separate G07 caret follow-up](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
+G07 is a separate open follow-up to closed Batch 7. UQC-216 delivered published
+bounded diagnostics and a verified kit; use the [G07 handoff](G07-HANDOFF.md).
+Only its four short caret comparisons remain in this iteration.
+
 Batch numbers remain stable for historical references. **Batch 5 is removed.**
 L01/L02 are incorrect application layouts, outside controls-unification scope.
 Future Settings and AI sessions must address them in their own local SDDs; they

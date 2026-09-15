@@ -44,6 +44,10 @@ def main():
                     path = root / key
                     path.mkdir(mode=0o700)
                     env[key] = str(path)
+                caret = prefix / 'lib/caret-diagnostics.so'
+                if caret.is_file():
+                    env['LD_PRELOAD'] += ':' + str(caret)
+                    env['GREETER_CARET_DIR'] = str((case / 'caret').resolve())
                 command = [str(prefix / 'bin/holonight-greeter'), '--demo',
                            '--config', str(root / 'demo.toml'), '--state', str(root / 'state.json')]
                 log_path = case / 'runtime.log'
@@ -54,7 +58,8 @@ def main():
                         while time.monotonic() < deadline:
                             assert process.poll() is None, f'Premature exit: {process.returncode}'
                             observations = guided.render_observations(log_path.read_text())
-                            if observations['actual_window_dpr']:
+                            if observations['actual_window_dpr'] and (not caret.is_file() or
+                                    'G07_CARET' in log_path.read_text()):
                                 break
                             time.sleep(0.05)
                         assert guided.collect(process.pid, case, prefix), 'Outside-prefix module'
@@ -72,6 +77,9 @@ def main():
                         (case / 'outcome.json').write_text(json.dumps(dict(
                             returncode=code, outcome='terminated by verification')) + '\n')
                 text = log_path.read_text()
+                if caret.is_file():
+                    assert 'G07_CARET' in text
+                    assert list((case / 'caret').glob('empty-*.png')), 'Missing empty caret capture'
                 assert 'qml-loaded' in text
                 for component in ('TextField', 'Button', 'ComboBox'):
                     assert f'/{style}/{component}.qml' in text, component

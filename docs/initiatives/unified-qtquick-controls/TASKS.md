@@ -2362,3 +2362,14 @@ Batch 7 is closed for its scoped checks; UQC-212 remains Done. G07 is a separate
 open caret-visibility finding requiring reproduction before repair assignment.
 UQC-201 stays In Progress and initiative Accepted. Documentation-only update;
 links/whitespace checked, no product tests repeated or pins/kit changed.
+
+
+### G07 diagnostic kit release — 2026-09-15
+
+UQC-216's published clean handoff is pinned. The [G07 kit](G07-HANDOFF.md)
+passes staged rendering/launch/origin/DPR/outcome checks, 189 restored hashes,
+package consistency and exact-prefix restoration/refusal. [Canonical findings](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15)
+record the unreproduced production defect and retained diagnostic limits. Four
+human-operated comparisons remain; no speculative product repair or manual
+acceptance is claimed. UQC-216/UQC-212 Done, Batch 7 closed, G07 open,
+UQC-201 In Progress, initiative Accepted. Existing accepted work stays preserved.

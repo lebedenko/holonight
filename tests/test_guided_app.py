@@ -86,6 +86,36 @@ class RuntimeIsolation(unittest.TestCase):
 
 
 class LauncherSupervisor(unittest.TestCase):
+    def test_g07_observer_is_opt_in_and_uses_current_evidence_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory)
+            prefix = run / 'prefix'
+            (prefix / 'lib').mkdir(parents=True)
+            for name in ('render-diagnostics.so', 'caret-diagnostics.so'):
+                (prefix / 'lib' / name).touch()
+            child = Mock(pid=12345)
+            child.poll.return_value = None
+            child.wait.return_value = 0
+            env = dict(UQC_SESSION_RUN=str(run), UQC_PREFIX=str(prefix), UQC_KIT='/tmp/kit',
+                       WAYLAND_DISPLAY='fixture', GREETER_CARET_DIR='/old/captures')
+            for enabled in (False, True):
+                argv = [str(SCRIPT), 'greeter'] + (['--caret-diagnostics'] if enabled else [])
+                with patch.dict(os.environ, env, clear=True), patch.object(sys, 'argv', argv), \
+                     patch.object(app.os, 'getuid', return_value=1001), \
+                     patch.object(app.subprocess, 'Popen', return_value=child), \
+                     patch.object(app.time, 'sleep'), patch.object(app, 'collect', return_value=True):
+                    self.assertEqual(app.main(), 0)
+                    launched = app.subprocess.Popen.call_args.kwargs['env']
+                    if enabled:
+                        self.assertTrue(Path(launched['GREETER_CARET_DIR']).is_relative_to(run))
+                        self.assertEqual(launched['HOLONIGHT_RENDER_DIAGNOSTICS'], '1')
+                        self.assertEqual(launched['LD_PRELOAD'], ':'.join(
+                            str(prefix / 'lib' / name) for name in
+                            ('render-diagnostics.so', 'caret-diagnostics.so')))
+                    else:
+                        self.assertNotIn('GREETER_CARET_DIR', launched)
+                        self.assertNotIn('LD_PRELOAD', launched)
+
     def test_batch4_comparisons_start_empty_and_remove_inherited_observers(self):
         with tempfile.TemporaryDirectory(prefix="uqc-batch4-index-") as directory:
             run = Path(directory)

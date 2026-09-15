@@ -2044,8 +2044,22 @@ under `.cache/uqc216/`; no failed attempt is represented as acceptance. The pass
 observer samples at 5 Hz for five minutes at most, retains bounded empty-caret
 crops across native blink phases, and never logs entered text or changes input.
 
-A fresh immutable G07 kit is being prepared from this published handoff. Four
-short human-operated Sway comparisons remain: both styles at Qt scales 1/1.25,
+The fresh immutable G07 kit is [released](G07-HANDOFF.md) from this published
+handoff. Four short human-operated Sway comparisons remain: both styles at Qt scales 1/1.25,
 compositor scale 1, using only the [G07 checklist](GREETER-G07.md). Preserve the
 released Batch 7 kit and completed checklist. F05, Batch 3 and real pre-session
 login remain outside this iteration.
+
+G07 release `/tmp/holonight-uqc216-e8pceq20`: all 17 preparation checks pass,
+including the host-masked staged production-QML matrix, four graphics comparisons,
+eight installed selector/scale launches and four independently observed demo
+processes with matching actual DPR, verified isolation/origins and deliberately
+reaped exit -15. Both observers load and the empty-field crops are present. The
+native blink smoke captures show pixel variation without changing blink timing.
+All 189 restored hashes, package versions, source snapshots, exact-prefix archive
+restoration and existing-path refusal pass. Archive SHA-256 is
+`994613367ec844c34b7c19b8e5bcfef85efab15dd7ee28ec120765b59a73d51f`.
+Versions: Qt base 6.11.2-3, declarative 6.11.2-2, Sway 1:1.12-4,
+Hyprland 0.56.2-3, hyprpolkitagent 0.1.3-10. Evidence and release audit are in
+`.cache/holonight-uqc216-e8pceq20/`. All 187 original Batch 7 release hashes still
+match. No human G07 result has been supplied; the finding is not closed.

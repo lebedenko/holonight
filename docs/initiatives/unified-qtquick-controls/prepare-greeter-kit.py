@@ -15,19 +15,21 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
+    parser.add_argument('--g07', action='store_true')
     args = parser.parse_args()
     docs = Path(__file__).resolve().parent
     root = docs.parents[2]
-    kit = args.resume.resolve() if args.resume else Path(tempfile.mkdtemp(prefix='holonight-uqc212-', dir='/tmp'))
-    if kit.parent != Path('/tmp') or not kit.name.startswith('holonight-uqc212-'):
-        parser.error('expected /tmp/holonight-uqc212-*')
+    package = 'uqc216' if args.g07 else 'uqc212'
+    kit = args.resume.resolve() if args.resume else Path(tempfile.mkdtemp(prefix=f'holonight-{package}-', dir='/tmp'))
+    if kit.parent != Path('/tmp') or not kit.name.startswith(f'holonight-{package}-'):
+        parser.error(f'expected /tmp/holonight-{package}-*')
     if (kit / 'READY').exists():
         parser.error('preserve released kits; use a fresh kit')
     kit.mkdir(exist_ok=True)
     kit.chmod(0o755)
     work = root / '.cache' / kit.name
     (work / 'logs').mkdir(parents=True, exist_ok=True)
-    (root / '.cache/uqc212-kit').write_text(str(kit) + '\n')
+    (root / f'.cache/{package}-kit').write_text(str(kit) + '\n')
     prefix = kit / 'prefix'
 
     def run(name, command, env=None):
@@ -72,6 +74,11 @@ def main():
     run('observer-build', ['g++', '-std=c++23', '-shared', '-fPIC', observer,
                            '-o', prefix / 'lib/render-diagnostics.so', *flags])
     shutil.copy2(observer, kit)
+    if args.g07:
+        caret = root / 'holonight-greeter/docs/sdd/unified-qtquick-controls/audit/caret-diagnostics.cpp'
+        run('caret-observer-build', ['g++', '-std=c++23', '-shared', '-fPIC', caret,
+                                    '-o', prefix / 'lib/caret-diagnostics.so', *flags])
+        shutil.copy2(caret, kit)
     for name in ('guided-session.py', 'guided-app.py', 'verify-greeter-kit.py'):
         shutil.copy2(docs / name, kit)
     shutil.copy2(root / 'holonight-qt/docs/sdd/unified-qtquick-controls/audit/auth-test/terminal.sh', kit)
@@ -80,7 +87,7 @@ def main():
         f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\nbindsym Mod4+q kill\n')
     packages = ('qt6-base', 'qt6-declarative', 'hyprpolkitagent', 'sway', 'hyprland')
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    (kit / 'README.md').write_text((docs / 'GREETER-BATCH7.md').read_text().replace('__KIT__', str(kit)))
+    (kit / 'README.md').write_text((docs / ('GREETER-G07.md' if args.g07 else 'GREETER-BATCH7.md')).read_text().replace('__KIT__', str(kit)))
     mask = ['bwrap', '--die-with-parent', '--bind', '/', '/', '--dev', '/dev', '--proc', '/proc']
     for base in ('/usr/lib', '/usr/local/lib'):
         module = Path(base) / 'qt6/qml/Holonight'
@@ -97,6 +104,9 @@ def main():
             prefix / 'bin/holonight-greeter', prefix, '--scale', scale,
             '--forbid-path', build, '--logs', work / ('installed-' + scale)])
     run('staged-process-origins-dpr-exits', mask + ['python3', docs / 'verify-greeter-kit.py', kit, work / 'runtime'])
+    if args.g07:
+        run('staged-caret-graphics', mask + ['python3', root / 'holonight-greeter/scripts/check-caret-graphics.py',
+            build / 'greeter_runtime_tests', prefix, '--logs', work / 'caret-graphics'])
     run('collector-tests', ['python3', root / 'tests/test_guided_app.py'])
     for path in kit.glob('*.py'):
         ast.parse(path.read_text())
@@ -104,7 +114,8 @@ def main():
     (kit / 'SHA256SUMS').write_text('\n'.join(
         f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(kit)}'
         for path in sorted(kit.rglob('*')) if path.is_file() and path.name != 'SHA256SUMS') + '\n')
-    (kit / 'READY').write_text('Batch 7 locally verified; four Sway manual runs pending.\n')
+    (kit / 'READY').write_text(('G07 diagnostic kit' if args.g07 else 'Batch 7') +
+                               ' locally verified; four Sway manual runs pending.\n')
     archive = work / (kit.name + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as saved:
         saved.add(kit, arcname=kit.name)

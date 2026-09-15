@@ -171,6 +171,7 @@ def main():
     parser.add_argument("--pid", type=int)
     parser.add_argument("--index", choices=("batch3", "batch4", "batch6"))
     parser.add_argument("--render-diagnostics", action="store_true")
+    parser.add_argument("--caret-diagnostics", action="store_true")
     parser.add_argument("--palette-diagnostics", action="store_true")
     parser.add_argument("--session-diagnostics", action="store_true")
     args = parser.parse_args()
@@ -198,7 +199,7 @@ def main():
         command += ["--demo", "--config", str(run / "demo-greeter.toml"), "--state", str(run / "demo-state.json")]
     env = os.environ.copy()
     for key in ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QUICK_CONTROLS_FALLBACK_STYLE",
-                "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "HOLONIGHT_SESSION_DIAGNOSTICS", "HOLONIGHT_SESSION_GEOMETRY", "WAYLAND_DEBUG", "LD_PRELOAD"):
+                "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "HOLONIGHT_SESSION_DIAGNOSTICS", "HOLONIGHT_SESSION_GEOMETRY", "WAYLAND_DEBUG", "LD_PRELOAD", "GREETER_CARET_DIR"):
         env.pop(key, None)
     style = args.style if args.style != "default" else (None if owned else "Holonight")
     if style:
@@ -234,7 +235,7 @@ def main():
         env["HOLONIGHT_SESSION_DIAGNOSTICS"] = "1"
         if args.surface == "shell":
             env["HOLONIGHT_SESSION_GEOMETRY"] = "1"
-    if args.render_diagnostics:
+    if args.render_diagnostics or args.caret_diagnostics:
         observer = prefix / "lib/render-diagnostics.so"
         if not observer.is_file():
             parser.error("this kit has no rendering observer")
@@ -246,6 +247,13 @@ def main():
             parser.error("palette diagnostics requires its observer and cannot be combined with render diagnostics")
         env["HOLONIGHT_PALETTE_DIAGNOSTICS"] = "1"
         env["LD_PRELOAD"] = str(observer)
+    if args.caret_diagnostics:
+        observer = prefix / "lib/caret-diagnostics.so"
+        if args.surface != "greeter" or not observer.is_file() or args.palette_diagnostics or args.session_diagnostics:
+            parser.error("caret diagnostics requires the G07 greeter kit and no other observer mode")
+        env["LD_PRELOAD"] += ":" + str(observer)
+        env["GREETER_CARET_DIR"] = str(evidence / "caret")
+        env["QT_LOGGING_RULES"] = "*.debug=false;*.info=true;qt.qml.import.debug=true"
     isolated = False
     (evidence / "command.json").write_text(json.dumps(command) + "\n")
     def index(status, code=None):
@@ -253,7 +261,8 @@ def main():
             return
         record = dict(status=status, run=str(evidence), application=args.surface,
                       style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
-                      process_exit=code, render_diagnostics=args.render_diagnostics,
+                      process_exit=code, render_diagnostics=args.render_diagnostics or args.caret_diagnostics,
+                      caret_diagnostics=args.caret_diagnostics,
                       qt_logging_rules=env.get("QT_LOGGING_RULES"), palette_diagnostics=args.palette_diagnostics,
                       initial_profile="isolated" if args.index == "batch6" else ("empty" if args.index == "batch4" else "session"),
                       session_diagnostics=args.session_diagnostics,
