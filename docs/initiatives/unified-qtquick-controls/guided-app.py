@@ -8,11 +8,12 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import threading
 
 
 KEYS = ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QPA_PLATFORMTHEME",
         "QML_IMPORT_PATH", "QT_PLUGIN_PATH", "LD_LIBRARY_PATH", "QT_SCALE_FACTOR",
-        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS",
+        "XDG_SESSION_ID", "XDG_DATA_DIRS", "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "HOLONIGHT_SESSION_DIAGNOSTICS",
         "XDG_CONFIG_HOME", "HOLONIGHT_APPEARANCE_FILE", "LD_PRELOAD", "QT_LOGGING_RULES")
 
 
@@ -111,6 +112,56 @@ def palette_observations(text):
                 palette_window_dpr=windows or None, palette_origins=sorted(origins))
 
 
+def session_observations(text):
+    windows = {}
+    counts = {}
+    for line in text.splitlines():
+        if "HN_SESSION " not in line:
+            continue
+        try:
+            state = json.loads(line.split("HN_SESSION ", 1)[1])
+        except ValueError:
+            continue
+        if not isinstance(state, dict):
+            continue
+        kind = state.get("kind")
+        if not isinstance(kind, str):
+            continue
+        counts[kind] = counts.get(kind, 0) + 1
+        if kind == "window" and isinstance(state.get("id"), str) and isinstance(state.get("dpr"), (int, float)):
+            windows[state["id"]] = state["dpr"]
+    return dict(session_samples=counts, session_window_dpr=windows or None)
+
+
+def sample_session(evidence, stop):
+    """Persist selected ownership metadata only, never compositor window titles."""
+    previous = None
+    with (evidence / "session.jsonl").open("w") as output:
+        while not stop.is_set():
+            state = {}
+            commands = [("session", ["loginctl", "show-session", os.environ.get("XDG_SESSION_ID", ""),
+                                     "-p", "Active", "-p", "State", "-p", "VTNr"])]
+            if os.environ.get("HYPRLAND_INSTANCE_SIGNATURE"):
+                commands.append(("compositor", ["hyprctl", "activewindow", "-j"]))
+            for name, command in commands:
+                try:
+                    result = subprocess.run(command, capture_output=True, text=True, timeout=2)
+                    if result.returncode:
+                        state[name] = {"exit": result.returncode}
+                    elif name == "compositor":
+                        window = json.loads(result.stdout)
+                        state[name] = {key: window.get(key) for key in ("address", "pid", "mapped")}
+                    else:
+                        state[name] = dict(line.split("=", 1) for line in result.stdout.splitlines() if "=" in line)
+                except (OSError, ValueError, subprocess.TimeoutExpired) as error:
+                    state[name] = {"error": type(error).__name__}
+            if state != previous:
+                previous = state
+                output.write(json.dumps(dict(state, time_ms=time.time_ns() // 1000000)) + "\n")
+                output.flush()
+            stop.wait(.25)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("surface", choices=("haruna", "neochat", "tokodon", "settings",
@@ -118,9 +169,10 @@ def main():
     parser.add_argument("--style", choices=("default", "Holonight", "Fusion"), default="default")
     parser.add_argument("--scale", choices=("1", "1.25"), default="1")
     parser.add_argument("--pid", type=int)
-    parser.add_argument("--index", choices=("batch3", "batch4"))
+    parser.add_argument("--index", choices=("batch3", "batch4", "batch6"))
     parser.add_argument("--render-diagnostics", action="store_true")
     parser.add_argument("--palette-diagnostics", action="store_true")
+    parser.add_argument("--session-diagnostics", action="store_true")
     args = parser.parse_args()
     if os.getuid() != 1001 or not os.environ.get("UQC_SESSION_RUN") or not os.environ.get("WAYLAND_DISPLAY"):
         parser.error("run in the prepared tux compositor terminal")
@@ -146,7 +198,7 @@ def main():
         command += ["--demo", "--config", str(run / "demo-greeter.toml"), "--state", str(run / "demo-state.json")]
     env = os.environ.copy()
     for key in ("QT_QUICK_CONTROLS_STYLE", "QT_QUICK_CONTROLS_CONF", "QT_QUICK_CONTROLS_FALLBACK_STYLE",
-                "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "LD_PRELOAD"):
+                "HOLONIGHT_RENDER_DIAGNOSTICS", "HOLONIGHT_PALETTE_DIAGNOSTICS", "HOLONIGHT_SESSION_DIAGNOSTICS", "HOLONIGHT_SESSION_GEOMETRY", "WAYLAND_DEBUG", "LD_PRELOAD"):
         env.pop(key, None)
     style = args.style if args.style != "default" else (None if owned else "Holonight")
     if style:
@@ -157,7 +209,7 @@ def main():
     env["LD_LIBRARY_PATH"] = str(prefix / "lib")
     env["QML_IMPORT_PATH"] = str(prefix / "lib/qt6/qml")
     env["QT_PLUGIN_PATH"] = str(prefix / "lib/qt6/plugins")
-    if args.index == "batch4":
+    if args.index in ("batch4", "batch6"):
         # Identical empty initial state for each comparison; keep each run's writes.
         for key in ("XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME", "XDG_CONFIG_DIRS"):
             path = evidence / key.lower()
@@ -167,6 +219,21 @@ def main():
         env["QT_LOGGING_RULES"] = "*.debug=false;*.info=true;qt.quick.dialogs=true"
         env["QML_IMPORT_TRACE"] = "0"
         env["QT_DEBUG_PLUGINS"] = "0"
+    if args.index == "batch6" and args.surface == "ai":
+        seed = run / "xdg_config_home/holonight-ai/config.json"
+        target = Path(env["XDG_CONFIG_HOME"]) / "holonight-ai/config.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(seed.read_bytes())
+    if args.session_diagnostics:
+        observer = prefix / "lib/session-diagnostics.so"
+        if args.index != "batch6" or args.surface not in ("shell", "ai") or not observer.is_file():
+            parser.error("session diagnostics requires the Batch 6 shell/AI kit")
+        if args.render_diagnostics or args.palette_diagnostics:
+            parser.error("choose one observer")
+        env["LD_PRELOAD"] = str(observer)
+        env["HOLONIGHT_SESSION_DIAGNOSTICS"] = "1"
+        if args.surface == "shell":
+            env["HOLONIGHT_SESSION_GEOMETRY"] = "1"
     if args.render_diagnostics:
         observer = prefix / "lib/render-diagnostics.so"
         if not observer.is_file():
@@ -188,11 +255,15 @@ def main():
                       style=style, requested_scale=args.scale, kit=os.environ.get("UQC_KIT"),
                       process_exit=code, render_diagnostics=args.render_diagnostics,
                       qt_logging_rules=env.get("QT_LOGGING_RULES"), palette_diagnostics=args.palette_diagnostics,
-                      initial_profile="empty" if args.index == "batch4" else "session",
+                      initial_profile="isolated" if args.index == "batch6" else ("empty" if args.index == "batch4" else "session"),
+                      session_diagnostics=args.session_diagnostics,
                       outcome=outcome if status == "finished" else None)
         if status == "finished":
             record["log_sha256"] = hashlib.sha256((evidence / "launch.log").read_bytes()).hexdigest()
             record.update(render_observations((evidence / "launch.log").read_text(errors="replace")))
+            if args.index == "batch6":
+                record.update(session_observations((evidence / "launch.log").read_text(errors="replace")))
+                record["session_sha256"] = hashlib.sha256((evidence / "session.jsonl").read_bytes()).hexdigest()
             record.update(palette_observations((evidence / "launch.log").read_text(errors="replace")))
         with (run / (args.index + "-index.jsonl")).open("a") as output:
             output.write(json.dumps(record) + "\n")
@@ -201,6 +272,11 @@ def main():
     with (evidence / "launch.log").open("w") as log:
         child = subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT)
         print("PID:", child.pid, flush=True)
+        sampling_stop = threading.Event()
+        sampler = None
+        if args.index == "batch6":
+            sampler = threading.Thread(target=sample_session, args=(evidence, sampling_stop), daemon=True)
+            sampler.start()
         try:
             time.sleep(3)
             if child.poll() is None:
@@ -220,6 +296,10 @@ def main():
                 outcome = "forced cleanup"
                 child.kill()
                 code = child.wait()
+        finally:
+            sampling_stop.set()
+            if sampler:
+                sampler.join(timeout=6)
     (evidence / "exit.txt").write_text(str(code) + "\n")
     index("finished", code)
     print("Exit:", code, flush=True)

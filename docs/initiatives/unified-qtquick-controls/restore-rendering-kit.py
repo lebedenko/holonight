@@ -12,8 +12,8 @@ def main():
     parser.add_argument("archive", type=Path)
     args = parser.parse_args()
     name = args.archive.name.removesuffix(".tar.gz")
-    if not re.fullmatch(r"holonight-uqc20[78]-[a-z0-9_]+", name):
-        parser.error("expected a saved holonight-uqc207/208-*.tar.gz kit")
+    if not re.fullmatch(r"holonight-uqc(?:20[78]|211)-[a-z0-9_]+", name):
+        parser.error("expected a saved holonight-uqc207/208/211-*.tar.gz kit")
     kit = Path("/tmp") / name
     if kit.exists():
         parser.error(f"preserving existing {kit}; restoration requires that path to be absent")

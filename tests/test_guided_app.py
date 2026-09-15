@@ -98,7 +98,7 @@ class LauncherSupervisor(unittest.TestCase):
             profiles = []
             for style in ('Holonight', 'Fusion'):
                 argv = [str(SCRIPT), 'neochat', '--style', style, '--index', 'batch4']
-                with patch.dict(os.environ, env), patch.object(sys, 'argv', argv), \
+                with patch.dict(os.environ, env, clear=True), patch.object(sys, 'argv', argv), \
                         patch.object(app.os, 'getuid', return_value=1001), \
                         patch.object(app.subprocess, 'Popen', return_value=child), \
                         patch.object(app.time, 'sleep'), patch.object(app, 'collect', return_value=True):
@@ -128,7 +128,7 @@ class LauncherSupervisor(unittest.TestCase):
                        QT_LOGGING_RULES="*.debug=false", HOLONIGHT_RENDER_DIAGNOSTICS="1",
                        LD_PRELOAD="/tmp/old-observer.so")
             argv = [str(SCRIPT), "haruna", "--style", "Fusion", "--scale", "1.25", "--index", "batch3"]
-            with patch.dict(os.environ, env), patch.object(sys, "argv", argv), \
+            with patch.dict(os.environ, env, clear=True), patch.object(sys, "argv", argv), \
                     patch.object(app.os, "getuid", return_value=1001), \
                     patch.object(app.subprocess, "Popen", return_value=child), \
                     patch.object(app.time, "sleep"), patch.object(app, "collect", return_value=True):
@@ -177,6 +177,59 @@ class LauncherSupervisor(unittest.TestCase):
                     process.terminate()
                     process.wait(timeout=3)
 
+
+
+class Batch6Evidence(unittest.TestCase):
+    def test_navigation_summary_requires_observed_window_dpr(self):
+        records = ['HN_SESSION invalid', 'HN_SESSION []',
+                   'HN_SESSION {"kind":"window","id":"w","dpr":1.25}',
+                   'HN_SESSION {"kind":"qt-navigation-before","key":"Tab"}',
+                   'HN_SESSION {"kind":"wayland-tab","pressed":true}']
+        summary = app.session_observations('\n'.join(records))
+        self.assertEqual(summary['session_window_dpr'], {'w': 1.25})
+        self.assertEqual(summary['session_samples']['wayland-tab'], 1)
+        self.assertIsNone(app.session_observations('QT_SCALE_FACTOR=1.25')['session_window_dpr'])
+
+    def test_independent_disabled_profiles_and_all_process_outcomes(self):
+        for expected, waits, exit_code in [('normal', [0], 0),
+                                         ('interrupted', [KeyboardInterrupt(), -15], -15),
+                                         ('forced cleanup', [KeyboardInterrupt(), subprocess.TimeoutExpired('child', 5), -9], -9)]:
+            with self.subTest(outcome=expected), tempfile.TemporaryDirectory() as directory:
+                run = Path(directory)
+                seed = run / 'xdg_config_home/holonight-ai/config.json'
+                seed.parent.mkdir(parents=True)
+                seed.write_text('{"provider_instances":{"instances":[{"enabled":false}]}}')
+                child = Mock(pid=12345)
+                child.poll.return_value = None
+                child.wait.side_effect = waits
+                env = dict(UQC_SESSION_RUN=str(run), UQC_PREFIX='/tmp/candidate', UQC_KIT='/tmp/kit',
+                           WAYLAND_DISPLAY='fixture', HOLONIGHT_SESSION_DIAGNOSTICS='1',
+                           HOLONIGHT_SESSION_GEOMETRY='1', LD_PRELOAD='/old/observer.so', WAYLAND_DEBUG='1')
+                argv = [str(SCRIPT), 'ai', '--style', 'Fusion', '--scale', '1.25', '--index', 'batch6']
+                def sample(evidence, stop):
+                    (evidence / 'session.jsonl').write_text('{"session":{"Active":"yes"}}\n')
+                with patch.dict(os.environ, env, clear=True), patch.object(sys, 'argv', argv), \
+                     patch.object(app.os, 'getuid', return_value=1001), \
+                     patch.object(app.subprocess, 'Popen', return_value=child), \
+                     patch.object(app.time, 'sleep'), patch.object(app, 'collect', return_value=True), \
+                     patch.object(app, 'sample_session', side_effect=sample):
+                    self.assertEqual(app.main(), exit_code)
+                    launched = app.subprocess.Popen.call_args.kwargs['env']
+                    for key in ('LD_PRELOAD', 'HOLONIGHT_SESSION_DIAGNOSTICS', 'HOLONIGHT_SESSION_GEOMETRY', 'WAYLAND_DEBUG'):
+                        self.assertNotIn(key, launched)
+                    profile = Path(launched['XDG_CONFIG_HOME']) / 'holonight-ai/config.json'
+                    self.assertNotEqual(profile, seed)
+                    self.assertEqual(profile.read_bytes(), seed.read_bytes())
+                records = [json.loads(line) for line in (run / 'batch6-index.jsonl').read_text().splitlines()]
+                self.assertEqual([record['status'] for record in records], ['running', 'finished'])
+                final = records[-1]
+                evidence = Path(final['run'])
+                self.assertEqual(final['outcome'], expected)
+                self.assertEqual(final['process_exit'], exit_code)
+                self.assertEqual(final['session_sha256'], hashlib.sha256((evidence / 'session.jsonl').read_bytes()).hexdigest())
+                self.assertEqual(final['log_sha256'], hashlib.sha256((evidence / 'launch.log').read_bytes()).hexdigest())
+                self.assertEqual((evidence / 'exit.txt').read_text(), str(exit_code) + '\n')
+                self.assertEqual(child.kill.call_count, int(expected == 'forced cleanup'))
 
 if __name__ == "__main__":
     unittest.main()
