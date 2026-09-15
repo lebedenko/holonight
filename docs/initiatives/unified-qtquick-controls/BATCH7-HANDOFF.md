@@ -1,7 +1,9 @@
 # Batch 7 — released greeter acceptance kit
 
-UQC-212 is Done for local implementation/publication. Batch 7 remains open for
-four human-operated G01–G06 checks. UQC-201 stays In Progress; initiative Accepted.
+G01–G06 passed all four manual runs; Batch 7 is closed for its scoped checks.
+[Acceptance and separate G07 follow-up](FINDINGS.md#batch-7-manual-acceptance--2026-09-15).
+No repeat runs are requested. UQC-212 remains Done; UQC-201 In Progress and
+initiative Accepted. The instructions below preserve the completed handoff.
 [Canonical verification and kit evidence](FINDINGS.md#batch-7-greeter-implementation-and-verification--2026-09-15).
 
 ## Released kit

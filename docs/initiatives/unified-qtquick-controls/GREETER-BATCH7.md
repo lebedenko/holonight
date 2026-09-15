@@ -1,6 +1,8 @@
 # Batch 7 — greeter keyboard and appearance acceptance
 
-Manual acceptance pending. Use only the released kit named in the [handoff](BATCH7-HANDOFF.md).
+Manual acceptance complete: [G01–G06 passed all four runs](FINDINGS.md#batch-7-manual-acceptance--2026-09-15).
+No repeat runs are requested. The checklist below is retained as historical procedure.
+Use only the released kit named in the [handoff](BATCH7-HANDOFF.md).
 Replace `__KIT__` below with that path; the released README already resolves it.
 No real login/authentication is tested. Use disposable text; inspect power buttons
 without activating them. These four runs cover G01–G06 only.

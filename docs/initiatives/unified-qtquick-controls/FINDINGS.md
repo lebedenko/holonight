@@ -1961,3 +1961,48 @@ were confined to the kit/cache. No prior released kit was modified.
 
 Manual G01–G06 observations have not yet been supplied. Only those four Sway demo
 runs can close this Batch 7 acceptance gate; no integration acceptance is inferred.
+
+
+### Batch 7 manual acceptance — 2026-09-15
+
+**G01–G06 accepted; Batch 7 closed for its scoped checks.** The user reports all
+six checks pass in each of the four requested Sway runs. UQC-212 remains Done,
+UQC-201 In Progress and the initiative Accepted. No further Batch 7 repeats are
+requested. The separately reported empty-password caret issue is tracked as G07
+below and is not claimed repaired by this acceptance.
+
+Evidence supplied in `/tmp/res.txt` and `/tmp/sway-whchivd2` verifies a real local
+tux seat0/tty3 session (ID 15), isolated Sway from the released kit, and active
+2560×1600 output at compositor scale 1. Recorded package versions match the kit.
+All 187 released file hashes still pass. Each actual PID uses the released demo
+binary and staged HoloNight libraries, including configuration/Core/Controls;
+selected TextField, ComboBox, Button and ItemDelegate origins match the style.
+Observer records establish the actual window DPR. All four saved exits are 0;
+the inspected logs contain no QML type/reference/binding/assignment/load errors.
+
+| Run suffix / PID | Style | Actual DPR | User G01–G06 result | Exit |
+|---|---|---|---|---|
+| 1789500940545549873 / 227470 | HoloNight | 1 | Pass | 0 |
+| 1789501185564285240 / 227703 | HoloNight | 1.25 | Pass | 0 |
+| 1789501296292753189 / 227792 | Fusion | 1 | Pass | 0 |
+| 1789501557293580325 / 227964 | Fusion | 1.25 | Pass | 0 |
+
+**G07 — empty-password caret visibility, open follow-up.** At scale 1 in both
+styles, the user reports that the focused empty password field has no visible
+caret; typing at least one character makes it visible. No issue was reported at
+scale 1.25. Apparent clipping is the user's hypothesis; these logs do not establish
+caret geometry, clipping or the responsible implementation. Greeter owns initial
+production-QML reproduction and should establish the boundary before assigning a
+provider repair. Acceptance: focused empty password caret is visible at scale 1
+in both styles, with populated-field and fractional-scale behavior preserved.
+No product repair or additional manual run is assigned in this evidence-review turn.
+
+Selected raw session/run evidence and the user transcript are preserved under
+`.cache/uqc212-manual/sway-whchivd2/`, excluding user profiles and shader caches.
+`verification.json` records the independent checks; the SHA256SUMS manifest hash is
+`d3103ac99ce549e07571fa91dc1b61f416303d7b5b565774f866599136856a14`.
+Verification covered mappings, selected origins, actual DPR/output scale, session
+identity, versions, exits, released hashes, documentation links and whitespace.
+No product source, gitlink or released kit changed; product tests were not repeated
+for this documentation-only acceptance record. F05 and other integration gates
+retain their existing dispositions.
