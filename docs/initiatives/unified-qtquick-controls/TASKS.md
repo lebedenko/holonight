@@ -2340,3 +2340,13 @@ and `git ls-remote` confirmation. UQC-212 Done; only the greeter gitlink changes
 retain failure boundaries and all verification. Fresh kit preparation and four
 human-operated isolated-Sway runs remain. Batch 7 is open; UQC-201 In Progress,
 initiative Accepted. No final ecosystem integration or unrelated batch work.
+
+
+### Batch 7 immutable kit release — 2026-09-15
+
+[Canonical kit evidence](FINDINGS.md#batch-7-greeter-implementation-and-verification--2026-09-15)
+records 187 hashes, exact-prefix archive restoration/refusal, package consistency,
+staged runtime/installed-launch matrices, actual DPR/origins/mappings/exits and
+collector verification. Follow the [four-run Sway handoff](BATCH7-HANDOFF.md).
+UQC-212 remains Done; Batch 7 manual acceptance is pending. UQC-201 In Progress,
+initiative Accepted. No unrelated batch or final integration checks were reopened.

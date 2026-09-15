@@ -1937,3 +1937,27 @@ input targets only disposable offscreen windows with fake services. Follow the
 [four Sway demo checks](GREETER-BATCH7.md) after the fresh kit is released. Preserve
 accepted dropdown/hover results and F05's external disposition. UQC-201 remains
 In Progress, initiative Accepted, and Batch 7 stays open until manual acceptance.
+
+
+Released immutable kit: `/tmp/holonight-uqc212-nq09g2v1`; [manual handoff](BATCH7-HANDOFF.md).
+Archive `.cache/holonight-uqc212-nq09g2v1/holonight-uqc212-nq09g2v1.tar.gz`,
+SHA-256 `a2235caa325c1de8366c86a1b05e3c568c55df2938bfe99b4ff734a4762ef44b`.
+All **187 restored file hashes** pass; exact-prefix restoration preserves the
+original directory, and restoration refuses an existing path. The five recorded
+Qt/compositor/auth-agent package versions still match. Canonical sources were
+reconfirmed during preparation and are recorded in `revisions.json`.
+
+The staged production-QML matrix passes 4/4 with host HoloNight modules/libraries
+masked. Eight installed launch cases pass at scales 1/1.25. Four independently
+observed installed demo processes verify staged module origins (including runtime
+TextField/Button/ComboBox), required configuration/Core/Controls mappings, selected
+style and **actual DPR 1/1.25**, plus deliberate termination/reaping. No real service
+or desktop input is automated. Existing guided collector tests pass 13/13; Python
+syntax, terminal syntax, documentation links and whitespace pass. Preparation
+commands, runtime mapping/DPR/outcome records, restoration and final audit are
+retained in `.cache/holonight-uqc212-nq09g2v1/`. Initial sandbox SSH refusal was
+resolved by permitted preparation outside the sandbox; all installation writes
+were confined to the kit/cache. No prior released kit was modified.
+
+Manual G01–G06 observations have not yet been supplied. Only those four Sway demo
+runs can close this Batch 7 acceptance gate; no integration acceptance is inferred.
