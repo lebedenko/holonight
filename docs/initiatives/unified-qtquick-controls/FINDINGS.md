@@ -2063,3 +2063,61 @@ Versions: Qt base 6.11.2-3, declarative 6.11.2-2, Sway 1:1.12-4,
 Hyprland 0.56.2-3, hyprpolkitagent 0.1.3-10. Evidence and release audit are in
 `.cache/holonight-uqc216-e8pceq20/`. All 187 original Batch 7 release hashes still
 match. No human G07 result has been supplied; the finding is not closed.
+
+### G07 manual diagnostic result — 2026-09-16
+
+**G07 fails at Qt scale 1 in both styles; scale 1.25 passes the user's comparison.**
+The four requested runs are complete. No repeat of this diagnostic kit is needed.
+UQC-216 remains Done for diagnostic delivery, not repair; UQC-212/Batch 7 remain
+accepted and closed. UQC-201 stays In Progress and the initiative Accepted.
+
+`/tmp/res.txt` reports no cursor in the empty focused password input in both
+scale-1 runs and “all good” for both scale-1.25 runs. Evidence from
+`/tmp/sway-mobt7ro0` independently verifies local tux session 17, seat0/tty3,
+isolated Sway with active 2560×1600 output at compositor scale 1, matching package
+versions and all 189 released-kit hashes. Each PID uses the released greeter,
+staged configuration/Core/Controls/platform theme and both observers. Selected
+TextField/Button/ComboBox origins match the requested styles. Actual observer DPR
+matches each request and every saved exit is 0.
+
+| PID | Style | Actual DPR | Logical window | Empty crops | Rendered caret pixels per crop | User result |
+|---|---|---|---|---|---|---|
+| 241445 | HoloNight | 1 | 1276×1571 | 36 | Always 0 | Missing empty caret |
+| 241576 | HoloNight | 1.25 | 1021×1257 | 24 | 0 or 23 | All good |
+| 241643 | Fusion | 1 | 1276×1571 | 28 | Always 0 | Missing empty caret |
+| 241719 | Fusion | 1.25 | 1021×1257 | 22 | 0 or 23 | All good |
+
+**The captures now establish the rendering failure, beyond `cursorVisible`.**
+Every scale-1 empty-field crop is uniformly background `#131a24`, including
+captures after empty/focus transitions. Fractional-scale crops alternate between
+background and 23 foreground `#e7edf5` pixels, consistent with native blinking.
+At capture time the field is empty/focused, the window is active, `cursorVisible`
+is true, and the recorded blink interval is 1000 ms.
+
+The key coverage gap is the tiled window geometry. All four manual runs use
+panel scale **0.78**, whereas the original automated production cases exercised
+larger normal/compact transforms. The field remains 420×57 with Inter 14.25-point
+font, left/right padding 54 and cursor rectangle `(54,17,1,23)`. At DPR 1 its
+mapped cursor is `(771.616,789.111,0.78,17.94)`; at DPR 1.25 it is
+`(543.136,633.026,0.78,17.94)` in logical coordinates. The native caret therefore
+has a nominal physical width of 0.78 versus 0.975 pixels. All observed ancestors
+have `clip=false`; the mapped cursor lies inside their recorded clip rectangles.
+These facts motivate investigating subpixel rasterization and geometry, but do
+not prove the mechanism or assign responsibility to the provider or Qt.
+
+Next reproduction must use these exact window sizes, mapped positions and panel
+scale, retain the failing pixel comparison, and repeat the minimal selected-style
+field comparison before repair. No product edit or new owner assignment is made
+in this evidence review. The observer never captures populated text; those states
+and reveal/remasking cannot be independently pixel-verified here. All sampled echo
+modes are Password, so the logs do not independently establish a reveal hold.
+Preserve the user's fractional-scale pass without inventing additional observations.
+
+Raw session/run evidence and results are preserved under
+`.cache/uqc216-manual/sway-mobt7ro0/`, excluding user profiles and shader caches.
+`verification.json` records the audit; SHA256SUMS manifest hash:
+`042388b9c116f2384afacebe753bda1997616f109102a54e9c862341798839e2`.
+Verification covers identity/output scale, versions, released hashes, mappings,
+origins, actual DPR, exits, geometry, and every saved empty-field crop. This is an
+evidence/documentation update; product tests are not repeated and no gitlinks or
+released kit files change. F05, Batch 3 and real pre-session login stay outside scope.

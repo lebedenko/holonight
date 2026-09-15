@@ -1,6 +1,8 @@
 # G07 — empty-password caret diagnostic handoff
 
-Released and verified 2026-09-15. G07 remains open; production QML is unchanged.
+The four manual comparisons are complete. [Results and pixel evidence](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) confirm the missing empty caret at scale 1 in both styles; scale 1.25 passes. G07 remains open. No repeat runs are requested.
+
+The released 2026-09-15 instructions below are retained as provenance; production QML is unchanged.
 [Investigation and verification](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15).
 UQC-216 is Done for the published diagnostic handoff. UQC-212 stays Done,
 Batch 7 closed, UQC-201 In Progress and the initiative Accepted.

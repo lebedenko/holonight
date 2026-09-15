@@ -1,5 +1,7 @@
 # G07 — empty-password caret diagnostic comparison
 
+The four requested runs are complete: [manual results](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16). No repeats are requested; the procedure below is historical.
+
 G07 remains open. Automated production-QML cases pass on software and isolated
 Sway/OpenGL; no speculative production repair is included. This fresh kit adds a
 passive observer: geometry, focus, DPR, native blink interval and small empty-caret

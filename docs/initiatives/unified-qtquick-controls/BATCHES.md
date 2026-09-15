@@ -15,8 +15,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
 G07 is a separate open follow-up to closed Batch 7. UQC-216 delivered published
-bounded diagnostics and a verified kit; use the [G07 handoff](G07-HANDOFF.md).
-Only its four short caret comparisons remain in this iteration.
+bounded diagnostics and a verified kit. The [four manual comparisons](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) are complete: both scale-1 runs fail, both scale-1.25 runs pass. Reproduce the exact tiled geometry before repair; no repeats of this kit are requested.
 
 Batch numbers remain stable for historical references. **Batch 5 is removed.**
 L01/L02 are incorrect application layouts, outside controls-unification scope.
