@@ -22,6 +22,7 @@ in HoloNight and Fusion at scale 1. The earlier specific windowed reproduction a
 UQC-216–218 investigations remain historical evidence. Windowed greeter use is
 outside the intended design and planned real scenarios. Production is unchanged;
 no G07 repair, upstream submission or further manual comparisons are planned.
+[UQC-219 Batch 3 diagnosis](UQC-219.md) is complete for its bounded handoff; ScrollBar and historical Haruna crash remain open, with Fusion hover research-pending for both applications.
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

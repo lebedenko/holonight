@@ -2228,3 +2228,31 @@ existing opt-in diagnostic changed. UQC-212/UQC-216/UQC-217/UQC-218 remain Done,
 Batch 7 closed, UQC-201 In Progress and the initiative Accepted. F05 and remaining
 ecosystem integration gates retain their dispositions. Product tests were not
 rerun because no implementation changed.
+
+
+### Batch 3 bounded lifecycle and crash diagnosis — 2026-09-16
+
+[UQC-219 research and evidence](UQC-219.md) records the separate dispositions:
+
+- **ScrollBar remains open.** Retained warning sequences implicate ScrollablePage
+  composition, but exact lifecycle timing is unavailable. Added installed FormCard
+  teardown coverage passes; no failing regression justifies a binding repair.
+- **Historical Haruna crash remains open, with stronger thread evidence.** The
+  build-matched core confirms the offending rectangle belongs to the Settings
+  render thread while the engine belongs to the GUI thread. Asynchronous creation,
+  delegate reuse/cancellation and broad-debug threaded probes pass. The initiating
+  trigger and repair remain unproven; successful retries do not resolve SIGABRT.
+- **Settings Fusion hover: research-pending. Haruna Fusion hover: research-pending.**
+  Documentation and a Qt 5.13.1 menu-bar discussion do not classify these Qt 6.11.2
+  observations. No matching currently open Qt bug or supported workaround was
+  verified; tracker retrieval failure is not evidence that no issue exists.
+  No local hover instrumentation or repeated manual testing is assigned.
+
+Provider test/SDD handoff `c9aacd8` is published and pinned after canonical
+confirmation. Verification: 24 narrow style/DPR checks, 5 focused/installed CTests,
+87/87 final provider CTests, 8 private threaded Wayland checks, format/whitespace,
+focused clang-tidy (nonfatal warnings documented) and REUSE 395/395 pass.
+Production QML, public APIs and consumer sources are unchanged. No new immutable
+kit is necessary. UQC-219 Done for diagnosis; UQC-207/UQC-201 In Progress and
+initiative Accepted. All accepted rendering, G07 closure and unrelated dispositions
+are preserved; final Batch 8 integration was not run.
