@@ -2379,3 +2379,42 @@ are preserved at `.cache/holonight-uqc201-final-yn9_fquf/manual-tokodon-sway/`.
 No profile credentials/cookies copied. No product, pin or immutable-kit change;
 no product tests repeated. Next: [two Haruna runs](BATCH8-HARUNA.md).
 UQC-201 remains In Progress and initiative Accepted.
+
+## Batch 8 Haruna Sway acceptance — 2026-09-16
+
+The user reports all requested local playback/toolbar/menu, settings editing/
+navigation/scrolling/selectors and palette-round-trip checks passed in both
+styles, with no issues observed. The [Haruna handoff](BATCH8-HARUNA.md) is complete
+for its scoped Sway/DPR-1.25 coverage; no repeat runs requested.
+
+| Style | Run in `sway-8vt13f26` | PID | Measured DPR | Exit |
+|---|---|---|---|---|
+| HoloNight | `haruna-1789583324150016259` | 183573 | 1.25 | 0 |
+| Fusion | `haruna-1789583570979632619` | 183973 | 1.25 | 0 |
+
+Reviewed `/tmp/res.txt` and supplied `/tmp/sway-8vt13f26` copy of the tux session.
+Identity records active local UID 1001, seat0/tty3, session 9; PID metadata and
+session command agree with the released Sway configuration and staged selectors.
+All 267 kit hashes and recorded versions match: Haruna 1.8.1-2, Qt base/declarative
+6.11.2-3/6.11.2-2, Sway 1:1.12-4. Recomputed saved-map isolation passes and saved
+exits are 0. Observers measure DPR 1.25 in both runs; output scale 1 is configured,
+not independently measured by the supplied evidence.
+
+The HoloNight run records created origins in HoloNight ComboBox, Menu, MenuBar
+and ToolTip. The Fusion comparison records Fusion ComboBox, Menu and MenuBar.
+Both also record Fusion DialogButtonBox and Qt Quick Dialogs internals, alongside
+Haruna/Kirigami-authored objects. This preserves the explicit fallback and
+application-painted boundaries; it does not establish that every inherited
+standard-control part is HoloNight. Playback and palette readability are user
+acceptance, not inferred from imports or maps.
+
+The targeted scan finds no TypeError, ReferenceError, binding-loop or
+QQmlApplicationEngine-failure matches in either log. This is not an assertion of
+zero diagnostics of every kind, nor proof that the historical Haruna crash or
+Fusion hover finding is fixed. Batch 3 closure and all deferrals remain unchanged.
+
+Selected logs/maps/metadata/exits, user notes, review-time hashes and review.json
+are preserved at `.cache/holonight-uqc201-final-yn9_fquf/manual-haruna-sway/`;
+no profile credentials/cookies copied. No source, pin or immutable-kit change;
+no product tests repeated. Next: [two read-only package-manager runs](BATCH8-PACKAGES.md).
+UQC-201 remains In Progress; initiative Accepted.

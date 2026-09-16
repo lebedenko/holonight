@@ -2507,3 +2507,13 @@ coverage limits are explicit; diagnostics do not reopen Batch 3. Next:
 [two Haruna runs](BATCH8-HARUNA.md). Documentation links/whitespace/licensing
 checked; no product tests, pin or released-kit changes. UQC-201 In Progress,
 initiative Accepted.
+
+### Batch 8 Haruna manual acceptance — 2026-09-16
+
+[Canonical review](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16)
+accepts both Sway DPR-1.25 Haruna runs: user-reported passes, matching kit hashes
+and versions, verified staged mappings/origins and exit 0. Explicit Fusion and
+application-owned boundaries retained; historical crash/hover deferrals unchanged.
+Next: [two read-only package-manager runs](BATCH8-PACKAGES.md). Documentation
+links/whitespace/licensing checked; no product tests, pin or released-kit changes.
+UQC-201 In Progress; initiative Accepted.

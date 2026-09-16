@@ -1,4 +1,8 @@
-# Batch 8 — Haruna Sway fractional coverage
+# Batch 8 — Haruna Sway fractional coverage (complete)
+
+Accepted: [reviewed evidence](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16).
+Do not repeat these runs. Next: [package-manager](BATCH8-PACKAGES.md).
+Commands below are retained as provenance.
 
 Tokodon's two runs are [accepted](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16).
 Use the same released kit for two Haruna runs covering remaining Sway fractional
