@@ -17,7 +17,7 @@ an [external Qt/Hyprland reproduction](FINDINGS.md#f05-plain-qt-external-reprodu
 in plain Qt. The [upstream-report draft](f05/UPSTREAM-REPORT.md) is prepared, not submitted;
 exact mechanism and repair remain open. See [the current handoff](BATCH6-HANDOFF.md).
 Batch 7 G01–G06 checks are [manually accepted](FINDINGS.md#batch-7-manual-acceptance--2026-09-15) in all four runs; UQC-212 is Done. Separate G07 empty-password caret visibility remains open: UQC-216 published a
-[rendered investigation and bounded diagnostics](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15), without a speculative QML repair. The [G07 manual results](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) confirm scale-1 failure in both styles and expose missing automated coverage at panel scale 0.78. The four requested comparisons are complete.
+[rendered investigation and bounded diagnostics](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15), without a speculative QML repair. The [G07 manual results](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) confirm scale-1 failure in both styles and expose missing automated coverage at panel scale 0.78. The four requested comparisons are complete. UQC-217 subsequently [reproduced the exact geometry in plain QtQuick](FINDINGS.md#g07-exact-geometry-reproduction-and-qtquick-handoff--2026-09-16). UQC-218 adds [source diagnosis and a rejected layer experiment](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16): caret visibility improves, but text softening prevents adoption. Production is unchanged; G07 stays open and no new kit or human repeat is requested.
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

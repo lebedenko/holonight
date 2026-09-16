@@ -45,6 +45,7 @@ below retain historical states; current rows and canonical findings take precede
 | UQC-212 | `holonight-greeter` | Remaining greeter-specific keyboard/appearance verification and scoped repairs | UQC-204 (repair order) | [Local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-212.md) | Done | `b082d82636726fa1fc51178215a3e85d5bb8bbec`; canonical provider/configuration confirmed 2026-09-15 | Published clean handoff `abb1ecc`; [verification](FINDINGS.md#batch-7-greeter-implementation-and-verification--2026-09-15). [G01–G06 accepted](FINDINGS.md#batch-7-manual-acceptance--2026-09-15); separate G07 caret follow-up remains open. |
 | UQC-216 | `holonight-greeter` | G07 rendered investigation and bounded diagnostic kit; no speculative QML repair | UQC-212 | [Local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-216.md) | Done | `b7277a63625e07e74f491839ce5b5f6dd4dfdad6` | 2026-09-15: published clean diagnostic handoff; 8/8 CTests, four graphics cases, 16 launch modes and static/licensing checks pass. [Investigation](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15); [Manual diagnostic result](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16): scale 1 fails, fractional passes; no kit repeats. G07 open, Batch 7 closed. |
 | UQC-217 | `holonight-greeter` | G07 exact-geometry reproduction and QtQuick ownership handoff | UQC-216 | [Local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-217.md) | Done | `501d50cf29e2c3adbf1df3c7048d2637bc9c6924` | 2026-09-16: published clean handoff confirmed on canonical main; all eight exact cases match manual scale behavior, including plain QtQuick TextInput. Preserved opt-in failure; 8/8 standard CTests, 4/4 normal graphics and static/licensing pass. [Ownership handoff](FINDINGS.md#g07-exact-geometry-reproduction-and-qtquick-handoff--2026-09-16). G07 unrepaired/open; no new kit. |
+| UQC-218 | `holonight-greeter` | Transformed QtQuick caret diagnosis and bounded response-field layer evaluation | UQC-217 | [Local SDD](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-218.md) | Done | `20f788c4ae86926d8c940ec33229fca2ac3c1a55` | 2026-09-16: clean handoff published and confirmed on canonical main. Standalone source/pixel diagnosis; layer rejected for text softening despite eight visibility passes. 8/8 CTests, 4/4 normal graphics, static/lint/licensing pass. [Rejected experiment](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16). Production unchanged, G07 open, no repair kit. |
 | UQC-215 | `holonight-qt` | Repair layer-surface Qt logical coordinate conversion | UQC-211 evidence | [Package](UQC-215.md); [SDD](../../../holonight-qt/docs/sdd/layer-surface-logical-coordinates/SPEC.md) | Done | `0e0f92efe1517bc07c577299f07b51117f25f05a` | 2026-09-15: published provider repair; 4 real-backend scale combinations, 87 provider CTests, 164 shell and 11 AI hosting tests pass. S01 human repair acceptance passed in both styles. |
 | UQC-213 | `holonight-qt` | F06 shared window input policy and owned hover rendering | UQC-206 sizing | [Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-213.md) | Done | `2965d8dcd7d4f5a1361acfdab66688539e9c5d3e` (follow-up); original `4dfa803` | 2026-09-13: stationary-pointer scroll regression fails before repair; native delegate hover gating passes 8/8 focused and 73/73 full provider tests. Published origin/main revalidated. F06 reported Settings/greeter HoloNight sequence manually accepted 2026-09-13; see canonical findings. 2026-09-12: 73/73 provider CTests and final 11/11 focused/installed checks pass; canonical publication verified. The later reported HoloNight sequence acceptance supersedes the historical pending status. |
 | UQC-214 | `holonight-shell` | F07 deliberate pointer selection in launcher | Published UQC-213 | [Shell SDD](../../../holonight-shell/docs/sdd/unified-qtquick-controls/UQC-214.md) | Done | `f55cb5fc3b9ca7fd8f74f2b968836b5f36f9e235` | 2026-09-12: 1167/1167 local CTests, final four compiled input cases, QML lint/types and publication verified. F07 interaction manually passes both styles on 2026-09-13 with staged runtime verified; user confirms deliberate Fusion session shutdown (numeric exit unavailable). F07 accepted. |
@@ -2401,3 +2402,26 @@ remain failing and opt-in. Detailed results and commands live in the linked loca
 SDD. No repair kit or repeat human comparison is requested before a proven repair.
 No umbrella integration claim or integration test run is made: UQC-201 remains
 In Progress, the initiative Accepted, G07 open, UQC-216 Done and Batch 7 closed.
+
+### UQC-218 accepted diagnosis/rejection handoff — 2026-09-16
+
+Greeter `20f788c4ae86926d8c940ec33229fca2ac3c1a55` is clean and confirmed on
+canonical main with `git ls-remote` after publication. Pin updated only after
+that confirmation. Provider/configuration remain at the assigned baselines.
+The [evidence and disposition](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16)
+are recorded once in FINDINGS, with detailed implementation and commands in the
+local SDD and upstream report draft. No upstream submission was made.
+
+Verification on 2026-09-16: `ctest --test-dir build --output-on-failure` 8/8;
+`check-caret-graphics.py` ordinary normal/compact matrix 4/4; candidate mode
+4/4 graphics plus 4/4 isolated software; standalone diagnostic exits 1 at DPR 1
+and 0 at DPR 1.25 on both backends. Format/QML lint, static analysis of 15 owned
+translation units, Python compilation, REUSE 99/99 and diff checks pass. The
+layer fails the text-sharpness requirement, so there is no production repair,
+CI repair acceptance, UQC-218 kit release or request for four human comparisons.
+Native blink/resize acceptance and launch/relocated-install release checks were
+not entered after rejection. Existing released kits remain untouched.
+
+This checkpoint completes the bounded diagnosis/rejection package. UQC-201 stays
+In Progress, initiative Accepted, G07 open and Batch 7 closed. No umbrella
+integration checks were run; F05 and Batch 3 are excluded.

@@ -2150,3 +2150,39 @@ on canonical origin/main before the umbrella pin update. Its clean checkout,
 8/8 standard CTests, 4/4 normal/compact graphics cases, and static/licensing checks
 pass. All eight exact cases produce the expected failing/passing scale split;
 this is reproduction delivery, not a repair or manual acceptance.
+
+### G07 QtQuick diagnosis and rejected layer candidate — 2026-09-16
+
+UQC-218 takes the plan's rejected-experiment branch. **G07 remains open and
+production QML is unchanged.** The response-field layer restores visible native
+caret pixels in both styles, software/private-Sway OpenGL and DPR 1/1.25,
+including the recorded geometry and a subpixel sweep. Paired direct/layer
+captures show softer revealed text at panel scale 0.78, so the candidate does
+not meet the required preservation of text sharpness and is not adopted.
+
+The [local handoff](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-218.md)
+records exact baselines, scope, checks and limitations. The
+[upstream draft](../../../holonight-greeter/docs/sdd/unified-qtquick-controls/UQC-218-UPSTREAM.md)
+contains a standalone plain-QtQuick reproduction without Controls, HoloNight
+modules or platform theme, a matching Qt 6.11.2 source trace and sanitized pixel
+attachments. Both standalone backends reproduce zero pixels at DPR 1 and 23 at
+DPR 1.25. The source-supported explanation is non-antialiased subpixel rectangle
+coverage; the draft distinguishes measured facts from sampling inference.
+No upstream issue has been submitted.
+
+All eight opt-in layer visibility cases pass; these do not constitute visual
+acceptance. The original external diagnostic and its failing assertion remain
+intact. Normal CI stays enabled without pretending an unrepaired exact-geometry
+case is fixed. Native blink/resize acceptance and release checks were not
+completed after visual rejection and are not claimed as passes.
+
+No UQC-218 repair kit is released and no human repetition is requested. Existing
+released kits are preserved. Kit repair-mode work belongs to a successful repair
+branch and was not entered. A broader mitigation requires another plan. Preserve
+G01–G06, closed Batch 7, UQC-216/UQC-217 Done, UQC-201 In Progress and initiative
+Accepted; F05, Batch 3 and final ecosystem integration are outside this handoff.
+
+Verification: 8/8 standard CTests, 4/4 normal/compact OpenGL cases, formatting,
+QML lint/types, 15-translation-unit static analysis, Python compilation and
+REUSE 99/99 pass. Full private evidence is retained under `.cache/uqc218/`;
+manifest SHA-256 `b398fceec211aba95bbcaa12ece035cd02e2c0f6f94c0ce3717962522194966b`.

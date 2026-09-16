@@ -15,7 +15,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
 G07 is a separate open follow-up to closed Batch 7. UQC-216 delivered published
-bounded diagnostics and a verified kit. The [four manual comparisons](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) are complete: both scale-1 runs fail, both scale-1.25 runs pass. Reproduce the exact tiled geometry before repair; no repeats of this kit are requested.
+bounded diagnostics and a verified kit. The [four manual comparisons](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) are complete: both scale-1 runs fail, both scale-1.25 runs pass. UQC-217 reproduced the exact tiled geometry in plain QtQuick. UQC-218 [traces the Qt source and rejects the layer candidate for text softening](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16). G07 stays open with production unchanged; no new kit or human repeats are requested.
 
 Batch numbers remain stable for historical references. **Batch 5 is removed.**
 L01/L02 are incorrect application layouts, outside controls-unification scope.
