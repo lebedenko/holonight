@@ -1,13 +1,12 @@
 # UQC acceptance findings — canonical register
 
-Initiative **Accepted**; UQC-201 **In Progress**. Broad manual acceptance is paused
-until repairs are available. This register is authoritative for current findings;
+Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active. This register is authoritative for current findings;
 [GUIDED.md](GUIDED.md) and [TASKS.md](TASKS.md) retain chronological evidence,
 including superseded interpretations. Add new observations here once, and link
 from the ledger rather than copying the narrative into both historical documents.
 Current scope and dispositions below take precedence over dated historical reports.
-Batches 1–2 and Batch 3 rendering/background repairs are accepted. Remaining Batch 3
-diagnostics are separate; Tokodon chevron is deferred. Batch 5 is removed from this
+Batches 1–3 are closed. Batch 3 diagnostics are deferred, non-blocking historical
+findings; Tokodon chevron is deferred. Batch 5 is removed from this
 initiative, and Batch 7 is narrowed by the greeter review below.
 
 ## Evidence and interpretation
@@ -2256,3 +2255,22 @@ Production QML, public APIs and consumer sources are unchanged. No new immutable
 kit is necessary. UQC-219 Done for diagnosis; UQC-207/UQC-201 In Progress and
 initiative Accepted. All accepted rendering, G07 closure and unrelated dispositions
 are preserved; final Batch 8 integration was not run.
+
+## Batch 3 user-directed closure — 2026-09-16
+
+UQC-207 is **Done** and Batch 3 is **closed by user-directed disposition**.
+Accepted icons/menu/selection, Switch focus and dropdown backgrounds remain
+accepted. Busy-button focus is expected Qt behavior; Tokodon's existing chevron
+deferral is unchanged.
+
+ScrollBar warnings, the historical Haruna crash and Settings/Haruna Fusion hover
+are **deferred, non-blocking historical findings**. They are not described as fixed.
+[UQC-219](UQC-219.md) and the dated findings retain evidence, unsuccessful
+reproductions and ownership uncertainty. This disposition supersedes earlier
+open/research-pending instructions without deleting their history.
+
+Reopen only when a concrete recurrence blocks required functionality or final
+acceptance. No further investigation, instrumentation or manual comparisons solely
+for these findings. F05/P01 external findings remain documented; no upstream
+investigation or report submission is requested. UQC-201 stays In Progress and the
+initiative Accepted pending the final gates.

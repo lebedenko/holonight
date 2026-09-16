@@ -8,7 +8,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 |---|---|---|
 | 1 | D02, F07; publication | Complete: Settings Weather diagnostics and both launcher styles accepted; published handoffs recorded. |
 | 2 | A01, A02, A04 | Complete: shell Polkit identity rows, password/error visibility and fractional Askpass borders accepted; A03 cancellation preserved. |
-| 3 | Remaining UQC-207 / compatibility dispositions | Icons/menu/selection, Switch focus and dropdown backgrounds accepted; busy-button focus classified as expected Qt behavior. [UQC-219 diagnosis](UQC-219.md) is complete: ScrollBar diagnostic and historical Haruna crash remain open; Settings/Haruna Fusion hover remain research-pending. Tokodon chevron deferred; established external findings are not provider repairs. |
+| 3 | UQC-207 / compatibility dispositions | Closed by user-directed disposition: accepted rendering preserved; ScrollBar warnings, historical Haruna crash and Settings/Haruna Fusion hover deferred as non-blocking historical findings. Tokodon chevron deferral unchanged. [Closure](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
 | 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | S01/S02 accepted. F05 diagnosis complete: [external plain-Qt reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15), report draft prepared but not submitted. Exact upstream mechanism/repair remain open; no HoloNight repair owner or further variant runs. |
 | 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [G01–G06 acceptance](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
@@ -122,7 +122,9 @@ and the initiative Integrated. Account-dependent surfaces retain prerequisites;
 the accepted logged-out scope does not add account sign-in.
 
 
-## Current Batch 3 disposition — 2026-09-14
+## Historical Batch 3 disposition — 2026-09-14
+
+Superseded by the [user-directed closure](FINDINGS.md#batch-3-user-directed-closure--2026-09-16).
 
 Provider popup-background repair is published and pinned. Haruna icons, menu and
 selection, Switch feedback and backgrounds in all three third-party apps are

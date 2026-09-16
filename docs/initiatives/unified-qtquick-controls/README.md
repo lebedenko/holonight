@@ -2,8 +2,9 @@
 
 Status: Accepted
 
-Current scope and progress (2026-09-15): Batches 1–2 and Batch 3 rendering/background
-repairs are accepted; unresolved diagnostics and final integration remain open.
+Current scope and progress (2026-09-16): Batches 1–3 are closed; Batch 3 diagnostics
+are deferred, non-blocking historical findings by user-directed disposition. Final
+integration remains open.
 Tokodon’s intermittent chevron is deferred at the user’s request. **Batch 5 is
 removed:** Settings slider and AI Temperature layout defects belong to separate
 application-local SDD follow-ups, not this controls-unification initiative.
@@ -22,7 +23,8 @@ in HoloNight and Fusion at scale 1. The earlier specific windowed reproduction a
 UQC-216–218 investigations remain historical evidence. Windowed greeter use is
 outside the intended design and planned real scenarios. Production is unchanged;
 no G07 repair, upstream submission or further manual comparisons are planned.
-[UQC-219 Batch 3 diagnosis](UQC-219.md) is complete for its bounded handoff; ScrollBar and historical Haruna crash remain open, with Fusion hover research-pending for both applications.
+[UQC-219 Batch 3 diagnosis](UQC-219.md) is complete. UQC-207 is Done; see the
+[Batch 3 closure](FINDINGS.md#batch-3-user-directed-closure--2026-09-16).
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal
