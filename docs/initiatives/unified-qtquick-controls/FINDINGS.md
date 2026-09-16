@@ -1,5 +1,12 @@
 # UQC acceptance findings — canonical register
 
+Current repair checkpoint (2026-09-17): the user reopened **owned Settings**
+Weather hover and reported popup-label misalignment at both scales.
+[UQC-220](UQC-220.md) delivers the verified provider repair; focused manual
+acceptance is pending in a fresh kit. This supersedes only the owned Settings
+hover deferral, not the other Batch 3 historical dispositions. Further Batch 8
+coverage is paused until the [repair handoff](WEATHER-REPAIR.md) is reviewed.
+
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
 [GUIDED.md](GUIDED.md) and [TASKS.md](TASKS.md) retain chronological evidence,
@@ -2558,3 +2565,30 @@ UQC-220 Done for local delivery; human repair acceptance remains pending.
 The old final kit remains unchanged and must not be used to test the repair.
 A fresh [focused handoff](WEATHER-REPAIR.md) follows kit verification; no final
 integration claim or repeat third-party manual comparisons.
+
+## UQC-220 repair kit release — 2026-09-17
+
+Built with `python3 docs/initiatives/unified-qtquick-controls/prepare-rendering-kit.py --weather-repair`.
+Released immutable `/tmp/holonight-uqc207-t9ao_81w`; exact-prefix restoration and
+all 201 file hashes pass. Existing-path restoration refusal passes (exit 2).
+Archive `.cache/holonight-uqc207-t9ao_81w/holonight-uqc207-t9ao_81w.tar.gz`:
+SHA256 `1605cbbf179d16ead1990f4d49c42a2842937e2a1caf63306ba54add35810c91`.
+Exact six clean, published source revisions are recorded in kit `revisions.json`;
+provider is `7e101bd23661f21efe95cd11dad092069c68601d`.
+
+Dependency-order build/install, provider/AI/Settings compiled acceptance at both
+styles and scales 1/1.25 pass, with host provider masked. Twenty staged actual-app
+loading/origin/DPR runs pass; collector tests 14/14, Python parse and shell syntax
+pass. Commands and exits: `.cache/holonight-uqc207-t9ao_81w/results.jsonl`;
+logs and runtime evidence are alongside it. This focused kit does not replace
+final ecosystem integration or establish visual acceptance. Full affected final
+checks remain recorded in FINAL-ACCEPTANCE.md.
+
+[Human handoff](WEATHER-REPAIR.md) is limited to two Settings scale-1 runs in a
+fresh Sway session: default and Fusion, Weather row centering and both closed/row
+hover paths. Review returned evidence before requesting fractional coverage.
+No pointer, focus or credential automation. UQC-201 stays In Progress and the
+initiative Accepted; other historical deferrals and accepted evidence remain.
+
+Read-only package versions at release: qt6-base 6.11.2-3, qt6-declarative
+6.11.2-2, Sway 1:1.12-4, Haruna 1.8.1-2, NeoChat/Tokodon 26.08.1-1.

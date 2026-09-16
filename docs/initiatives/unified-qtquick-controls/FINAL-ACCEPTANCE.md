@@ -8,15 +8,22 @@ Gitlinks are authoritative. Verification began at closure checkpoint `3fcbe9c`;
 Settings subsequently advances only for the published documentation follow-up
 `0eb5028` (no implementation change). The released kit retains its exact baseline.
 
+Current implementation changed at published provider `7e101bd` for UQC-220.
+The earlier full integration results below remain evidence at their recorded
+baseline, not a claim of a full final-revision rerun after this repair. Provider
+local verification passes; focused Settings acceptance and affected final
+integration revalidation remain pending. The old final kit must not be used to
+validate the repaired controls.
+
 ## Reconciled requirements
 
 | Requirement | Classification | Evidence / remaining coverage |
 |---|---|---|
 | Repository implementation handoffs and local SDDs | Accepted with evidence | All active repository packages Done in [TASKS](TASKS.md); UQC-209/210 Superseded. UQC-207 closed by [user disposition](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
 | Clean, published compatible pins | Accepted with evidence | Fresh canonical audit and shared-contract review at the pinned revisions; do not adopt newer remote revisions automatically. |
-| Embedded default, Fusion override and explicit competing styles | Accepted with evidence | Fresh build and installed launch matrices for provider examples, shell/authentication, Settings, AI, packages and greeter. |
+| Embedded default, Fusion override and explicit competing styles | Automated verification required | Fresh build and installed launch matrices for provider examples, shell/authentication, Settings, AI, packages and greeter. |
 | Namespaced imports, attached properties and exceptions | Accepted with evidence | Provider and consumer policy checks and negative fixtures. |
-| Installed consumers and missing-module deployment failures | Accepted with evidence | Fresh isolated installation, host HoloNight hidden; require staged origins and reject build paths. |
+| Installed consumers and missing-module deployment failures | Automated verification required | Fresh isolated installation, host HoloNight hidden; require staged origins and reject build paths. |
 | Foreign control origins and explicit fallbacks | Manual verification required | Loading is already demonstrated, but maps are not per-control evidence. Correlate remaining reachable surfaces with created origins and actual DPR; classify HoloNight, Basic/Fusion, application-owned or inaccessible with reason. |
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
@@ -27,7 +34,7 @@ Settings subsequently advances only for the published documentation follow-up
 | Terminal/desktop/D-Bus activation | Manual verification required | Preserve [Settings bus](GUIDED.md#settings-d-bus-process-correlation--reviewed-2026-09-11), [desktop](GUIDED.md#settings-desktop-entry-process-correlation--reviewed-2026-09-11), AI bus and third-party desktop PID correlations. Fill only missing control-origin, outcome and applicable compositor coverage. |
 | Shipped systemd unit and wrapper | Manual verification required | Prior [transient shell](GUIDED.md#transient-systemd-shell-process-correlation--reviewed-2026-09-11) proves only transient execution. Exercise installed `holonight-shell.service` → `holonight-shell-systemd` in disposable login; record unit fragment/drop-ins, environment, actual PID and loaded origins, and restore prior manager state. |
 | Real pre-session greeter | Manual verification required | Use [isolated VT procedure](../../../holonight-greeter/docs/CAGE.md), staged launcher/provider and disposable login. Record successful login/session start, geometry and cleanup. Demo/fake backend tests do not substitute. |
-| Dependency-order builds/tests | Accepted with evidence | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; passing fresh results below. |
+| Dependency-order builds/tests | Automated verification required | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; passing fresh results below. |
 | Remaining app/compositor/style/scale matrix | Manual verification required | Haruna local clip; NeoChat/Tokodon logged-out surfaces; Qt hyprpolkitagent; owned Settings/AI/packages. Fill unresolved coverage in small reviewed batches, including scale 1/1.25 and HoloNight/Fusion. Preserve existing narrower observations and accepted scope. |
 | Final evidence ledger and integration decision | Manual verification required | Record revisions, commands/results, versions, evidence and limitations. Do not mark Integrated before all gates pass or receive explicit disposition. |
 

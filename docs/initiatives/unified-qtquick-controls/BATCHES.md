@@ -1,5 +1,12 @@
 # Completion batches
 
+Current repair checkpoint (2026-09-17): the user reopened **owned Settings**
+Weather hover and reported popup-label misalignment at both scales.
+[UQC-220](UQC-220.md) delivers the verified provider repair; focused manual
+acceptance is pending in a fresh kit. This supersedes only the owned Settings
+hover deferral, not the other Batch 3 historical dispositions. Further Batch 8
+coverage is paused until the [repair handoff](WEATHER-REPAIR.md) is reviewed.
+
 Execution order from the user plan, updated with scope corrections on 2026-09-14. UQC-201 remains In Progress;
 the initiative remains Accepted. Preserve existing accepted results unless affected
 by a later change. Record observations once in FINDINGS.md and link local SDDs.

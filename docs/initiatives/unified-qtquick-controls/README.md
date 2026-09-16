@@ -1,5 +1,12 @@
 # Unified Qt Quick Controls and Third-Party Compatibility
 
+Current repair checkpoint (2026-09-17): the user reopened **owned Settings**
+Weather hover and reported popup-label misalignment at both scales.
+[UQC-220](UQC-220.md) delivers the verified provider repair; focused manual
+acceptance is pending in a fresh kit. This supersedes only the owned Settings
+hover deferral, not the other Batch 3 historical dispositions. Further Batch 8
+coverage is paused until the [repair handoff](WEATHER-REPAIR.md) is reviewed.
+
 Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
 lists below are historical coverage records, not requests to repeat accepted work.
 
