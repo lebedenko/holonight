@@ -2497,3 +2497,13 @@ and exit 0. Diagnostic limitations remain explicit; Batch 3 stays closed.
 Next: [two Tokodon runs](BATCH8-TOKODON.md). Documentation links/whitespace checked;
 no product edits, tests, pin changes or released-kit modifications. UQC-201 stays
 In Progress and initiative Accepted.
+
+### Batch 8 Tokodon manual acceptance — 2026-09-16
+
+[Canonical review](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16)
+accepts both Sway DPR-1.25 runs: user-reported passes, matching release hashes and
+versions, verified staged mappings/origins and exit 0. Basic fallback and trace
+coverage limits are explicit; diagnostics do not reopen Batch 3. Next:
+[two Haruna runs](BATCH8-HARUNA.md). Documentation links/whitespace/licensing
+checked; no product tests, pin or released-kit changes. UQC-201 In Progress,
+initiative Accepted.

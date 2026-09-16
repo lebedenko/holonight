@@ -1,4 +1,8 @@
-# Batch 8 — Tokodon Sway fractional coverage
+# Batch 8 — Tokodon Sway fractional coverage (complete)
+
+Accepted: [reviewed evidence](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16).
+Do not repeat these runs. Next: [Haruna](BATCH8-HARUNA.md).
+Commands below are retained as provenance.
 
 NeoChat's two runs are [accepted](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16).
 Use the same immutable kit. This next batch contains only two Tokodon runs for

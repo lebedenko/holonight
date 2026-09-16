@@ -158,7 +158,8 @@ python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cach
 ```
 
 The first two-run handoff is [accepted](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16).
-Next action is [two Tokodon runs](BATCH8-TOKODON.md); review their evidence before
+Tokodon is also [accepted](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16).
+Next action is [two Haruna runs](BATCH8-HARUNA.md); review their evidence before
 assigning another batch. UQC-201 remains In Progress and the
 initiative Accepted; successful authentication and real pre-session operation are
 not waived or claimed by this release.
@@ -169,6 +170,7 @@ not waived or claimed by this release.
 | Application / coverage | Compositor | Style / measured DPR | Status and evidence |
 |---|---|---|---|
 | NeoChat logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16). Created ComboBox origins and application/composite boundaries recorded; diagnostics retained without a functional blocker. |
+| Tokodon logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16). ComboBox origins, observed Basic fallback and narrower Fusion trace recorded; no functional blocker. |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.

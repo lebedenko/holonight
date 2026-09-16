@@ -2335,3 +2335,47 @@ These are review-time hashes of supplied evidence, not pre-existing collection
 signatures. No source, pin or released-kit change; no product tests repeated.
 Next is [Tokodon Sway fractional coverage](BATCH8-TOKODON.md), two runs using the
 same verified kit. UQC-201 In Progress; initiative Accepted.
+
+## Batch 8 Tokodon Sway acceptance — 2026-09-16
+
+The user reports all requested logged-out text/focus, selector/scrolling and
+palette-round-trip checks passed with no observed issues in both styles.
+The [Tokodon handoff](BATCH8-TOKODON.md) is complete for Sway/DPR 1.25; do not
+repeat these scoped checks.
+
+| Style | Run in `sway-xt4fjcrj` | PID | Measured DPR | Exit |
+|---|---|---|---|---|
+| HoloNight | `tokodon-1789579305455355467` | 173768 | 1.25 | 0 |
+| Fusion | `tokodon-1789579441846949791` | 174047 | 1.25 | 0 |
+
+Reviewed `/tmp/res.txt` and `/tmp/sway-xt4fjcrj`, supplied copies of the real tux
+session evidence. Identity records active local UID 1001, seat0/tty3, session 9;
+PID metadata agrees with that session and requested selectors/staged paths.
+All 267 released-kit hashes and recorded package versions match. Tokodon is
+26.08.1-1, Qt base/declarative 6.11.2-3/6.11.2-2, Sway 1:1.12-4.
+Recomputed saved-map isolation passes for both processes; both saved exits are 0.
+Observers independently record DPR 1.25; output scale 1 is configured by the kit,
+not separately measured in the supplied session evidence.
+
+Created-object origins include HoloNight ComboBox.qml in the HoloNight run and
+Qt Fusion ComboBox.qml in the Fusion run. The HoloNight run additionally records
+Qt Basic DialogButtonBox.qml: explicit observed fallback, not an all-HoloNight
+claim. Other origins belong to Tokodon pages and Kirigami/FormCard composites;
+their inherited parts are not exhaustively classified. HoloNight visited more
+About/Shortcuts/server surfaces in the trace; the Fusion trace is narrower.
+User-reported completion accepts the requested interaction coverage, without
+claiming identical object inventories or accepting unvisited account surfaces.
+
+Both logs retain Kirigami ScrollablePage's null `flickable` TypeError. The
+HoloNight log also retains MessageDialog `Success`/null size diagnostics,
+AboutPage null width, FormDelegateBackground null `visibleChildren`, and the
+historical provider ScrollBar null `orientation` warning. No functional blocker
+was reported. These locations do not establish repair ownership; no investigation
+or repair is assigned. Batch 3 remains closed, chevron deferral unchanged, and
+P01 is not claimed fixed by the successful palette comparison.
+
+Selected logs/maps/metadata/exits, user notes, review-time hashes and review.json
+are preserved at `.cache/holonight-uqc201-final-yn9_fquf/manual-tokodon-sway/`.
+No profile credentials/cookies copied. No product, pin or immutable-kit change;
+no product tests repeated. Next: [two Haruna runs](BATCH8-HARUNA.md).
+UQC-201 remains In Progress and initiative Accepted.
