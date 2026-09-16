@@ -2418,3 +2418,43 @@ are preserved at `.cache/holonight-uqc201-final-yn9_fquf/manual-haruna-sway/`;
 no profile credentials/cookies copied. No source, pin or immutable-kit change;
 no product tests repeated. Next: [two read-only package-manager runs](BATCH8-PACKAGES.md).
 UQC-201 remains In Progress; initiative Accepted.
+
+## Batch 8 package-manager Sway acceptance — 2026-09-17
+
+The user reports all requested read-only search/category/focus, package-details/
+scrolling/arrow navigation and reachable popup/disabled-state checks passed in
+both runs with no issues observed. The [package-manager handoff](BATCH8-PACKAGES.md)
+is complete for Sway/DPR 1.25. No package transactions or repository refresh
+acceptance is claimed; no repeats requested for these scoped cells.
+
+| Style | Run in `sway-m49qel6p` | PID | Measured DPR | Exit |
+|---|---|---|---|---|
+| Embedded default (overrides unset) | `packages-1789594894628909407` | 211000 | 1.25 | 0 |
+| Fusion | `packages-1789595100475289015` | 211240 | 1.25 | 0 |
+
+Reviewed `/tmp/res.txt` and `/tmp/sway-m49qel6p`. Identity records active local
+tux UID 1001, seat0/tty3, session 9; session command uses the released Sway config.
+Process timestamps are 2026-09-16 21:41/21:45 UTC (2026-09-17 locally).
+All 267 release hashes and recorded package versions match. Qt base/declarative
+are 6.11.2-3/6.11.2-2; Sway is 1:1.12-4. Both executable paths identify the
+staged `prefix/bin/holonight-packages`; recomputed saved-map isolation passes,
+with the recorded selectors, session and staged paths matching. The default run
+has both style and configuration overrides unset; Fusion has only its style
+selector set. Both observers independently measure DPR 1.25 and saved exits are
+0. Output scale 1 is configured, not separately measured by the supplied evidence.
+
+Observed origins include HoloNight ComboBox/ToolTip and HnSearchField in the
+default run, Fusion ComboBox/ToolTip in the override run, and the application's
+filter tabs, toolbar, package table/rows/header, details and sidebar in both.
+These demonstrate the selected controls and application/composite boundaries,
+not exhaustive replacement of every inherited part. The targeted scan finds no
+TypeError, ReferenceError, binding-loop or QQmlApplicationEngine-failure matches
+in either log; this is not a blanket zero-diagnostics claim.
+
+Selected logs/maps/metadata/exits, notes and review-time hashes are preserved in
+`.cache/holonight-uqc201-final-yn9_fquf/manual-packages-sway/`, with review.py and
+review.json. No profile credentials/cookies copied. No product, pin or released-kit
+change; no product tests repeated. Next: [Settings at scale 1](BATCH8-SETTINGS.md).
+Prior accepted focus/dropdown repairs remain accepted. UQC-201 In Progress;
+initiative Accepted; all deferred findings and final authentication/service/
+pre-session gates unchanged.

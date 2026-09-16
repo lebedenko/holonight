@@ -2517,3 +2517,12 @@ application-owned boundaries retained; historical crash/hover deferrals unchange
 Next: [two read-only package-manager runs](BATCH8-PACKAGES.md). Documentation
 links/whitespace/licensing checked; no product tests, pin or released-kit changes.
 UQC-201 In Progress; initiative Accepted.
+
+### Batch 8 package-manager manual acceptance — 2026-09-17
+
+[Canonical review](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17)
+accepts both read-only Sway DPR-1.25 runs: user passes, 267 matching kit hashes,
+matching versions, staged binary/mappings, unset default versus Fusion selectors,
+created origins and exit 0. Next: [Settings scale-1 coverage](BATCH8-SETTINGS.md).
+Documentation links/whitespace/licensing checked; no product tests, pin or kit
+changes. UQC-201 In Progress; initiative Accepted; final human gates unchanged.

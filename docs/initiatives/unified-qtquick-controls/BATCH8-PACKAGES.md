@@ -1,4 +1,8 @@
-# Batch 8 — package-manager Sway fractional coverage
+# Batch 8 — package-manager Sway fractional coverage (complete)
+
+Accepted: [reviewed evidence](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
+Do not repeat these runs. Next: [Settings at scale 1](BATCH8-SETTINGS.md).
+Commands below are retained as provenance.
 
 Haruna's two runs are [accepted](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16).
 This batch adds two read-only Sway runs for the owned package-manager. Preserve
