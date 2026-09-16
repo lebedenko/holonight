@@ -2487,3 +2487,13 @@ Restoration helper accepts the final-kit name while retaining existing-path refu
 No product implementation/API changes, no upstream submission and no privileged
 launch. UQC-201 In Progress; initiative Accepted until final human gates pass or
 receive explicit disposition. Batch 3 closure remains its separate checkpoint.
+
+### Batch 8 NeoChat manual acceptance — 2026-09-16
+
+[Canonical evidence review](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16)
+accepts both Sway DPR-1.25 NeoChat runs, with user-reported interaction/palette
+passes, verified kit hashes, versions, staged mappings, created ComboBox origins
+and exit 0. Diagnostic limitations remain explicit; Batch 3 stays closed.
+Next: [two Tokodon runs](BATCH8-TOKODON.md). Documentation links/whitespace checked;
+no product edits, tests, pin changes or released-kit modifications. UQC-201 stays
+In Progress and initiative Accepted.

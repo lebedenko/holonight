@@ -2289,3 +2289,49 @@ before preparing the next manual batch. Successful authentication, shipped syste
 service/wrapper operation and real pre-session greeter use remain final gates;
 no privileged launch or authentication challenge has been performed here.
 UQC-201 stays In Progress; initiative Accepted.
+
+## Batch 8 NeoChat Sway acceptance — 2026-09-16
+
+The user reports all three requested checks passed with no observed issues in
+both runs: logged-out text editing/Tab traversal, reachable settings/selectors
+and fractional scrolling/row reachability, plus the requested palette round trip.
+The first [two-run handoff](BATCH8-HANDOFF.md) is complete; no NeoChat repeats
+are requested for this scoped Sway/DPR-1.25 coverage.
+
+| Style | Run in `sway-zb64ybrm` | PID | Measured DPR | Exit |
+|---|---|---|---|---|
+| HoloNight | `neochat-1789576971952072995` | 169955 | 1.25 | 0 |
+| Fusion | `neochat-1789577196622721077` | 170255 | 1.25 | 0 |
+
+Reviewed the supplied `/tmp/res.txt` and `/tmp/sway-zb64ybrm` copy of the original
+`/home/tux/uqc-guided-evidence/sway-zb64ybrm` session. Identity records active local
+tux UID 1001, seat0/tty3, session 7. Session command selects the released Sway
+configuration (configured output scale 1); effective output scale is not separately
+captured, while both application observers independently measure DPR 1.25.
+Recorded package versions match the release inventory, including NeoChat 26.08.1-1,
+Qt base 6.11.2-3 / declarative 6.11.2-2 and Sway 1:1.12-4.
+
+All 267 release hashes match. Recomputed saved-map isolation passes in both runs;
+PID metadata agrees with the style, scale, staged paths and session. Observer
+records identify created popup objects originating from HoloNight ComboBox.qml
+and Qt Fusion ComboBox.qml respectively. Other observed controls originate in
+NeoChat pages and Kirigami/FormCard composites; those are application/composite
+origins, not proof that every inherited standard-control part was replaced.
+Keep that boundary explicit; no blanket all-controls claim. Palette readability
+and interaction are user acceptance, not inferred from process maps.
+
+Diagnostics are not absent: both runs contain Kirigami ScrollablePage's null
+`flickable` TypeError; HoloNight also contains NeoChat RoomDrawer's
+`roomDrawerWidth` binding loop and the historical provider ScrollBar null
+`orientation` warning. The user reports no functional blocker. Preserve these
+lines as observations; do not reopen Batch 3, infer ownership beyond the reported
+locations, investigate upstream or describe them as repaired. F05/P01 dispositions
+are unchanged; this palette pass does not establish that P01 was fixed.
+
+Selected raw evidence, user notes, computed file hashes and `review.json` are
+preserved under `.cache/holonight-uqc201-final-yn9_fquf/manual-neochat-sway/`.
+Only logs/metadata/maps/outcomes were copied, not profile credentials or cookies.
+These are review-time hashes of supplied evidence, not pre-existing collection
+signatures. No source, pin or released-kit change; no product tests repeated.
+Next is [Tokodon Sway fractional coverage](BATCH8-TOKODON.md), two runs using the
+same verified kit. UQC-201 In Progress; initiative Accepted.

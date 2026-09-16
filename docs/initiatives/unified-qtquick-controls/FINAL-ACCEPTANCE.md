@@ -157,7 +157,18 @@ If the kit path is absent, from the umbrella root:
 python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc201-final-yn9_fquf/holonight-uqc201-final-yn9_fquf.tar.gz
 ```
 
-Next action is the [two-run handoff](BATCH8-HANDOFF.md). No later manual batch is
-assigned until its evidence is reviewed. UQC-201 remains In Progress and the
+The first two-run handoff is [accepted](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16).
+Next action is [two Tokodon runs](BATCH8-TOKODON.md); review their evidence before
+assigning another batch. UQC-201 remains In Progress and the
 initiative Accepted; successful authentication and real pre-session operation are
 not waived or claimed by this release.
+
+
+## Manual coverage accepted after release
+
+| Application / coverage | Compositor | Style / measured DPR | Status and evidence |
+|---|---|---|---|
+| NeoChat logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16). Created ComboBox origins and application/composite boundaries recorded; diagnostics retained without a functional blocker. |
+
+This closes those scoped cells only. Other application/compositor/activation,
+successful authentication and real pre-session gates remain pending.

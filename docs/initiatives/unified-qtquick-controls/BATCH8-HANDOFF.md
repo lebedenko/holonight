@@ -1,4 +1,8 @@
-# Batch 8 — first unresolved coverage batch
+# Batch 8 — first coverage batch (complete)
+
+Accepted on 2026-09-16: [reviewed NeoChat evidence](FINDINGS.md#batch-8-neochat-sway-acceptance--2026-09-16).
+Do not repeat these runs. Next: [Tokodon](BATCH8-TOKODON.md).
+The commands below are retained as provenance.
 
 Use only the released kit recorded below; preparation must have created READY.
 The [final checklist](FINAL-ACCEPTANCE.md) preserves all completed acceptance.
