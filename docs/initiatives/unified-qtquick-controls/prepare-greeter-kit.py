@@ -16,7 +16,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
     parser.add_argument('--g07', action='store_true')
+    parser.add_argument('--fullscreen', action='store_true',
+                        help='prepare two scale-1 G07 fullscreen comparisons')
     args = parser.parse_args()
+    if args.fullscreen:
+        args.g07 = True
     docs = Path(__file__).resolve().parent
     root = docs.parents[2]
     package = 'uqc216' if args.g07 else 'uqc212'
@@ -84,10 +88,13 @@ def main():
     shutil.copy2(root / 'holonight-qt/docs/sdd/unified-qtquick-controls/audit/auth-test/terminal.sh', kit)
     terminal = f'/bin/sh {kit}/terminal.sh'
     (kit / 'sway.conf').write_text(f'output * scale 1\nexec {terminal}\n'
-        f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\nbindsym Mod4+q kill\n')
+        f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\nbindsym Mod4+q kill\n'
+        'bindsym Ctrl+f fullscreen toggle\n')
     packages = ('qt6-base', 'qt6-declarative', 'hyprpolkitagent', 'sway', 'hyprland')
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    (kit / 'README.md').write_text((docs / ('GREETER-G07.md' if args.g07 else 'GREETER-BATCH7.md')).read_text().replace('__KIT__', str(kit)))
+    checklist = ('GREETER-G07-FULLSCREEN.md' if args.fullscreen else
+                 'GREETER-G07.md' if args.g07 else 'GREETER-BATCH7.md')
+    (kit / 'README.md').write_text((docs / checklist).read_text().replace('__KIT__', str(kit)))
     mask = ['bwrap', '--die-with-parent', '--bind', '/', '/', '--dev', '/dev', '--proc', '/proc']
     for base in ('/usr/lib', '/usr/local/lib'):
         module = Path(base) / 'qt6/qml/Holonight'
@@ -115,7 +122,9 @@ def main():
         f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(kit)}'
         for path in sorted(kit.rglob('*')) if path.is_file() and path.name != 'SHA256SUMS') + '\n')
     (kit / 'READY').write_text(('G07 diagnostic kit' if args.g07 else 'Batch 7') +
-                               ' locally verified; four Sway manual runs pending.\n')
+                               ' locally verified; ' +
+                               ('two fullscreen' if args.fullscreen else 'four') +
+                               ' Sway manual runs pending.\n')
     archive = work / (kit.name + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as saved:
         saved.add(kit, arcname=kit.name)

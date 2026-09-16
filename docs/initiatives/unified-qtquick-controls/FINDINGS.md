@@ -2186,3 +2186,45 @@ Verification: 8/8 standard CTests, 4/4 normal/compact OpenGL cases, formatting,
 QML lint/types, 15-translation-unit static analysis, Python compilation and
 REUSE 99/99 pass. Full private evidence is retained under `.cache/uqc218/`;
 manifest SHA-256 `b398fceec211aba95bbcaa12ece035cd02e2c0f6f94c0ce3717962522194966b`.
+
+### G07 fullscreen acceptance and closure — 2026-09-16
+
+**Closed — not an issue for intended fullscreen greeter use**, at the user's
+request. Both HoloNight and Fusion pass the two-test fullscreen comparison at
+compositor scale 1 and actual Qt DPR 1. The user observed a clearly visible
+blinking caret in the focused empty password field, while populated, and after
+Backspace clears all characters. Tab/Shift+Tab hides/restores the caret as the
+field loses/regains focus. No issues were observed.
+
+The previous missing-caret reproduction is retained as a specific windowed
+geometry observation. Windowed greeter use is outside the intended design and
+planned real scenarios; it does not warrant a product repair. Settings and AI
+windowed testing has not reproduced this issue. This is a scope disposition based
+on the successful intended-use comparison, not a claim that the underlying
+exact-geometry QtQuick rendering behavior was repaired or cannot occur elsewhere.
+No G07 repair, upstream submission or further manual comparisons are planned.
+This closure supersedes earlier G07-open and repair-follow-up statements.
+
+Reviewed `/tmp/res.txt` and `/tmp/sway-pdcyf6x6`, collected with immutable kit
+`/tmp/holonight-uqc216-5kx47zdb`. The active local `tux` session was on tty3;
+output eDP-1 is 2560×1600 at scale 1. Both logs transition from 1276×1571 windowed
+geometry to 2560×1600 fullscreen geometry. Style origins and isolation records
+confirm staged runtime use; both exits are 0.
+
+| Run suffix / PID | Style | Fullscreen / DPR | Fullscreen samples / empty focused | User result | Exit |
+|---|---|---|---|---|---|
+| 1789548197191917992 / 24946 | HoloNight | 2560×1600 / 1 | 161 / 78 | Pass | 0 |
+| 1789548252123856083 / 25061 | Fusion | 2560×1600 / 1 | 199 / 103 | Pass | 0 |
+
+Both runs record empty/populated and focused/unfocused fullscreen states. Visual
+caret/blink acceptance comes from the user's observations; this review did not
+rerun a pixel-analysis test. Selected raw evidence, transcript and independent
+`verification.json` are preserved in `.cache/uqc216-fullscreen-manual/`, excluding
+session profiles and shader caches. SHA256SUMS manifest SHA-256:
+`9be0a7d4280a78f1ac4d05aa9339c915d6fc6ed4f4056c19d8860902c8faa7fb`.
+
+Documentation-only disposition: no product source, gitlink, released kit or
+existing opt-in diagnostic changed. UQC-212/UQC-216/UQC-217/UQC-218 remain Done,
+Batch 7 closed, UQC-201 In Progress and the initiative Accepted. F05 and remaining
+ecosystem integration gates retain their dispositions. Product tests were not
+rerun because no implementation changed.

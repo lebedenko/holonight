@@ -16,8 +16,12 @@ UQC-215 provider coordinate repair is published and locally verified;
 an [external Qt/Hyprland reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
 in plain Qt. The [upstream-report draft](f05/UPSTREAM-REPORT.md) is prepared, not submitted;
 exact mechanism and repair remain open. See [the current handoff](BATCH6-HANDOFF.md).
-Batch 7 G01–G06 checks are [manually accepted](FINDINGS.md#batch-7-manual-acceptance--2026-09-15) in all four runs; UQC-212 is Done. Separate G07 empty-password caret visibility remains open: UQC-216 published a
-[rendered investigation and bounded diagnostics](FINDINGS.md#g07-rendered-investigation-and-diagnostic-handoff--2026-09-15), without a speculative QML repair. The [G07 manual results](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) confirm scale-1 failure in both styles and expose missing automated coverage at panel scale 0.78. The four requested comparisons are complete. UQC-217 subsequently [reproduced the exact geometry in plain QtQuick](FINDINGS.md#g07-exact-geometry-reproduction-and-qtquick-handoff--2026-09-16). UQC-218 adds [source diagnosis and a rejected layer experiment](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16): caret visibility improves, but text softening prevents adoption. Production is unchanged; G07 stays open and no new kit or human repeat is requested.
+Batch 7 G01–G06 checks are [manually accepted](FINDINGS.md#batch-7-manual-acceptance--2026-09-15); UQC-212 is Done.
+**G07 is closed as not an issue for intended fullscreen use**, following [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16)
+in HoloNight and Fusion at scale 1. The earlier specific windowed reproduction and
+UQC-216–218 investigations remain historical evidence. Windowed greeter use is
+outside the intended design and planned real scenarios. Production is unchanged;
+no G07 repair, upstream submission or further manual comparisons are planned.
 The sections labelled as dated checkpoints below preserve historical evidence.
 
 ## Goal

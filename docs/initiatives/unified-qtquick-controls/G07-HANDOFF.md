@@ -1,5 +1,9 @@
 # G07 — empty-password caret diagnostic handoff
 
+**Current disposition: G07 closed as not an issue for intended fullscreen use.**
+Both fullscreen style comparisons passed; see [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16).
+The procedure and earlier status statements below are historical; no repeats are requested.
+
 The four manual comparisons are complete. [Results and pixel evidence](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) confirm the missing empty caret at scale 1 in both styles; scale 1.25 passes. G07 remains open. No repeat runs are requested.
 
 The released 2026-09-15 instructions below are retained as provenance; production QML is unchanged.

@@ -11,11 +11,13 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 3 | Remaining UQC-207 / compatibility dispositions | Icons/menu/selection, Switch focus and dropdown backgrounds accepted; busy-button focus classified as expected Qt behavior. Remaining provider ScrollBar diagnostic, historical Haruna crash and Fusion hover need resolution or explicit disposition. Tokodon chevron deferred; established external findings are not provider repairs. |
 | 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | S01/S02 accepted. F05 diagnosis complete: [external plain-Qt reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15), report draft prepared but not submitted. Exact upstream mechanism/repair remain open; no HoloNight repair owner or further variant runs. |
-| 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [Acceptance and separate G07 caret follow-up](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
+| 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [G01–G06 acceptance](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
 | 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
 
-G07 is a separate open follow-up to closed Batch 7. UQC-216 delivered published
-bounded diagnostics and a verified kit. The [four manual comparisons](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16) are complete: both scale-1 runs fail, both scale-1.25 runs pass. UQC-217 reproduced the exact tiled geometry in plain QtQuick. UQC-218 [traces the Qt source and rejects the layer candidate for text softening](FINDINGS.md#g07-qtquick-diagnosis-and-rejected-layer-candidate--2026-09-16). G07 stays open with production unchanged; no new kit or human repeats are requested.
+G07 is closed as not an issue for intended fullscreen use; both scale-1 style
+comparisons passed. See [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16).
+The specific windowed reproduction and UQC-216–218 investigations are retained
+as historical evidence. Production is unchanged and no G07 follow-up is planned.
 
 Batch numbers remain stable for historical references. **Batch 5 is removed.**
 L01/L02 are incorrect application layouts, outside controls-unification scope.

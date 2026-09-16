@@ -1,5 +1,9 @@
 # G07 — empty-password caret diagnostic comparison
 
+**Current disposition: G07 closed as not an issue for intended fullscreen use.**
+Both fullscreen style comparisons passed; see [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16).
+The procedure and earlier status statements below are historical; no repeats are requested.
+
 The four requested runs are complete: [manual results](FINDINGS.md#g07-manual-diagnostic-result--2026-09-16). No repeats are requested; the procedure below is historical.
 
 G07 remains open. Automated production-QML cases pass on software and isolated
