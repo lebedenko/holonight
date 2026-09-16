@@ -1,5 +1,8 @@
 # UQC-201 automated integration evidence
 
+Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
+lists below are historical coverage records, not requests to repeat accepted work.
+
 Verification date: 2026-09-09. Status: **In Progress**. Initiative: **Accepted**.
 Manual acceptance remains pending in [the user-operated kit](MANUAL.md).
 UQC-202/UQC-203 repairs and fresh passing gate rechecks are appended below;

@@ -12,7 +12,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | S01/S02 accepted. F05 diagnosis complete: [external plain-Qt reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15), report draft prepared but not submitted. Exact upstream mechanism/repair remain open; no HoloNight repair owner or further variant runs. |
 | 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [G01–G06 acceptance](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
-| 8 | Remaining UQC-201 | Final ecosystem acceptance at clean published pins. |
+| 8 | Remaining UQC-201 | In Progress: [reconciled final checklist](FINAL-ACCEPTANCE.md), fresh automated verification and unresolved manual gates at clean published pins. |
 
 G07 is closed as not an issue for intended fullscreen use; both scale-1 style
 comparisons passed. See [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16).

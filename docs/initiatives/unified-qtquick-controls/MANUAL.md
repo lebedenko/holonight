@@ -1,5 +1,8 @@
 # UQC-201 user-operated acceptance
 
+Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
+lists below are historical coverage records, not requests to repeat accepted work.
+
 Status: **Pending**. Follow [guided batches](GUIDED.md) using the new accessible
 kit, Hyprland first and then Sway in a fresh tux login. Run each gate in both.
 Automated origin,

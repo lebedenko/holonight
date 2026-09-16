@@ -1,5 +1,8 @@
 # Unified Qt Quick Controls and Third-Party Compatibility
 
+Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
+lists below are historical coverage records, not requests to repeat accepted work.
+
 Status: Accepted
 
 Current scope and progress (2026-09-16): Batches 1–3 are closed; Batch 3 diagnostics

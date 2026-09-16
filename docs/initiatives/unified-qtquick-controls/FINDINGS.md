@@ -1,6 +1,7 @@
 # UQC acceptance findings — canonical register
 
-Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active. This register is authoritative for current findings;
+Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
+[reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
 [GUIDED.md](GUIDED.md) and [TASKS.md](TASKS.md) retain chronological evidence,
 including superseded interpretations. Add new observations here once, and link
 from the ledger rather than copying the narrative into both historical documents.
@@ -2274,3 +2275,17 @@ acceptance. No further investigation, instrumentation or manual comparisons sole
 for these findings. F05/P01 external findings remain documented; no upstream
 investigation or report submission is requested. UQC-201 stays In Progress and the
 initiative Accepted pending the final gates.
+
+## Batch 8 automated acceptance and first handoff — 2026-09-16
+
+Fresh dependency-order and installed checks at the clean published gitlinks pass;
+see [results, versions and remaining gates](FINAL-ACCEPTANCE.md). No production
+behavior or public API changed. Batch 3 remains closed with its user-directed
+deferrals, and completed acceptance from other batches is preserved.
+
+The [first short handoff](BATCH8-HANDOFF.md) covers only NeoChat Sway fractional
+control-origin/interaction/palette gaps in two styles. Review both evidence paths
+before preparing the next manual batch. Successful authentication, shipped systemd
+service/wrapper operation and real pre-session greeter use remain final gates;
+no privileged launch or authentication challenge has been performed here.
+UQC-201 stays In Progress; initiative Accepted.
