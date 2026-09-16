@@ -2458,3 +2458,58 @@ change; no product tests repeated. Next: [Settings at scale 1](BATCH8-SETTINGS.m
 Prior accepted focus/dropdown repairs remain accepted. UQC-201 In Progress;
 initiative Accepted; all deferred findings and final authentication/service/
 pre-session gates unchanged.
+
+## Batch 8 Settings fractional results and composition disposition — 2026-09-17
+
+The submitted commands used **scale 1.25**, although the handoff requested scale
+1. Observer measurements independently confirm DPR 1.25 in both runs. Preserve
+these successful fractional results; the requested scale-1 cells remain pending.
+Do not rerun scale 1.25 or use these results to claim scale-1 acceptance.
+
+| Style | Run in `sway-adk_476k` | PID | Measured DPR | Exit |
+|---|---|---|---|---|
+| Embedded default | `settings-1789596069053077199` | 214268 | 1.25 | 0 |
+| Fusion | `settings-1789596751444043230` | 214776 | 1.25 | 0 |
+
+The user reports all default checks passed. The Fusion report identifies an
+Appearance/Weather dropdown visual difference and explicitly disposes it as
+non-blocking, requesting only investigation and a separate Settings-local SDD.
+No functional blocker is reported for the scoped fractional checks; accept with
+that disposition, without claiming the visual difference was repaired.
+
+Reviewed `/tmp/res.txt` and `/tmp/sway-adk_476k`: active local tux UID 1001,
+seat0/tty3, session 9, released Sway config. All 267 kit hashes and recorded
+package versions match. Both binaries are the staged holonight-settings; saved
+map isolation, default-unset/Fusion selectors, session correlation and exits pass.
+Qt base/declarative are 6.11.2-3/6.11.2-2, Sway 1:1.12-4. Output scale 1 is
+configured, not separately measured. Both logs contain HnIconComboBox and
+Appearance/Weather objects, with the expected HoloNight/Fusion ComboBox origins.
+The targeted QML error scan has no TypeError, ReferenceError, binding-loop or
+engine-load-failure matches. This is not a blanket zero-diagnostics claim.
+
+### Bounded composition investigation
+
+Appearance uses four HnIconComboBox font selectors; Weather uses six ordinary
+Controls.ComboBox selectors. The shared composite replaces palette, font/metrics,
+content, frame, popup and delegate presentation with HoloNight composition, but
+inherits the runtime style's indicator. This explains the Fusion triangle amid
+HoloNight composite visuals. Weather leaves those presentation slots to Fusion.
+This is the application's control-composition choice, not evidence of failed
+runtime style selection or an unauthorized direct-style import.
+
+Detailed source analysis, inspected revisions, ownership and unassigned future
+implementation criteria are in the [Settings-local SDD](../../../holonight-settings/docs/sdd/dropdown-composition-consistency/SPEC.md).
+The investigation is complete; no production repair, additional comparison solely
+for this finding, or provider change is assigned. The user's non-blocking
+application-local disposition is retained outside UQC integration gates.
+
+Published documentation-only Settings `0eb5028e206e12791ecbe6c2404bc37c39a4962a`
+and confirmed canonical origin/main before pinning. Its diff from kit baseline
+`2508635` contains only the new SDD; the immutable kit and automated/runtime
+acceptances remain valid for unchanged implementation. No rebuild or product-test
+rerun is needed for this documentation change. All other gitlinks unchanged.
+
+Selected evidence and review-time hashes are retained under
+`.cache/holonight-uqc201-final-yn9_fquf/manual-settings-sway/`; no profile
+credentials/cookies copied. Next: the [two originally requested scale-1 runs](BATCH8-SETTINGS.md).
+UQC-201 In Progress; initiative Accepted; prior deferrals and final gates unchanged.

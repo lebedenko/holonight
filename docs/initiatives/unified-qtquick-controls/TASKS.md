@@ -2526,3 +2526,15 @@ matching versions, staged binary/mappings, unset default versus Fusion selectors
 created origins and exit 0. Next: [Settings scale-1 coverage](BATCH8-SETTINGS.md).
 Documentation links/whitespace/licensing checked; no product tests, pin or kit
 changes. UQC-201 In Progress; initiative Accepted; final human gates unchanged.
+
+### Batch 8 Settings fractional review and local follow-up — 2026-09-17
+
+[Canonical review](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
+verifies two DPR-1.25 runs, not requested scale 1: matching hashes/versions,
+staged executable/maps, selectors and exit 0. Fractional results accepted with
+user-directed non-blocking composition disposition; scale 1 remains pending.
+The requested bounded investigation is complete in the [Settings-local SDD](../../../holonight-settings/docs/sdd/dropdown-composition-consistency/SPEC.md).
+Published `0eb5028e206e12791ecbe6c2404bc37c39a4962a`, confirmed canonical main and
+clean Settings before updating only its documentation pin. Kit unchanged; no
+production/API change or repeated product tests. Documentation links, whitespace
+and licensing checked. UQC-201 In Progress; initiative Accepted.

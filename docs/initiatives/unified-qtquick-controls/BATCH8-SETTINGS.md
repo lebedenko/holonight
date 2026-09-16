@@ -1,5 +1,11 @@
 # Batch 8 — Settings Sway scale-1 coverage
 
+Update 2026-09-17: the submitted runs used **1.25**, not 1. Their
+[fractional results and non-blocking composition disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
+are accepted. Do not repeat 1.25. The two **`--scale 1`** commands below remain
+pending. Do not investigate or compare the Appearance/Weather visual difference
+again; it is recorded in a separate local SDD.
+
 Package-manager's fractional runs are [accepted](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
 This batch fills Settings' remaining Sway scale-1 interaction/origin coverage in
 two styles. Earlier fractional focus and dropdown acceptance stays closed; this

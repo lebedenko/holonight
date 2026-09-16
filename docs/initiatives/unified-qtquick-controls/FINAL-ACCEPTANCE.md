@@ -4,7 +4,9 @@ Status: In Progress, updated 2026-09-17. Initiative Accepted; UQC-201 In Progres
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
-Gitlinks at the Batch 3 closure checkpoint `3fcbe9c` are authoritative.
+Gitlinks are authoritative. Verification began at closure checkpoint `3fcbe9c`;
+Settings subsequently advances only for the published documentation follow-up
+`0eb5028` (no implementation change). The released kit retains its exact baseline.
 
 ## Reconciled requirements
 
@@ -161,8 +163,8 @@ The first two-run handoff is [accepted](FINDINGS.md#batch-8-neochat-sway-accepta
 Tokodon is also [accepted](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16).
 Haruna is also [accepted](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16).
 Package-manager is [accepted](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
-Next action is [Settings at scale 1](BATCH8-SETTINGS.md); review its evidence
-before assigning another batch. UQC-201 remains In Progress and the
+Submitted Settings runs measured 1.25; [accepted fractional results and local follow-up](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
+do not fill scale 1. Next: the [two pending scale-1 runs](BATCH8-SETTINGS.md). UQC-201 remains In Progress and the
 initiative Accepted; successful authentication and real pre-session operation are
 not waived or claimed by this release.
 
@@ -175,6 +177,7 @@ not waived or claimed by this release.
 | Tokodon logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16). ComboBox origins, observed Basic fallback and narrower Fusion trace recorded; no functional blocker. |
 | Haruna local playback/menus, settings editing/navigation/selectors and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16). Provider/Fusion origins and application/fallback boundaries recorded. |
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
+| Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); requested scale 1 remains pending. Separate Settings-local SDD, no UQC repair. |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.
