@@ -16,6 +16,7 @@ import tempfile
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--resume', type=Path)
+    parser.add_argument('--weather-repair', action='store_true', help='prepare UQC-220 Settings verification')
     parser.add_argument('--s01-repair', action='store_true', help='release the provider repair with a repair-only checklist')
     parser.add_argument('--batch6', action='store_true', help='prepare shell and AI VT-return investigation')
     parser.add_argument('--dropdown-only', action='store_true', help='prepare scale-1 dropdown acceptance without consumer rebuilds')
@@ -23,7 +24,7 @@ def main():
     args = parser.parse_args()
     if args.s01_repair:
         args.batch6 = True
-    if sum((args.palette_only, args.dropdown_only, args.batch6)) > 1:
+    if sum((args.palette_only, args.dropdown_only, args.batch6, args.weather_repair)) > 1:
         parser.error('choose one focused batch')
     focused = args.dropdown_only or args.palette_only
     kit_prefix = 'holonight-uqc211-' if args.batch6 else ('holonight-uqc208-' if args.palette_only else 'holonight-uqc207-')
@@ -118,18 +119,18 @@ def main():
     terminal = f'/bin/sh {kit}/terminal.sh'
     (kit / 'hyprland.conf').write_text(f'monitor = , preferred, auto, 1\nexec-once = {terminal}\n'
         f'bind = SUPER, Return, exec, {terminal}\nbind = SUPER SHIFT, E, exit,\nbind = SUPER, Q, killactive,\n')
-    if args.batch6:
+    if args.batch6 or args.weather_repair:
         (kit / 'sway.conf').write_text(f'output * scale 1\nexec {terminal}\n'
             f'bindsym Mod4+Return exec {terminal}\nbindsym Mod4+Shift+e exit\n')
     packages = ['haruna', 'neochat', 'tokodon', 'qt6-base', 'qt6-declarative', 'kirigami', 'kirigami-addons', 'hyprpolkitagent', 'hyprland', 'sway']
     (kit / 'PROVIDER.txt').write_text(subprocess.check_output(['pacman', '-Q', *packages], text=True))
-    guide = (docs / ('S01-REPAIR.md' if args.s01_repair else 'SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit))
+    guide = (docs / ('WEATHER-REPAIR.md' if args.weather_repair else 'S01-REPAIR.md' if args.s01_repair else 'SHELL-BATCH6.md' if args.batch6 else ('PALETTE-BATCH4.md' if args.palette_only else 'RENDERING-BATCH3.md'))).read_text().replace('__KIT__', str(kit))
     if args.batch6:
         guide = re.sub(r'/tmp/holonight-uqc211-[a-z0-9_]+', str(kit), guide)
     (kit / 'README.md').write_text(guide)
     env = dict(os.environ, LD_LIBRARY_PATH=str(prefix / 'lib'), PYTHONDONTWRITEBYTECODE='1')
     mask = []
-    if args.batch6:
+    if args.batch6 or args.weather_repair:
         mask = ['bwrap', '--die-with-parent', '--bind', '/', '/', '--dev', '/dev', '--proc', '/proc']
         for base in ('/usr/lib', '/usr/local/lib'):
             module = Path(base) / 'qt6/qml/Holonight'
@@ -176,7 +177,7 @@ def main():
             'python3', docs / 'verify-shell-kit.py', kit, work / 'runtime'])
         run('batch6-observer-tests', ['python3', docs / 'verify-session-observer.py', prefix, work / 'observer'])
     else:
-        run('actual-staged-processes', ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
+        run('actual-staged-processes', mask + ['python3', root / 'holonight-shell/scripts/run-isolated-test.py',
             'python3', docs / 'verify-rendering-kit.py', kit, '--logs', work / 'runtime', '--diagnostics',
             *(['--dropdown-only'] if focused else []), *(['--palette-diagnostics'] if args.palette_only else [])], env)
     run('collector-tests', ['python3', root / 'tests/test_guided_app.py'])

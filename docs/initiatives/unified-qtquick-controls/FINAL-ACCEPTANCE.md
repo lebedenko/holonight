@@ -164,7 +164,9 @@ Tokodon is also [accepted](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-
 Haruna is also [accepted](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16).
 Package-manager is [accepted](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
 Submitted Settings runs measured 1.25; [accepted fractional results and local follow-up](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
-do not fill scale 1. Next: the [two pending scale-1 runs](BATCH8-SETTINGS.md). UQC-201 remains In Progress and the
+do not fill scale 1. Scale-1 runs now report [Weather defects](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17).
+Manual coverage pauses for UQC-220 repair; earlier Settings fractional acceptance
+is qualified by the new scale-independent label and hover findings. UQC-201 remains In Progress and the
 initiative Accepted; successful authentication and real pre-session operation are
 not waived or claimed by this release.
 
@@ -181,3 +183,9 @@ not waived or claimed by this release.
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.
+
+
+Settings status correction, 2026-09-17: [latest failures and provider ownership](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17)
+supersede the prior Settings pass interpretation for the affected controls at
+both scales. Successful process verification is retained; visual acceptance is
+pending repair. Other accepted application cells and historical deferrals stand.

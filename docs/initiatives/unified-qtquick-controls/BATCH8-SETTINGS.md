@@ -1,5 +1,9 @@
 # Batch 8 — Settings Sway scale-1 coverage
 
+Current status: scale-1 runs completed with [Weather failures](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17).
+Do not repeat these commands. UQC-220 repair is in progress; await a fresh kit.
+The dated fractional acceptance below is qualified by the user’s later correction.
+
 Update 2026-09-17: the submitted runs used **1.25**, not 1. Their
 [fractional results and non-blocking composition disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
 are accepted. Do not repeat 1.25. The two **`--scale 1`** commands below remain

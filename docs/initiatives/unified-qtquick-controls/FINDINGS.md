@@ -2513,3 +2513,48 @@ Selected evidence and review-time hashes are retained under
 `.cache/holonight-uqc201-final-yn9_fquf/manual-settings-sway/`; no profile
 credentials/cookies copied. Next: the [two originally requested scale-1 runs](BATCH8-SETTINGS.md).
 UQC-201 In Progress; initiative Accepted; prior deferrals and final gates unchanged.
+
+## Settings Weather failures and UQC-220 ownership — 2026-09-17
+
+The user corrects earlier observations and requests repair in this initiative.
+HoloNight Weather dropdown labels sit below vertical center at scales 1 and 1.25.
+Fusion Weather closed ComboBoxes **and** popup rows lack hover feedback (explicit
+clarification). The previous fractional visual acceptance is qualified by this
+correction; scale-1 runs are completed evidence, not passing acceptance.
+
+Verified `/tmp/sway-dmn1wyrl`: default run `settings-1789597592751176822`
+(PID 216769), Fusion `settings-1789597906201175856` (PID 217126), both measured
+DPR 1, staged isolation verified, exit 0. All 267 kit hashes and recorded versions
+match. Evidence and review-time hashes preserved in
+`.cache/holonight-uqc201-final-yn9_fquf/manual-settings-sway-scale1/`.
+Normal exits/loading do not close the reported visual defects.
+
+[UQC-220](UQC-220.md) assigns the demonstrated provider boundaries. A standalone
+HoloNight ComboBox reproduces label-center y=16 in a 28-pixel row, caused by
+8-pixel padding around a 16-pixel label. Private headless Wayland comparison
+shows plain Qt/Fusion hover enabled, but disabled when the HoloNight platform
+theme supplies the system hint; explicit Qt hover enable restores control/row
+flags. No pointer, clicking or focus automation used. Initial sandbox compositor
+socket failure was retried outside the command sandbox; logs in `.cache/uqc220`.
+
+This user-directed reopening applies to owned Settings hover. Third-party
+historical findings remain deferred; no upstream investigation or manual
+comparison solely for them. The separate Settings composition SDD remains
+non-blocking and unimplemented. UQC-201 stays In Progress; initiative Accepted.
+Further manual coverage batches pause for a verified focused repair handoff.
+
+### UQC-220 verified provider repair — 2026-09-17
+
+Published `7e101bd23661f21efe95cd11dad092069c68601d`; canonical main confirmed
+before pinning. Both regressions fail on baseline and pass after repair. Provider
+87/87 CTests (including installed acceptance), fractional composites, import
+policy, formatting, QML lint and focused static analysis pass with existing
+advisories. Private Wayland confirms restored hover hint/control/row flags and
+preserved explicit hover disable. Details/commands in the [local SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-220.md).
+The geometry fix removes excess vertical padding only; platform theme retains
+base effect flags and adds HoverEffect. No Settings composition change.
+
+UQC-220 Done for local delivery; human repair acceptance remains pending.
+The old final kit remains unchanged and must not be used to test the repair.
+A fresh [focused handoff](WEATHER-REPAIR.md) follows kit verification; no final
+integration claim or repeat third-party manual comparisons.
