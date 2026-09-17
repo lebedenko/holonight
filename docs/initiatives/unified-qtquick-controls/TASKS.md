@@ -29,7 +29,7 @@ below retain historical states; current rows and canonical findings take precede
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Final CI 34288860789 and licensing 34288860847 pass. |
-| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Initial AI Fusion geometry and installer package-ownership failures are retained in evidence; UQC-202/UQC-203 repairs are Done. Fresh recheck at published handoff `730be06`: installer --check exits 0 and explicit Fusion selection passes 59/59 (15.37 s). Third-party bounded loading verified; subsequent focused manual acceptances are recorded in FINDINGS.md. Remaining ecosystem gates are retained in BATCHES.md. 2026-09-16: fresh dependency-order and installed acceptance pass at closure checkpoint `3fcbe9c`; [Batch 8 checklist/results](FINAL-ACCEPTANCE.md) and [first manual handoff](BATCH8-HANDOFF.md) recorded that release. 2026-09-17: [post-repair revalidation](BATCH8-REVALIDATION.md) passes at `c16b164`; fresh restored READY kit `holonight-uqc201-final-dyxe1nl_` and [two-run AI handoff](BATCH8-AI.md) are prepared. Manual gates remain open. |
+| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md), [P03 preparation](P03-READINESS.md), [focused handoff](P03-RECHECK.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Initial AI Fusion geometry and installer package-ownership failures are retained in evidence; UQC-202/UQC-203 repairs are Done. Fresh recheck at published handoff `730be06`: installer --check exits 0 and explicit Fusion selection passes 59/59 (15.37 s). Third-party bounded loading verified; subsequent focused manual acceptances are recorded in FINDINGS.md. Remaining ecosystem gates are retained in BATCHES.md. 2026-09-16: fresh dependency-order and installed acceptance pass at closure checkpoint `3fcbe9c`; [Batch 8 checklist/results](FINAL-ACCEPTANCE.md) and [first manual handoff](BATCH8-HANDOFF.md) recorded that release. 2026-09-17: [post-repair revalidation](BATCH8-REVALIDATION.md) passes at `c16b164`; fresh restored READY kit `holonight-uqc201-final-dyxe1nl_` and [two-run AI handoff](BATCH8-AI.md) are prepared. Manual gates remain open. |
 | UQC-202 | umbrella | Verify installer Qt Wayland capabilities independently of package ownership | — (found during UQC-201) | [Design and evidence](UQC-202.md) | Done | `8af91cb173d6268e71ddb1b92afed8915a6ac658` | 2026-09-09: eight fixtures, syntax, licensing, whitespace and real installer --check pass. Installer CI 34380475124 and licensing 34380474984 are green. Canonical publication confirmed; original failure retained in INTEGRATION.md. |
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
@@ -2616,3 +2616,27 @@ checks pass; tidy advisories and PNG border-animation variability are disclosed.
 UQC-222 Done; P03 open; UQC-201 In Progress; initiative Accepted. No new kit,
 manual run, consumer suite or umbrella integration check. Existing manual
 acceptances and the immutable released kit remain intact.
+
+
+## UQC-201 focused P03 recheck preparation — 2026-09-17
+
+Baseline `6f7af409a38b7a217fec38bf607e43446f86c07f`, provider
+`e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. The [readiness record](P03-READINESS.md)
+tracks fresh dependency-order build/install, focused provider/AI/Settings checks,
+staged UQC-222 diagnostics, complete-kit startup contracts, unchanged prior
+full-suite evidence and immutable release/restoration. Reproducible umbrella
+[recipes](p03-kit/README.md) retain the helper and named release gates.
+
+The [focused handoff](P03-RECHECK.md) requests exactly two sequential human AI
+Settings palette checks: Sway, output scale 1 / measured DPR 1.25, embedded default
+and Fusion, first Settings construction in light and then open-window dark/light/dark.
+Earlier accepted interaction/navigation/main-window evidence is preserved.
+UQC-222 remains Done, P03 open, UQC-201 In Progress and initiative Accepted.
+No consumer source/API/pin changes, manual runs or final integration claim.
+
+Preparation release: `/tmp/holonight-uqc201-p03-c_w7vh8n` READY, 838 verified
+hashes; exact-prefix restoration passes and existing-path refusal exits 2.
+Archive `.cache/holonight-uqc201-p03-c_w7vh8n/holonight-uqc201-p03-c_w7vh8n.tar.gz`,
+SHA-256 `44b4c44a3e19b16c0a3ac59ccbc6716bc49cf46005255025dfea5b59f572b447`.
+All named automated gates pass; the [readiness record](P03-READINESS.md) distinguishes
+fresh checks, prior full-suite evidence and retained boundary/harness failures.

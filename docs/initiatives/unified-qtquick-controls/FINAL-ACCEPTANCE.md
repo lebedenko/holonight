@@ -4,21 +4,26 @@ Status: In Progress, updated 2026-09-17. Initiative Accepted; UQC-201 In Progres
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
-Gitlinks are authoritative. Current verification baseline is umbrella `c16b164`,
-including provider `7e101bd` and Settings documentation-only follow-up `0eb5028`.
-Earlier verification at `3fcbe9c` and the old kit remains historical provenance.
+Gitlinks are authoritative. Current preparation baseline is umbrella
+`6f7af409a38b7a217fec38bf607e43446f86c07f`, including published provider
+`e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. The focused P03 kit and release
+verification are recorded in [P03 readiness](P03-READINESS.md); use the
+[two-run focused handoff](P03-RECHECK.md). Current READY kit:
+`/tmp/holonight-uqc201-p03-c_w7vh8n` (838 hashes; exact-prefix restoration and
+existing-path refusal pass).
 
-UQC-220 local and focused Settings manual acceptance pass. **Affected automated
-integration revalidation is complete** at the pinned revisions; see
-[post-repair results and immutable release](BATCH8-REVALIDATION.md).
-Current READY kit: `/tmp/holonight-uqc201-final-dyxe1nl_` (287 verified hashes,
-exact-prefix restoration and existing-path refusal passed).
-The [two AI Sway runs](BATCH8-AI.md) have been submitted: embedded default and
-Fusion, output scale 1 / measured DPR 1.25. [Evidence verification](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17)
-passes. Interaction and main-window palette checks are accepted; Fusion Settings
-control backgrounds fail the palette transition (P03; [UQC-221](UQC-221.md)).
-Do not repeat the runs.
-The old final kit must not be used to validate repaired controls.
+UQC-220 local and focused Settings manual acceptance remain accepted. UQC-222's
+shared-window palette repair is Done; P03 remains open pending exactly two
+human AI Settings palette checks in Sway, measured DPR 1.25, embedded default
+and Fusion. Start with the first Settings construction in light mode and retain
+that window through dark → light → dark. No accepted interaction, navigation or
+main-window checklist is repeated.
+
+The earlier kit `/tmp/holonight-uqc201-final-dyxe1nl_` and its
+[revalidation](BATCH8-REVALIDATION.md) remain historical evidence. Its submitted
+[AI runs](BATCH8-AI.md) accepted interaction/main-window coverage and exposed P03;
+they must not be used to validate the repaired provider. Earlier baseline
+`c16b164` and Settings documentation follow-up `0eb5028` remain provenance.
 
 ## Reconciled requirements
 
@@ -26,9 +31,9 @@ The old final kit must not be used to validate repaired controls.
 |---|---|---|
 | Repository implementation handoffs and local SDDs | Accepted with evidence | All active repository packages Done in [TASKS](TASKS.md); UQC-209/210 Superseded. UQC-207 closed by [user disposition](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
 | Clean, published compatible pins | Accepted with evidence | Fresh canonical audit and shared-contract review at the pinned revisions; do not adopt newer remote revisions automatically. |
-| Embedded default, Fusion override and explicit competing styles | Accepted with automated evidence | Post-repair build and installed launch matrices pass for provider examples, shell/authentication, Settings, AI, packages and greeter; see [current results](BATCH8-REVALIDATION.md). |
+| Embedded default, Fusion override and explicit competing styles | Accepted with automated evidence | Post-repair build and installed launch matrices pass for provider examples, shell/authentication, Settings, AI, packages and greeter; see [focused current results](P03-READINESS.md). |
 | Namespaced imports, attached properties and exceptions | Accepted with evidence | Provider and consumer policy checks and negative fixtures. |
-| Installed consumers and missing-module deployment failures | Accepted with automated evidence | Fresh isolated installation passes with host HoloNight hidden, staged origins verified and build paths rejected; see [current results](BATCH8-REVALIDATION.md). |
+| Installed consumers and missing-module deployment failures | Accepted with automated evidence | Fresh isolated installation passes with host HoloNight hidden, staged origins verified and build paths rejected; see [focused current results](P03-READINESS.md). |
 | Foreign control origins and explicit fallbacks | Manual verification required | Loading is already demonstrated, but maps are not per-control evidence. Correlate remaining reachable surfaces with created origins and actual DPR; classify HoloNight, Basic/Fusion, application-owned or inaccessible with reason. |
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
@@ -39,7 +44,7 @@ The old final kit must not be used to validate repaired controls.
 | Terminal/desktop/D-Bus activation | Manual verification required | Preserve [Settings bus](GUIDED.md#settings-d-bus-process-correlation--reviewed-2026-09-11), [desktop](GUIDED.md#settings-desktop-entry-process-correlation--reviewed-2026-09-11), AI bus and third-party desktop PID correlations. Fill only missing control-origin, outcome and applicable compositor coverage. |
 | Shipped systemd unit and wrapper | Manual verification required | Prior [transient shell](GUIDED.md#transient-systemd-shell-process-correlation--reviewed-2026-09-11) proves only transient execution. Exercise installed `holonight-shell.service` → `holonight-shell-systemd` in disposable login; record unit fragment/drop-ins, environment, actual PID and loaded origins, and restore prior manager state. |
 | Real pre-session greeter | Manual verification required | Use [isolated VT procedure](../../../holonight-greeter/docs/CAGE.md), staged launcher/provider and disposable login. Record successful login/session start, geometry and cleanup. Demo/fake backend tests do not substitute. |
-| Dependency-order builds/tests | Accepted with automated evidence | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; [fresh post-repair results](BATCH8-REVALIDATION.md) pass. |
+| Dependency-order builds/tests | Accepted with automated evidence | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; [fresh builds and focused results](P03-READINESS.md) pass; unchanged full-suite results remain labeled prior evidence. |
 | Remaining app/compositor/style/scale matrix | Manual verification required | Haruna local clip; NeoChat/Tokodon logged-out surfaces; Qt hyprpolkitagent; owned Settings/AI/packages. Fill unresolved coverage in small reviewed batches, including scale 1/1.25 and HoloNight/Fusion. Preserve existing narrower observations and accepted scope. |
 | Final evidence ledger and integration decision | Manual verification required | Record revisions, commands/results, versions, evidence and limitations. Do not mark Integrated before all gates pass or receive explicit disposition. |
 
@@ -197,7 +202,7 @@ not waived or claimed by this release.
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
 | Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); broader scale-1 coverage remains pending beyond accepted UQC-220 Weather checks. Separate Settings-local composition SDD; no composition repair. |
 | Settings Weather row centering and Fusion hover (including accepted subtle closed-button feedback) | Sway | Embedded default and Fusion / 1 and 1.25 | Accepted; [UQC-220 review](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17). Focused repair scope only; broader scale-1 coverage stays pending. |
-| AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); Fusion Settings TextField/numeric/ComboBox backgrounds fail palette changes (P03), with [bounded diagnosis planned](UQC-221.md). |
+| AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); Fusion Settings TextField/numeric/ComboBox backgrounds fail palette changes (P03), with [repair Done; focused recheck pending](P03-RECHECK.md). |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.
