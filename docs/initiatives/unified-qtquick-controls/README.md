@@ -7,8 +7,10 @@ close the focused repair handoff, including the subtle closed-button hover.
 Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
 revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway review](BATCH8-AI.md)
 accepts interaction and main-window palette checks; Fusion Settings controls retain
-dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) plans
-bounded ownership diagnosis. No repeat runs or next manual batch yet.
+dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) completes
+bounded ownership diagnosis: native palettes lack a live shared-window bridge;
+shared composites update. [UQC-222](UQC-222.md) proposes the scoped repair.
+P03 stays open. No repeat runs, new kit or next manual batch yet.
 
 Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
 lists below are historical coverage records, not requests to repeat accepted work.

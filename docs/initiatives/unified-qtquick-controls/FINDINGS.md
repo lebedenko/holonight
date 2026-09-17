@@ -2726,3 +2726,29 @@ UQC-201 remains In Progress; initiative Accepted; other manual gates unchanged.
 Verification: `python3 .cache/holonight-uqc201-final-dyxe1nl_/manual-ai-sway/review.py`
 passes. Documentation links/anchors, shell syntax and whitespace checks pass.
 No product edits, product-test reruns, pin changes or released-kit modifications.
+
+
+## P03 reduced palette diagnosis — 2026-09-17
+
+[UQC-221](UQC-221.md) is Done at published provider `30fda50`; P03 remains open.
+The diagnostic reproduces the missing native palette propagation in plain Window
+and HnApplicationWindow, both styles/DPRs, without AI composition. Application and
+window palettes remain at startup values during file updates; shared window scene
+colors and appearance-bound composites update. Per-instance AI traces distinguish
+native text/numeric failures from HnIconComboBox backgrounds that do transition.
+
+Explicit application changes update existing native controls. The provider-free
+Fusion reference separately reproduces startup-palette initialization in a window
+recreated during light, with mappings proving no HoloNight or platform theme.
+This external boundary is retained rather than attributed to AI or hidden by a
+provider patch. [UQC-222](UQC-222.md), Planned, proposes a Core-safe, window-scoped
+live palette contract with override/disabled/recreation regressions.
+
+Two final 18-process matrices are deterministic; positive assertions pass;
+P03 assertion intentionally fails 64 cases and external assertion 8. Provider
+29/29 focused registered checks pass. Detailed commands, masks, roles, origins,
+pixels, screenshots, package versions and static-check results are in the
+[provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-221.md).
+Production, accepted interaction checks, main-window manual acceptance and the
+immutable kit remain unchanged. No new manual batch, kit or consumer suite.
+UQC-201 remains In Progress; initiative Accepted.
