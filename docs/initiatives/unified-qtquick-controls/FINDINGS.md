@@ -5,8 +5,10 @@ is manually accepted for Settings Weather row centering and Fusion hover.
 [Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
 close the focused repair handoff, including the subtle closed-button hover.
 Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
-revalidation and fresh kit release](BATCH8-REVALIDATION.md) now pass. Next session:
-[exactly two AI Sway runs](BATCH8-AI.md); do not repeat accepted checks.
+revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway review](BATCH8-AI.md)
+accepts interaction and main-window palette checks; Fusion Settings controls retain
+dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) plans
+bounded ownership diagnosis. No repeat runs or next manual batch yet.
 
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
@@ -2654,3 +2656,73 @@ process maps/metadata, results and per-run hashes are preserved alongside it.
 Updated roadmap, findings, acceptance checklist and UQC-220 ledger. No product
 changes or new repair assignment. Affected full integration revalidation and
 remaining final human gates stay open; UQC-201 In Progress, initiative Accepted.
+
+
+## Batch 8 AI Sway evidence review — 2026-09-17
+
+User submitted `/tmp/sway-jtzfq3vy-batch8-ai.tar.gz` after completing the two runs.
+SHA-256: `dc682311b9754829b4e747bf68ba34d3e2ff5fc21a3f2f02dc5fecafdcf44479`.
+The archive, selected diagnostics, replayable `review.py`, `review.json` and
+selected-file hashes are retained under
+`.cache/holonight-uqc201-final-dyxe1nl_/manual-ai-sway/`.
+No application conversation database or credentials were inspected.
+
+All 287 current kit hashes and the immutable release archive hash match. Session
+versions match the release inventory. The recorded session is local active tux
+UID 1001, tty3/session 8, using the released Sway configuration; active eDP-1
+output scale is 1. Both workspace and Settings windows measure DPR 1.25.
+
+| Run | Selection / PID | Verified outcome |
+|---|---|---|
+| `ai-1789657581401930173` | Embedded default; style/config overrides unset / 152342 | Exit 0, normal; 57 created-object origins, 6963 palette samples, 1768 events. |
+| `ai-1789658013423930253` | Explicit Fusion / 154241 | Exit 0, normal; 64 created-object origins, 3650 palette samples, no palette-change events. |
+
+Recomputed launch/session hashes and observer summaries match both index records.
+Both executable paths and captured HoloNight mappings resolve to the released
+prefix. Only the palette observer is enabled. Per-run isolated configuration
+keeps every provider and title generation disabled. Both transition logs record
+dark → light → dark; observed workspace and Settings background colors agree:
+`#ff0c1118` → `#ffe7eef5` → `#ff0c1118`.
+
+Created Button, ComboBox, Menu and TextArea origins follow the selected style;
+the default trace also includes Basic DialogButtonBox fallback. Both traces
+include shared HoloNight composites and application-owned Settings surfaces.
+The bootstrap application palette remains unchanged, consistent with preparation.
+Scene background transitions do not establish native Fusion control recoloring
+or readability. Unopened, provider/account-dependent and unpopulated history
+surfaces are not established by these traces.
+
+Diagnostics include default-style ScrollBar binding-removal messages, portal
+registration warnings and Secret Service timeouts. These do not imply a crash
+or authentication acceptance; both processes exit 0. No diagnosis or repair is
+assigned from warning text alone, and existing deferred findings remain unchanged.
+
+**Human review: interaction and main-window palette checks pass; P03 remains open.**
+The user reports all checklist items passing except the Fusion Settings-window
+palette transition: text inputs, numeric inputs and ComboBoxes retain dark
+backgrounds. Accept offline editing/keyboard navigation, reachable selectors/popups,
+scrolling and the main-window round trip in both styles; default-style checks pass.
+The Fusion Settings palette cell fails and is not waived by successful process
+verification or owned-window background transitions. Provider/account-dependent
+surfaces remain outside the offline scope.
+
+P03 is distinct from the accepted P02 picker/footer repair and external P01
+navigation alternation. The trace corroborates a scope mismatch: Fusion SpinBox
+objects retain dark Base/Button roles, while TextField/ComboBox-origin objects
+include both dark and light roles across the run. Aggregate origins do not map
+every painted background to an exact Settings control, so avoid claiming that all
+Fusion controls have identical propagation behavior.
+
+Read-only source review: AI Settings uses shared `HnApplicationWindow`, native
+TextFields/SpinBoxes and shared HnIconComboBox composites. Provider
+`HnApplicationWindow` is a plain QtQuick Window with an appearance-bound background;
+its platform-theme palette is initialized once, while several composites bind an
+appearance palette explicitly. This suggests a shared palette-inheritance boundary,
+not a proven repair location. [UQC-221](UQC-221.md) is a **Planned**, provider-first
+bounded diagnosis; final repair ownership requires a reduced reproduction.
+No speculative product patch, repeated manual comparison or next manual batch.
+UQC-201 remains In Progress; initiative Accepted; other manual gates unchanged.
+
+Verification: `python3 .cache/holonight-uqc201-final-dyxe1nl_/manual-ai-sway/review.py`
+passes. Documentation links/anchors, shell syntax and whitespace checks pass.
+No product edits, product-test reruns, pin changes or released-kit modifications.

@@ -13,8 +13,11 @@ integration revalidation is complete** at the pinned revisions; see
 [post-repair results and immutable release](BATCH8-REVALIDATION.md).
 Current READY kit: `/tmp/holonight-uqc201-final-dyxe1nl_` (287 verified hashes,
 exact-prefix restoration and existing-path refusal passed).
-Next session: [exactly two AI Sway runs](BATCH8-AI.md), embedded default and Fusion,
-output scale 1 / measured application DPR 1.25, with palette observation.
+The [two AI Sway runs](BATCH8-AI.md) have been submitted: embedded default and
+Fusion, output scale 1 / measured DPR 1.25. [Evidence verification](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17)
+passes. Interaction and main-window palette checks are accepted; Fusion Settings
+control backgrounds fail the palette transition (P03; [UQC-221](UQC-221.md)).
+Do not repeat the runs.
 The old final kit must not be used to validate repaired controls.
 
 ## Reconciled requirements
@@ -67,7 +70,8 @@ Installed checks, collector verification, 267 hashes and exact-prefix archive
 restoration passed; READY was included in the archive. Existing-path restoration refusal also passes.
 Preparation uses the existing guided-session/application and authentication
 helpers. The [original short handoff](BATCH8-HANDOFF.md) is retained as completed provenance.
-The next prepared checks are [two AI runs](BATCH8-AI.md) on the fresh kit.
+The fresh-kit [AI runs](BATCH8-AI.md) are reviewed: scoped interaction/main-window
+checks accepted, Fusion Settings palette P03 open.
 
 All twelve submodule HEADs were clean, matched gitlinks and matched canonical
 origin/main on 2026-09-16. The full revisions are retained in `revisions.json`.
@@ -193,6 +197,7 @@ not waived or claimed by this release.
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
 | Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); broader scale-1 coverage remains pending beyond accepted UQC-220 Weather checks. Separate Settings-local composition SDD; no composition repair. |
 | Settings Weather row centering and Fusion hover (including accepted subtle closed-button feedback) | Sway | Embedded default and Fusion / 1 and 1.25 | Accepted; [UQC-220 review](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17). Focused repair scope only; broader scale-1 coverage stays pending. |
+| AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); Fusion Settings TextField/numeric/ComboBox backgrounds fail palette changes (P03), with [bounded diagnosis planned](UQC-221.md). |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.

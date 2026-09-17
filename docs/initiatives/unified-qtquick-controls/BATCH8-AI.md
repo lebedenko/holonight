@@ -1,5 +1,10 @@
 # Batch 8 — AI Sway fractional coverage
 
+Both runs have been submitted. [Evidence review](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17)
+passes. Interaction and main-window palette checks are accepted; Fusion Settings
+control backgrounds fail the palette transition (P03; [follow-up](UQC-221.md)).
+Do not repeat these runs or start another batch before the bounded follow-up. The commands below are retained as provenance.
+
 Use `/tmp/holonight-uqc201-final-dyxe1nl_` only after its READY marker is present.
 [Release evidence](BATCH8-REVALIDATION.md) records verification and restoration.
 Exactly two manual runs are prepared: embedded default and explicit Fusion, with
