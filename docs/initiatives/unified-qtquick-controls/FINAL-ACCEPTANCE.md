@@ -11,12 +11,12 @@ verification are recorded in [P03 readiness](P03-READINESS.md); use the
 [two-run focused handoff](P03-RECHECK.md). Current READY kit:
 `/tmp/holonight-uqc201-p03-xtndrklf` (device-access repair; see the current readiness record).
 
-UQC-220 local and focused Settings manual acceptance remain accepted. UQC-222's
-shared-window palette repair is Done; P03 remains open pending exactly two
-human AI Settings palette checks in Sway, measured DPR 1.25, embedded default
-and Fusion. Start with the first Settings construction in light mode and retain
-that window through dark → light → dark. No accepted interaction, navigation or
-main-window checklist is repeated.
+UQC-220 local and focused Settings manual acceptance remain accepted. UQC-222
+remains Done. The [P03 review](FINDINGS.md#p03-human-evidence-review--2026-09-18)
+verifies both processes and preserves successful immediate transitions/default
+light-time construction. P03 remains open: palette roles revert during interaction,
+and Fusion Settings was first constructed dark. [UQC-223](UQC-223.md) is Planned
+for provider-first diagnosis. No next batch or repeated navigation checklist.
 
 The earlier kit `/tmp/holonight-uqc201-final-dyxe1nl_` and its
 [revalidation](BATCH8-REVALIDATION.md) remain historical evidence. Its submitted
@@ -28,7 +28,7 @@ they must not be used to validate the repaired provider. Earlier baseline
 
 | Requirement | Classification | Evidence / remaining coverage |
 |---|---|---|
-| Repository implementation handoffs and local SDDs | Accepted with evidence | All active repository packages Done in [TASKS](TASKS.md); UQC-209/210 Superseded. UQC-207 closed by [user disposition](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
+| Repository implementation handoffs and local SDDs | Accepted with evidence | Delivered repository packages Done in [TASKS](TASKS.md); UQC-223 diagnosis Planned; UQC-209/210 Superseded. UQC-207 closed by [user disposition](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
 | Clean, published compatible pins | Accepted with evidence | Fresh canonical audit and shared-contract review at the pinned revisions; do not adopt newer remote revisions automatically. |
 | Embedded default, Fusion override and explicit competing styles | Accepted with automated evidence | Post-repair build and installed launch matrices pass for provider examples, shell/authentication, Settings, AI, packages and greeter; see [focused current results](P03-READINESS.md). |
 | Namespaced imports, attached properties and exceptions | Accepted with evidence | Provider and consumer policy checks and negative fixtures. |
@@ -37,6 +37,7 @@ they must not be used to validate the repaired provider. Earlier baseline
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
 | Successful authentication | Manual verification required | Real disposable login; guarded registration preflight and harmless `/usr/bin/true` challenge; human credential entry only. Cancellation does not close this gate. Existing cancellation-only helpers must not be represented as successful-authentication acceptance. |
+| AI palette P03 | Open: functional failure and incomplete construction coverage | [Two-run review](FINDINGS.md#p03-human-evidence-review--2026-09-18): immediate transitions pass, but palettes later revert; Fusion light-time construction missing. [UQC-223](UQC-223.md) Planned. Prior interaction coverage preserved. |
 | Palette rendering P02 | Accepted with evidence | [Nine accepted runs](FINDINGS.md#batch-4-manual-visual-acceptance--2026-09-15), scale 1; preserve those observations. Remaining owned/compositor/fractional transition coverage stays manual. |
 | Shell compositor/popup S01/S02 | Accepted with evidence | [S01 repair acceptance](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15), Sway comparison and completed Batch 6 runs. |
 | Greeter G01–G06 and fullscreen G07 | Accepted with evidence | [Batch 7](FINDINGS.md#batch-7-manual-acceptance--2026-09-15), [fullscreen closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16). Windowed G07 outside intended use; no repeat demo comparisons. |
@@ -201,7 +202,7 @@ not waived or claimed by this release.
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
 | Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); broader scale-1 coverage remains pending beyond accepted UQC-220 Weather checks. Separate Settings-local composition SDD; no composition repair. |
 | Settings Weather row centering and Fusion hover (including accepted subtle closed-button feedback) | Sway | Embedded default and Fusion / 1 and 1.25 | Accepted; [UQC-220 review](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17). Focused repair scope only; broader scale-1 coverage stays pending. |
-| AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); Fusion Settings TextField/numeric/ComboBox backgrounds fail palette changes (P03), with [repair Done; focused recheck pending](P03-RECHECK.md). |
+| AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); Fusion Settings TextField/numeric/ComboBox backgrounds fail palette changes (P03), with [repair Done; reviewed recheck retains instability and construction gap](FINDINGS.md#p03-human-evidence-review--2026-09-18). |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.

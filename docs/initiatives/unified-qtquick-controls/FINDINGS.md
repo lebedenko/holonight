@@ -1,6 +1,6 @@
 # UQC acceptance findings — canonical register
 
-Current repair checkpoint (2026-09-17): [UQC-220](UQC-220.md) provider repair
+Current repair checkpoint (2026-09-18): [UQC-220](UQC-220.md) provider repair
 is manually accepted for Settings Weather row centering and Fusion hover.
 [Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
 close the focused repair handoff, including the subtle closed-button hover.
@@ -9,8 +9,10 @@ revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway revie
 accepts interaction and main-window palette checks; Fusion Settings controls retain
 dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) completed
 ownership diagnosis; [UQC-222](UQC-222.md) delivers the published shared-window
-repair with passing automated verification. P03 remains open. No new kit, repeat
-runs or next manual batch yet.
+repair with passing automated verification. The [post-repair human review](#p03-human-evidence-review--2026-09-18)
+retains successful transitions but finds palette reversals after window interaction
+and missing Fusion light-time construction. P03 remains open; [UQC-223](UQC-223.md)
+is a Planned provider-first diagnosis. No next manual batch is requested.
 
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
@@ -2830,3 +2832,81 @@ and offscreen AI checks are recorded in the [current readiness record](P03-READI
 Real tux VT startup and the two human Settings palette runs remain unverified;
 this repairs the identified namespace defect without claiming human acceptance.
 P03 open; UQC-222 Done; UQC-201 In Progress; initiative Accepted.
+
+
+## P03 human evidence review — 2026-09-18
+
+Reviewed user-copied `/tmp/sway-kr8jfdwd`, originating at
+`/home/tux/uqc-guided-evidence/sway-kr8jfdwd`, against umbrella `65b5fdb` and
+provider `e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. Archive and extracted review:
+`.cache/holonight-uqc201-p03-xtndrklf/manual-ai-review-atzox8ft/`.
+Archive `sway-kr8jfdwd-p03-recheck.tar.gz`, SHA-256
+`07ecbfa8fe70944e415341266f0c33298ff16c18d010705a0ada30d807675ccb`.
+The reviewer created this archive from the supplied directory; there was no
+sender-provided archive/hash to compare. All 126 archived files match that copy.
+Extraction used a fresh directory, rejected links/special entries and executed no
+archived scripts. No conversation database or credential contents were inspected.
+
+All 880 released kit hashes and its archive hash match. Session versions match
+the kit; recorded identity is active local tux UID 1001, seat0, tty3/session 5.
+The repaired isolated Sway command matches the release; eDP-1 output scale is 1.
+Exactly two sequential processes are indexed, embedded default then Fusion,
+with staged executable/library origins, per-run isolated profiles, all four
+providers/title generation disabled, only palette diagnostics enabled and normal
+exit 0. Recomputed launch/session hashes and retained collector summaries match.
+Both workspace and Settings windows measure DPR 1.25. Real-VT startup is now
+established; successful startup does not close the palette gate.
+
+| Run | Recorded observations and limits |
+|---|---|
+| `ai-1789680270051233025`, PID 12017, default | 9,597 samples / 2,958 events. Settings first appears light at `1789680344639`, after the light command `1789680301695`. User reports correct initial Settings appearance and immediate dark/light/dark transitions. One extra dark command is retained before the second light command; it is not an extra process. |
+| `ai-1789683020270968469`, PID 25159, Fusion | 7,424 samples / 0 events. Settings first appears visible and dark at `1789683039126`, before light command `1789683109056`; native TextField/SpinBox instances also exist before light. The same Settings identity is hidden, recolored, and shown again. Existing-window transitions pass the reported immediate inspections, but light-time construction is not established. |
+
+Human reports cover visible text/numeric inputs, selectors and composites in
+aggregate; they are not a named inventory of every field or disabled state.
+Unopened, empty, provider/account-dependent surfaces remain outside established
+coverage. Preserve the reported transition passes without extrapolating to all
+origins or painted pixels. Unchanged bootstrap palette roles and Fusion's zero
+palette-event count alone are not failure criteria.
+
+**Functional observation:** after light selection, pointer entry into AI repeatedly
+coincides with New Chat and prompt-area buttons reverting to dark in both styles.
+Default also showed Settings controls turning light after a dark transition and
+VT return; moving Settings later coincided with dark prompt buttons in light mode.
+Fusion's later light Settings inspection remained correct through mouse and
+keyboard focus changes, and both final dark inspections passed. The user refined
+the initial VT hypothesis toward pointer/focus; the trigger is not yet isolated.
+
+Per-instance logs corroborate palette reversals without intervening scheme changes:
+
+- Default New Chat Button `562ffa08c970` changes Button role white → dark at
+  `1789680318913`, between first light and first dark commands. Composer Button
+  `562ffa8f56d0` follows at `1789680318936`.
+- Default Settings SpinBox `562ffb385610` changes Base dark → light at
+  `1789680669644`, after the first dark command and before any light command.
+- Fusion New Chat Button `5612e51ede30` changes Button white → dark at
+  `1789683111648` and `1789683826548`, both during selected light intervals.
+- Fusion Settings SpinBox `5612e612a720` changes Base light → dark at
+  `1789683169145`, before the first dark command. Its later light/dark transitions
+  agree with the user's stable later Settings inspection.
+
+`review.json` retains these timelines and other native/composite instances. The
+observer does not record hover/window activation and sampled Active/Inactive role
+maps are equal; neither focus causality nor an Active/Inactive color mismatch is
+proven. Default ScrollBar binding messages, input/Wayland/portal diagnostics and
+Secret Service timeouts are retained; they do not imply crashes or authentication
+acceptance, and no repair is assigned from warning text alone.
+
+**Disposition: P03 stays open.** Preserve immediate transition passes and default
+light-time construction, but palette stability fails and Fusion light-time
+construction remains missing. [UQC-223](UQC-223.md) is a separate Planned,
+provider-first diagnosis handoff with exact baselines; final repair ownership is
+unproven. Earlier interaction/navigation acceptance stays intact; earlier
+main-window transition observations are historical passes now qualified by the
+new stability finding, not a reason to repeat their whole checklist.
+
+Verification: retained `review.py` passes all integrity/runtime assertions;
+documentation links/anchors, command syntax and whitespace checked. No product
+suites rerun, source/API/pin changes, released-kit edits or speculative repair.
+UQC-222 Done, UQC-201 In Progress, initiative Accepted. No next human batch or
+final integration claim.

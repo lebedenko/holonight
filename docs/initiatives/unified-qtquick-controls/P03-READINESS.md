@@ -1,5 +1,10 @@
 # P03 focused repair readiness — 2026-09-17
 
+Human runs are now reviewed: real-VT startup succeeds, but P03 remains open for
+palette instability and missing Fusion light-time construction. See the
+[current disposition](FINDINGS.md#p03-human-evidence-review--2026-09-18) and
+[diagnosis handoff](UQC-223.md). Do not repeat the completed batch.
+
 ## Current manual-session repair — 2026-09-18
 
 Use `/tmp/holonight-uqc201-p03-xtndrklf` for the focused recheck. It derives from

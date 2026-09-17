@@ -1,5 +1,11 @@
 # P03 — focused AI Settings palette recheck
 
+**Completed run instructions — do not repeat this batch.** The
+[2026-09-18 review](FINDINGS.md#p03-human-evidence-review--2026-09-18) keeps P03 open
+for palette instability and missing Fusion light-time construction.
+[UQC-223](UQC-223.md) is the next diagnosis handoff. The procedure below is retained
+as provenance; successful scoped observations remain accepted.
+
 Current kit repairs manual device access at umbrella `838e931`; product payload
 is unchanged from the original release. Real-VT startup remains human-verified.
 
