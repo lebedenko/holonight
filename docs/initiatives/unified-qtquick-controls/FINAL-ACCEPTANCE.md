@@ -1,13 +1,6 @@
 # Batch 8 final acceptance
 
-**Manual acceptance paused: released session launcher hides GPU devices.**
-See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
-The immutable archive and automated results remain preserved, but this kit cannot
-currently support the real-VT acceptance procedure. Do not retry the two AI runs
-or edit the released kit; a separate umbrella preparation/revalidation is required.
-
-
-Status: In Progress, updated 2026-09-17. Initiative Accepted; UQC-201 In Progress.
+Status: In Progress, updated 2026-09-18. Initiative Accepted; UQC-201 In Progress.
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
@@ -16,8 +9,7 @@ Gitlinks are authoritative. Current preparation baseline is umbrella
 `e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. The focused P03 kit and release
 verification are recorded in [P03 readiness](P03-READINESS.md); use the
 [two-run focused handoff](P03-RECHECK.md). Current READY kit:
-`/tmp/holonight-uqc201-p03-c_w7vh8n` (838 hashes; exact-prefix restoration and
-existing-path refusal pass).
+`/tmp/holonight-uqc201-p03-xtndrklf` (device-access repair; see the current readiness record).
 
 UQC-220 local and focused Settings manual acceptance remain accepted. UQC-222's
 shared-window palette repair is Done; P03 remains open pending exactly two

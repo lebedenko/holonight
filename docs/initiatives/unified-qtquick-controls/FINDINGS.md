@@ -2817,3 +2817,16 @@ and dark/light/dark checks only after preparation/revalidation. Earlier accepted
 interaction/navigation/main-window coverage remains accepted. UQC-222 Done,
 UQC-201 In Progress, initiative Accepted. No product tests or final integration
 checks were rerun, and no functional palette failure is inferred from this log.
+
+
+## P03 manual device-access repair — 2026-09-18
+
+The separately prepared kit `/tmp/holonight-uqc201-p03-xtndrklf` corrects the
+manual launcher's synthetic-device mask using `--dev-bind /dev /dev`; the
+preparation recipe now separates this from offscreen isolation. Original kit,
+archive, logs and accepted coverage remain intact. Product payloads are copied
+byte-for-byte and unchanged inventories/pins are verified. Fresh device-namespace
+and offscreen AI checks are recorded in the [current readiness record](P03-READINESS.md).
+Real tux VT startup and the two human Settings palette runs remain unverified;
+this repairs the identified namespace defect without claiming human acceptance.
+P03 open; UQC-222 Done; UQC-201 In Progress; initiative Accepted.

@@ -37,6 +37,10 @@ shutil.copytree(work / "host-plugins", kit / "host-plugins", dirs_exist_ok=True)
 manual_mask = [
     part.replace(str(work / "host-plugins"), str(kit / "host-plugins")) for part in mask
 ]
+# A real-seat compositor needs GPU, input and VT devices. Keep the synthetic
+# /dev for offscreen checks only; normal user/logind permissions still apply.
+device_index = manual_mask.index("--dev")
+manual_mask[device_index : device_index + 2] = ["--dev-bind", "/dev", "/dev"]
 session = (docs / "guided-session.py").read_text()
 session = session.replace(
     'for key in ("XDG_CONFIG_HOME",', 'for key in ("HOME", "XDG_CONFIG_HOME",'

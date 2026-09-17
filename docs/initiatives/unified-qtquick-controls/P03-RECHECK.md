@@ -1,15 +1,11 @@
 # P03 — focused AI Settings palette recheck
 
-**Manual acceptance paused: released session launcher hides GPU devices.**
-See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
-The immutable archive and automated results remain preserved, but this kit cannot
-currently support the real-VT acceptance procedure. Do not retry the two AI runs
-or edit the released kit; a separate umbrella preparation/revalidation is required.
-
+Current kit repairs manual device access at umbrella `838e931`; product payload
+is unchanged from the original release. Real-VT startup remains human-verified.
 
 Prepared baseline: umbrella `6f7af409a38b7a217fec38bf607e43446f86c07f`, provider
 `e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. Use only the new READY kit
-`/tmp/holonight-uqc201-p03-c_w7vh8n`; [readiness evidence](P03-READINESS.md).
+`/tmp/holonight-uqc201-p03-xtndrklf`; [readiness evidence](P03-READINESS.md).
 P03 is open, UQC-222 Done, UQC-201 In Progress, initiative Accepted.
 Earlier interaction, navigation and main-window checks remain accepted.
 
@@ -17,7 +13,7 @@ Exactly two sequential human-operated runs follow. From a fresh real **tux** VT
 login outside a compositor:
 
 ```sh
-python3 /tmp/holonight-uqc201-p03-c_w7vh8n/guided-session.py sway
+python3 /tmp/holonight-uqc201-p03-xtndrklf/guided-session.py sway
 ```
 
 In its terminal, record outputs and confirm every active output has **scale 1**:

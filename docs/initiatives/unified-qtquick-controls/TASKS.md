@@ -2653,3 +2653,14 @@ retain evidence, scope and revalidation requirements. The current checklist and
 handoff now pause manual acceptance pending a separately released corrected kit.
 No released artifacts, source or pins changed. P03 open; UQC-222 Done;
 UQC-201 In Progress; initiative Accepted. Earlier accepted coverage is preserved.
+
+
+## P03 replacement manual kit — 2026-09-18
+
+Prepared `/tmp/holonight-uqc201-p03-xtndrklf` from the immutable original release,
+with unchanged product payloads, pins and inventory. Manual-session device access
+is corrected in the umbrella recipe and new launcher; offscreen device isolation
+is preserved. [Readiness](P03-READINESS.md) records targeted verification and
+[commands](P03-RECHECK.md) use the new kit. User confirmation of real-VT startup
+precedes the two human checks. P03 open; UQC-222 Done; UQC-201 In Progress;
+initiative Accepted. No product changes or repeated full suites.

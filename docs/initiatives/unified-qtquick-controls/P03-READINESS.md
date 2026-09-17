@@ -1,11 +1,53 @@
 # P03 focused repair readiness — 2026-09-17
 
-**Manual acceptance paused: released session launcher hides GPU devices.**
-See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
-The immutable archive and automated results remain preserved, but this kit cannot
-currently support the real-VT acceptance procedure. Do not retry the two AI runs
-or edit the released kit; a separate umbrella preparation/revalidation is required.
+## Current manual-session repair — 2026-09-18
 
+Use `/tmp/holonight-uqc201-p03-xtndrklf` for the focused recheck. It derives from
+`holonight-uqc201-p03-c_w7vh8n` at umbrella checkpoint `838e931`, with identical
+product binaries/libraries and unchanged provider/repository pins and package
+inventory. The original release below remains immutable historical evidence.
+
+The manual launcher now binds host `/dev` with device access so GPU, input and
+VT nodes are visible under normal user/logind permissions. Offscreen checks keep
+the synthetic `/dev`; network isolation, private D-Bus, disposable profiles and
+host HoloNight masks remain. Only the launcher path/device mask and preparation
+recipe change; no application repair or rebuild is claimed.
+
+Fresh namespace inspection confirms matching host device identities, an isolated
+network namespace exposing only loopback, and hidden host modules/config library.
+The first network probe incorrectly inspected host-mounted sysfs; its failure is
+retained and the corrected socket API probe passes. These checks do not open GPU
+or input devices, exercise logind seat acquisition, or prove real-VT startup.
+The user must confirm Sway startup before either AI acceptance run.
+
+Fresh offscreen AI workspace/helper checks cover both styles at measured DPR 1.25,
+staged executable/library origins, palette transitions and helper refusal cases.
+Historical full suites and provider checks remain labeled inherited evidence.
+Collector, compositor configuration and terminal checks are retained in the new
+kit's `session-repair-verification/` directory with the Python syntax-check script.
+Documentation and Ruff outcomes are recorded below.
+P03 open, UQC-222 Done, UQC-201 In Progress, initiative Accepted.
+
+Replacement release: **880 verified file hashes**. Archive:
+`.cache/holonight-uqc201-p03-xtndrklf/holonight-uqc201-p03-xtndrklf.tar.gz`.
+SHA-256 `b3ad9b03d3a7ec0c1060b1617492dfe38cec702c29fb77c834f02d1ad2769b9e`.
+Exact-prefix restoration passes; repeated restoration refuses overwrite (exit 2).
+The original kit's 838 hashes still match. Collector 14/14, both AI helper styles,
+device namespace, Sway configuration, terminal/Python syntax, Ruff and documentation
+links/command syntax/whitespace pass. The initial command-sandbox device probe
+could not see host GPUs; the host probe was run outside that sandbox. No live
+compositor or pointer/focus interaction was automated.
+
+If the replacement path is absent after a reboot, restore from the umbrella root:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc201-p03-xtndrklf/holonight-uqc201-p03-xtndrklf.tar.gz
+```
+
+The archive contains the pre-archive readiness snapshot; the final archive hash
+and restoration outcomes are recorded here and in its matching `.cache` directory.
+
+## Original release record (historical)
 
 **READY — released and restoration verified on 2026-09-17.** All required
 focused automated gates pass. P03 remains open for the two human checks.
