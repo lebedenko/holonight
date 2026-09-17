@@ -2592,3 +2592,36 @@ initiative Accepted; other historical deferrals and accepted evidence remain.
 
 Read-only package versions at release: qt6-base 6.11.2-3, qt6-declarative
 6.11.2-2, Sway 1:1.12-4, Haruna 1.8.1-2, NeoChat/Tokodon 26.08.1-1.
+
+## UQC-220 scale-1 repair review — 2026-09-17
+
+User evidence `/tmp/sway-8tnc_rq7` verifies repaired kit
+`/tmp/holonight-uqc207-t9ao_81w`: all 201 hashes, recorded versions,
+staged process/maps isolation, default/Fusion control origins and measured DPR 1.
+Default run `settings-1789603382991554755` (PID 257497) accepts corrected row
+alignment and reports no other issues. Fusion run `settings-1789603542615733478`
+(PID 257682) accepts popup hover; closed button has no perceptible hover feedback,
+conditionally acceptable to the user if it is Fusion's design. Both exits are
+intentional Ctrl+C (`-2`) because Ctrl+Q was not mapped, not normal-close evidence
+or a crash. Selected evidence, notes, hashes and `review.py` are preserved under
+`.cache/holonight-uqc207-t9ao_81w/manual-settings-scale1/`.
+
+Installed Qt Fusion `ComboBox.qml` uses `impl/ButtonPanel.qml`, which passes
+`control.hovered` into its background/gradient color calculation. A bounded
+private-bus offscreen evaluation of the installed Fusion color function returns
+normal `#2d3743`, hover `#2f3946` with the staged HoloNight palette: only 2–3 RGB
+levels of difference. Plain Qt palette comparison returns `#e8e8e8` → `#f1f1f1`.
+The repaired theme enables hover. Probe source and output are preserved alongside
+the evidence. This establishes very subtle native Fusion color feedback, not
+absence of a hover design; it does not prove the hovered state of the user's
+closed control from logs. Preserve that perceptual limitation without claiming
+visible closed-button acceptance or assigning another speculative repair.
+Initial offscreen probe attempts timed out; isolated retry first exposed a
+missing Fusion import. Corrected private-bus probes both exit 0; diagnostic
+process cleaned up. No live pointer/focus automation or production change.
+
+Next bounded batch: same immutable kit, Settings default and Fusion at scale
+1.25. Check row alignment and popup hover, record closed-button perception, and
+close using the window close button manually (Ctrl+Q is not required). Preserve
+scale-1 row acceptance. UQC-220 local delivery Done; fractional manual coverage
+pending. UQC-201 In Progress; initiative Accepted.
