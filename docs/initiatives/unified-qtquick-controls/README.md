@@ -4,8 +4,9 @@ Current repair checkpoint (2026-09-17): [UQC-220](UQC-220.md) provider repair
 is manually accepted for Settings Weather row centering and Fusion hover.
 [Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
 close the focused repair handoff, including the subtle closed-button hover.
-Other Batch 3 historical dispositions remain unchanged. Resume the final
-checklist with affected integration revalidation; do not repeat accepted checks.
+Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
+revalidation and fresh kit release](BATCH8-REVALIDATION.md) now pass. Next session:
+[exactly two AI Sway runs](BATCH8-AI.md); do not repeat accepted checks.
 
 Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
 lists below are historical coverage records, not requests to repeat accepted work.

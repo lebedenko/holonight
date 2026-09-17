@@ -4,16 +4,18 @@ Status: In Progress, updated 2026-09-17. Initiative Accepted; UQC-201 In Progres
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
-Gitlinks are authoritative. Verification began at closure checkpoint `3fcbe9c`;
-Settings subsequently advances only for the published documentation follow-up
-`0eb5028` (no implementation change). The released kit retains its exact baseline.
+Gitlinks are authoritative. Current verification baseline is umbrella `c16b164`,
+including provider `7e101bd` and Settings documentation-only follow-up `0eb5028`.
+Earlier verification at `3fcbe9c` and the old kit remains historical provenance.
 
-Current implementation changed at published provider `7e101bd` for UQC-220.
-The earlier full integration results below remain evidence at their recorded
-baseline, not a claim of a full final-revision rerun after this repair. Provider
-local verification and [focused Settings manual acceptance](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17) pass;
-affected final integration revalidation remains pending. The old final kit must not be used to
-validate the repaired controls.
+UQC-220 local and focused Settings manual acceptance pass. **Affected automated
+integration revalidation is complete** at the pinned revisions; see
+[post-repair results and immutable release](BATCH8-REVALIDATION.md).
+Current READY kit: `/tmp/holonight-uqc201-final-dyxe1nl_` (287 verified hashes,
+exact-prefix restoration and existing-path refusal passed).
+Next session: [exactly two AI Sway runs](BATCH8-AI.md), embedded default and Fusion,
+output scale 1 / measured application DPR 1.25, with palette observation.
+The old final kit must not be used to validate repaired controls.
 
 ## Reconciled requirements
 
@@ -21,9 +23,9 @@ validate the repaired controls.
 |---|---|---|
 | Repository implementation handoffs and local SDDs | Accepted with evidence | All active repository packages Done in [TASKS](TASKS.md); UQC-209/210 Superseded. UQC-207 closed by [user disposition](FINDINGS.md#batch-3-user-directed-closure--2026-09-16). |
 | Clean, published compatible pins | Accepted with evidence | Fresh canonical audit and shared-contract review at the pinned revisions; do not adopt newer remote revisions automatically. |
-| Embedded default, Fusion override and explicit competing styles | Automated verification required | Fresh build and installed launch matrices for provider examples, shell/authentication, Settings, AI, packages and greeter. |
+| Embedded default, Fusion override and explicit competing styles | Accepted with automated evidence | Post-repair build and installed launch matrices pass for provider examples, shell/authentication, Settings, AI, packages and greeter; see [current results](BATCH8-REVALIDATION.md). |
 | Namespaced imports, attached properties and exceptions | Accepted with evidence | Provider and consumer policy checks and negative fixtures. |
-| Installed consumers and missing-module deployment failures | Automated verification required | Fresh isolated installation, host HoloNight hidden; require staged origins and reject build paths. |
+| Installed consumers and missing-module deployment failures | Accepted with automated evidence | Fresh isolated installation passes with host HoloNight hidden, staged origins verified and build paths rejected; see [current results](BATCH8-REVALIDATION.md). |
 | Foreign control origins and explicit fallbacks | Manual verification required | Loading is already demonstrated, but maps are not per-control evidence. Correlate remaining reachable surfaces with created origins and actual DPR; classify HoloNight, Basic/Fusion, application-owned or inaccessible with reason. |
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
@@ -34,7 +36,7 @@ validate the repaired controls.
 | Terminal/desktop/D-Bus activation | Manual verification required | Preserve [Settings bus](GUIDED.md#settings-d-bus-process-correlation--reviewed-2026-09-11), [desktop](GUIDED.md#settings-desktop-entry-process-correlation--reviewed-2026-09-11), AI bus and third-party desktop PID correlations. Fill only missing control-origin, outcome and applicable compositor coverage. |
 | Shipped systemd unit and wrapper | Manual verification required | Prior [transient shell](GUIDED.md#transient-systemd-shell-process-correlation--reviewed-2026-09-11) proves only transient execution. Exercise installed `holonight-shell.service` → `holonight-shell-systemd` in disposable login; record unit fragment/drop-ins, environment, actual PID and loaded origins, and restore prior manager state. |
 | Real pre-session greeter | Manual verification required | Use [isolated VT procedure](../../../holonight-greeter/docs/CAGE.md), staged launcher/provider and disposable login. Record successful login/session start, geometry and cleanup. Demo/fake backend tests do not substitute. |
-| Dependency-order builds/tests | Automated verification required | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; passing fresh results below. |
+| Dependency-order builds/tests | Accepted with automated evidence | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; [fresh post-repair results](BATCH8-REVALIDATION.md) pass. |
 | Remaining app/compositor/style/scale matrix | Manual verification required | Haruna local clip; NeoChat/Tokodon logged-out surfaces; Qt hyprpolkitagent; owned Settings/AI/packages. Fill unresolved coverage in small reviewed batches, including scale 1/1.25 and HoloNight/Fusion. Preserve existing narrower observations and accepted scope. |
 | Final evidence ledger and integration decision | Manual verification required | Record revisions, commands/results, versions, evidence and limitations. Do not mark Integrated before all gates pass or receive explicit disposition. |
 
@@ -57,14 +59,15 @@ validate the repaired controls.
 - Settings/AI layout follow-ups L01/L02 are outside this initiative. G07 windowed
   reproduction is historical, outside the intended fullscreen greeter scenario.
 
-## Execution and evidence
+## Previous execution and evidence — 2026-09-16
 
-Released kit: `/tmp/holonight-uqc201-final-yn9_fquf`.
+Previous released kit: `/tmp/holonight-uqc201-final-yn9_fquf` (historical).
 Private build/log root: `.cache/holonight-uqc201-final-yn9_fquf/`.
 Installed checks, collector verification, 267 hashes and exact-prefix archive
-restoration pass; READY is present. Existing-path restoration refusal also passes.
+restoration passed; READY was included in the archive. Existing-path restoration refusal also passes.
 Preparation uses the existing guided-session/application and authentication
-helpers. The [short handoff](BATCH8-HANDOFF.md) contains only the next unresolved checks.
+helpers. The [original short handoff](BATCH8-HANDOFF.md) is retained as completed provenance.
+The next prepared checks are [two AI runs](BATCH8-AI.md) on the fresh kit.
 
 All twelve submodule HEADs were clean, matched gitlinks and matched canonical
 origin/main on 2026-09-16. The full revisions are retained in `revisions.json`.
@@ -147,7 +150,7 @@ integration build root. CMake cache inspection confirms every resolved HoloNight
 package directory belongs to the fresh prefix. Installer fixtures pass 8/8.
 
 
-## Immutable kit release
+## Previous immutable kit release — 2026-09-16
 
 Released `/tmp/holonight-uqc201-final-yn9_fquf` with 267 verified file hashes.
 Archive: `.cache/holonight-uqc201-final-yn9_fquf/holonight-uqc201-final-yn9_fquf.tar.gz`.
@@ -172,9 +175,10 @@ Tokodon is also [accepted](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-
 Haruna is also [accepted](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16).
 Package-manager is [accepted](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
 Submitted Settings runs measured 1.25; [accepted fractional results and local follow-up](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
-do not fill scale 1. Scale-1 runs now report [Weather defects](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17).
-Manual coverage pauses for UQC-220 repair; earlier Settings fractional acceptance
-is qualified by the new scale-independent label and hover findings. UQC-201 remains In Progress and the
+did not fill scale 1. The subsequent scale-1 runs reported [Weather defects](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17).
+The subsequent [UQC-220 acceptance](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
+closes the Weather repair at scale 1 and 1.25. Broader Settings scale-1 coverage
+beyond the focused Weather checks remains pending. UQC-201 remains In Progress and the
 initiative Accepted; successful authentication and real pre-session operation are
 not waived or claimed by this release.
 
@@ -187,13 +191,16 @@ not waived or claimed by this release.
 | Tokodon logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16). ComboBox origins, observed Basic fallback and narrower Fusion trace recorded; no functional blocker. |
 | Haruna local playback/menus, settings editing/navigation/selectors and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16). Provider/Fusion origins and application/fallback boundaries recorded. |
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
-| Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); requested scale 1 remains pending. Separate Settings-local SDD, no UQC repair. |
+| Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); broader scale-1 coverage remains pending beyond accepted UQC-220 Weather checks. Separate Settings-local composition SDD; no composition repair. |
+| Settings Weather row centering and Fusion hover (including accepted subtle closed-button feedback) | Sway | Embedded default and Fusion / 1 and 1.25 | Accepted; [UQC-220 review](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17). Focused repair scope only; broader scale-1 coverage stays pending. |
 
 This closes those scoped cells only. Other application/compositor/activation,
 successful authentication and real pre-session gates remain pending.
 
 
-Settings status correction, 2026-09-17: [latest failures and provider ownership](FINDINGS.md#settings-weather-failures-and-uqc-220-ownership--2026-09-17)
-supersede the prior Settings pass interpretation for the affected controls at
-both scales. Successful process verification is retained; visual acceptance is
-pending repair. Other accepted application cells and historical deferrals stand.
+Settings status correction, 2026-09-17: [completed UQC-220 acceptance](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
+supersedes the Weather repair-pending claims. Row centering and popup hover are
+accepted at both scales; fractional review also resolves the conditional closed
+Fusion hover acceptance. Broader Settings coverage gaps, composition disposition,
+other accepted application cells and historical deferrals stand. The repair kit
+close-binding deviation remains documented in that evidence.
