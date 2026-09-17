@@ -1,11 +1,11 @@
 # UQC acceptance findings — canonical register
 
-Current repair checkpoint (2026-09-17): the user reopened **owned Settings**
-Weather hover and reported popup-label misalignment at both scales.
-[UQC-220](UQC-220.md) delivers the verified provider repair; focused manual
-acceptance is pending in a fresh kit. This supersedes only the owned Settings
-hover deferral, not the other Batch 3 historical dispositions. Further Batch 8
-coverage is paused until the [repair handoff](WEATHER-REPAIR.md) is reviewed.
+Current repair checkpoint (2026-09-17): [UQC-220](UQC-220.md) provider repair
+is manually accepted for Settings Weather row centering and Fusion hover.
+[Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
+close the focused repair handoff, including the subtle closed-button hover.
+Other Batch 3 historical dispositions remain unchanged. Resume the final
+checklist with affected integration revalidation; do not repeat accepted checks.
 
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
@@ -2625,3 +2625,31 @@ Next bounded batch: same immutable kit, Settings default and Fusion at scale
 close using the window close button manually (Ctrl+Q is not required). Preserve
 scale-1 row acceptance. UQC-220 local delivery Done; fractional manual coverage
 pending. UQC-201 In Progress; initiative Accepted.
+
+## UQC-220 fractional repair acceptance — 2026-09-17
+
+Reviewed `/tmp/sway-dihb0lxm` with user results preserved under
+`.cache/holonight-uqc207-t9ao_81w/manual-settings-scale125/`.
+Default run `settings-1789606497177582759` (PID 262119) and Fusion run
+`settings-1789606584178014743` (PID 262313) both measure DPR 1.25, verify staged
+process/maps isolation and expected control origins, and exit normally (0).
+Recorded versions match the released kit; no screened QML runtime errors.
+User reports no issues in either style and explicitly observes/accepts the
+closed Fusion button's nearly imperceptible hover color change. This resolves
+the previous conditional acceptance, rather than claiming no hover design.
+Scale-1 row centering/popup hover acceptance remains preserved. UQC-220 focused
+manual repair acceptance is complete; no further Weather comparison is required.
+
+Integrity qualification: 200 of 201 released hashes match. The sole difference
+is `sway.conf` appending exactly `bindsym Mod4+Q kill`; original and observed
+configs are preserved in the review directory, and the original matches its
+release hash. This compositor close-key addition does not change application,
+provider, style, palette or scale artifacts. Accept the evidence with this exact
+configuration deviation; do not describe the used directory as byte-identical
+to the immutable release. The archive is unchanged and the assistant did not
+modify the kit or remove the added binding. Review script and selected logs,
+process maps/metadata, results and per-run hashes are preserved alongside it.
+
+Updated roadmap, findings, acceptance checklist and UQC-220 ledger. No product
+changes or new repair assignment. Affected full integration revalidation and
+remaining final human gates stay open; UQC-201 In Progress, initiative Accepted.

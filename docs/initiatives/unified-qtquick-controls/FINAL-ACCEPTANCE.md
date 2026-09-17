@@ -11,8 +11,8 @@ Settings subsequently advances only for the published documentation follow-up
 Current implementation changed at published provider `7e101bd` for UQC-220.
 The earlier full integration results below remain evidence at their recorded
 baseline, not a claim of a full final-revision rerun after this repair. Provider
-local verification passes; focused Settings acceptance and affected final
-integration revalidation remain pending. The old final kit must not be used to
+local verification and [focused Settings manual acceptance](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17) pass;
+affected final integration revalidation remains pending. The old final kit must not be used to
 validate the repaired controls.
 
 ## Reconciled requirements
@@ -43,8 +43,9 @@ validate the repaired controls.
 - F05 is an external Qt/Hyprland activation defect with a plain-Qt reproduction;
   P01 is an external palette activation defect. Neither is fixed. Keep their
   evidence and owner-specific boundaries; no upstream investigation or submission.
-- ScrollBar warnings, historical Haruna crash and Settings/Haruna Fusion hover
+- ScrollBar warnings, historical Haruna crash and Haruna Fusion hover
   are deferred, non-blocking historical findings with unresolved ownership.
+  Owned Settings Weather hover was separately repaired and accepted under UQC-220.
   Reopen only for a concrete recurrence blocking required functionality or final
   acceptance. Tokodon chevron deferral remains unchanged.
 - Haruna painted controls/explicit Fusion fallback, Kirigami composition and
