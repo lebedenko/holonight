@@ -9,7 +9,8 @@ revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway revie
 accepts interaction and main-window palette checks; Fusion Settings controls retain
 dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) completes
 bounded ownership diagnosis: native palettes lack a live shared-window bridge;
-shared composites update. [UQC-222](UQC-222.md) proposes the scoped repair.
+shared composites update. [UQC-222](UQC-222.md) delivers the published shared-window
+repair with passing provider and staged regression checks.
 P03 stays open. No repeat runs, new kit or next manual batch yet.
 
 Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked

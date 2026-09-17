@@ -7,8 +7,10 @@ close the focused repair handoff, including the subtle closed-button hover.
 Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
 revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway review](BATCH8-AI.md)
 accepts interaction and main-window palette checks; Fusion Settings controls retain
-dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) plans
-bounded ownership diagnosis. No repeat runs or next manual batch yet.
+dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) completed
+ownership diagnosis; [UQC-222](UQC-222.md) delivers the published shared-window
+repair with passing automated verification. P03 remains open. No new kit, repeat
+runs or next manual batch yet.
 
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
@@ -2752,3 +2754,19 @@ pixels, screenshots, package versions and static-check results are in the
 Production, accepted interaction checks, main-window manual acceptance and the
 immutable kit remain unchanged. No new manual batch, kit or consumer suite.
 UQC-201 remains In Progress; initiative Accepted.
+
+## P03 shared-window automated repair — 2026-09-17
+
+[UQC-222](UQC-222.md) is Done at published provider `e94cedd` (implementation
+`cb7d8d0`). HnApplicationWindow supplies live inherited palette defaults to existing
+and light-created native controls; explicit overrides and resets are covered.
+Both styles and DPR 1/1.25 pass palette/background/rendered-sample assertions.
+Provider full suite 91/91, installed acceptance and two deterministic 18-process
+staged matrices pass their owned checks. Plain Window file failures and the
+provider-free Fusion recreation boundary remain separately recorded.
+
+P03 stays open pending its human acceptance gate. This is an automated provider
+repair handoff, not a new manual acceptance claim. Existing interaction/main-window
+acceptances and the immutable kit are preserved. No new kit, manual run or consumer
+suite. UQC-201 In Progress; initiative Accepted. Details and verification limits:
+[provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-222.md).
