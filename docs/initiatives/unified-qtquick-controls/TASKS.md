@@ -2640,3 +2640,16 @@ Archive `.cache/holonight-uqc201-p03-c_w7vh8n/holonight-uqc201-p03-c_w7vh8n.tar.
 SHA-256 `44b4c44a3e19b16c0a3ac59ccbc6716bc49cf46005255025dfea5b59f572b447`.
 All named automated gates pass; the [readiness record](P03-READINESS.md) distinguishes
 fresh checks, prior full-suite evidence and retained boundary/harness failures.
+
+
+## P03 human acceptance paused at compositor startup
+
+At checkpoint `17fd6fc`, archive/hash/inventory/revision preflight and post-reboot
+exact-prefix restoration pass. The user's compositor log reports missing GPU
+nodes. Host nodes exist; the released manual launcher inherits the offscreen
+`bwrap --dev /dev` mask without device bindings. The
+[startup finding and umbrella preparation handoff](FINDINGS.md#p03-manual-session-startup-failure)
+retain evidence, scope and revalidation requirements. The current checklist and
+handoff now pause manual acceptance pending a separately released corrected kit.
+No released artifacts, source or pins changed. P03 open; UQC-222 Done;
+UQC-201 In Progress; initiative Accepted. Earlier accepted coverage is preserved.

@@ -1,5 +1,12 @@
 # P03 — focused AI Settings palette recheck
 
+**Manual acceptance paused: released session launcher hides GPU devices.**
+See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
+The immutable archive and automated results remain preserved, but this kit cannot
+currently support the real-VT acceptance procedure. Do not retry the two AI runs
+or edit the released kit; a separate umbrella preparation/revalidation is required.
+
+
 Prepared baseline: umbrella `6f7af409a38b7a217fec38bf607e43446f86c07f`, provider
 `e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. Use only the new READY kit
 `/tmp/holonight-uqc201-p03-c_w7vh8n`; [readiness evidence](P03-READINESS.md).

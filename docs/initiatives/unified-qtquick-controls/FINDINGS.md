@@ -2770,3 +2770,50 @@ repair handoff, not a new manual acceptance claim. Existing interaction/main-win
 acceptances and the immutable kit are preserved. No new kit, manual run or consumer
 suite. UQC-201 In Progress; initiative Accepted. Details and verification limits:
 [provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-222.md).
+
+
+## P03 manual session startup failure
+
+Acceptance attempted from umbrella checkpoint `17fd6fc`, provider
+`e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. Preflight verified clean umbrella
+and twelve submodule checkouts, matching release revisions/gitlinks, all 838
+kit hashes, READY, the release archive SHA-256 and the complete 1,607-entry
+package inventory. After the user rebooted and `/tmp` was cleared, the same
+archive was verified and restored at its exact prefix with all hashes passing;
+package inventory and revisions still matched. This verifies artifact integrity,
+not successful real-VT startup.
+
+The user reports the same startup failure before and after reboot and supplied
+`/tmp/compositor.log`. Preserved copy:
+`.cache/holonight-uqc201-p03-c_w7vh8n/manual-startup-review-ibz5u84w/compositor.log`,
+SHA-256 `39f8682e3c31e2ec6ac9ecb5852e870c0a89135eb2b39078a1d16257cdd9254f`.
+The seven-line log reports missing `/dev/dri/card0` and `card1`, zero GPUs and
+failure to create the Sway backend. Read-only host inspection outside the command
+sandbox confirms both card nodes and both render nodes exist, as does `/dev/input`.
+The supplied log alone does not establish session identity or a complete run index.
+
+The released `guided-session.py` uses `bwrap --dev /dev` without binding host GPU
+or input devices back into the namespace. Bubblewrap's installed help identifies
+this option as mounting a new `/dev`. `p03-kit/populate.py` copies the offscreen
+mask from `p03-kit/common.py` into the manual compositor launcher. That device
+mask explains the missing GPU paths despite their presence on the host. This is
+an umbrella harness defect; the evidence does not establish a kernel/driver
+failure or a regression in the repaired palette provider. Headless/config checks
+did not establish real-seat device access.
+
+**Preparation/revalidation handoff (umbrella owner):** start from `17fd6fc` and
+this documentation checkpoint, preserving all product gitlinks. Separate manual
+real-seat device access from the offscreen mask in the preparation recipes;
+review GPU, input and VT/logind requirements while retaining network isolation,
+private bus, disposable profiles and host HoloNight masks. Verify device visibility
+without opening devices or automating input, then have the user confirm real-VT
+compositor startup. Publish a separately identified kit/archive with revised
+hashes and targeted launcher/isolation verification; never patch or overwrite the
+released kit/archive. Product APIs and provider repair remain outside this handoff.
+
+P03 remains open with incomplete human evidence: neither of the two required
+post-repair AI Settings runs has been reviewed. Resume their light-time construction
+and dark/light/dark checks only after preparation/revalidation. Earlier accepted
+interaction/navigation/main-window coverage remains accepted. UQC-222 Done,
+UQC-201 In Progress, initiative Accepted. No product tests or final integration
+checks were rerun, and no functional palette failure is inferred from this log.

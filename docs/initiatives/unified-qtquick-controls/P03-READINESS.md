@@ -1,5 +1,12 @@
 # P03 focused repair readiness — 2026-09-17
 
+**Manual acceptance paused: released session launcher hides GPU devices.**
+See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
+The immutable archive and automated results remain preserved, but this kit cannot
+currently support the real-VT acceptance procedure. Do not retry the two AI runs
+or edit the released kit; a separate umbrella preparation/revalidation is required.
+
+
 **READY — released and restoration verified on 2026-09-17.** All required
 focused automated gates pass. P03 remains open for the two human checks.
 Baseline umbrella `6f7af409a38b7a217fec38bf607e43446f86c07f`, published provider

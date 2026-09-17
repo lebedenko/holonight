@@ -1,5 +1,12 @@
 # Batch 8 final acceptance
 
+**Manual acceptance paused: released session launcher hides GPU devices.**
+See the [startup failure and preparation handoff](FINDINGS.md#p03-manual-session-startup-failure).
+The immutable archive and automated results remain preserved, but this kit cannot
+currently support the real-VT acceptance procedure. Do not retry the two AI runs
+or edit the released kit; a separate umbrella preparation/revalidation is required.
+
+
 Status: In Progress, updated 2026-09-17. Initiative Accepted; UQC-201 In Progress.
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
