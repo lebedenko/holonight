@@ -1,3 +1,6 @@
+> **Historical material — initiative closed 2026-09-19.** See the [closure decision](../CLOSURE.md).
+> No new kit, manual run or acceptance cycle is requested. Earlier pending instructions are superseded.
+
 # Focused P03 kit recipes
 
 For UQC-224, use the bounded observer-repair profile against an explicit published

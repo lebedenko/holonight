@@ -1,29 +1,15 @@
 # UQC acceptance findings — canonical register
 
-Current repair checkpoint (2026-09-18): [UQC-220](UQC-220.md) provider repair
-is manually accepted for Settings Weather row centering and Fusion hover.
-[Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
-close the focused repair handoff, including the subtle closed-button hover.
-Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
-revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway review](BATCH8-AI.md)
-accepts interaction and main-window palette checks; Fusion Settings controls retain
-dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) completed
-ownership diagnosis; [UQC-222](UQC-222.md) delivers the published shared-window
-repair with passing automated verification. The [post-repair human review](#p03-human-evidence-review--2026-09-18)
-retains successful transitions but finds palette reversals after window interaction
-and missing Fusion light-time construction. P03 remains open; [UQC-223](UQC-223.md)
-is Done: [the reduced diagnosis](#uqc-223-observer-induced-palette-reversals--2026-09-18)
-identifies an allocating-observer/Qt root-palette boundary. No next manual batch is requested.
+**Initiative Integrated; UQC-201 Done — closed 2026-09-19.** See the
+[closure summary](CLOSURE.md) and [collected gotchas](GOTCHAS.md). The user accepted
+the delivered unified-look work and explicitly removed the remaining release-style
+checks. P03 is closed; Settings/AI scale-1 and earlier scoped coverage remain
+accepted. No further manual batch is requested.
 
-Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
-[reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
-[GUIDED.md](GUIDED.md) and [TASKS.md](TASKS.md) retain chronological evidence,
-including superseded interpretations. Add new observations here once, and link
-from the ledger rather than copying the narrative into both historical documents.
-Current scope and dispositions below take precedence over dated historical reports.
-Batches 1–3 are closed. Batch 3 diagnostics are deferred, non-blocking historical
-findings; Tokodon chevron is deferred. Batch 5 is removed from this
-initiative, and Batch 7 is narrowed by the greeter review below.
+This register preserves chronological observations, failed hypotheses, repairs
+and acceptance limits. Dated pending/open instructions below are historical and
+are superseded by the closure decision. Known external/deferred issues are not
+claimed fixed and do not create an active initiative backlog.
 
 ## Evidence and interpretation
 
@@ -3359,3 +3345,14 @@ separate iterations. Stop after this two-run review. No product code, gitlinks o
 released-kit contents changed. Verification for this evidence-only update is
 archive/hash/identity/isolation/outcome review and documentation/licensing/diff
 checks; product suites were not repeated.
+
+## Initiative closure and final disposition — 2026-09-19
+
+The user explicitly ended the expanding acceptance exercise and requested closure,
+a summary and documented gotchas. [CLOSURE.md](CLOSURE.md) records the delivered
+unified appearance/control contract, existing verification and removed requirements;
+[GOTCHAS.md](GOTCHAS.md) collects lessons with links to these investigations.
+Installed greeter and askpass authentication work in the user's daily use. No
+additional authentication, activation, pre-session or exhaustive matrix proof is
+required to close this styling initiative. Those removed gates are not marked as
+executed passes. Initiative Integrated; UQC-201 Done. No next batch is scheduled.

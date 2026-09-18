@@ -1,17 +1,10 @@
 # Completion batches
 
-Current repair checkpoint (2026-09-18): UQC-220 Settings acceptance is preserved.
-[UQC-222](UQC-222.md) shared-window repair and [UQC-224](UQC-224.md) passive observer
-repair are Done; [UQC-223](UQC-223.md) diagnosis remains Done. **P03 is closed** by
-[verified human acceptance](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18): correct Fusion and replacement
-default pass light-time Settings construction and activation/hover palette stability.
-The initial default attempt remains superseded evidence. No further P03 checks
-are requested. UQC-201 remains In Progress; initiative Accepted; unrelated gates
-and earlier accepted results remain unchanged.
-
-Execution order from the user plan, updated with scope corrections on 2026-09-14. UQC-201 remains In Progress;
-the initiative remains Accepted. Preserve existing accepted results unless affected
-by a later change. Record observations once in FINDINGS.md and link local SDDs.
+**All initiative work closed — 2026-09-19.** Initiative Integrated; UQC-201 Done.
+The user removed the outstanding release-style gates. The
+[closure summary](CLOSURE.md) and [gotchas](GOTCHAS.md) are the current disposition.
+This roadmap and the procedures below are historical; there is no next batch.
+Pending instructions do not override closure or schedule further validation.
 
 | Batch | Gates | Exit criteria |
 |---|---|---|
@@ -21,7 +14,7 @@ by a later change. Record observations once in FINDINGS.md and link local SDDs.
 | 4 | P01, P02 | Complete for scoped provider work: P02 accepted after nine runs; P01 external activation defect documented with owner-specific follow-ups. Raw evidence verified; navigation alternation is not claimed fixed. |
 | 6 | S01, S02, F05 | S01/S02 accepted. F05 diagnosis complete: [external plain-Qt reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15), report draft prepared but not submitted. Exact upstream mechanism/repair remain open; no HoloNight repair owner or further variant runs. |
 | 7 | Remaining greeter-specific G01–G06 checks | Complete: G01–G06 accepted in all four Sway style/scale runs. [G01–G06 acceptance](FINDINGS.md#batch-7-manual-acceptance--2026-09-15). |
-| 8 | Remaining UQC-201 | In Progress: [reconciled final checklist](FINAL-ACCEPTANCE.md), fresh automated verification and unresolved manual gates at clean published pins. |
+| 8 | UQC-201 closure | Complete by user scope disposition: delivered styling and scoped results accepted; remaining release-style gates removed. [Closure](CLOSURE.md). |
 
 G07 is closed as not an issue for intended fullscreen use; both scale-1 style
 comparisons passed. See [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16).
@@ -35,13 +28,9 @@ are not dependencies of this initiative. UQC-209/UQC-210 are Superseded. C03
 Tokodon Fusion Switch overflow was already classified as external FormCard/Fusion
 composition and does not become an application-layout repair here.
 
-For remaining repair batches, reproduce and confirm ownership, prepare the repository-local SDD,
-confirm the exact canonical baseline and set the package Ready before implementation.
-Keep one repository per implementation handoff. Each batch ends with local
-verification, published commits, an umbrella checkpoint and scoped manual checks.
-An observation may be application-owned or an accepted limitation. A reproduced
-failure needs a failing regression, bounded owner follow-up and fresh verified kit.
-Missing evidence leaves its gate pending. Do not automate desktop pointer or focus.
+The following procedures are preserved solely as execution history. For a concrete
+future bug, choose a focused check in its owning repository; these retired batches
+are not mandatory prerequisites.
 
 ## Batch 1 manual runs
 

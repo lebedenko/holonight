@@ -1,3 +1,6 @@
+> **Historical material — initiative closed 2026-09-19.** See the [closure decision](CLOSURE.md).
+> No new kit, manual run or acceptance cycle is requested. Earlier pending instructions are superseded.
+
 # UQC-201 user-operated acceptance
 
 Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked

@@ -1,20 +1,12 @@
 # Unified Qt Quick Controls and Third-Party Compatibility — Coordination Ledger
 
-The initiative is Accepted following user scope approval on 2026-09-07. Discovery UQC-001 is complete and
-UQC-002 settles the contract. UQC-101 is Done with its verified provider published and pinned.
-UQC-103 settings and UQC-104 AI are Done with local acceptance and publication complete.
-Supplemental UQC-107/UQC-108/UQC-109, UQC-105 package-manager and UQC-106 greeter are Done.
-UQC-102 shell is Done with published local acceptance and green final-revision CI; UQC-201 is In Progress for automated integration and manual-kit work.
-
-Current execution order and remaining gates: [current batch roadmap](BATCHES.md).
-D01/D03/D04, A03 and the reported F06 sequence remain accepted. D02 Settings Weather and F07 both styles are accepted. The user confirms deliberate
-Fusion session shutdown; missing numeric exit evidence remains documented. Batch 1
-and Batch 2 are complete; A01/A02/A04 are accepted and saved process outcomes are
-classified. Batch 3 rendering/background repairs are accepted; remaining diagnostic
-and compatibility dispositions are in FINDINGS.md. Batch 5 is removed from scope;
-UQC-209/UQC-210 are Superseded application-local follow-ups. Batch 7 preserves
-already accepted shared-control work and existing HnAvatar use. Dated entries
-below retain historical states; current rows and canonical findings take precedence.
+**Initiative Integrated; UQC-201 Done — 2026-09-19.** The user closed the
+unified-look work and removed the remaining release-style gates. See the
+[closure summary](CLOSURE.md), [gotchas](GOTCHAS.md) and
+[final acceptance record](FINAL-ACCEPTANCE.md). No active work packages remain;
+UQC-209/UQC-210 stay Superseded. Earlier dated pending/open states are historical
+and do not schedule more work. Completed repairs and scoped observations remain
+accepted; known limits are retained without claiming they were fixed.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
@@ -29,7 +21,7 @@ below retain historical states; current rows and canonical findings take precede
 | UQC-107 | `holonight-qt` | Repair direct configuration linkage and verify a clean Release build with privately staged configuration | UQC-101 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `478ef7c40a22c7c3f7ea6f45d9205411b5504834` | Fresh Release with system configuration headers hidden; all 59 enabled CTests, format and focused tidy completed; workflow syntax and whitespace pass. Canonical publication confirmed. |
 | UQC-108 | `holonight-ai` | Adopt the corrected published provider and confirm local acceptance and green remote CI/licensing | UQC-107 | [Record](../../../holonight-ai/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `b874334b20053f94f84fd9b4b1a0a7e0c7cc867a` | Local full suite, 59 QML checks per style with host modules hidden, eight isolated launches and static checks pass. Remote CI 34267789749 (build/test and static) and licensing 34267789698 are green. Canonical publication confirmed. |
 | UQC-109 | `holonight-qt` | Fix empty icon-role QVariantList delegates blocking greeter acceptance | UQC-107 | [Record](../../../holonight-qt/docs/sdd/unified-qtquick-controls/IMPLEMENTATION.md) | Done | `00e6e208b6c9b30d89b66ef3aeb4ef8175050764` | 2026-09-09: regression reproduced before fix; 59 provider CTests, both styles/DPRs, format, zero-warning QML lint and licensing pass. Canonical publication confirmed. Final CI 34288860789 and licensing 34288860847 pass. |
-| UQC-201 | umbrella | Verify published clean pins, dependency-order checks, activation paths, and accepted third-party matrix under Hyprland and Sway | UQC-101–UQC-109; UQC-202/UQC-203 findings | [Evidence](INTEGRATION.md), [commands](COMMANDS.md), [manual kit](MANUAL.md), [P03 preparation](P03-READINESS.md), [focused handoff](P03-RECHECK.md) | In Progress | Assigned from `a26b4e537ea8105a991ec5f48e06e9fe7565dd72`; verification gitlinks at readiness `67a72a6` | 2026-09-09: fresh dependency-order full suites, current installed/relocated launches, static checks and licensing pass. Initial AI Fusion geometry and installer package-ownership failures are retained in evidence; UQC-202/UQC-203 repairs are Done. Fresh recheck at published handoff `730be06`: installer --check exits 0 and explicit Fusion selection passes 59/59 (15.37 s). Third-party bounded loading verified; subsequent focused manual acceptances are recorded in FINDINGS.md. Remaining ecosystem gates are retained in BATCHES.md. 2026-09-16: fresh dependency-order and installed acceptance pass at closure checkpoint `3fcbe9c`; [Batch 8 checklist/results](FINAL-ACCEPTANCE.md) and [first manual handoff](BATCH8-HANDOFF.md) recorded that release. 2026-09-17: [post-repair revalidation](BATCH8-REVALIDATION.md) passes at `c16b164`; fresh restored READY kit `holonight-uqc201-final-dyxe1nl_` and [two-run AI handoff](BATCH8-AI.md) are prepared. Manual gates remain open. 2026-09-18: [Settings scale-1 readiness](FINDINGS.md#settings-scale-1-kit-readiness--2026-09-18) passes with fresh full provider/Settings suites and a restored immutable kit; [both human runs are now accepted](FINDINGS.md#settings-sway-scale-1-human-acceptance--2026-09-18). P03, fractional and Weather acceptances stay closed. |
+| UQC-201 | umbrella | Close integrated unified-look/shared-control work with documented limits and user scope disposition | Delivered UQC implementation and repair packages | [Closure](CLOSURE.md), [gotchas](GOTCHAS.md), [evidence](FINAL-ACCEPTANCE.md) | Done | Closure based on unchanged gitlinks at `e78d134`; this umbrella documentation checkpoint | 2026-09-19: existing dependency-order builds, published repository handoffs, installed/default/Fusion checks and scoped human results accepted. P03, Settings and AI scale-1/fractional acceptance retained. User reports daily installed greeter/askpass use without authentication issues and explicitly removes remaining authentication/activation/pre-session/exhaustive-matrix gates; these are not passing test claims. Closure verification: documentation links/anchors and shell-example syntax, `reuse --no-multiprocessing lint`, `git diff --check`; all pass. No product suites or UI runs repeated. [Final scope and evidence](CLOSURE.md). |
 | UQC-202 | umbrella | Verify installer Qt Wayland capabilities independently of package ownership | — (found during UQC-201) | [Design and evidence](UQC-202.md) | Done | `8af91cb173d6268e71ddb1b92afed8915a6ac658` | 2026-09-09: eight fixtures, syntax, licensing, whitespace and real installer --check pass. Installer CI 34380475124 and licensing 34380474984 are green. Canonical publication confirmed; original failure retained in INTEGRATION.md. |
 | UQC-203 | `holonight-ai` | Accept native composer geometry under both styles against the integrated provider | UQC-202 (execution order) | [Supplemental SDD](../../../holonight-ai/docs/sdd/unified-qtquick-controls/UQC-203.md) | Done | Implementation `11b021a4bd86d07d283d1c89f6467c44a17628f3`; handoff `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c` | 2026-09-09: four style/scale composer cases, both 59-test selections, complete local suite/Task, compiled acceptance, eight launches, policies and static/licensing pass. Implementation CI 34390403485 and licensing 34390403390 green. Documentation-only handoff published and verified before pinning. |
 
@@ -2726,3 +2718,13 @@ diagnostics and explicit disabled/unobserved-control limits. The
 requested. Only these scoped AI cells close. UQC-201 remains In Progress;
 initiative Accepted. Fractional acceptance and P03 closure are preserved;
 authentication, activation, pre-session greeter and other gaps remain separate.
+
+## Initiative closure — 2026-09-19
+
+The user's explicit request to close the initiative supersedes the earlier
+remaining-gates instructions. UQC-201 is Done and the initiative Integrated for
+the delivered styling/control scope, with [removed gates and retained limits](CLOSURE.md).
+This is an evidence-based scope disposition, not a claim of new authentication,
+activation or exhaustive release validation. [Gotchas](GOTCHAS.md) retain the
+lessons for ordinary future development. No next batch, repair assignment or
+kit preparation is scheduled; product sources and gitlinks are unchanged.

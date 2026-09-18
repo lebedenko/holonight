@@ -1,7 +1,5 @@
-> Current checkpoint: broad manual acceptance is paused for repairs. Use the
-> [canonical findings register](FINDINGS.md) for current status. The batch requests
-> below are historical; the next request is limited to repaired Settings/AI focus
-> using the [fresh focus kit](FOCUS.md) after the published UQC-204 handoff.
+> **Historical material — initiative closed 2026-09-19.** See the [closure decision](CLOSURE.md).
+> No new kit, manual run or acceptance cycle is requested. Earlier pending instructions are superseded.
 
 # UQC-201 guided acceptance
 

@@ -1,43 +1,17 @@
 # Unified Qt Quick Controls and Third-Party Compatibility
 
-Current repair checkpoint (2026-09-18): UQC-220 Settings acceptance is preserved.
-[UQC-222](UQC-222.md) shared-window repair and [UQC-224](UQC-224.md) passive observer
-repair are Done; [UQC-223](UQC-223.md) diagnosis remains Done. **P03 is closed** by
-[verified human acceptance](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18): correct Fusion and replacement
-default pass light-time Settings construction and activation/hover palette stability.
-The initial default attempt remains superseded evidence. No further P03 checks
-are requested. UQC-201 remains In Progress; initiative Accepted; unrelated gates
-and earlier accepted results remain unchanged.
+Status: Integrated
 
-Current checklist: [Batch 8 final acceptance](FINAL-ACCEPTANCE.md). Dated unchecked
-lists below are historical coverage records, not requests to repeat accepted work.
+**Closed 2026-09-19. UQC-201 is Done.** The unified-look and shared-control work
+is complete under the user's explicit scope decision. Remaining release-style
+acceptance requirements are removed, not recorded as passing tests.
 
-Status: Accepted
-
-Current scope and progress (2026-09-16): Batches 1–3 are closed; Batch 3 diagnostics
-are deferred, non-blocking historical findings by user-directed disposition. Final
-integration remains open.
-Tokodon’s intermittent chevron is deferred at the user’s request. **Batch 5 is
-removed:** Settings slider and AI Temperature layout defects belong to separate
-application-local SDD follow-ups, not this controls-unification initiative.
-Batch 7 excludes accepted shared dropdown/hover work and existing avatar-display
-adoption; remaining greeter-specific checks are listed in the reviewed findings.
-See [current roadmap](BATCHES.md), [ledger](TASKS.md) and [findings](FINDINGS.md).
-Batch 4 scoped palette work is accepted. Batch 6 manual comparisons are complete.
-UQC-215 provider coordinate repair is published and locally verified;
-[S01 repair acceptance](S01-REPAIR.md) passed in both styles. UQC-211 is Done. [F05 reduced diagnosis](f05/README.md) retains
-an [external Qt/Hyprland reproduction](FINDINGS.md#f05-plain-qt-external-reproduction--2026-09-15)
-in plain Qt. The [upstream-report draft](f05/UPSTREAM-REPORT.md) is prepared, not submitted;
-exact mechanism and repair remain open. See [the current handoff](BATCH6-HANDOFF.md).
-Batch 7 G01–G06 checks are [manually accepted](FINDINGS.md#batch-7-manual-acceptance--2026-09-15); UQC-212 is Done.
-**G07 is closed as not an issue for intended fullscreen use**, following [fullscreen acceptance and closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16)
-in HoloNight and Fusion at scale 1. The earlier specific windowed reproduction and
-UQC-216–218 investigations remain historical evidence. Windowed greeter use is
-outside the intended design and planned real scenarios. Production is unchanged;
-no G07 repair, upstream submission or further manual comparisons are planned.
-[UQC-219 Batch 3 diagnosis](UQC-219.md) is complete. UQC-207 is Done; see the
-[Batch 3 closure](FINDINGS.md#batch-3-user-directed-closure--2026-09-16).
-The sections labelled as dated checkpoints below preserve historical evidence.
+Read the [closure summary](CLOSURE.md) for delivered work and scope disposition,
+and [gotchas](GOTCHAS.md) for practical lessons and known compatibility limits.
+The [final acceptance record](FINAL-ACCEPTANCE.md), [ledger](TASKS.md) and
+[findings](FINDINGS.md) preserve evidence. There is no next batch or automatic
+follow-up. Older pending/open statements below are dated history superseded by
+this closure; they must not restart the acceptance process.
 
 ## Goal
 
@@ -113,8 +87,8 @@ explicitly rather than reporting every application as successfully themed. See
 [Qt style selection](https://doc.qt.io/qt-6/qtquickcontrols-styles.html) and
 [Qt Quick Controls deployment](https://doc.qt.io/qt-6/qtquickcontrols-deployment.html).
 
-Add HoloNight implementations for missing standard controls encountered in the target matrix. The current shared
-style implements 18 standard control types and declares Basic fallback; selecting the style does not establish full
+Add HoloNight implementations for missing standard controls encountered in the target matrix. The discovery baseline implemented 18 standard control types; the accepted additions
+expanded that coverage. The style declares Basic fallback; selecting the style does not establish full
 HoloNight rendering for every control. Record each relevant surface as verified HoloNight, Basic fallback,
 application-owned, or blocked by a concrete compatibility issue. A visible standard-control coverage gap in the
 accepted matrix must be closed or explicitly resolved at contract acceptance, not silently counted as success.
@@ -156,32 +130,18 @@ is published and pinned. UQC-103 settings and UQC-104 AI are Done with published
 UQC-107 provider repair and UQC-108 AI CI confirmation are Done, with green remote CI.
 UQC-105 package-manager, UQC-106 greeter and UQC-109 provider compatibility repair are Done.
 UQC-102 shell is Done with published local acceptance and green final-revision CI.
-UQC-201 is In Progress for automated integration and manual verification preparation. Gitlinks remain authoritative; this document is not a second compatibility manifest. Provider revisions must be published and pinned before dependent consumer work starts.
+UQC-201 is Done under the [2026-09-19 closure](CLOSURE.md). Gitlinks remain authoritative; this document is not a second compatibility manifest.
 
 ## Integration acceptance criteria
 
-This is the final integrated-revision checklist, not a list of outstanding local
-repairs. Preserve existing accepted results; use the roadmap/findings for remaining
-work and reverify only the coverage required at the final published revisions.
-
-- [ ] Every repository work package has a published commit, a linked local SDD, and passed local verification.
-- [ ] Participating submodules are clean and pinned to published commits with compatible shared contracts.
-- [ ] Owned graphical executables select HoloNight with style overrides unset; an explicit Fusion override works
-      without hidden direct-style bypasses or style-specific property failures.
-- [ ] Import-policy checks enforce the agreed boundary, including attached-property usage and test exceptions.
-- [ ] Installed-prefix consumers and shared controls load without source-tree QML paths; missing-module and explicit
-      competing-style cases are covered by negative fixtures.
-- [ ] Foreign fixtures prove actual HoloNight implementations and representative enabled, disabled, focused, hovered,
-      and selected states. Unimplemented types have explicit fallback classifications.
-- [ ] Required visible standard-control gaps from the accepted real-application matrix have tested implementations.
-- [ ] Applicable terminal, desktop-launcher, D-Bus, and systemd activation paths have verified selection and discovery.
-- [ ] Focused regressions cover text editing, authentication, scrolling, keyboard navigation, and scaled popups,
-      including the existing greeter ComboBox geometry contract.
-- [ ] Dependency-order repository builds/tests and umbrella integration checks pass.
-- [ ] Human-operated visual and interaction checks pass for the accepted application matrix under Hyprland and Sway.
-      Do not automate pointer movement, clicking, or window focus; request manual interaction when required.
-- [ ] The final ledger row records commands, results, application/Qt versions, limitations, and verification date;
-      only its successful completion permits status `Integrated`.
+Existing provider/consumer implementation, installed-selection checks, regression
+coverage and scoped manual results are accepted. The user explicitly removed the
+remaining authentication, activation, pre-session and exhaustive matrix gates as
+disproportionate to this appearance-focused initiative. The
+[closure decision](CLOSURE.md#scope-correction-and-removed-gates) replaces the old
+uncompleted checklist; removed checks are not test passes. The final UQC-201 row
+records completion based on this scope and existing evidence. No further kit,
+manual batch or release-certification cycle is required.
 
 ## Discovery checkpoint — 2026-09-05
 

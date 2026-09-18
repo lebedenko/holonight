@@ -1,31 +1,16 @@
-# Batch 8 final acceptance
+# Unified Qt Quick Controls — final acceptance and closure
 
-Status: In Progress, updated 2026-09-18. Initiative Accepted; UQC-201 In Progress.
-This is the current acceptance checklist. Historical unchecked lists in README,
-MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
-Preserve completed manual acceptance unless a subsequent implementation affects it.
-Gitlinks are authoritative. Current Settings planning baseline is umbrella
-`52908523d5347100f59fd1edf3861330f5d09286`, including published provider
-`eadfe482000e64ee7ead83d63f878e3f365686b1`. The fresh Settings kit is recorded in
-[reviewed readiness](FINDINGS.md#settings-scale-1-kit-readiness--2026-09-18);
-both [Settings scale-1 human runs are accepted](FINDINGS.md#settings-sway-scale-1-human-acceptance--2026-09-18). Retained READY kit:
-`/tmp/holonight-uqc201-settings-p1ndqzdz`.
+Status: **Integrated**, closed **2026-09-19**. UQC-201: **Done**.
 
-The earlier P03 baseline `4f7bafbf6acb3c48a693f762a2e60518bedb4021` and kit
-`/tmp/holonight-uqc201-p03-95__83sb` remain [repair provenance](P03-READINESS.md).
+The [closure summary](CLOSURE.md) records the delivered unified-look work and the
+user's explicit removal of the remaining release-style gates. See
+[gotchas](GOTCHAS.md) for known limitations and practical lessons. Existing
+repository and human results remain accepted within their recorded scope; no new
+authentication or exhaustive release-validation pass is claimed. No next batch.
 
-UQC-220 local and focused Settings manual acceptance remain accepted.
-**P03 closed on 2026-09-18:** [human evidence review](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18)
-accepts the correct Fusion run and replacement default run after UQC-224.
-Both styles pass first Settings construction in light and persistent colors through
-activation/hover and dark/light/dark. The initial default attempt is superseded
-for construction acceptance. UQC-222/UQC-223/UQC-224 remain Done. No P03 rerun.
-
-The earlier kit `/tmp/holonight-uqc201-final-dyxe1nl_` and its
-[revalidation](BATCH8-REVALIDATION.md) remain historical evidence. Its submitted
-[AI runs](BATCH8-AI.md) accepted interaction/main-window coverage and exposed P03;
-they must not be used to validate the repaired provider. Earlier baseline
-`c16b164` and Settings documentation follow-up `0eb5028` remain provenance.
+P03, Settings Weather and the reviewed Settings/AI scale-1 and fractional results
+are closed. Dated procedures and earlier pending states below are provenance;
+they do not reopen this initiative. Product sources, gitlinks and kits are unchanged.
 
 ## Reconciled requirements
 
@@ -36,20 +21,20 @@ they must not be used to validate the repaired provider. Earlier baseline
 | Embedded default, Fusion override and explicit competing styles | Accepted with automated evidence | Post-repair build and installed launch matrices pass for provider examples, shell/authentication, Settings, AI, packages and greeter; see [focused current results](P03-READINESS.md). |
 | Namespaced imports, attached properties and exceptions | Accepted with evidence | Provider and consumer policy checks and negative fixtures. |
 | Installed consumers and missing-module deployment failures | Accepted with automated evidence | Fresh isolated installation passes with host HoloNight hidden, staged origins verified and build paths rejected; see [focused current results](P03-READINESS.md). |
-| Foreign control origins and explicit fallbacks | Manual verification required | Loading is already demonstrated, but maps are not per-control evidence. Correlate remaining reachable surfaces with created origins and actual DPR; classify HoloNight, Basic/Fusion, application-owned or inaccessible with reason. |
+| Foreign control origins and explicit fallbacks | Existing scoped evidence accepted; exhaustive expansion removed | Preserve recorded HoloNight/Fusion/Basic/composite/application-owned classifications; unobserved surfaces remain coverage limits. |
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
-| Successful authentication | Manual verification required | Real disposable login; guarded registration preflight and harmless `/usr/bin/true` challenge; human credential entry only. Cancellation does not close this gate. Existing cancellation-only helpers must not be represented as successful-authentication acceptance. |
+| Successful authentication | Removed as a closure gate | User reports daily installed greeter/askpass use without authentication issues; no fresh challenge is required for this appearance initiative. |
 | AI palette P03 | Accepted with human and corroborating observer evidence | [Closure](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18): correct Fusion plus replacement default, Sway output 1/DPR 1.25, fresh light-time Settings, activation/hover stability and normal exits. All required surfaces confirmed checked without issues. First default attempt retained as superseded evidence. |
-| Palette rendering P02 | Accepted with evidence | [Nine accepted runs](FINDINGS.md#batch-4-manual-visual-acceptance--2026-09-15), scale 1; preserve those observations. Remaining owned/compositor/fractional transition coverage stays manual. |
+| Palette rendering P02 | Accepted with evidence | [Nine accepted runs](FINDINGS.md#batch-4-manual-visual-acceptance--2026-09-15), scale 1; preserve those observations. Further transition-matrix expansion was removed at closure. |
 | Shell compositor/popup S01/S02 | Accepted with evidence | [S01 repair acceptance](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15), Sway comparison and completed Batch 6 runs. |
 | Greeter G01–G06 and fullscreen G07 | Accepted with evidence | [Batch 7](FINDINGS.md#batch-7-manual-acceptance--2026-09-15), [fullscreen closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16). Windowed G07 outside intended use; no repeat demo comparisons. |
-| Terminal/desktop/D-Bus activation | Manual verification required | Preserve [Settings bus](GUIDED.md#settings-d-bus-process-correlation--reviewed-2026-09-11), [desktop](GUIDED.md#settings-desktop-entry-process-correlation--reviewed-2026-09-11), AI bus and third-party desktop PID correlations. Fill only missing control-origin, outcome and applicable compositor coverage. |
-| Shipped systemd unit and wrapper | Manual verification required | Prior [transient shell](GUIDED.md#transient-systemd-shell-process-correlation--reviewed-2026-09-11) proves only transient execution. Exercise installed `holonight-shell.service` → `holonight-shell-systemd` in disposable login; record unit fragment/drop-ins, environment, actual PID and loaded origins, and restore prior manager state. |
-| Real pre-session greeter | Manual verification required | Use [isolated VT procedure](../../../holonight-greeter/docs/CAGE.md), staged launcher/provider and disposable login. Record successful login/session start, geometry and cleanup. Demo/fake backend tests do not substitute. |
+| Terminal/desktop/D-Bus activation | Remaining gate removed | Preserve completed launch/selection evidence and known defects; no exhaustive activation batch. |
+| Shipped systemd unit and wrapper | Remaining gate removed | No new shipped-unit activation/restoration acceptance required for styling closure. |
+| Real pre-session greeter | Removed as a closure gate | Installed everyday use and accepted scoped appearance work retained; no new login/session certification run. |
 | Dependency-order builds/tests | Accepted with automated evidence | Configuration, system services, shell configuration, provider, adapters, shell, Settings, AI, packages, greeter; [fresh builds and focused results](P03-READINESS.md) pass; unchanged full-suite results remain labeled prior evidence. |
-| Remaining app/compositor/style/scale matrix | Manual verification required | Haruna local clip; NeoChat/Tokodon logged-out surfaces; Qt hyprpolkitagent; owned Settings/AI/packages. Fill unresolved coverage in small reviewed batches, including scale 1/1.25 and HoloNight/Fusion. Preserve existing narrower observations and accepted scope. |
-| Final evidence ledger and integration decision | Manual verification required | Record revisions, commands/results, versions, evidence and limitations. Do not mark Integrated before all gates pass or receive explicit disposition. |
+| Remaining app/compositor/style/scale matrix | Remaining expansion removed | Accept completed scoped observations. Untested combinations remain limitations, not automatic defects or future batches. |
+| Final evidence ledger and integration decision | Complete by user scope disposition | UQC-201 Done; initiative Integrated. [Closure summary](CLOSURE.md) records accepted evidence, removed requirements and verification. |
 
 ## Recorded limitations
 
@@ -95,23 +80,12 @@ command sandbox. The retry runs outside that command sandbox while preserving
 the disposable HOME/XDG/private-bus and host-provider mount isolation. Retain the
 failed attempt; it is not a product failure or a passing test.
 
-## Later human-operated batches
+## Former later-batch requirements — removed at closure
 
-Review each batch's evidence before giving the next. Never automate pointer,
-focus or credential entry. Successful authentication and real pre-session checks
-remain required; no privileged launch has been requested or performed yet.
-
-Before the shipped-service batch, inspect the disposable user's existing manager
-environment and unit state, then prepare exact activation and restoration commands
-for that state. Do not replace this with a transient unit or change the main user.
-
-Before the pre-session batch, check VT2 availability and the separate socket,
-generate a temporary greetd configuration pointing at this kit's installed
-`holonight-greeter-session`, and isolate greeter state/configuration. Preserve the
-primary greetd configuration/service. Use the existing stop/restore-getty trap
-procedure and prepare exact cleanup before requesting the privileged launch.
-The repository `task live:test` defaults to the host-installed launcher; invoking
-it unchanged would not prove this kit's pinned implementation.
+Successful-authentication, shipped-service and pre-session batches are no longer
+required. Do not prepare or run them merely to complete this document. Existing
+results and their limits remain recorded; see the
+[explicit scope disposition](CLOSURE.md#scope-correction-and-removed-gates).
 
 ## Fresh automated results — 2026-09-16
 
