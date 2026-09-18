@@ -1,30 +1,14 @@
-# P03 — focused AI Settings palette recheck
+# P03 observer-repair human acceptance
 
-**Current handoff:** [UQC-224 observer-repair checks](P03-UQC224-RECHECK.md),
-using READY `/tmp/holonight-uqc201-p03-95__83sb`. Exactly two fresh sequential
-Sway AI runs are required; P03 remains open. The earlier procedure below is
-historical and must not be run against the superseded observer.
-
-**Completed run instructions — do not repeat this batch.** The
-[2026-09-18 review](FINDINGS.md#p03-human-evidence-review--2026-09-18) keeps P03 open
-for palette instability and missing Fusion light-time construction.
-[UQC-223](UQC-223.md) is the next diagnosis handoff. The procedure below is retained
-as provenance; successful scoped observations remain accepted.
-
-Current kit repairs manual device access at umbrella `838e931`; product payload
-is unchanged from the original release. Real-VT startup remains human-verified.
-
-Prepared baseline: umbrella `6f7af409a38b7a217fec38bf607e43446f86c07f`, provider
-`e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. Use only the new READY kit
-`/tmp/holonight-uqc201-p03-xtndrklf`; [readiness evidence](P03-READINESS.md).
-P03 is open, UQC-222 Done, UQC-201 In Progress, initiative Accepted.
-Earlier interaction, navigation and main-window checks remain accepted.
+Use only this fresh kit: /tmp/holonight-uqc201-p03-95__83sb.
+Provider eadfe482000e64ee7ead83d63f878e3f365686b1; unchanged AI
+7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c. P03 remains open.
 
 Exactly two sequential human-operated runs follow. From a fresh real **tux** VT
 login outside a compositor:
 
 ```sh
-python3 /tmp/holonight-uqc201-p03-xtndrklf/guided-session.py sway
+python3 /tmp/holonight-uqc201-p03-95__83sb/guided-session.py sway
 ```
 
 In its terminal, record outputs and confirm every active output has **scale 1**:
@@ -66,12 +50,17 @@ that run's isolated profile to light:
 python3 "$UQC_KIT/ai-palette.py" light
 ```
 
-Now manually open AI Settings. Inspect native text fields, SpinBoxes and reachable
+Confirm the main window started dark and initially inspect New Chat and prompt buttons.
+After the light command, open AI Settings for the **first time in this process**. Inspect native text fields, SpinBoxes and reachable
 selectors in light mode: backgrounds, text, disabled states and shared composites.
 Closing and reopening Settings retains its Loader instance; only this first open
 in light mode tests light-time construction.
 
-Keep Settings **open** through dark → light → dark. Issue each command separately
+Keep **both windows alive** through dark → light → dark. At each unchanged scheme,
+manually alternate activation between the main window and Settings, then hover
+New Chat/prompt buttons and Settings inputs, numeric controls, selectors, disabled
+controls and shared search/combo composites. Watch for persistent color reversals
+after activation/deactivation or hover. Do not repeat unrelated navigation checks. Issue each command separately
 in the other terminal, returning manually to inspect Settings between commands:
 
 ```sh
@@ -80,17 +69,24 @@ python3 "$UQC_KIT/ai-palette.py" light
 python3 "$UQC_KIT/ai-palette.py" dark
 ```
 
-Record pass/fail/inaccessible for each visible surface in each state. Name the
+Record pass/fail/inaccessible for each required surface in each state, including
+main-window New Chat/prompt buttons and Settings native inputs/selectors, disabled
+controls and shared composites. Note activation and hover separately. Missing or
+inaccessible required evidence keeps P03 open. Name the
 field, numeric control, selector or composite; describe background/text/disabled
 state inconsistencies. Record empty or inaccessible controls without enabling
 providers or creating network content. Observer origins cover instantiated objects,
-not unopened pages or all painted pixels. Automated provider diagnostics and AI
-component tests establish readiness; ordinary AI startup does not instantiate
+not unopened pages or all painted pixels. Automated provider diagnostics and isolated AI
+startup checks establish readiness; ordinary AI startup does not instantiate
 its lazy Settings window, and the workspace round trip is separate evidence.
 
 Close Settings and then AI normally using their close controls, or manually use
 **Super+Q** with the intended AI window focused. Do not use Ctrl+C. Wait for the
 launcher outcome before starting the next run.
+
+Before archiving, save your per-surface observations in a text file inside the
+session directory. Include each scheme, main and Settings controls, activation,
+hover, disabled states and any inaccessible required controls.
 
 After both runs, verify **measured** application DPR 1.25 from collector output:
 

@@ -1,4 +1,58 @@
-# P03 focused repair readiness — 2026-09-17
+# P03 observer-repair readiness — 2026-09-18
+
+**READY:** `/tmp/holonight-uqc201-p03-95__83sb`. Use the
+[UQC-224 two-run handoff](P03-UQC224-RECHECK.md). P03 remains open until both
+human palette-stability runs and fresh Fusion light-time construction pass.
+
+Preparation baseline: umbrella `4f7bafbf6acb3c48a693f762a2e60518bedb4021`;
+published provider `eadfe482000e64ee7ead83d63f878e3f365686b1`. All other product
+pins, including AI `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c`, remain unchanged.
+Clean authoritative gitlinks and canonical publication were checked at preparation
+and release. The [bounded profile](p03-kit/README.md) requires an explicit committed
+baseline and rejects dirty checkouts, unpublished pins and package drift.
+
+Fresh configuration/provider/AI builds and installs pass. Actual installed observer:
+98 processes collected, 49 on/off equivalence pairs pass, zero palette/fill stability
+failures. Provider window/Core 5/5, observer/import policies 8/8 and installed
+allocation/deferred-control regression pass. Baseline observer and deliberately
+allocating Qt-boundary failures are retained separately in provider-repair-evidence.
+Plugin-cleared and provider-free comparisons remain distinctly labeled.
+
+Both isolated AI styles pass startup, staged executable/observer/platform-theme
+origin checks, measured DPR 1.25, unallocated root palettes and workspace
+scheme-helper/refusal checks. Collector 14/14, terminal/Python syntax, headless
+Sway configuration, licensing and documentation pass. Exact launcher namespace
+preserves host GPU/input device identities and exposes only loopback. No live
+pointer/focus interaction or seat acquisition was automated. Lazy Settings and
+human persistent-color observations remain acceptance gates.
+
+All 15 named readiness gates pass. No unrelated product builds or consumer suites
+were run. Prior full suites stay under their original revisions in prior-evidence.
+Previous kits remain intact: all 838 and 880 hashes reverified. Source/binary
+provenance, command logs and package inventory are archived with this new kit.
+
+Release: **2,971 verified hashes**. Archive:
+`.cache/holonight-uqc201-p03-95__83sb/holonight-uqc201-p03-95__83sb.tar.gz`.
+SHA-256 `72554f89681932ec2d358533f7d48424f0dfe9a81f5e4630fd375af0b7ab3af7`.
+Exact-prefix restoration passed; repeated restoration refused overwrite with exit 2.
+The pre-restoration directory is preserved with the `-before-restore` suffix.
+The archive contains its pre-archive readiness snapshot; final archive hash and
+restoration results are recorded here and in the matching `.cache` directory.
+
+If the exact kit path is absent after reboot, restore from the umbrella root:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc201-p03-95__83sb/holonight-uqc201-p03-95__83sb.tar.gz
+```
+
+UQC-222/UQC-223/UQC-224 Done; UQC-201 In Progress; initiative Accepted.
+Automated readiness is not P03 closure or ecosystem integration.
+
+---
+
+## Earlier release records (historical)
+
+## P03 focused repair readiness — 2026-09-17
 
 Human runs are now reviewed: real-VT startup succeeds, but P03 remains open for
 palette instability and missing Fusion light-time construction. See the

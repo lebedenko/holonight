@@ -2953,3 +2953,30 @@ affected stability checks and missing fresh Fusion light-time Settings creation.
 Preserve successful immediate transitions, default light-time construction and
 prior navigation coverage. UQC-222 Done, UQC-201 In Progress, initiative Accepted.
 No new kit, manual batch or final integration claim.
+
+## UQC-224 observer repair and replacement release — 2026-09-18
+
+Ready assignment `ab6a311` preceded provider implementation. Repair `29e09f3`,
+actual-library regression/matrix `1a0be30` and local result record `eadfe48` were
+published separately. Canonical availability and clean provider were confirmed
+before umbrella handoff `9ca8613`; no other product pins changed.
+[Provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-224.md)
+records the baseline real-observer allocation/reversal, repaired 98-process matrix,
+49 on/off equivalence pairs, 13 narrow CTests and static/licensing checks. The
+intentionally allocating Qt boundary still fails; no production workaround or
+assertion weakening occurred.
+
+Published preparation checkpoint `4f7bafb` produced fresh focused READY kit
+`/tmp/holonight-uqc201-p03-95__83sb`. Installed observer and isolated AI readiness
+pass; [readiness](P03-READINESS.md) records named checks and evidence scope.
+2,971 file hashes verify; restoration passes and overwrite refusal exits 2.
+Archive SHA-256 `72554f89681932ec2d358533f7d48424f0dfe9a81f5e4630fd375af0b7ab3af7`.
+Earlier archives/observations remain unchanged, and prior full suites retain their
+original revisions. No unrelated products or consumer suites were rebuilt/run.
+
+**P03 remains open.** [Exactly two fresh sequential human runs](P03-UQC224-RECHECK.md)
+are required: embedded default then Fusion, Sway output 1/measured DPR 1.25,
+dark main then first Settings construction in light, both windows through
+dark/light/dark with manual activation and hover. Missing/inaccessible required
+controls, missing evidence or recurrence blocks closure. UQC-222/UQC-223/UQC-224
+Done, UQC-201 In Progress, initiative Accepted. No ecosystem integration claim.

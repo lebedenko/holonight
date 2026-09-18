@@ -2689,3 +2689,15 @@ records diagnosis ownership and evidence limits; the provider-local SDD owns
 commands, cases and the proposed repair contract. UQC-223 Done; no production
 repair, consumer changes, new kit or manual rerun. P03 open, UQC-222 Done,
 UQC-201 In Progress, initiative Accepted.
+
+## UQC-224 published repair and focused replacement kit — 2026-09-18
+
+Ready assignment `ab6a311`; published provider `eadfe48` accepted in `9ca8613`.
+Only the provider pin changed. [Finding](FINDINGS.md#uqc-224-observer-repair-and-replacement-release--2026-09-18)
+and [readiness](P03-READINESS.md) record actual-observer verification and fresh
+READY `/tmp/holonight-uqc201-p03-95__83sb` from published baseline `4f7bafb`.
+15 named readiness gates, 98-process installed matrix/49 equivalence pairs,
+collector 14/14, both AI startup/helper styles, device bindings and restoration pass.
+Overwrite refusal exits 2; 2,971 hashes verified. UQC-224 Done; P03 open for
+[exactly two human runs](P03-UQC224-RECHECK.md). UQC-222/UQC-223 Done,
+UQC-201 In Progress, initiative Accepted. Prior artifacts and acceptance preserved.

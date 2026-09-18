@@ -5,11 +5,11 @@ This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
 Gitlinks are authoritative. Current preparation baseline is umbrella
-`6f7af409a38b7a217fec38bf607e43446f86c07f`, including published provider
-`e94ceddbd3c0e4cb29e21bcdfd6758e3e4639f4f`. The focused P03 kit and release
+`4f7bafbf6acb3c48a693f762a2e60518bedb4021`, including published provider
+`eadfe482000e64ee7ead83d63f878e3f365686b1`. The focused P03 kit and release
 verification are recorded in [P03 readiness](P03-READINESS.md); use the
-[two-run focused handoff](P03-RECHECK.md). Current READY kit:
-`/tmp/holonight-uqc201-p03-xtndrklf` (device-access repair; see the current readiness record).
+[two-run focused handoff](P03-UQC224-RECHECK.md). Current READY kit:
+`/tmp/holonight-uqc201-p03-95__83sb` (verified observer repair).
 
 UQC-220 local and focused Settings manual acceptance remain accepted. UQC-222
 remains Done. The [P03 review](FINDINGS.md#p03-human-evidence-review--2026-09-18)
@@ -17,7 +17,8 @@ verifies both processes and preserves successful immediate transitions/default
 light-time construction. P03 remains open: palette roles revert during interaction,
 and Fusion Settings was first constructed dark. [UQC-223](UQC-223.md) is Done as a
 diagnosis: an allocating observer exposes a stale Qt root palette on activation.
-Instrumentation repair remains separate. No next batch or repeated navigation checklist.
+[UQC-224](UQC-224.md) instrumentation repair is verified and published. Exactly two
+fresh focused runs are requested; no repeated unrelated navigation checklist.
 
 The earlier kit `/tmp/holonight-uqc201-final-dyxe1nl_` and its
 [revalidation](BATCH8-REVALIDATION.md) remain historical evidence. Its submitted
@@ -38,7 +39,7 @@ they must not be used to validate the repaired provider. Earlier baseline
 | Shared focus, dropdowns, launcher and rendering repairs | Accepted with evidence | [Batches 1–3](BATCHES.md), F01/F02, D01–D04/F06/F07 and accepted icon/menu/selection/Switch/background results in FINDINGS. F03 original attribution remains uncertain; eligibility fixtures pass. No repeat repair comparisons. |
 | Authentication cancellation and repaired presentation | Accepted with evidence | [Batch 2](FINDINGS.md#batch-2-authentication-manual-acceptance--2026-09-14), A03 cancellation and A02 synthetic lifecycle/rendered acceptance. Original missing/overwritten logs remain documented. |
 | Successful authentication | Manual verification required | Real disposable login; guarded registration preflight and harmless `/usr/bin/true` challenge; human credential entry only. Cancellation does not close this gate. Existing cancellation-only helpers must not be represented as successful-authentication acceptance. |
-| AI palette P03 | Open: observer-induced stability failure and incomplete construction coverage | [Two-run review](FINDINGS.md#p03-human-evidence-review--2026-09-18): immediate transitions pass, but palettes later revert; Fusion light-time construction missing. [UQC-223](UQC-223.md) Done: allocating-observer/Qt root-palette boundary reproduced; passive checks pass. Separately verify instrumentation repair before affected stability and fresh Fusion light-time checks. Prior interaction coverage preserved. |
+| AI palette P03 | Open: repaired observer awaits fresh human acceptance | [Two-run review](FINDINGS.md#p03-human-evidence-review--2026-09-18): immediate transitions pass, but palettes later revert; Fusion light-time construction missing. [UQC-223](UQC-223.md) Done: allocating-observer/Qt root-palette boundary reproduced; passive checks pass. [UQC-224](UQC-224.md) repair and automated readiness pass; [fresh two-run handoff](P03-UQC224-RECHECK.md) requires stability and Fusion light-time construction. Prior interaction coverage preserved. |
 | Palette rendering P02 | Accepted with evidence | [Nine accepted runs](FINDINGS.md#batch-4-manual-visual-acceptance--2026-09-15), scale 1; preserve those observations. Remaining owned/compositor/fractional transition coverage stays manual. |
 | Shell compositor/popup S01/S02 | Accepted with evidence | [S01 repair acceptance](FINDINGS.md#s01-repair-accepted-on-hyprland--2026-09-15), Sway comparison and completed Batch 6 runs. |
 | Greeter G01–G06 and fullscreen G07 | Accepted with evidence | [Batch 7](FINDINGS.md#batch-7-manual-acceptance--2026-09-15), [fullscreen closure](FINDINGS.md#g07-fullscreen-acceptance-and-closure--2026-09-16). Windowed G07 outside intended use; no repeat demo comparisons. |
