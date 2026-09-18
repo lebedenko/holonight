@@ -54,3 +54,30 @@ expected boundary evidence, never a passing shared-window assertion.
 The actual workspace palette round trip does not prove AI Settings rendering.
 The first light-time Settings construction and native controls remain human gates.
 No full consumer suite or unrelated third-party runtime matrix is repeated.
+
+## Settings scale-1 profile
+
+This profile shares build, masking, device and restoration infrastructure, but
+reuses no P03 binaries or suite results. Run from a clean umbrella checkpoint
+that preserves every gitlink from planning baseline `52908523d5347100f59fd1edf3861330f5d09286`.
+The baseline must be published; the preparation-tooling checkpoint may be local.
+The prior archive supplies authenticated package inventory comparison only.
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-prepare.py --baseline 52908523d5347100f59fd1edf3861330f5d09286 --prior-archive .cache/holonight-uqc201-p03-95__83sb/holonight-uqc201-p03-95__83sb.tar.gz
+KIT=$(cat .cache/uqc201-settings-kit)
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/build.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/populate.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-verify.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-release.py "$KIT"
+```
+
+Supply an existing patchelf via HOLONIGHT_PATCHELF_EXECUTABLE if needed. Fresh
+builds/installations run configuration → system services → shell configuration →
+provider → Settings. Focused controls/import/installed checks precede full
+provider and Settings suites. Both actual guided helpers run offscreen at measured
+DPR 1, with bounded termination explicitly distinct from human normal closure.
+Release rejects changed inventory, missing/failed gates, dirty sources or changed
+pins, and checks exact-prefix restoration plus overwrite refusal. The
+[two-run handoff](../BATCH8-SETTINGS.md) becomes the kit README with its exact path.
+P03, fractional and Weather acceptance remain closed.

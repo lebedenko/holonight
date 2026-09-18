@@ -1,29 +1,34 @@
 # Batch 8 — Settings Sway scale-1 coverage
 
-Current status: Settings Weather UQC-220 repair is [accepted at both scales](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17),
-including subtle Fusion closed-button hover. No repeat Weather checks. The
-commands and pending statements below are historical; the final checklist governs
-remaining work. Appearance/Weather composition remains a separate follow-up.
+Exactly two human runs remain pending. This is UQC-201, still **In Progress**;
+the initiative remains **Accepted**. Automated readiness does not close these cells.
 
-Update 2026-09-17: the submitted runs used **1.25**, not 1. Their
-[fractional results and non-blocking composition disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
-are accepted. Do not repeat 1.25. The two **`--scale 1`** commands below remain
-pending. Do not investigate or compare the Appearance/Weather visual difference
-again; it is recorded in a separate local SDD.
+Preserve [P03 closure](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18),
+[Settings fractional acceptance](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
+and [UQC-220 Weather acceptance](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17).
+No repeat fractional, Weather popup/centering/hover, composition comparison or
+palette-transition checks. Inaccessible controls must be reported explicitly.
 
-Package-manager's fractional runs are [accepted](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17).
-This batch fills Settings' remaining Sway scale-1 interaction/origin coverage in
-two styles. Earlier fractional focus and dropdown acceptance stays closed; this
-is not another investigation of those repairs or deferred Fusion hover.
+## Fresh kit handoff
 
-Continue in the prepared Sway session, or from a fresh real tux VT login outside
-a compositor start:
+Use only the new Settings kit after its READY release. Preparation uses umbrella
+`52908523d5347100f59fd1edf3861330f5d09286` and preserves every gitlink, including
+provider `eadfe48` and Settings `0eb5028`. The [Settings preparation profile](p03-kit/README.md#settings-scale-1-profile)
+freshly builds configuration, system services, shell configuration, provider and
+Settings. Prior P03 inventory is comparison evidence only; its binaries and prior
+suite results are not reused. The released kit contains inventory.diff, exact
+revisions, build/check logs, helper outcomes, hashes and binary provenance.
+
+From a fresh real **tux VT login**, outside a compositor:
 
 ```sh
-python3 /tmp/holonight-uqc201-final-yn9_fquf/guided-session.py sway
+python3 __KIT__/guided-session.py sway
 ```
 
-In its terminal, run one at a time and close Settings normally between runs:
+The disposable Sway session uses output scale 1, isolated HOME/XDG and a private
+bus, masks host HoloNight providers, disables network access, and retains normal
+GPU/input/VT device bindings. In its terminal, run sequentially, closing Settings
+normally and discarding unsaved edits between runs:
 
 ```sh
 python3 "$UQC_KIT/guided-app.py" settings --style default --scale 1 --render-diagnostics
@@ -32,18 +37,31 @@ python3 "$UQC_KIT/guided-app.py" settings --style Fusion --scale 1 --render-diag
 
 For each run:
 
-1. Navigate the sidebar and scroll Appearance/Weather pages. Check scale-1
-   readability, clipping and Tab/Shift+Tab focus through reachable controls.
-2. In the Weather City field, select/type/erase disposable text without saving
-   or triggering a lookup. Check text selection and keyboard navigation.
-3. Open reachable Appearance/Weather selectors; check containment and first/last
-   row reachability, then dismiss without applying changes. Report inaccessible
-   surfaces explicitly.
+1. Navigate the sidebar. Scroll Appearance and check readability, clipping and
+   keyboard focus with Tab/Shift+Tab.
+2. Open reachable Appearance selectors; check containment and first/last row
+   reachability, then dismiss without applying changes.
+3. Use the Weather City field only for unsaved text selection, editing and
+   keyboard navigation. Do not invoke lookup or compare Weather popups/hover.
 
-Do not apply appearance, system or session changes, invoke authentication, or
-trigger network actions. Palette transitions remain a separate final gate; this
-batch does not claim them. Discard unsaved edits when closing Settings.
+Do not save appearance/system/session changes or invoke authentication. All UI
+interaction is manual; no pointer or focus automation. Return both printed
+**Evidence** paths and pass/fail/inaccessible observations for each item. Stop
+after these two runs for review; no automatic repair or rerun is authorized by
+readiness alone.
 
-Return both printed evidence paths with pass/fail or inaccessible results for
-the three items. Stop after these two runs for review. Super+Shift+E exits the
-test compositor. Preserve all existing acceptances and historical deferrals.
+## Cleanup and evidence
+
+Close Settings normally, then use **Super+Shift+E** to exit this test Sway session.
+Keep the evidence directories printed by the helpers under the real tux home;
+the disposable HOME/XDG profiles stay there for review. Do not delete the kit or
+archive. No host configuration restoration is required because edits are isolated.
+If the kit path is absent after reboot, use restore-rendering-kit.py with the
+archive recorded in the release handoff; it restores only the exact prefix and
+refuses overwrite. Never point a moved kit at a different prefix.
+
+Review kit identity, versions, process exits, isolation, selectors, actual DPR,
+staged origins and human observations before closing any Settings scale-1 cell.
+Record reviewed results once in FINDINGS and link them from FINAL-ACCEPTANCE and
+TASKS. Authentication, service activation, pre-session greeter, broader matrix
+coverage and final integration remain separate iterations.

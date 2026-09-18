@@ -61,6 +61,10 @@ if json.loads((kit / "profile.json").read_text())["profile"] == "observer-repair
     ]
 
 
+if json.loads((kit / "profile.json").read_text())["profile"] == "settings-scale1":
+    modules = [m for m in modules if m[0] in ("config", "system-services", "shell-config", "qt", "settings")]
+
+
 def run(name, cmd):
     print(name, flush=True)
     start = time.monotonic()

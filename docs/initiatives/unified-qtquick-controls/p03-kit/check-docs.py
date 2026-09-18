@@ -6,6 +6,7 @@ root = Path.cwd()
 docs = root / "docs/initiatives/unified-qtquick-controls"
 names = (
     "P03-RECHECK.md",
+    "BATCH8-SETTINGS.md",
     "P03-READINESS.md",
     "p03-kit/README.md",
     "FINAL-ACCEPTANCE.md",

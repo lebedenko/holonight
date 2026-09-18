@@ -4,6 +4,7 @@ from common import docs, kit, mask, prefix, root, run, work
 from pathlib import Path
 import subprocess
 import shutil
+import json
 
 audit = root / "holonight-qt/docs/sdd/unified-qtquick-controls/audit"
 flags = subprocess.check_output(
@@ -22,15 +23,14 @@ run(
         *flags,
     ],
 )
-shutil.copy2(
-    work / "build/qt/tests/palette-diagnostics.so",
-    prefix / "lib/palette-diagnostics.so",
-)
-for name in ("render-diagnostics.cpp", "palette-diagnostics.cpp"):
-    shutil.copy2(audit / name, kit / name)
-for name in ("rendering-test.py", "palette-test.py", "verify-rendering-kit.py"):
-    shutil.copy2(docs / name, kit / name)
-shutil.copy2(Path(__file__).parent / "ai-palette.py", kit / "ai-palette.py")
+if json.loads((kit / "profile.json").read_text())["profile"] != "settings-scale1":
+    shutil.copy2(work / "build/qt/tests/palette-diagnostics.so", prefix / "lib/palette-diagnostics.so")
+    shutil.copy2(audit / "palette-diagnostics.cpp", kit)
+    shutil.copy2(docs / "palette-test.py", kit)
+    shutil.copy2(Path(__file__).parent / "ai-palette.py", kit)
+shutil.copy2(audit / "render-diagnostics.cpp", kit)
+for name in ("rendering-test.py", "verify-rendering-kit.py"):
+    shutil.copy2(docs / name, kit)
 # The existing profile/bus collector is retained. Add disposable HOME and mask
 # host providers around the new compositor only; no host session is manipulated.
 shutil.copytree(work / "host-plugins", kit / "host-plugins", dirs_exist_ok=True)

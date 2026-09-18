@@ -13,7 +13,7 @@ kit = Path(sys.argv[1]).resolve()
 work = root / ".cache" / kit.name
 prefix = kit / "prefix"
 docs = root / "docs/initiatives/unified-qtquick-controls"
-assert kit.parent == Path("/tmp") and kit.name.startswith("holonight-uqc201-p03-")
+assert kit.parent == Path("/tmp") and kit.name.startswith(("holonight-uqc201-p03-", "holonight-uqc201-settings-"))
 assert not (kit / "READY").exists(), "Released kits are immutable"
 os.environ["LD_LIBRARY_PATH"] = str(prefix / "lib")
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
