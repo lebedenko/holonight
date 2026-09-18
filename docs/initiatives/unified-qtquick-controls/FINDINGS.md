@@ -3046,8 +3046,9 @@ integration. No further P03 batch is requested.
 
 ## Settings scale-1 kit readiness — 2026-09-18
 
-**Automated readiness accepted; both human scale-1 runs pending.** This closes
-no manual Settings cell. Preserve P03 closure, fractional Settings acceptance
+**Automated readiness accepted.** The pending human status below is historical;
+[both runs were subsequently accepted](#settings-sway-scale-1-human-acceptance--2026-09-18).
+Readiness alone closed no manual Settings cell. Preserve P03 closure, fractional Settings acceptance
 and all UQC-220 Weather acceptance. Use the [exact two-run handoff](BATCH8-SETTINGS.md).
 No product repair package or public API change was introduced.
 
@@ -3115,3 +3116,77 @@ selectors, measured DPR, origins and user observations may demonstrated scale-1
 cells close. Record inaccessible controls explicitly. UQC-201 **In Progress**;
 initiative **Accepted**. Authentication, activation, pre-session greeter, broader
 matrix coverage and final integration remain separate iterations.
+
+
+## Settings Sway scale-1 human acceptance — 2026-09-18
+
+**Accepted for both embedded default and explicit Fusion.** The user supplied
+`/tmp/res.txt` and `/tmp/sway-64cj7siz`, reporting “no issues found” for each of
+the two requested runs. This accepts the bounded handoff scope: sidebar
+navigation, Appearance scrolling/readability/clipping, keyboard focus, reachable
+Appearance selectors, and unsaved Weather City selection/editing/navigation.
+No inaccessible controls were reported. No additional human run is requested.
+
+The copied session identifies an active local tux login (UID 1001), seat0,
+tty3/session 10. Its command uses the released Settings kit
+`/tmp/holonight-uqc201-settings-p1ndqzdz`, Sway configuration with output scale 1,
+host-provider/plugin masking, network isolation, real device bindings and a
+private `dbus-run-session`. The verified launcher establishes disposable HOME/XDG;
+PID records confirm session-local configuration and appearance paths. All 287
+released-kit hashes were reverified unchanged. Every package version captured
+in `versions.txt` matches the kit inventory, including Qt base `6.11.2-3`, Qt
+declarative `6.11.2-2` and Sway `1:1.12-4`. The manual capture contains this selected
+package list, not a second complete 1,607-package inventory.
+
+Original evidence paths below are under
+`/home/tux/uqc-guided-evidence/sway-64cj7siz/`; reviewed copies are under
+`/tmp/sway-64cj7siz/`:
+
+| Run | Evidence directory | PID | Actual window DPR | Outcome |
+| --- | --- | --- | --- | --- |
+| Embedded default | `settings-1789759170383735970` | 313747 | 1 | User reports no issues; normal exit 0 |
+| Fusion | `settings-1789759335486394111` | 313941 | 1 | User reports no issues; normal exit 0 |
+
+Both PID records point to the staged `prefix/bin/holonight-settings`; style and
+configuration selectors are unset for default, and Fusion is explicit with no
+configuration override. Both preload the staged rendering observer. Runtime
+isolation was independently reassessed from the recorded process maps and passed.
+All HoloNight libraries are staged; Fusion maps the system Qt Fusion plugin.
+The immutable helper clears the fallback selector, although the PID collector
+does not separately record that variable.
+
+Rendering diagnostics contain 671 default and 525 Fusion records. They measure
+DPR 1 and identify the respective HoloNight and Qt Fusion ComboBox implementations,
+shared HnColorPicker/HnIconComboBox/HnSegmentedControl controls, and application
+Appearance/navigation/footer/Weather origins. Fusion additionally records Audio
+and Integrations page origins. This corroborates the submitted interaction
+reports without claiming coverage of every Settings page or inaccessible surface.
+
+Launch-log SHA-256:
+
+- Default: `87a54ad4c49fdc4a22a63ed478efadaefd790a8a4ddaad007f822f8f82c02d36`.
+- Fusion: `72a35ee26c62a6ad9d60a08cc5a247bad324a447cc70275bf0ed01dcdaa24269`.
+- Submitted results: `3c650d043e8047bf069374192d8d267445d2f40c91d84fae1620401c8dc1b395`.
+
+Verbose Qt GC diagnostics and a default portal-registration message are retained.
+The compositor log also records unsuccessful portal backend activation on the
+private bus and a terminal display-disconnect message at session teardown. These
+are distinct from the normally exited Settings processes and the user's passing
+interaction observations. They do not establish service/portal activation
+acceptance or warrant a Settings product repair in this batch.
+
+Selected evidence (results, session identity/versions/command/compositor log, and
+both Settings command/PID/maps/isolation/exit/launch records) is retained in
+`.cache/settings-scale1-human-20260918/reviewed-evidence.tar.gz`, with hashes in
+`review.json` beside it. Archive SHA-256:
+`86af07386c26fddfcd3322282ead879f0730891264fc7d5653185ad80bcefae9`.
+Session caches and the Pulse cookie are excluded.
+
+Only these demonstrated Settings Sway scale-1 interaction/origin cells close.
+P03, fractional Settings and UQC-220 Weather acceptance remain closed; no Weather
+popup/centering/hover comparison or palette transition was requested or newly
+accepted. UQC-201 remains **In Progress**, initiative **Accepted**. Authentication,
+activation, pre-session greeter, other matrix cells and final integration remain
+separate. No product code, gitlinks or released-kit contents changed; verification
+for this evidence-only update consists of evidence/hash/isolation review and
+documentation/licensing/whitespace checks, without repeating product suites.

@@ -1,7 +1,9 @@
 # Batch 8 — Settings Sway scale-1 coverage
 
-Exactly two human runs remain pending. This is UQC-201, still **In Progress**;
-the initiative remains **Accepted**. Automated readiness does not close these cells.
+**Accepted — 2026-09-18.** Both requested runs passed; see the
+[reviewed human evidence](FINDINGS.md#settings-sway-scale-1-human-acceptance--2026-09-18). No rerun is requested.
+UQC-201 remains **In Progress**; the initiative remains **Accepted**.
+The handoff and commands below are retained as historical procedure.
 
 Preserve [P03 closure](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18),
 [Settings fractional acceptance](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17)
