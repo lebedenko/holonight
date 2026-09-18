@@ -1,5 +1,9 @@
 # P03 observer-repair readiness — 2026-09-18
 
+**P03 closed — 2026-09-18.** [Accepted human results](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18)
+cover correct Fusion and replacement default. Do not repeat these completed checks.
+The preparation/release instructions and pending-state text below are historical.
+
 **READY:** `/tmp/holonight-uqc201-p03-95__83sb`. Use the
 [UQC-224 two-run handoff](P03-UQC224-RECHECK.md). P03 remains open until both
 human palette-stability runs and fresh Fusion light-time construction pass.

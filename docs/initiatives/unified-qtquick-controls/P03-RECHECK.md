@@ -1,5 +1,9 @@
 # P03 — focused AI Settings palette recheck
 
+**P03 closed — 2026-09-18.** [Accepted human results](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18)
+cover correct Fusion and replacement default. Do not repeat these completed checks.
+The preparation/release instructions and pending-state text below are historical.
+
 **Current handoff:** [UQC-224 observer-repair checks](P03-UQC224-RECHECK.md),
 using READY `/tmp/holonight-uqc201-p03-95__83sb`. Exactly two fresh sequential
 Sway AI runs are required; P03 remains open. The earlier procedure below is

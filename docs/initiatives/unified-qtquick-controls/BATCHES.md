@@ -1,14 +1,13 @@
 # Completion batches
 
-Current repair checkpoint (2026-09-17): [UQC-220](UQC-220.md) provider repair
-is manually accepted for Settings Weather row centering and Fusion hover.
-[Scale-1 and fractional evidence](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17)
-close the focused repair handoff, including the subtle closed-button hover.
-Other Batch 3 historical dispositions remain unchanged. [Post-repair automated
-revalidation and fresh kit release](BATCH8-REVALIDATION.md) pass. [AI Sway review](BATCH8-AI.md)
-accepts interaction and main-window palette checks; Fusion Settings controls retain
-dark backgrounds during the palette transition (P03). [UQC-221](UQC-221.md) plans
-bounded ownership diagnosis. No repeat runs or next manual batch yet.
+Current repair checkpoint (2026-09-18): UQC-220 Settings acceptance is preserved.
+[UQC-222](UQC-222.md) shared-window repair and [UQC-224](UQC-224.md) passive observer
+repair are Done; [UQC-223](UQC-223.md) diagnosis remains Done. **P03 is closed** by
+[verified human acceptance](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18): correct Fusion and replacement
+default pass light-time Settings construction and activation/hover palette stability.
+The initial default attempt remains superseded evidence. No further P03 checks
+are requested. UQC-201 remains In Progress; initiative Accepted; unrelated gates
+and earlier accepted results remain unchanged.
 
 Execution order from the user plan, updated with scope corrections on 2026-09-14. UQC-201 remains In Progress;
 the initiative remains Accepted. Preserve existing accepted results unless affected

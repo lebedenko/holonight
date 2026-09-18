@@ -1,5 +1,9 @@
 # P03 observer-repair human acceptance
 
+**P03 closed — 2026-09-18.** [Accepted human results](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18)
+cover correct Fusion and replacement default. Do not repeat these completed checks.
+The preparation/release instructions and pending-state text below are historical.
+
 Use only this fresh kit: /tmp/holonight-uqc201-p03-95__83sb.
 Provider eadfe482000e64ee7ead83d63f878e3f365686b1; unchanged AI
 7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c. P03 remains open.

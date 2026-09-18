@@ -2980,3 +2980,65 @@ dark main then first Settings construction in light, both windows through
 dark/light/dark with manual activation and hover. Missing/inaccessible required
 controls, missing evidence or recurrence blocks closure. UQC-222/UQC-223/UQC-224
 Done, UQC-201 In Progress, initiative Accepted. No ecosystem integration claim.
+
+## P03 human acceptance after observer repair — 2026-09-18
+
+**P03 closed.** Accept the correct Fusion run from `sway-uhjpvsr7` and the
+replacement embedded-default run from `sway-w3sk8ax4`. Both used released kit
+`/tmp/holonight-uqc201-p03-95__83sb`, provider `eadfe48` and unchanged AI `7e25e78`.
+The initial default attempt opened Settings before light according to the user;
+it is preserved but excluded from construction acceptance. The user corrected
+only that style in a fresh Sway session. The accepted pair is therefore sequential
+Fusion then replacement default across two sessions; no further rerun is needed.
+
+| Accepted run | First light command (epoch ms) | First sampled Settings (epoch ms) | Result |
+| --- | --- | --- | --- |
+| Fusion `ai-1789694234005895895` | 1789694264763 | 1789694281818 | Pass |
+| Embedded default `ai-1789694664696866037` | 1789694751597 | 1789694763419 | Pass |
+
+The user explicitly confirms **all listed controls checked; no issues** for these
+two runs: main-window New Chat/prompt buttons, Settings native inputs/selectors,
+disabled controls and shared search/combo controls stayed correct through
+light-time construction and dark → light → dark, with manual activation changes
+and hover. No inaccessible or unchecked required controls were reported. This
+human evidence establishes visible stability; the observer records corroborate
+sampled palettes rather than asserting every painted pixel or exact creation time.
+
+Read-only archive replay verifies both normal exits 0, expected embedded/default
+versus explicit Fusion selection, measured DPR 1.25 on both windows, active output
+`eDP-1` scale 1, local tux tty3/seat0 identity, staged executable/observer/platform
+theme, isolated disabled-provider profiles and title generation disabled. Kit
+archive hash and all 2,971 file hashes match. Log/session hashes match collector
+indices. Both accepted runs record light/dark/light/dark commands and activation,
+deactivation, focus and hover events. Activation and hover occur in every phase.
+Main-window samples precede light; Settings samples follow light and precede dark,
+consistent with the user's corrected first-construction sequence.
+
+Each accepted run has 17 tracked native/composite instances (seven main-window,
+ten Settings). Their Base/Button/Text/ButtonText maps in Active/Inactive/Disabled
+groups follow the expected scheme sequence, reproduce identical values on return
+to a scheme, and show no changes at unchanged scheme. All sampled root palettes
+remain unallocated (159 Fusion records, 59 replacement-default records). The
+first default attempt's sampling timestamp also follows light, but this does not
+override the user's report that its construction order was wrong; it is excluded.
+
+Evidence retained, including replayable `review.py`, detailed `review.json`, user
+results/correction/confirmation and file manifest, under umbrella:
+`.cache/holonight-uqc201-p03-95__83sb/manual-uqc224-review-7tpc_eok/`.
+Submitted archives were copied byte-for-byte; SHA-256 values calculated locally:
+
+- `sway-uhjpvsr7-p03-recheck.tar.gz`:
+  `10faa04c4dec518700127ee41f1224ed7f5fb6c3129db2be90b2dd110dbe9f35`.
+- `sway-w3sk8ax4-p03-recheck.tar.gz`:
+  `b72e55cd76f4d730b8e8a7b092673ee635bc610dff48d5853e4f35084a575c52`.
+
+Retain non-palette diagnostics without treating this acceptance as their repair:
+default ScrollBar binding-removal messages, portal registration messages and
+isolated Secret Service timeout. The user reports no visible issues and all
+processes exit normally. Earlier kit archives, observations and revision-scoped
+suite results remain unchanged. No production files, gitlinks or released-kit
+contents change in this review; no product suite or desktop automation was run.
+
+UQC-222/UQC-223/UQC-224 remain Done; UQC-201 remains In Progress and initiative
+Accepted. P03 closure does not close unrelated manual gates or imply ecosystem
+integration. No further P03 batch is requested.
