@@ -2717,12 +2717,12 @@ Done, UQC-201 In Progress, initiative Accepted; no ecosystem integration claim.
 
 ## AI Sway scale-1 iteration — 2026-09-19
 
-Automated readiness passed for `/tmp/holonight-uqc201-ai-gfg67qyu`, preserving all
-baseline gitlinks. Fresh builds, focused/full suites, both actual offscreen
-helpers at measured DPR 1, isolation/device inspection, archive hashes,
-exact-prefix restoration and overwrite refusal passed. The
-[canonical review](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19) records exact
-counts, the intentional credential skip, provenance and archive identity.
-Both human cells remain pending; use the [bounded two-run handoff](BATCH8-AI-SCALE1.md).
-UQC-201 remains In Progress; initiative Accepted. Fractional acceptance and P03
-closure are preserved. No other matrix gaps close here.
+Both requested human runs are accepted for reachable offline AI Sway coverage at
+actual output scale 1 and measured application DPR 1, with normal exit 0 for each.
+The [canonical review](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19) records
+archive/hash identity, isolation, selectors, staged origins, operator observations,
+diagnostics and explicit disabled/unobserved-control limits. The
+[two-run handoff](BATCH8-AI-SCALE1.md) is now historical; no rerun or next batch is
+requested. Only these scoped AI cells close. UQC-201 remains In Progress;
+initiative Accepted. Fractional acceptance and P03 closure are preserved;
+authentication, activation, pre-session greeter and other gaps remain separate.

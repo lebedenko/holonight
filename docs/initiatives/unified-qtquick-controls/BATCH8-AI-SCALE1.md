@@ -1,11 +1,13 @@
 # Batch 8 — AI Sway scale-1 coverage
 
-**READY — 2026-09-19. Exactly two human runs pending.**
+**Accepted — 2026-09-19. Both scoped human runs passed review.**
+
+No rerun is requested. The commands below are retained as historical procedure.
 
 Kit path: `/tmp/holonight-uqc201-ai-gfg67qyu`. Automated readiness, archive/hash
 verification and exact-prefix restoration passed. Use this immutable release.
 The canonical [review record](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19)
-tracks preparation and, later, both human cells. UQC-201 remains **In Progress**;
+records release verification, both human decisions and coverage limits. UQC-201 remains **In Progress**;
 the initiative remains **Accepted**.
 
 Preserve accepted fractional coverage and P03 closure. Do not repeat palette

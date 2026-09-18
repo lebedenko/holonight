@@ -3193,10 +3193,10 @@ documentation/licensing/whitespace checks, without repeating product suites.
 
 ## AI Sway scale-1 iteration — 2026-09-19
 
-**Automated readiness passed; both human cells pending.** The canonical review
-for this iteration is recorded here and linked from the final checklist, ledger
-and [bounded two-run handoff](BATCH8-AI-SCALE1.md). No human interaction or normal
-closure has been claimed. UQC-201 remains **In Progress**, initiative **Accepted**;
+**Accepted for the scoped reachable offline Sway DPR-1 coverage — 2026-09-19.**
+Both requested human runs passed review. This canonical record is linked from the
+final checklist, ledger and [two-run handoff](BATCH8-AI-SCALE1.md). No rerun or next
+batch is requested. UQC-201 remains **In Progress**, initiative **Accepted**;
 fractional acceptance and P03 closure remain intact.
 
 ### Release identity
@@ -3279,16 +3279,83 @@ installed-selector logs/maps and helper profiles/outcomes are in the kit's
 
 ### Human acceptance
 
-| Sway output scale 1 / measured application DPR 1 | State | Evidence |
-| --- | --- | --- |
-| Embedded default | Pending | Awaiting human evidence and observations |
-| Explicit Fusion | Pending | Awaiting human evidence and observations |
+The operator returned `/tmp/res.txt` with “no issues” for each of the two requested
+runs, plus `/tmp/sway-byole350`. Treat those observations as the report for the
+requested reachable offline editing, keyboard/focus/navigation and scrolling
+checklist, without inventing per-control observations or asserting that every
+selector/popup was available. This is human visual/interaction evidence; the
+observer does not independently prove text edits, readability or every pixel.
 
-Run exactly the two sequential commands in the handoff. Review kit identity,
-versions, isolation, selectors, measured DPR, staged origins, normal exits and
-human observations before accepting either cell. Distinguish standard controls,
-shared composites and application-owned surfaces; report empty, disabled and
-inaccessible controls. Record returned paths/archive/hash and both decisions here
-once, then link this review elsewhere. Stop after that review. Any failed cell
-stays pending until ownership is diagnosed before a repair or rerun. Authentication,
-activation, pre-session greeter and other matrix gaps remain separate iterations.
+Original session: `/home/tux/uqc-guided-evidence/sway-byole350`.
+Submitted archive: `/tmp/sway-byole350-batch8-ai-scale1.tar.gz`.
+Verified SHA256:
+`1e82adf73dbf1659168a0ab395be92f4d3f82852ba2e956892693a4d31558b99`.
+Preserved review copy: `.cache/ai-scale1-human-20260919/reviewed-evidence.tar.gz`,
+alongside `operator-results.txt` and `review.json`. All 22 core acceptance files
+(identity, versions, commands, output scale, index, per-run logs/maps/process
+records/isolation/exits and offline configurations) match the archive byte for
+byte. The unpacked session's editor log changed after archiving; it is not
+acceptance evidence, and no whole-directory identity is claimed.
+
+| Sway output scale 1 / measured application DPR 1 | Decision | Original evidence directory within the session |
+| --- | --- | --- |
+| Embedded default | Accepted, reachable offline scope; normal exit 0 | `ai-1789771534200156397` |
+| Explicit Fusion | Accepted, reachable offline scope; normal exit 0 | `ai-1789771625053336584` |
+
+The identity record shows user 1001 (`tux`), active local `tty3`, seat0, session 5.
+The recorded compositor command is the released kit's Sway configuration inside
+the prescribed device-bound, network-isolated namespace and private bus.
+`outputs.json` records active `eDP-1`, 2560×1600, actual output scale **1.0**.
+Recorded package versions match the release, and all 274 released-kit manifest
+entries were reverified. No release contents were modified.
+
+Exactly four index rows show sequential running/finished pairs: embedded default,
+then Fusion. Both use the expected released kit and staged `holonight-chat`,
+isolated per-run profiles, render diagnostics only, requested scale 1 and
+**measured workspace DPR 1**. The style selector is cleared for embedded default
+and `Fusion` for the second run; Controls configuration overrides are absent.
+Both loaded configuration, Core and Controls from the staged prefix. The first
+maps the staged Holonight style; the second maps Qt's Fusion plugin. No source or
+build-tree modules appear in the maps. All four providers and title generation
+remain disabled. Both isolation records are verified with no problems.
+
+Launch and session-sample hashes match their final index records:
+
+| Style | Launch log SHA256 | Session sample SHA256 |
+| --- | --- | --- |
+| Embedded default | `9fed2fe84b0841b8ba2e641a072ea00ada7dc2b7104c1b8c183e6b494c09d854` | `aaaf7872ae3c28c8e74ed5b7a86e5a7f59d1cc8103513dd485db86e6ccb5e376` |
+| Fusion | `5656ad3d52418aae01c099ed822213e6cbce489722168204e723764e5ff18e56` | `01bcf1e546fb694755c8aad320b9a6379ee14f1a069a2b94a6e05cb245b5152c` |
+
+Both `exit.txt` records are 0 and final index outcomes are `normal`, unlike the
+bounded automated SIGTERM checks. Rendering evidence contains 33 default and 57
+Fusion events, including focus changes. Standard Buttons, shared HnIconButton and
+HnIconComboBox controls are observed at application-owned ChatComposerActions,
+ChatHeader and ConversationListPanel declarations; default also records the
+shared HnSearchField origin. Implementation/module ownership comes from the
+runtime maps and prior installed-selector checks, not solely declaring URLs.
+
+Provider/model HnIconComboBox selectors and attachment/context/tools/send actions
+are recorded disabled. No visible-popup event is recorded in either run; no
+populated selector row-reachability, account/authentication or conversation-history
+coverage is inferred. The short operator report contains no per-control inventory,
+so acceptance is limited to the requested reachable offline surfaces, not every
+local page or popup. Empty/disabled/inaccessible surfaces remain outside these
+accepted interaction observations.
+
+Default logs 213 informational `qt.qml.binding.removal` notices at the provider's
+ScrollBar.qml lines 35/40; their text explicitly says the binding remains live.
+Both runs report portal registration/desktop-file-name and unavailable Secret
+Service diagnostics. The compositor also records portal backend selection and
+shutdown diagnostics. These are disclosed environment/integration observations,
+not a new visual failure: the operator reports no issues, and both app processes
+exit normally. No QML type/reference/assignment failure or crash was found.
+Authentication and portal/service activation are not accepted by these runs.
+
+Only AI's scoped reachable offline Sway DPR-1 cells close. No palette transition,
+light-time Settings construction or fractional rerun was requested or newly
+accepted. UQC-201 remains **In Progress**, initiative **Accepted**. Authentication,
+activation, pre-session greeter, other matrix gaps and final integration remain
+separate iterations. Stop after this two-run review. No product code, gitlinks or
+released-kit contents changed. Verification for this evidence-only update is
+archive/hash/identity/isolation/outcome review and documentation/licensing/diff
+checks; product suites were not repeated.
