@@ -3193,16 +3193,102 @@ documentation/licensing/whitespace checks, without repeating product suites.
 
 ## AI Sway scale-1 iteration — 2026-09-19
 
-The required umbrella baseline `9a33b50` was published to canonical main with
-user authorization. All 12 submodule pins match canonical main as checked over
-SSH, including provider `eadfe48` and AI `7e25e78`. The profile and handoff are
-implemented in the umbrella only; product sources and gitlinks are unchanged.
-Ten profile/restoration regression tests, 14 guided collector tests, Python
-syntax, documentation links/anchors/shell examples, diff checks and REUSE licensing
-pass. Fresh kit preparation and runtime verification follow this tooling
-checkpoint; neither human cell is accepted.
-The [bounded handoff](BATCH8-AI-SCALE1.md) requests exactly two sequential human
-runs at output scale 1 and measured DPR 1. Record automated readiness and the
-canonical two-run evidence review here when available. Preserve fractional
-acceptance and P03 closure; no palette-transition or light-time repeat.
-UQC-201 remains In Progress and the initiative Accepted.
+**Automated readiness passed; both human cells pending.** The canonical review
+for this iteration is recorded here and linked from the final checklist, ledger
+and [bounded two-run handoff](BATCH8-AI-SCALE1.md). No human interaction or normal
+closure has been claimed. UQC-201 remains **In Progress**, initiative **Accepted**;
+fractional acceptance and P03 closure remain intact.
+
+### Release identity
+
+- Immutable kit: `/tmp/holonight-uqc201-ai-gfg67qyu`.
+- Archive: `.cache/holonight-uqc201-ai-gfg67qyu/holonight-uqc201-ai-gfg67qyu.tar.gz`.
+- Archive SHA256: `49302d3bfaed6422da88e6ac9e781ca1f5869a773ac4762da537294a69d3ff29`.
+- Planning baseline: `9a33b504dbd1e0a772058cb15bced459ddc2682e`, published to
+  canonical main with user authorization. Tooling checkpoint:
+  `c89fec7d5c459213abd20c0e48a0339b0b346e99` (local). All 12 gitlinks preserved,
+  clean and matching their canonical main at preparation and release; provider
+  `eadfe482000e64ee7ead83d63f878e3f365686b1`, AI
+  `7e25e78cc7fb33aa63ed480bc3f328a65e04ca0c`, configuration
+  `fe69a59e6b73167fd5349223a4d265d75386c139`.
+- Qt Base `6.11.2-3`, Qt Declarative `6.11.2-2`, Sway `1:1.12-4`, CMake
+  `4.4.3-2`, GCC `16.2.1+r23+gd564253eb6c8-1`.
+- AI binary SHA256:
+  `449ad2adf9e12cc91fbb5458f2596d22e9281666cb84335c7ca5fb4461e2235d`.
+  `binary-provenance.json` also hashes configuration, provider modules/plugins,
+  rendering observer and observer source. `SHA256SUMS` covers 274 files.
+
+Prior Settings archive/hash was verified for inventory comparison only; no prior
+binaries or suite results were reused. `inventory.diff` records updates to argon2,
+containerd, docker, electron42, electron43, gpm, iwd and qhull since that release.
+The full package inventory remained unchanged throughout this preparation and
+was checked again at release. Prior releases and product sources are untouched.
+
+### Automated verification
+
+Commands use the `p03-kit` entry points documented in its
+[AI profile](p03-kit/README.md#ai-scale-1-profile): `settings-prepare.py --profile
+ai-scale1 --baseline 9a33b504dbd1e0a772058cb15bced459ddc2682e`, followed by
+`build.py`, `populate.py`, `settings-verify.py` and `settings-release.py`, each
+using the exact kit path above. The preparation command uses the prior Settings
+archive documented in that recipe. Builds used the existing patchelf executable
+recorded in `verification/results.jsonl`. Fresh Debug configuration → provider →
+AI configure/build/install steps all passed, with provider and AI tests enabled.
+Resolved HoloNight dependencies point exclusively to the new staged prefix.
+
+| Check | Result |
+| --- | --- |
+| Focused provider controls/import/installed/startup | 15/15 passed |
+| Focused AI controls/composer/import | 9/9 passed |
+| Installed AI default/environment/command-line/configuration selectors | All four passed; staged plugins confirmed, source/build roots forbidden |
+| Full provider suite | 89/89 passed |
+| Full AI suite | 713 passed; one intentional skip out of 714 |
+| Actual guided helper, embedded default and Fusion | Both passed; measured application DPR 1 |
+| Collector/profile/restoration regression tests | 14 and 10 passed |
+| Python and terminal syntax, documentation links/anchors/shell examples, diff and REUSE licensing | Passed |
+| Sway configuration validation | Passed, headless validation only |
+| Real-seat device-binding inspection | Matching device identities; isolated network contains only loopback; no devices opened |
+| Exact-prefix archive restoration | Passed, all 274 manifest entries verified |
+| Existing-prefix restoration | Correctly refused, exit 2 |
+
+`SecretServiceCredentialStoreIntegrationTest.StoreAndRetrieveWithRealService`
+was intentionally skipped because the isolated private bus has no Secret Service.
+This is neither a credential-service pass nor authentication coverage. The first
+provider focused attempt was blocked by the outer sandbox's Bubblewrap NETLINK
+restriction; its log is preserved as an attempt, followed by a passing execution
+with the same kit isolation outside the outer sandbox. No product test failed.
+
+Both guided helper runs clear contaminated inherited style/configuration/fallback
+selectors, select embedded default or explicit Fusion, and use separate run
+profiles with all four providers and title generation disabled. Process evidence
+confirms the staged executable, configuration library, Core/Controls and provider
+plugins. Created controls include standard Buttons and shared HnIconButton and
+HnIconComboBox composites, with declaring origins in application-owned
+`ConversationListPanel.qml`, `ChatHeader.qml` and `ChatComposerActions.qml`.
+These declaring origins are not a claim about every implementation or painted
+pixel. The separate installed-selector evidence establishes implementation and
+module resolution. Both workspace windows measured DPR 1; no QML binding/type
+errors were found in either helper log.
+
+Each automated child was deliberately terminated with SIGTERM (process exit
+`-15`, helper exit `241`, final index outcome `signal`). This verifies collection
+and bounded cleanup, **not human normal closure**. Full command/result logs,
+installed-selector logs/maps and helper profiles/outcomes are in the kit's
+`verification/`; release restoration and refusal logs are retained in the matching
+`.cache/holonight-uqc201-ai-gfg67qyu/logs/` directory with `archive.sha256`.
+
+### Human acceptance
+
+| Sway output scale 1 / measured application DPR 1 | State | Evidence |
+| --- | --- | --- |
+| Embedded default | Pending | Awaiting human evidence and observations |
+| Explicit Fusion | Pending | Awaiting human evidence and observations |
+
+Run exactly the two sequential commands in the handoff. Review kit identity,
+versions, isolation, selectors, measured DPR, staged origins, normal exits and
+human observations before accepting either cell. Distinguish standard controls,
+shared composites and application-owned surfaces; report empty, disabled and
+inaccessible controls. Record returned paths/archive/hash and both decisions here
+once, then link this review elsewhere. Stop after that review. Any failed cell
+stays pending until ownership is diagnosed before a repair or rerun. Authentication,
+activation, pre-session greeter and other matrix gaps remain separate iterations.

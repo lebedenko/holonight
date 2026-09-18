@@ -1,8 +1,9 @@
 # Batch 8 — AI Sway scale-1 coverage
 
-**Preparation pending; no READY kit has been released.**
+**READY — 2026-09-19. Exactly two human runs pending.**
 
-Kit path: `__KIT__`. Use only after its READY marker exists; do not run placeholders.
+Kit path: `/tmp/holonight-uqc201-ai-gfg67qyu`. Automated readiness, archive/hash
+verification and exact-prefix restoration passed. Use this immutable release.
 The canonical [review record](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19)
 tracks preparation and, later, both human cells. UQC-201 remains **In Progress**;
 the initiative remains **Accepted**.
@@ -26,7 +27,7 @@ during preparation blocks release. Prior releases remain untouched.
 From a fresh disposable **tux VT login**, outside a compositor:
 
 ```sh
-python3 __KIT__/guided-session.py sway
+python3 /tmp/holonight-uqc201-ai-gfg67qyu/guided-session.py sway
 ```
 
 In its terminal, record the actual output scale. Stop if it is not 1. Run the
