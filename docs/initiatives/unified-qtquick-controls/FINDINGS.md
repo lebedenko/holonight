@@ -12,7 +12,8 @@ ownership diagnosis; [UQC-222](UQC-222.md) delivers the published shared-window
 repair with passing automated verification. The [post-repair human review](#p03-human-evidence-review--2026-09-18)
 retains successful transitions but finds palette reversals after window interaction
 and missing Fusion light-time construction. P03 remains open; [UQC-223](UQC-223.md)
-is a Planned provider-first diagnosis. No next manual batch is requested.
+is Done: [the reduced diagnosis](#uqc-223-observer-induced-palette-reversals--2026-09-18)
+identifies an allocating-observer/Qt root-palette boundary. No next manual batch is requested.
 
 Initiative **Accepted**; UQC-201 **In Progress**. Batch 8 final acceptance preparation is active; the
 [reconciled checklist](FINAL-ACCEPTANCE.md) governs remaining work. This register is authoritative for current findings;
@@ -2910,3 +2911,45 @@ documentation links/anchors, command syntax and whitespace checked. No product
 suites rerun, source/API/pin changes, released-kit edits or speculative repair.
 UQC-222 Done, UQC-201 In Progress, initiative Accepted. No next human batch or
 final integration claim.
+
+
+## UQC-223 observer-induced palette reversals — 2026-09-18
+
+[UQC-223](UQC-223.md) is Done at published diagnostic provider `44293e5`.
+The [provider SDD](../../../holonight-qt/docs/sdd/unified-qtquick-controls/UQC-223.md)
+contains the reproducible failing case, exact baselines, commands and repair contract.
+
+The retained observer reads every item's palette, allocating a palette on the
+window's root content item. Qt window palette propagation skips that root itself;
+it retains its construction palette. Activation changes its selected color group
+and propagates those stale roles to descendants, even when Active/Inactive role
+maps are equal. The window and selected appearance remain current while native
+controls reverse. Passive observation stays stable. Original root records match
+both dark-created main windows, default light-created Settings and dark-created
+Fusion Settings. All archive/review hashes still pass.
+
+The staged offscreen reproduction fails in both styles and DPRs with both
+construction histories, twice independently. All 16 allocating shared-window
+activation cases reverse roles and native TextField fill; all 16 passive cases
+pass. Hover alone does not reproduce the failure. Re-resolution and application
+palette events are separately recorded. Clearing the platform theme does not
+remove the trigger. A provider-free Fusion comparison also exposes the Qt boundary
+with different native colors and remains external evidence.
+
+The immediate repair proposal belongs to provider audit instrumentation: avoid
+allocating palette getters and add observer-on/off equivalence coverage. The
+production helper and AI consumer are unchanged. A Qt mitigation is a separate
+choice; no speculative production patch is accepted. The original trace cannot
+identify every historical event or prove uninstrumented AI behavior.
+
+74-process collection succeeds; its separate opt-in assertion intentionally fails
+26 cases. Twelve override/reset processes additionally expose loss of window
+roles in descendants behind the stale root, while all reset assertions pass.
+Window/Core 5/5, import-policy 4/4 and diagnostic static/licensing checks pass.
+No consumer suite or broad integration matrix was rerun.
+
+P03 remains open. After a separately verified instrumentation repair, request only
+affected stability checks and missing fresh Fusion light-time Settings creation.
+Preserve successful immediate transitions, default light-time construction and
+prior navigation coverage. UQC-222 Done, UQC-201 In Progress, initiative Accepted.
+No new kit, manual batch or final integration claim.
