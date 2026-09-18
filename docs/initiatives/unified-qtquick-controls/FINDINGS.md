@@ -3042,3 +3042,76 @@ contents change in this review; no product suite or desktop automation was run.
 UQC-222/UQC-223/UQC-224 remain Done; UQC-201 remains In Progress and initiative
 Accepted. P03 closure does not close unrelated manual gates or imply ecosystem
 integration. No further P03 batch is requested.
+
+
+## Settings scale-1 kit readiness — 2026-09-18
+
+**Automated readiness accepted; both human scale-1 runs pending.** This closes
+no manual Settings cell. Preserve P03 closure, fractional Settings acceptance
+and all UQC-220 Weather acceptance. Use the [exact two-run handoff](BATCH8-SETTINGS.md).
+No product repair package or public API change was introduced.
+
+Planning baseline `52908523d5347100f59fd1edf3861330f5d09286`; clean preparation
+checkpoint `31c517bf9bb8818c57bcae17e4287c0b24868c49`. All gitlinks remain unchanged,
+including provider `eadfe482000e64ee7ead83d63f878e3f365686b1` and Settings
+`0eb5028e206e12791ecbe6c2404bc37c39a4962a`. Baseline publication and every clean
+canonical product pin were checked before preparation and again at release.
+The local preparation checkpoint adds umbrella tooling only; it is not a new
+product integration baseline.
+
+The P03 archive `holonight-uqc201-p03-95__83sb.tar.gz` was hash-verified and read
+only for inventory comparison. No prior binaries or suite outcomes were reused.
+Both inventories contain 1,607 packages; 27 versions changed, with no additions
+or removals. Changes include Mesa `1:26.2.2-1` → `1:26.2.3-1`, libinput
+`1.31.3-1` → `1.32.0-1`, Kirigami Addons `1.13.1-1` → `1.14.0-1`, aquamarine,
+jemalloc, firmware and other packages. The complete inventory and diff are in
+the kit. Current Qt base is `6.11.2-3`, declarative `6.11.2-2`, Sway `1:1.12-4`.
+P03 reuse guards remain intact.
+
+Fresh configure/build/install order: configuration → system services → shell
+configuration → provider → Settings. Settings resolves all four HoloNight CMake
+packages from the staged prefix. Verification used
+`p03-kit/settings-verify.py /tmp/holonight-uqc201-settings-p1ndqzdz`:
+
+- Provider focused controls/import/startup/package checks: **15/15**.
+- Settings focused controls/import/startup checks: **8/8**.
+- Installed Settings default/environment/command-line/configuration: **4/4**,
+  staged QML/plugin evidence and forbidden build-root checks pass.
+- Full provider suite: **89/89**, 179.72 seconds. Full Settings suite: **53/53**,
+  43.01 seconds, serial. These are fresh results under the current inventory.
+- Both actual guided helper launches pass offscreen at **measured DPR 1**.
+  Default style/config/fallback selectors are unset; Fusion is explicit. Runtime
+  maps verify staged executable/provider origins. Rendering diagnostics record
+  Appearance, navigation, footer and HnColorPicker/HnSegmentedControl origins.
+  Each automated process was deliberately terminated with SIGTERM (`-15`);
+  this is bounded startup evidence, not a human normal-close result.
+- Collector **14/14**, profile **4/4**, terminal/Python syntax, headless Sway
+  configuration, documentation links/anchors/shell syntax, whitespace and REUSE
+  licensing pass. Profile tests reject missing/failed gates and inventory drift;
+  retained prior results cannot substitute for fresh full suites.
+- The exact manual namespace preserves GPU/input device identities and exposes
+  loopback only. Offscreen checks retain synthetic devices. Disposable HOME/XDG,
+  private buses and host-provider/plugin masking remain in force. No pointer,
+  focus or compositor-seat automation was performed.
+
+All **17 named readiness gates** passed. The initial outer-sandbox bubblewrap
+NETLINK_ROUTE refusal is retained as a failed harness attempt; rerunning with
+permission outside that sandbox passed with the same internal isolation.
+No product failure occurred, so no product repair or human rerun was scheduled.
+
+**READY:** `/tmp/holonight-uqc201-settings-p1ndqzdz`; **287 hashes** verified.
+Archive: `.cache/holonight-uqc201-settings-p1ndqzdz/holonight-uqc201-settings-p1ndqzdz.tar.gz`.
+SHA-256: `16d77ecd3686491de4b704bb555272fdb96ae7622d90807252d4b854855d06ca`.
+`settings-release.py` rechecked unchanged inventory, clean authoritative pins,
+required gates, binary provenance and staged package resolution. Exact-prefix
+restoration passed; repeated restoration refused overwrite with exit 2. The
+original tree remains at the `-before-restore` path. The archive contains the
+pre-release verification snapshot; the final restore results and archive hash
+are in its matching `.cache` directory. Prior archives remain untouched.
+
+Human evidence paths and interaction outcomes have **not yet been supplied**.
+Only after reviewing both paths for kit identity, packages, exits, isolation,
+selectors, measured DPR, origins and user observations may demonstrated scale-1
+cells close. Record inaccessible controls explicitly. UQC-201 **In Progress**;
+initiative **Accepted**. Authentication, activation, pre-session greeter, broader
+matrix coverage and final integration remain separate iterations.

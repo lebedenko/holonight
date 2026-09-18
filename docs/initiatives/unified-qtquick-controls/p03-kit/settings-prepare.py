@@ -3,6 +3,7 @@ import argparse
 import difflib
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import tarfile
@@ -55,6 +56,7 @@ subprocess.run(["python3", docs / "prepare-guided-kit.py", kit], check=True)
 (kit / "prior-PROVIDER.txt").write_text(prior_versions)
 (kit / "inventory.diff").write_text("".join(difflib.unified_diff(prior_inventory.splitlines(True), current.splitlines(True), fromfile="P03 inventory", tofile="Settings fresh inventory")))
 (kit / "prior-archive.json").write_text(json.dumps(dict(archive=str(archive), sha256=digest, reuse="Inventory comparison only; no binaries or prior suite results reused"), indent=2) + "\n")
-(kit / "README.md").write_text((docs / "BATCH8-SETTINGS.md").read_text().replace("__KIT__", str(kit)))
+guide = (docs / "BATCH8-SETTINGS.md").read_text().replace("__KIT__", str(kit))
+(kit / "README.md").write_text(re.sub(r"holonight-uqc201-settings-[a-z0-9_]+", kit.name, guide))
 (root / ".cache/uqc201-settings-kit").write_text(str(kit) + "\n")
 print(kit)

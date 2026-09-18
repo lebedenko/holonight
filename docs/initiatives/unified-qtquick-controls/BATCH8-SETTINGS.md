@@ -11,7 +11,9 @@ palette-transition checks. Inaccessible controls must be reported explicitly.
 
 ## Fresh kit handoff
 
-Use only the new Settings kit after its READY release. Preparation uses umbrella
+**READY:** `/tmp/holonight-uqc201-settings-p1ndqzdz`.
+[Reviewed automated readiness and archive identity](FINDINGS.md#settings-scale-1-kit-readiness--2026-09-18).
+Use only this released Settings kit. Preparation uses umbrella
 `52908523d5347100f59fd1edf3861330f5d09286` and preserves every gitlink, including
 provider `eadfe48` and Settings `0eb5028`. The [Settings preparation profile](p03-kit/README.md#settings-scale-1-profile)
 freshly builds configuration, system services, shell configuration, provider and
@@ -22,7 +24,7 @@ revisions, build/check logs, helper outcomes, hashes and binary provenance.
 From a fresh real **tux VT login**, outside a compositor:
 
 ```sh
-python3 __KIT__/guided-session.py sway
+python3 /tmp/holonight-uqc201-settings-p1ndqzdz/guided-session.py sway
 ```
 
 The disposable Sway session uses output scale 1, isolated HOME/XDG and a private
@@ -56,9 +58,13 @@ Close Settings normally, then use **Super+Shift+E** to exit this test Sway sessi
 Keep the evidence directories printed by the helpers under the real tux home;
 the disposable HOME/XDG profiles stay there for review. Do not delete the kit or
 archive. No host configuration restoration is required because edits are isolated.
-If the kit path is absent after reboot, use restore-rendering-kit.py with the
-archive recorded in the release handoff; it restores only the exact prefix and
-refuses overwrite. Never point a moved kit at a different prefix.
+If the kit path is absent after reboot, restore from the umbrella root:
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/restore-rendering-kit.py .cache/holonight-uqc201-settings-p1ndqzdz/holonight-uqc201-settings-p1ndqzdz.tar.gz
+```
+
+Restoration checks hashes, restores only the exact prefix and refuses overwrite. Never point a moved kit at a different prefix.
 
 Review kit identity, versions, process exits, isolation, selectors, actual DPR,
 staged origins and human observations before closing any Settings scale-1 cell.

@@ -4,12 +4,15 @@ Status: In Progress, updated 2026-09-18. Initiative Accepted; UQC-201 In Progres
 This is the current acceptance checklist. Historical unchecked lists in README,
 MANUAL, GUIDED and earlier batches are provenance, not requests to repeat work.
 Preserve completed manual acceptance unless a subsequent implementation affects it.
-Gitlinks are authoritative. Current preparation baseline is umbrella
-`4f7bafbf6acb3c48a693f762a2e60518bedb4021`, including published provider
-`eadfe482000e64ee7ead83d63f878e3f365686b1`. The focused P03 kit and release
-verification are recorded in [P03 readiness](P03-READINESS.md); use the
-[two-run focused handoff](P03-UQC224-RECHECK.md). Current READY kit:
-`/tmp/holonight-uqc201-p03-95__83sb` (verified observer repair).
+Gitlinks are authoritative. Current Settings planning baseline is umbrella
+`52908523d5347100f59fd1edf3861330f5d09286`, including published provider
+`eadfe482000e64ee7ead83d63f878e3f365686b1`. The fresh Settings kit is recorded in
+[reviewed readiness](FINDINGS.md#settings-scale-1-kit-readiness--2026-09-18);
+use the [two-run Settings handoff](BATCH8-SETTINGS.md). READY kit:
+`/tmp/holonight-uqc201-settings-p1ndqzdz`.
+
+The earlier P03 baseline `4f7bafbf6acb3c48a693f762a2e60518bedb4021` and kit
+`/tmp/holonight-uqc201-p03-95__83sb` remain [repair provenance](P03-READINESS.md).
 
 UQC-220 local and focused Settings manual acceptance remain accepted.
 **P03 closed on 2026-09-18:** [human evidence review](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18)
@@ -200,6 +203,7 @@ not waived or claimed by this release.
 | Tokodon logged-out text/focus, settings selectors/scrolling and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-tokodon-sway-acceptance--2026-09-16). ComboBox origins, observed Basic fallback and narrower Fusion trace recorded; no functional blocker. |
 | Haruna local playback/menus, settings editing/navigation/selectors and palette round trip | Sway | HoloNight and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-haruna-sway-acceptance--2026-09-16). Provider/Fusion origins and application/fallback boundaries recorded. |
 | Package-manager read-only search/category/focus, details/scrolling/navigation and popups | Sway | Embedded default and Fusion / 1.25 | Accepted; [two reviewed runs](FINDINGS.md#batch-8-package-manager-sway-acceptance--2026-09-17). Unset default selectors, staged executable and standard/application/composite origins verified. |
+| Settings sidebar/Appearance scrolling, focus, reachable Appearance selectors and unsaved City editing | Sway | Embedded default and Fusion / 1 | Human checks pending; [fresh kit readiness](FINDINGS.md#settings-scale-1-kit-readiness--2026-09-18) passes. Use the [two-run handoff](BATCH8-SETTINGS.md); no Weather popup/hover or fractional rerun. |
 | Settings navigation/editing/selectors, with non-blocking Appearance/Weather composition difference | Sway | Embedded default and Fusion / 1.25 | [Reviewed results and user disposition](FINDINGS.md#batch-8-settings-fractional-results-and-composition-disposition--2026-09-17); broader scale-1 coverage remains pending beyond accepted UQC-220 Weather checks. Separate Settings-local composition SDD; no composition repair. |
 | Settings Weather row centering and Fusion hover (including accepted subtle closed-button feedback) | Sway | Embedded default and Fusion / 1 and 1.25 | Accepted; [UQC-220 review](FINDINGS.md#uqc-220-fractional-repair-acceptance--2026-09-17). Focused repair scope only; broader scale-1 coverage stays pending. |
 | AI offline editing/navigation, reachable selectors/popups, scrolling and main-window palette round trip | Sway | Embedded default and Fusion / 1.25 | [Accepted scoped results](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17); P03 subsequently [closed after observer repair](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18), including fresh light-time Settings construction and stable controls in both styles. No P03 rerun. |
