@@ -81,3 +81,30 @@ Release rejects changed inventory, missing/failed gates, dirty sources or change
 pins, and checks exact-prefix restoration plus overwrite refusal. The
 [two-run handoff](../BATCH8-SETTINGS.md) becomes the kit README with its exact path.
 P03, fractional and Weather acceptance remain closed.
+
+## AI scale-1 profile
+
+Use the shared scale-1 entry points with explicit `--profile ai-scale1`. The
+planning baseline must be canonically published before preparation; a clean local
+tooling checkpoint may follow it without changing any gitlinks. Preparation
+refuses dirty checkouts and changed pins. Build only configuration → provider →
+AI, with provider and AI tests enabled. No palette-transition check is requested.
+
+```sh
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-prepare.py --profile ai-scale1 --baseline 9a33b504dbd1e0a772058cb15bced459ddc2682e --prior-archive .cache/holonight-uqc201-settings-p1ndqzdz/holonight-uqc201-settings-p1ndqzdz.tar.gz
+KIT=$(cat .cache/uqc201-ai-kit)
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/build.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/populate.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-verify.py "$KIT"
+python3 docs/initiatives/unified-qtquick-controls/p03-kit/settings-release.py "$KIT"
+```
+
+Focused controls/composer/import/installed checks precede full provider and AI
+suites. Record intentional credential-test skips. Installed selectors cover
+embedded default, environment, command line and external configuration, with
+source/build roots forbidden. Both actual guided helpers run offscreen at measured
+DPR 1 with cleared inherited selectors, isolated offline profiles and collected
+origins/outcomes. Automated SIGTERM is distinct from human normal closure.
+Release requires every named gate, unchanged inventory, exact-prefix restoration
+and overwrite refusal. The [two-run handoff](../BATCH8-AI-SCALE1.md) must identify
+the exact released path before human use; previous kits remain immutable.

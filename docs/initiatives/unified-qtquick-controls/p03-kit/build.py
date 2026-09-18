@@ -65,6 +65,10 @@ if json.loads((kit / "profile.json").read_text())["profile"] == "settings-scale1
     modules = [m for m in modules if m[0] in ("config", "system-services", "shell-config", "qt", "settings")]
 
 
+if json.loads((kit / "profile.json").read_text())["profile"] == "ai-scale1":
+    modules = [m for m in modules if m[0] in ("config", "qt", "ai")]
+
+
 def run(name, cmd):
     print(name, flush=True)
     start = time.monotonic()

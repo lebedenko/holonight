@@ -7,6 +7,8 @@ docs = root / "docs/initiatives/unified-qtquick-controls"
 names = (
     "P03-RECHECK.md",
     "BATCH8-SETTINGS.md",
+    "BATCH8-AI-SCALE1.md",
+    "BATCH8-AI.md",
     "P03-READINESS.md",
     "p03-kit/README.md",
     "FINAL-ACCEPTANCE.md",

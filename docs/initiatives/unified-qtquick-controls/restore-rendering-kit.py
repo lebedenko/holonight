@@ -12,8 +12,8 @@ def main():
     parser.add_argument("archive", type=Path)
     args = parser.parse_args()
     name = args.archive.name.removesuffix(".tar.gz")
-    if not re.fullmatch(r"holonight-uqc(?:201-(?:final|p03|settings)|20[78]|21[126])-[a-z0-9_]+", name):
-        parser.error("expected a saved holonight-uqc201-final/p03/settings/207/208/211/212/216-*.tar.gz kit")
+    if not re.fullmatch(r"holonight-uqc(?:201-(?:final|p03|settings|ai)|20[78]|21[126])-[a-z0-9_]+", name):
+        parser.error("expected a saved holonight-uqc201-final/p03/settings/ai/207/208/211/212/216-*.tar.gz kit")
     kit = Path("/tmp") / name
     if kit.exists():
         parser.error(f"preserving existing {kit}; restoration requires that path to be absent")
@@ -33,7 +33,7 @@ def main():
             raise SystemExit(f"Checksum failed: {relative}; do not launch this kit")
     (kit / "READY").write_bytes(ready_text)
     print(f"Restored and checksums verified: {kit}")
-    compositor = "sway" if name.startswith(("holonight-uqc201-settings-", "holonight-uqc201-p03-", "holonight-uqc212-", "holonight-uqc216-")) else "hyprland"
+    compositor = "sway" if name.startswith(("holonight-uqc201-ai-", "holonight-uqc201-settings-", "holonight-uqc201-p03-", "holonight-uqc212-", "holonight-uqc216-")) else "hyprland"
     print(f"From a fresh tux VT login: python3 {kit}/guided-session.py {compositor}")
 
 

@@ -23,7 +23,7 @@ run(
         *flags,
     ],
 )
-if json.loads((kit / "profile.json").read_text())["profile"] != "settings-scale1":
+if json.loads((kit / "profile.json").read_text())["profile"] not in ("settings-scale1", "ai-scale1"):
     shutil.copy2(work / "build/qt/tests/palette-diagnostics.so", prefix / "lib/palette-diagnostics.so")
     shutil.copy2(audit / "palette-diagnostics.cpp", kit)
     shutil.copy2(docs / "palette-test.py", kit)

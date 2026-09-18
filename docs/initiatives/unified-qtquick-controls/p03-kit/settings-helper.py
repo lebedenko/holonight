@@ -12,11 +12,13 @@ import time
 kit = Path(sys.argv[1]).resolve()
 work = Path.cwd() / ".cache" / kit.name
 prefix = kit / "prefix"
+surface = "ai" if json.loads((kit / "profile.json").read_text())["profile"] == "ai-scale1" else "settings"
+executable = "holonight-chat" if surface == "ai" else "holonight-settings"
 spec = importlib.util.spec_from_file_location("collector", kit / "guided-app.py")
 collector = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(collector)
 for style in ("default", "Fusion"):
-    session = work / ("settings-helper-" + style)
+    session = work / (surface + "-helper-" + style)
     session.mkdir()
     env = dict(os.environ, UQC_SESSION_RUN=str(session), UQC_KIT=str(kit),
                UQC_PREFIX=str(prefix), WAYLAND_DISPLAY="offscreen-test-only",
@@ -28,19 +30,27 @@ for style in ("default", "Fusion"):
         path = session / name.lower()
         path.mkdir()
         env[name] = str(path)
+    if surface == "ai":
+        seed = session / "xdg_config_home/holonight-ai/config.json"
+        seed.parent.mkdir()
+        seed.write_text(json.dumps({
+            "provider_instances": {"schema_version": 1, "instances": [
+                {"id": name, "type": name, "name": name, "enabled": False, "settings": {}}
+                for name in ("ollama", "openai", "anthropic", "google")], "tombstones": []},
+            "utility": {"chat_title_generation_enabled": False}}))
     # Exercise selector clearing even in a contaminated parent environment.
     env.update(QT_QUICK_CONTROLS_STYLE="Basic", QT_QUICK_CONTROLS_CONF="/absent.conf",
                QT_QUICK_CONTROLS_FALLBACK_STYLE="Basic")
     wrapper = "import os,runpy; os.getuid=lambda:1001; runpy.run_path(" + repr(str(kit / "guided-app.py")) + ",run_name='__main__')"
     child_pid = None
     with (session / "helper.log").open("w") as log:
-        helper = subprocess.Popen([sys.executable, "-c", wrapper, "settings", "--style", style,
-                                   "--scale", "1", "--render-diagnostics"], env=env,
+        helper = subprocess.Popen([sys.executable, "-c", wrapper, surface, "--style", style,
+                                   "--scale", "1", "--render-diagnostics", *(["--index", "batch6"] if surface == "ai" else [])], env=env,
                                   stdout=log, stderr=subprocess.STDOUT)
         try:
             deadline = time.monotonic() + 30
             while time.monotonic() < deadline:
-                records = list(session.glob("settings-*/pid-*.json"))
+                records = list(session.glob(surface + "-*/pid-*.json"))
                 if records:
                     record = records[0]
                     run = record.parent
@@ -52,7 +62,7 @@ for style in ("default", "Fusion"):
                 time.sleep(.1)
             else:
                 raise AssertionError("No verified runtime collection")
-            assert data["executable"] == str(prefix / "bin/holonight-settings")
+            assert data["executable"] == str(prefix / "bin" / executable)
             actual = data["environment"]
             assert actual["QT_QUICK_CONTROLS_STYLE"] == (None if style == "default" else style)
             assert actual["QT_QUICK_CONTROLS_CONF"] is None
@@ -60,6 +70,14 @@ for style in ("default", "Fusion"):
             assert "QT_QUICK_CONTROLS_FALLBACK_STYLE" not in raw_env
             assert raw_env["HOME"] == env["HOME"]
             assert raw_env["DBUS_SESSION_BUS_ADDRESS"] == env["DBUS_SESSION_BUS_ADDRESS"]
+            if surface == "ai":
+                config_home = Path(raw_env["XDG_CONFIG_HOME"])
+                assert config_home == run / "xdg_config_home"
+                config = json.loads((config_home / "holonight-ai/config.json").read_text())
+                assert config["provider_instances"]["instances"]
+                assert all(not row["enabled"] for row in config["provider_instances"]["instances"])
+                assert config["utility"]["chat_title_generation_enabled"] is False
+                assert raw_env["HOLONIGHT_APPEARANCE_FILE"] == str(run / "appearance.toml")
             assert actual["LD_PRELOAD"] == str(prefix / "lib/render-diagnostics.so")
             text = (run / "launch.log").read_text()
             measured = collector.render_observations(text)["actual_window_dpr"]
@@ -70,7 +88,12 @@ for style in ("default", "Fusion"):
             assert any("Holonight" in origin for origin in origins)
             os.kill(child_pid, signal.SIGTERM)
             helper.wait(timeout=10)
+            assert helper.returncode == 241, "Guided helper must propagate SIGTERM outcome"
             assert (run / "exit.txt").read_text().strip() == "-15"
+            if surface == "ai":
+                finished = json.loads((session / "batch6-index.jsonl").read_text().splitlines()[-1])
+                assert finished["status"] == "finished" and finished["process_exit"] == -15
+                assert finished["outcome"] == "signal"
             (session / "result.json").write_text(json.dumps(dict(style=style, evidence=str(run),
                 measured_dpr=measured, origins=origins, selector=actual["QT_QUICK_CONTROLS_STYLE"],
                 executable=data["executable"], isolation="verified", exit=-15,
@@ -82,4 +105,4 @@ for style in ("default", "Fusion"):
             if helper.poll() is None:
                 helper.terminate()
                 helper.wait(timeout=5)
-    print("PASS actual Settings helper", style)
+    print("PASS actual guided helper", surface, style)

@@ -3190,3 +3190,19 @@ activation, pre-session greeter, other matrix cells and final integration remain
 separate. No product code, gitlinks or released-kit contents changed; verification
 for this evidence-only update consists of evidence/hash/isolation review and
 documentation/licensing/whitespace checks, without repeating product suites.
+
+## AI Sway scale-1 iteration — 2026-09-19
+
+The required umbrella baseline `9a33b50` was published to canonical main with
+user authorization. All 12 submodule pins match canonical main as checked over
+SSH, including provider `eadfe48` and AI `7e25e78`. The profile and handoff are
+implemented in the umbrella only; product sources and gitlinks are unchanged.
+Ten profile/restoration regression tests, 14 guided collector tests, Python
+syntax, documentation links/anchors/shell examples, diff checks and REUSE licensing
+pass. Fresh kit preparation and runtime verification follow this tooling
+checkpoint; neither human cell is accepted.
+The [bounded handoff](BATCH8-AI-SCALE1.md) requests exactly two sequential human
+runs at output scale 1 and measured DPR 1. Record automated readiness and the
+canonical two-run evidence review here when available. Preserve fractional
+acceptance and P03 closure; no palette-transition or light-time repeat.
+UQC-201 remains In Progress and the initiative Accepted.

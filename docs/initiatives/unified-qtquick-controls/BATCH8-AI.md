@@ -1,9 +1,11 @@
 # Batch 8 — AI Sway fractional coverage
 
-Both runs have been submitted. [Evidence review](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17)
-passes. Interaction and main-window palette checks are accepted; Fusion Settings
-control backgrounds fail the palette transition (P03; [follow-up](UQC-221.md)).
-Do not repeat these runs or start another batch before the bounded follow-up. The commands below are retained as provenance.
+Both fractional runs were submitted and their interaction coverage accepted; see
+[evidence review](FINDINGS.md#batch-8-ai-sway-evidence-review--2026-09-17).
+The subsequent P03 follow-up is now
+[closed](FINDINGS.md#p03-human-acceptance-after-observer-repair--2026-09-18).
+Do not repeat the historical procedure below. The separate
+[scale-1 handoff](BATCH8-AI-SCALE1.md) covers only the remaining AI Sway DPR-1 cells.
 
 Use `/tmp/holonight-uqc201-final-dyxe1nl_` only after its READY marker is present.
 [Release evidence](BATCH8-REVALIDATION.md) records verification and restoration.

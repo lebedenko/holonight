@@ -218,3 +218,10 @@ accepted at both scales; fractional review also resolves the conditional closed
 Fusion hover acceptance. Broader Settings coverage gaps, composition disposition,
 other accepted application cells and historical deferrals stand. The repair kit
 close-binding deviation remains documented in that evidence.
+
+## AI Sway scale-1 iteration — 2026-09-19
+
+The [canonical review](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19) tracks
+preparation and both pending human cells; use the [bounded handoff](BATCH8-AI-SCALE1.md)
+only after release. UQC-201 remains In Progress; initiative Accepted. Fractional
+acceptance and P03 closure are preserved. No other matrix gaps close here.

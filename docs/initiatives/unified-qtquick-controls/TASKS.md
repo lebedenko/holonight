@@ -2714,3 +2714,10 @@ per-phase activation/hover and stable role maps for 17 tracked instances per run
 Both input archive hashes and all 2,971 kit hashes verify. **P03 closed.**
 No pin/source/released-artifact changes or new product tests. UQC-222/UQC-223/UQC-224
 Done, UQC-201 In Progress, initiative Accepted; no ecosystem integration claim.
+
+## AI Sway scale-1 iteration — 2026-09-19
+
+The [canonical review](FINDINGS.md#ai-sway-scale-1-iteration--2026-09-19) tracks
+preparation and both pending human cells; use the [bounded handoff](BATCH8-AI-SCALE1.md)
+only after release. UQC-201 remains In Progress; initiative Accepted. Fractional
+acceptance and P03 closure are preserved. No other matrix gaps close here.
