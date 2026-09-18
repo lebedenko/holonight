@@ -44,6 +44,22 @@ modules = [
     ("greeter", "holonight-greeter", ["-DBUILD_TESTING=ON"]),
 ]
 
+if json.loads((kit / "profile.json").read_text())["profile"] == "observer-repair":
+    modules = [
+        ("config", "holonight-config", ["-DBUILD_TESTING=OFF"]),
+        (
+            "qt",
+            "holonight-qt",
+            [
+                "-DBUILD_TESTS=ON",
+                "-DBUILD_DEMO=OFF",
+                "-DBUILD_CONTROLS_GALLERY=OFF",
+                f"-DHOLONIGHT_PATCHELF_EXECUTABLE={patchelf}",
+            ],
+        ),
+        ("ai", "holonight-ai", ["-DBUILD_TESTS=OFF"]),
+    ]
+
 
 def run(name, cmd):
     print(name, flush=True)

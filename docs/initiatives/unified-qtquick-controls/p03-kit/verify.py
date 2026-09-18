@@ -1,7 +1,16 @@
 """Focused readiness: native controls, staged diagnosis and kit startup contracts."""
 
-from common import ctest, isolated, prefix, root, run, work
+from common import ctest, isolated, prefix, root, run, work, kit
 import os
+import json
+import runpy
+from pathlib import Path
+
+if json.loads((kit / "profile.json").read_text())["profile"] == "observer-repair":
+    runpy.run_path(
+        str(Path(__file__).with_name("observer-verify.py")), run_name="__main__"
+    )
+    raise SystemExit(0)
 
 ctest("provider-window-core", "qt", "holonight_window_palette_|core_isolation")
 ctest(

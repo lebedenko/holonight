@@ -3,6 +3,7 @@
 from common import isolated, kit, root, run
 from pathlib import Path
 import ast
+import json
 
 run(
     "ai-workspace-helper",
@@ -26,7 +27,8 @@ run(
 )
 for path in list(kit.rglob("*.py")) + list(Path(__file__).parent.glob("*.py")):
     ast.parse(path.read_text())
-run("installer-check", ["bash", root / "scripts/install.sh", "--check"])
+if json.loads((kit / "profile.json").read_text())["profile"] != "observer-repair":
+    run("installer-check", ["bash", root / "scripts/install.sh", "--check"])
 run("licensing", ["reuse", "--no-multiprocessing", "lint"])
 
 run("documentation", ["python3", Path(__file__).parent / "check-docs.py"])

@@ -10,13 +10,29 @@ import tempfile
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--prior", required=True, type=Path)
+parser.add_argument(
+    "--baseline", required=True, help="Explicit committed umbrella revision"
+)
+parser.add_argument("--profile", choices=["full", "observer-repair"], default="full")
 args = parser.parse_args()
 root = Path.cwd()
 docs = Path(__file__).resolve().parent.parent
+baseline = subprocess.check_output(
+    ["git", "rev-parse", args.baseline + "^{commit}"], text=True
+).strip()
 assert (
-    subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    == "6f7af409a38b7a217fec38bf607e43446f86c07f"
+    subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == baseline
 )
+assert not subprocess.check_output(["git", "status", "--porcelain"], text=True), (
+    "Dirty umbrella checkout"
+)
+assert (
+    subprocess.check_output(
+        ["git", "ls-remote", "origin", "refs/heads/main"], text=True
+    ).split()[0]
+    == baseline
+)
+
 assert (args.prior / "READY").is_file()
 versions = (args.prior / "PROVIDER.txt").read_text()
 assert (
@@ -27,7 +43,9 @@ assert (
     == versions
 ), "Package drift blocks reuse"
 rows = []
-for line in subprocess.check_output(["git", "ls-tree", "HEAD"], text=True).splitlines():
+for line in subprocess.check_output(
+    ["git", "ls-tree", baseline], text=True
+).splitlines():
     mode, kind, pin, repo = line.split()
     if mode != "160000":
         continue
@@ -60,10 +78,21 @@ manifest = dict(
     line.split("  ", 1)[::-1]
     for line in (args.prior / "SHA256SUMS").read_text().splitlines()
 )
+evidence_source = (
+    args.prior / "prior-evidence" if args.profile == "observer-repair" else args.prior
+)
 for name in retained:
+    relative = str((evidence_source / name).relative_to(args.prior))
     assert (
-        hashlib.sha256((args.prior / name).read_bytes()).hexdigest() == manifest[name]
+        hashlib.sha256((evidence_source / name).read_bytes()).hexdigest()
+        == manifest[relative]
     )
+if args.profile == "observer-repair":
+    assert (
+        subprocess.check_output(["pacman", "-Q"], text=True)
+        == (args.prior / "package-inventory.txt").read_text()
+    ), "Package drift"
+
 prior_work = root / ".cache" / args.prior.name
 archive = prior_work / (args.prior.name + ".tar.gz")
 digest = hashlib.sha256(archive.read_bytes()).hexdigest()
@@ -73,7 +102,10 @@ kit.chmod(0o755)
 work = root / ".cache" / kit.name
 (work / "logs").mkdir(parents=True)
 subprocess.run(["python3", str(docs / "prepare-guided-kit.py"), str(kit)], check=True)
-(kit / "BASELINE.txt").write_text("6f7af409a38b7a217fec38bf607e43446f86c07f\n")
+(kit / "BASELINE.txt").write_text(baseline + "\n")
+(kit / "profile.json").write_text(
+    json.dumps({"profile": args.profile, "baseline": baseline}, indent=2) + "\n"
+)
 (kit / "PROVIDER.txt").write_text(versions)
 (kit / "package-inventory.txt").write_text(
     subprocess.check_output(["pacman", "-Q"], text=True)
@@ -89,7 +121,7 @@ for name in (
     "PROVIDER.txt",
     "retained-package-provenance.json",
 ):
-    shutil.copy2(args.prior / name, prior / name)
+    shutil.copy2(evidence_source / name, prior / name)
 (prior / "README.md").write_text(
     "Prior evidence only from "
     + str(args.prior)

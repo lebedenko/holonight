@@ -20,18 +20,31 @@ def latest(filename):
     }
 
 
+profile = json.loads((kit / "profile.json").read_text())
+focused = profile["profile"] == "observer-repair"
+assert (
+    subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    == profile["baseline"]
+)
+assert not subprocess.check_output(["git", "status", "--porcelain"], text=True), (
+    "Dirty checkout"
+)
 build = latest("results.jsonl")
 for component in (
-    "config",
-    "system-services",
-    "shell-config",
-    "qt",
-    "appearance-adapters",
-    "shell",
-    "settings",
-    "ai",
-    "pkg-manager",
-    "greeter",
+    ("config", "qt", "ai")
+    if focused
+    else (
+        "config",
+        "system-services",
+        "shell-config",
+        "qt",
+        "appearance-adapters",
+        "shell",
+        "settings",
+        "ai",
+        "pkg-manager",
+        "greeter",
+    )
 ):
     for phase in ("configure", "build", "install"):
         assert build[component + "-" + phase]["code"] == 0
@@ -70,6 +83,24 @@ for mode in ("default", "environment", "command-line", "configuration"):
         exe + "-installed-" + mode
         for exe in ("holonight_demo", "holonight_controls_gallery")
     }
+if focused:
+    required = {
+        "provider-window-core",
+        "provider-observer-policy",
+        "diagnostic-configure",
+        "diagnostic-build",
+        "observer-collect",
+        "observer-assert",
+        "observer-installed-regression",
+        "render-observer-build",
+        "ai-workspace-helper",
+        "collector-tests",
+        "terminal-syntax",
+        "sway-config",
+        "real-seat-device-bindings",
+        "licensing",
+        "documentation",
+    }
 assert required <= checks.keys(), required - checks.keys()
 for name in required:
     expected = (
@@ -78,15 +109,20 @@ for name in required:
         else 0
     )
     assert checks[name]["code"] == expected, name
-assert (
-    "32 palette/render transition failures"
-    in (work / "logs/diagnostic-plain-boundary.log").read_text()
-)
-assert (
-    "8 palette/render transition failures"
-    in (work / "logs/diagnostic-external-boundary.log").read_text()
-)
-assert len(list((work / "matrix").glob("*/measurements.json"))) == 18
+if focused:
+    report = json.loads((work / "matrix/stability-assertions.json").read_text())
+    assert len(report["cases"]) == 98 and report["failed_cases"] == 0
+    assert len(report["observer_equivalence"]) == 49
+else:
+    assert (
+        "32 palette/render transition failures"
+        in (work / "logs/diagnostic-plain-boundary.log").read_text()
+    )
+    assert (
+        "8 palette/render transition failures"
+        in (work / "logs/diagnostic-external-boundary.log").read_text()
+    )
+    assert len(list((work / "matrix").glob("*/measurements.json"))) == 18
 resolved = []
 for cache in (work / "build").glob("*/CMakeCache.txt"):
     for line in cache.read_text().splitlines():
@@ -115,6 +151,12 @@ for row in json.loads((kit / "revisions.json").read_text()):
         ["git", "-C", repo, "status", "--porcelain"], text=True
     )
     assert row["canonical_main"] == row["pin"]
+    assert (
+        subprocess.check_output(
+            ["git", "-C", repo, "ls-remote", "origin", "refs/heads/main"], text=True
+        ).split()[0]
+        == row["pin"]
+    )
     if repo != "holonight-qt":
         assert prior_pins[repo] == row["pin"], "Prior full-suite evidence invalidated"
 assert (
@@ -137,21 +179,35 @@ for style in ("default", "Fusion"):
         == result["log_sha256"]
     )
 assert str(kit) in (kit / "README.md").read_text()
+provenance = {}
+for relative in [
+    "lib/palette-diagnostics.so",
+    "bin/holonight-chat",
+    "lib/libholonight_config.so",
+]:
+    binary = prefix / relative
+    provenance[relative] = hashlib.sha256(binary.read_bytes()).hexdigest()
+provenance["observer_source"] = hashlib.sha256(
+    (kit / "palette-diagnostics.cpp").read_bytes()
+).hexdigest()
+provenance["baseline"] = profile["baseline"]
+(kit / "binary-provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
 # Snapshot complete evidence, including expected boundaries and failed harness attempts.
 evidence = kit / "verification"
 evidence.mkdir()
 for name in ("logs", "matrix", "ai-palette-default", "ai-palette-Fusion"):
     shutil.copytree(work / name, evidence / name)
-shutil.copytree(work / "build/shell/uqc-launch-logs", evidence / "shell-launches")
-shutil.copy2(
-    work / "build/qt/tests/package-install-test/isolated-style.log",
-    evidence / "provider-installed-styles.log",
-)
-for component in ("qt", "shell", "settings", "ai"):
+if not focused:
+    shutil.copytree(work / "build/shell/uqc-launch-logs", evidence / "shell-launches")
     shutil.copy2(
-        work / "build" / component / "Testing/Temporary/LastTest.log",
-        evidence / (component + "-last-ctest.log"),
+        work / "build/qt/tests/package-install-test/isolated-style.log",
+        evidence / "provider-installed-styles.log",
     )
+    for component in ("qt", "shell", "settings", "ai"):
+        shutil.copy2(
+            work / "build" / component / "Testing/Temporary/LastTest.log",
+            evidence / (component + "-last-ctest.log"),
+        )
 for name in ("results.jsonl", "focused-results.jsonl"):
     shutil.copy2(work / name, evidence / name)
 for path in Path(__file__).parent.glob("*"):
