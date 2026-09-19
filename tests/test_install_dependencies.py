@@ -8,10 +8,10 @@ import unittest
 
 
 HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
-COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++".split()
+COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner".split()
 PACKAGES = """base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
     tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
-    syntax-highlighting md4c greetd cage""".split()
+    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python""".split()
 
 
 class DependencyChecks(unittest.TestCase):
@@ -48,6 +48,9 @@ printf 'cmake %s\\n' "$*" >> "$LOG"
 source_text="$(cat "$2/CMakeLists.txt")"
 [[ "$source_text" = *'find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)'* ]] || exit 97
 [[ "$source_text" = *'find_package(Qt6WaylandScannerTools 6.11 REQUIRED)'* ]] || exit 97
+[[ "$source_text" = *'COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)'* ]] || exit 97
+[[ "$source_text" = *'pkg_check_modules(ViewerWebP REQUIRED libwebp)'* ]] || exit 97
+[[ "$source_text" = *'pkg_check_modules(ViewerExif REQUIRED libexif)'* ]] || exit 97
 if [[ -n "${CMAKE_FAILURE:-}" ]]; then
   printf 'CMake Error: %s\\n' "$CMAKE_FAILURE" >&2
   exit 1
@@ -83,7 +86,8 @@ printf 'Configure succeeded\\n'
 
     def test_missing_capabilities_and_configuration_failures(self):
         for diagnostic in ("WaylandClient missing", "Qt6WaylandScannerTools missing",
-                           "Qt6 version 6.10 incompatible with requested 6.11", "configuration failed"):
+                           "Qt6 version 6.10 incompatible with requested 6.11", "GuiPrivate missing",
+                           "libwebp missing", "libexif missing", "configuration failed"):
             with self.subTest(diagnostic=diagnostic):
                 self.log.write_text("")
                 result = self.check(CMAKE_FAILURE=diagnostic)
@@ -97,6 +101,15 @@ printf 'Configure succeeded\\n'
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("sudo pacman -S --needed libsecret", result.stderr)
         self.assertNotIn("cmake -S", self.log.read_text())
+
+    def test_missing_viewer_dependencies(self):
+        for package in ("libwebp", "libexif", "qt6-imageformats", "python"):
+            with self.subTest(package=package):
+                self.log.write_text("")
+                result = self.check(MISSING_PACKAGE=package)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("sudo pacman -S --needed " + package, result.stderr)
+                self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_unrelated_missing_command(self):
         (self.bin / "git").unlink()

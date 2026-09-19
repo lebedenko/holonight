@@ -6,4 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash -n scripts/install.sh scripts/install-dependencies.sh
-      - run: python3 -m unittest discover -s tests -p 'test_install_dependencies.py' -v
+      - run: python3 -m unittest discover -s tests -p 'test_install*.py' -v

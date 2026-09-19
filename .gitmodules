@@ -34,3 +34,6 @@
 [submodule "holonight-hyprlock"]
 	path = holonight-hyprlock
 	url = git@github.com:lebedenko/holonight-hyprlock.git
+[submodule "holonight-viewer"]
+	path = holonight-viewer
+	url = git@github.com:lebedenko/holonight-viewer.git
