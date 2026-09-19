@@ -1,6 +1,6 @@
 # Viewer HoloNight alignment
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -29,8 +29,8 @@ Viewer consumes published Config and Qt providers. Runtime controls use `QtQuick
 
 ## Integration acceptance criteria
 
-- [ ] Viewer checks and CI pass with declared dependencies; verified commit is published.
-- [ ] Participating submodules are clean and pinned to published revisions.
-- [ ] External build, explicit provider selection and staged /usr runtime pass.
-- [ ] Installer dependency diagnostics, ownership, collisions and modified-file preservation pass.
-- [ ] Native default/Fusion appearance and interaction checks pass with user participation.
+- [x] Viewer checks and CI pass with declared dependencies; verified commit is published.
+- [x] Participating submodules are clean and pinned to published revisions.
+- [x] External build, explicit provider selection and staged /usr runtime pass.
+- [x] Installer dependency diagnostics, ownership, collisions and modified-file preservation pass.
+- [x] Native default/Fusion appearance and interaction checks pass with user participation.
