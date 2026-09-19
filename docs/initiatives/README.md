@@ -17,3 +17,5 @@ tests, and commits.
 | Initiative | Status | Priority | Scheduling |
 |---|---|---|---|
 | [GTK Visual Fidelity](gtk-visual-fidelity/README.md) | Draft | Low | Deferred until explicitly prioritized |
+
+- [Files refactoring and onboarding](files-holonight-alignment/README.md) — Accepted; Files published and pinned; final integration review pending.

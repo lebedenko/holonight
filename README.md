@@ -18,6 +18,7 @@ implementation stays in the component repositories.
 | `holonight-pkg-manager` | Package manager | Pinned submodule |
 | `holonight-settings` | Settings application | Pinned submodule |
 | `holonight-viewer` | Static image viewer | Pinned submodule |
+| `holonight-files` | Keyboard-driven file manager | Pinned submodule |
 | `holonight-system-services` | Shared Qt/C++ system-control integration | Pinned submodule |
 | `holonightd` | HoloNight service | Pinned submodule |
 

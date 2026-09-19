@@ -37,3 +37,6 @@
 [submodule "holonight-viewer"]
 	path = holonight-viewer
 	url = git@github.com:lebedenko/holonight-viewer.git
+[submodule "holonight-files"]
+	path = holonight-files
+	url = git@github.com:lebedenko/holonight-files.git

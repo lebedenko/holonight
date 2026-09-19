@@ -51,6 +51,7 @@ source_text="$(cat "$2/CMakeLists.txt")"
 [[ "$source_text" = *'COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)'* ]] || exit 97
 [[ "$source_text" = *'pkg_check_modules(ViewerWebP REQUIRED libwebp)'* ]] || exit 97
 [[ "$source_text" = *'pkg_check_modules(ViewerExif REQUIRED libexif)'* ]] || exit 97
+[[ "$source_text" = *'find_package(tomlplusplus 3.4 CONFIG REQUIRED)'* ]] || exit 97
 if [[ -n "${CMAKE_FAILURE:-}" ]]; then
   printf 'CMake Error: %s\\n' "$CMAKE_FAILURE" >&2
   exit 1
@@ -110,6 +111,12 @@ printf 'Configure succeeded\\n'
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("sudo pacman -S --needed " + package, result.stderr)
                 self.assertNotIn("cmake -S", self.log.read_text())
+
+    def test_files_requires_supported_tomlplusplus(self):
+        result = self.check(CMAKE_FAILURE="tomlplusplus 3.4 config unavailable")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("tomlplusplus 3.4 config unavailable", result.stderr)
+        self.assertIn("tomlplusplus >= 3.4 (Files)", result.stderr)
 
     def test_unrelated_missing_command(self):
         (self.bin / "git").unlink()

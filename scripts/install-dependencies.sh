@@ -14,6 +14,7 @@ project(HoloNightDependencyCheck LANGUAGES CXX)
 find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)
 find_package(Qt6WaylandScannerTools 6.11 REQUIRED)
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)
+find_package(tomlplusplus 3.4 CONFIG REQUIRED)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ViewerWebP REQUIRED libwebp)
@@ -21,7 +22,7 @@ pkg_check_modules(ViewerExif REQUIRED libexif)
 pkg_check_modules(ViewerWayland REQUIRED wayland-client wayland-protocols wayland-scanner)
 EOF
   if ! cmake -S "$probe_dir" -B "$probe_dir/build" -G Ninja; then
-    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, Viewer GUI/private/QML modules, Python3, WebP, EXIF and Wayland development files is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
+    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, Viewer GUI/private/QML modules, Python3, tomlplusplus >= 3.4 (Files), WebP, EXIF and Wayland development files is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
     return 1
   fi
 )

@@ -1,4 +1,4 @@
-"""Exercise Viewer payload ownership using the real installer functions in disposable roots."""
+"""Exercise application payload ownership using the real installer functions in disposable roots."""
 
 import hashlib
 import os
@@ -14,6 +14,10 @@ FIXTURE_REVISION = "1" * 40
 
 
 class ViewerOwnership(unittest.TestCase):
+    module = "holonight-viewer"
+    executable = "hn-viewer"
+    app_id = "org.holonight.Viewer"
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
@@ -39,9 +43,9 @@ class ViewerOwnership(unittest.TestCase):
         self.build = self.root / ".source-install"
         self.stage = self.build / "stage"
         self.payload = {
-            "/usr/bin/hn-viewer": b"viewer executable\n",
-            "/usr/share/applications/org.holonight.Viewer.desktop": b"viewer desktop entry\n",
-            "/usr/share/icons/hicolor/scalable/apps/org.holonight.Viewer.svg": b"viewer icon\n",
+            f"/usr/bin/{self.executable}": b"viewer executable\n",
+            f"/usr/share/applications/{self.app_id}.desktop": b"viewer desktop entry\n",
+            f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg": b"viewer icon\n",
         }
         for relative, data in self.payload.items():
             path = self.stage / relative.lstrip("/")
@@ -60,23 +64,23 @@ class ViewerOwnership(unittest.TestCase):
 
     def make_manifest(self):
         result = self.run_functions(
-            'record_module_paths holonight-viewer "$BUILD_ROOT/before" "$BUILD_ROOT/after"; make_manifest'
+            f'record_module_paths {self.module} "$BUILD_ROOT/before" "$BUILD_ROOT/after"; make_manifest'
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         return (self.build / "manifest.tsv").read_text()
 
-    def test_viewer_payload_records_owner_revision_and_hash(self):
+    def test_payload_records_owner_revision_and_hash(self):
         manifest = self.make_manifest()
         entries = {fields[5]: fields for line in manifest.splitlines() if (fields := line.split("\t"))}
         for relative, data in self.payload.items():
             with self.subTest(path=relative):
                 fields = entries[relative]
-                self.assertEqual(fields[:3], ["holonight-viewer", FIXTURE_REVISION, "f"])
+                self.assertEqual(fields[:3], [self.module, FIXTURE_REVISION, "f"])
                 self.assertEqual(fields[4], hashlib.sha256(data).hexdigest())
 
     def test_unowned_legacy_install_is_rejected_without_changes(self):
         self.make_manifest()
-        existing = self.target / "usr/bin/hn-viewer"
+        existing = self.target / f"usr/bin/{self.executable}"
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"legacy or package-owned executable")
         result = self.run_functions("collision_check")
@@ -89,7 +93,7 @@ class ViewerOwnership(unittest.TestCase):
         self.make_manifest()
         result = self.run_functions("collision_check; copy_stage")
         self.assertEqual(result.returncode, 0, result.stderr)
-        desktop = self.target / "usr/share/applications/org.holonight.Viewer.desktop"
+        desktop = self.target / f"usr/share/applications/{self.app_id}.desktop"
         desktop.write_bytes(b"user modified desktop entry")
         unrelated = self.target / "usr/bin/other-app"
         unrelated.write_bytes(b"unrelated")
@@ -101,8 +105,14 @@ class ViewerOwnership(unittest.TestCase):
         self.assertIn("preserved modified path", result.stderr)
         self.assertEqual(desktop.read_bytes(), b"user modified desktop entry")
         self.assertEqual(unrelated.read_bytes(), b"unrelated")
-        self.assertFalse((self.target / "usr/bin/hn-viewer").exists())
-        self.assertFalse((self.target / "usr/share/icons/hicolor/scalable/apps/org.holonight.Viewer.svg").exists())
+        self.assertFalse((self.target / f"usr/bin/{self.executable}").exists())
+        self.assertFalse((self.target / f"usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg").exists())
+
+
+class FilesOwnership(ViewerOwnership):
+    module = "holonight-files"
+    executable = "hn-files"
+    app_id = "org.holonight.Files"
 
 
 if __name__ == "__main__":
