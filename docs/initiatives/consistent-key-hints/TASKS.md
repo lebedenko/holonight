@@ -6,7 +6,10 @@
 | KH-002 | holonight-shell | Launcher, authentication and audio hints | KH-001 published and pinned | [SDD](../../../holonight-shell/docs/sdd/consistent-key-hints/SPEC.md) | Done | `d109fb3` (published) | 2026-09-20: Shell: clean Release build; 1,175/1,175 CTest entries; QML lint/type/package, format and license checks; authentication visual review at 1.25. Published to canonical origin/main and pinned after user authorization. Latest CI at `d109fb3`: CI, `in_progress`, no conclusion; [run](https://github.com/lebedenko/holonight-shell/actions/runs/35475413092) (checked once). |
 | KH-003 | holonight-viewer | Footer, shortcut help and menu hints | KH-001 published and pinned | [SDD](../../../holonight-viewer/docs/sdd/consistent-key-hints/SPEC.md) | Done | `746acb2` (published) | 2026-09-20: Viewer: clean Release build; final 20/20 CTest entries; format/tidy/QML/license, staged install and isolated runtime passed; footer/help visual review at fractional scales. Published to canonical origin/main and pinned after user authorization. Latest CI at `746acb2`: Licensing, `queued`, no conclusion; [run](https://github.com/lebedenko/holonight-viewer/actions/runs/35475414932) (checked once). |
 | KH-004 | holonight-files | Quick Look and insert guidance | KH-001 published and pinned | [SDD](../../../holonight-files/docs/sdd/consistent-key-hints/SPEC.md) | Done | `550e662` (published) | 2026-09-20: Files: clean Release build; 17 focused tests and all 9 acceptance CTest entries; format/tidy/QML/license, staged install and isolated runtime passed; insert and Quick Look visual review. Published to canonical origin/main and pinned after user authorization. Latest CI at `550e662`: Build and checks, `in_progress`, no conclusion; [run](https://github.com/lebedenko/holonight-files/actions/runs/35475417057) (checked once). |
-| KH-005 | umbrella | Verify integrated revisions and manual ecosystem behavior | KH-001–KH-004 | — | Planned | — | Pending |
+| KH-005 | umbrella | Verify integrated revisions and manual ecosystem behavior | KH-001–KH-004, KH-006–KH-008 | — | Planned | — | Pending |
+| KH-006 | holonight-qt | Extract frameless HnKeySequenceLabel and refine compact badge geometry; baseline `8fe24ff83f8108631c2b7b0351994f7e513acfcd` | KH-001 | [SDD](../../../holonight-qt/docs/sdd/consistent-key-hints/SPEC.md) | Done | `9723cef7371a4ca5f2967d869b26ee7ff1e3c789` (local) | 2026-09-20: entered Ready before implementation. Clean Debug build, 89/89 CTest entries, seven focused tests under both styles, QML lint/policy, full clang-tidy, format, REUSE and 8/12/18 pt captures at scales 1/1.25/1.5 passed. [Evidence](../../../holonight-qt/docs/sdd/consistent-key-hints/VERIFICATION.md#kh-006-refinement-acceptance--2026-09-20). Publication and pin authorization pending. |
+| KH-007 | holonight-viewer | Frameless menu sequences and resolved footer font-size synchronization; baseline `746acb2f00e427eab97743feda7492fbc40c751e` | KH-006 published and pinned | [SDD](../../../holonight-viewer/docs/sdd/consistent-key-hints/SPEC.md) | Planned | — | Becomes Ready after corrected provider publication and pinning. |
+| KH-008 | holonight-shell, holonight-files | Verify existing consumers against corrected provider | KH-006 published and pinned | [Shell SDD](../../../holonight-shell/docs/sdd/consistent-key-hints/SPEC.md), [Files SDD](../../../holonight-files/docs/sdd/consistent-key-hints/SPEC.md) | Planned | — | Regression verification only; any required product fix needs its own repository work package. |
 
 Allowed states:
 
@@ -20,7 +23,7 @@ Allowed states:
 `Done` on a repository task is a local checkpoint, not an integrated initiative. Record integration commands, results,
 and verification date in the final umbrella row before setting the initiative status to `Integrated`.
 
-## Handoff boundary
+## Historical KH-001–KH-004 handoff boundary
 
 The user authorized provider and consumer publication and pinning on 2026-09-20.
 All four implementation commits are available from their canonical origin/main;
@@ -42,3 +45,20 @@ hints, authentication buttons, Viewer footer/help/menu and Files Quick Look/inse
 validation at native display scale. Confirm visual fit and unchanged keyboard
 actions. Offscreen regression tests and captured visual evidence have passed;
 no native pointer or focus interaction was automated.
+
+## Refinement handoff — 2026-09-20
+
+KH-001–KH-004 and their evidence remain historical completed work. The initiative
+remains Accepted; the new acceptance gate includes KH-006–KH-008. The previous
+publication authorization covered the four recorded implementation revisions.
+Corrected-provider publication and pinning require a new concrete handoff before
+KH-007 or KH-008 starts. Native menu/footer/help and ecosystem interaction remain
+manual user checks. Existing untracked Files `docs/sdd/quick-look-text-viewer/`
+work is unrelated and must be preserved.
+
+KH-006 is locally complete at `9723cef7371a4ca5f2967d869b26ee7ff1e3c789`.
+The provider working tree is clean and main is one commit ahead of origin/main.
+This checkpoint updates coordination documentation only; the authoritative provider
+gitlink remains `8fe24ff83f8108631c2b7b0351994f7e513acfcd`. No follow-up commit has
+been pushed or pinned, and no follow-up CI result is claimed. KH-007 and KH-008
+remain Planned until the provider handoff is authorized and completed.
