@@ -10,12 +10,14 @@ acceptance and compatibility evidence, not KH-005 integration acceptance.
   acceptance is recorded in the [provider SDD](../../../holonight-qt/docs/sdd/consistent-key-hints/VERIFICATION.md#kh-006-refinement-acceptance--2026-09-20).
   Latest CI checked once at that revision: CI, `in_progress`, no conclusion,
   [run 35512774792](https://github.com/lebedenko/holonight-qt/actions/runs/35512774792).
-- KH-007: Viewer `2ba1e5217002bf369fbbc4223866e37e176d4879` is a clean local
-  commit on main. [Acceptance and captures](../../../holonight-viewer/docs/sdd/consistent-key-hints/VERIFICATION.md#kh-007-refinement--2026-09-20)
+- KH-007: Viewer `2ba1e5217002bf369fbbc4223866e37e176d4879` is published to
+  canonical origin/main and pinned after user authorization; its worktree is clean. [Acceptance and captures](../../../holonight-viewer/docs/sdd/consistent-key-hints/VERIFICATION.md#kh-007-refinement--2026-09-20)
   cover clean Release build, Debug/test builds, all 20 CTest entries after an
   affected rerun, formatting, tidy, QML policy/types/lint, licenses, staged install
   and an isolated installed runtime. Native clipboard tests remain platform-skipped.
-  Viewer publication and its umbrella pin remain a separate authorization handoff.
+  Latest CI checked once at that revision: Build and checks, `in_progress`, no
+  conclusion, [run 35533582433](https://github.com/lebedenko/holonight-viewer/actions/runs/35533582433).
+  No implementation changed during publication; local acceptance still applies.
 
 ## KH-008 Shell compatibility
 
@@ -86,9 +88,8 @@ No source regression requiring a separate product fix was found.
 
 ## Remaining integration gate
 
-Do not treat the local Viewer commit or active Files worktree as integrated
-state. Publish and pin the completed Viewer change on authorization. KH-005
-still requires clean participating worktrees at published pins, review of exact
+The provider and Viewer refinements are now published and pinned. Do not treat
+the active Files worktree as integrated state. KH-005 still requires clean participating worktrees at published pins, review of exact
 cross-repository contracts, integration checks in dependency order, and the
 user's native Launcher/audio/authentication/Viewer/Files checks. No native
 pointer or window-focus interaction was automated. No umbrella integration

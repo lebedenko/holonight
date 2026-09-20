@@ -8,7 +8,7 @@
 | KH-004 | holonight-files | Quick Look and insert guidance | KH-001 published and pinned | [SDD](../../../holonight-files/docs/sdd/consistent-key-hints/SPEC.md) | Done | `550e662` (published) | 2026-09-20: Files: clean Release build; 17 focused tests and all 9 acceptance CTest entries; format/tidy/QML/license, staged install and isolated runtime passed; insert and Quick Look visual review. Published to canonical origin/main and pinned after user authorization. Latest CI at `550e662`: Build and checks, `in_progress`, no conclusion; [run](https://github.com/lebedenko/holonight-files/actions/runs/35475417057) (checked once). |
 | KH-005 | umbrella | Verify integrated revisions and manual ecosystem behavior | KH-001–KH-004, KH-006–KH-008 | — | Planned | — | Pending |
 | KH-006 | holonight-qt | Extract frameless HnKeySequenceLabel and refine compact badge geometry; baseline `8fe24ff83f8108631c2b7b0351994f7e513acfcd` | KH-001 | [SDD](../../../holonight-qt/docs/sdd/consistent-key-hints/SPEC.md) | Done | `9723cef7371a4ca5f2967d869b26ee7ff1e3c789` (published) | 2026-09-20: entered Ready before implementation. Clean Debug build, 89/89 CTest entries, seven focused tests under both styles, QML lint/policy, full clang-tidy, format, REUSE and 8/12/18 pt captures at scales 1/1.25/1.5 passed. [Evidence](../../../holonight-qt/docs/sdd/consistent-key-hints/VERIFICATION.md#kh-006-refinement-acceptance--2026-09-20). Published to canonical origin/main and pinned after user authorization. CI at `9723cef`: `in_progress`, no conclusion, [run](https://github.com/lebedenko/holonight-qt/actions/runs/35512774792) (checked once). |
-| KH-007 | holonight-viewer | Frameless menu sequences and resolved footer font-size synchronization; baseline `746acb2f00e427eab97743feda7492fbc40c751e` | KH-006 published and pinned | [SDD](../../../holonight-viewer/docs/sdd/consistent-key-hints/SPEC.md) | Done | `2ba1e5217002bf369fbbc4223866e37e176d4879` (local) | 2026-09-20: clean Release build, Debug/test builds, all 20 CTest entries passing after affected rerun, format/tidy/QML/license checks, staged install, isolated runtime and menu/footer/help captures. [Evidence](REFINEMENT-VERIFICATION.md). Publication/pin handoff pending. |
+| KH-007 | holonight-viewer | Frameless menu sequences and resolved footer font-size synchronization; baseline `746acb2f00e427eab97743feda7492fbc40c751e` | KH-006 published and pinned | [SDD](../../../holonight-viewer/docs/sdd/consistent-key-hints/SPEC.md) | Done | `2ba1e5217002bf369fbbc4223866e37e176d4879` (published) | 2026-09-20: clean Release build, Debug/test builds, all 20 CTest entries passing after affected rerun, format/tidy/QML/license checks, staged install, isolated runtime and menu/footer/help captures. [Evidence](REFINEMENT-VERIFICATION.md). Published to canonical origin/main and pinned after user authorization. Latest CI at `2ba1e52`: Build and checks, `in_progress`, no conclusion, [run](https://github.com/lebedenko/holonight-viewer/actions/runs/35533582433) (checked once). |
 | KH-008 | holonight-shell, holonight-files | Verify existing consumers against corrected provider | KH-006 published and pinned | [Shell SDD](../../../holonight-shell/docs/sdd/consistent-key-hints/SPEC.md), [Files SDD](../../../holonight-files/docs/sdd/consistent-key-hints/SPEC.md) | Done | Shell `d109fb3`, Files `550e662` (unchanged published revisions) | 2026-09-20: Shell 14 focused suites, all 1,175 CTest entries passing after seven isolated-fixture reruns, build and QML lint; Files clean detached build, 16 focused tests, 9/9 suites and QML checks. [Evidence and wrapper limitation](REFINEMENT-VERIFICATION.md). No product fix needed; unrelated Files work untouched. |
 
 Allowed states:
@@ -83,3 +83,17 @@ corrections, results and limitations are in [refinement verification](REFINEMENT
 The provider pin is `9723cef`; the Viewer pin remains the published `746acb2`.
 KH-005 remains Planned and the initiative remains Accepted. No final integration
 or native ecosystem result is claimed. The provider CI status above was not polled.
+
+## Authorized Viewer publication — 2026-09-20
+
+The user authorized publication and pinning of the completed Viewer refinement.
+Commit `2ba1e5217002bf369fbbc4223866e37e176d4879` was pushed to canonical
+origin/main; the working tree is clean and local HEAD matches origin/main. This
+checkpoint updates the Viewer gitlink to that revision. No implementation changed
+since local acceptance. The latest CI run at that exact revision was checked once:
+Build and checks, in progress, no conclusion; the link is recorded in KH-007.
+Earlier local-only handoff notes remain historical. Provider CI was not polled.
+
+The umbrella checkpoint remains local. KH-005 and native ecosystem review remain
+pending, including the clean-worktree prerequisite for Files, whose unrelated
+active work is preserved. The initiative remains Accepted, not Integrated.
