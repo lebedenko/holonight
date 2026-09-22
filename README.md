@@ -17,6 +17,7 @@ implementation stays in the component repositories.
 | `holonight-greeter` | Pre-session login UI, greetd IPC, authentication flow, and session selection | Pinned submodule |
 | `holonight-pkg-manager` | Package manager | Pinned submodule |
 | `holonight-settings` | Settings application | Pinned submodule |
+| `holonight-images` | Shared image inspection, raster decoding and metadata | Pinned submodule |
 | `holonight-viewer` | Static image viewer | Pinned submodule |
 | `holonight-files` | Keyboard-driven file manager | Pinned submodule |
 | `holonight-system-services` | Shared Qt/C++ system-control integration | Pinned submodule |

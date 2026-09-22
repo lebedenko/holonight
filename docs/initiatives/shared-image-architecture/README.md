@@ -32,18 +32,17 @@ Local consumer validation is authorized by the implementation request. Publicati
 
 ## Integration acceptance criteria
 
-- [ ] Every repository package has a published commit and local verification.
+- [x] Every repository package has a published commit and local verification.
 - [ ] Participating submodules are clean and pinned to published commits.
 - [ ] Contracts are compatible at those revisions.
 - [ ] Root builds/tests pass in dependency order.
 - [ ] Manual Viewer navigation/animation/SVG and Files preview checks pass.
 
-## Local delivery
+## Published delivery
 
-Provider and consumer implementation is complete and locally verified. Repository commits and evidence are in
-[TASKS.md](TASKS.md). `holonight-images` is a local independent Git checkout awaiting canonical remote creation/publication;
-it is intentionally not an umbrella gitlink yet. Consumer gitlinks remain at their previously published baselines.
+The provider and both consumer migrations are published and pinned. [TASKS.md](TASKS.md) records the revisions,
+local verification and the one-time CI snapshot. The new `holonight-images` submodule is registered at
+`git@github.com:lebedenko/holonight-images.git` and precedes its consumers in the installer build order.
 
-Remaining integration steps: publish the provider and consumers when authorized, add/pin the provider and update
-consumer pins when instructed, then perform the final pinned-revision and manual native ecosystem review.
-Hosted CI has not been run for these local commits; workflow dependency revisions are prepared for publication.
+Final pinned-revision integration and manual native ecosystem checks remain pending. Files build CI failed on
+container Git ownership checks; Viewer build CI was still running when inspected. The initiative remains Accepted.
