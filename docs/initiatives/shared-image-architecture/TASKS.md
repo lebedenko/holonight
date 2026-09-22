@@ -173,3 +173,37 @@ No waiting or polling was performed. Publication review passed committed whitesp
 all three follow-ups. Umbrella closure passed `git diff --check`, local Markdown link validation
 and exact staged gitlink verification against the confirmed remote revisions. The separate umbrella
 closure commit is kept local as requested.
+
+## Viewer performance follow-up — published and pinned 2026-09-23 (Europe/Kyiv)
+
+Published Viewer `06b0061a20ab4175f6f1546c8316132e31271bce`
+(`test: measure Viewer image performance and memory`) to canonical `origin/main`.
+`git ls-remote origin refs/heads/main` confirmed that exact revision before pinning;
+Viewer's working tree was clean. Images and Files pins are unchanged, and the initiative
+remains **Integrated**. The [local SDD](../../../holonight-viewer/docs/sdd/image-performance/SPEC.md)
+and [verification record](../../../holonight-viewer/docs/sdd/image-performance/VERIFICATION.md)
+describe the completed local implementation; their local-only scope notes precede the
+user's subsequent authorization to commit, publish and pin recorded here.
+
+Reused completed acceptance: 45 focused cases, five runner regression tests, all 22 Debug
+and 22 clean Release CTest entries, 25 initial performance trials and five final navigation
+trials passed. Contributor checks passed after selecting Qt 6.11.2 through the existing
+`QMLFORMAT` override and correcting/rechecking benchmark-only tidy findings. Formatting,
+QML lint/import/type checks, licensing and staged installation passed. Navigation RSS was
+flat across pressure-cycle endpoints in every trial; no production correction was justified.
+Measurements are offscreen, with synthetic fixtures, and do not establish native rendering
+or clipboard-transfer performance. No provider or application implementation changed.
+
+Checked hosted CI once at approximately 21:49 UTC on 2026-09-22 (2026-09-23 locally), using
+`gh run list --repo lebedenko/holonight-viewer --commit 06b0061a20ab4175f6f1546c8316132e31271bce
+--limit 10 --json headSha,status,conclusion,url,name`. The initial sandbox API connection
+failed; the network-permitted retry returned this snapshot. No polling or waiting followed.
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `06b0061a20ab4175f6f1546c8316132e31271bce` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35788748499) |
+| `06b0061a20ab4175f6f1546c8316132e31271bce` | Licensing | `completed` | `success` | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35788748482) |
+
+Publication review confirmed the staged ten-file Viewer scope and exact instrumentation
+hashes from the final measurements. Umbrella whitespace, local Markdown links and the exact
+published gitlink were checked. This separate umbrella handoff commit remains local.
