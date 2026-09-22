@@ -116,3 +116,60 @@ f0a5ed66c16cc53b6d059778989d17e822a68367 --limit 5 --json headSha,status,conclus
 | `f0a5ed66c16cc53b6d059778989d17e822a68367` | Licensing | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35758529031) |
 
 These are publication snapshots, not completed CI acceptance. No live waiting or polling was performed.
+
+## Verified follow-ups — published and pinned 2026-09-22
+
+Published the prepared commits to canonical `origin/main` in Images, Viewer, Files order.
+`git ls-remote origin refs/heads/main` confirmed each exact revision before staging its umbrella
+gitlink. All three product working trees were clean. The initiative remains **Integrated**;
+the original integration and orientation records above are preserved as historical evidence.
+The repository-local SDDs describe their earlier local-only handoffs; this entry records the
+subsequent authorized publication and pin updates.
+
+| Repository | Published revision | Local SDD and acceptance evidence |
+|---|---|---|
+| holonight-images | `3633865d2f39e4f163f0159a0f252f88245379f0` | [Scope](../../../holonight-images/docs/sdd/deterministic-contract-regressions/SPEC.md), [verification](../../../holonight-images/docs/sdd/deterministic-contract-regressions/VERIFICATION.md): deterministic device failures, cancellation, exact resource boundaries and malformed metadata regressions; clean Release, all 19 provider cases and installed-package consumer (2/2 CTest), formatting and REUSE passed. |
+| holonight-viewer | `737d7a99849701f985e927a09f18c475231a6d1d` | [Scope](../../../holonight-viewer/docs/sdd/dialog-lifecycle-evidence/SPEC.md), [verification](../../../holonight-viewer/docs/sdd/dialog-lifecycle-evidence/VERIFICATION.md): corrected private D-Bus/offscreen lifecycle invocation passed 1/1; full smoke passed 182 cases with seven existing opt-in skips, including 13 PortalFileChooser and six PortalViewer cases. |
+| holonight-files | `84d4023818978aa3d8dd72a1276d6fcee75cc3eb` | [Scope](../../../holonight-files/docs/sdd/container-verification/SPEC.md), [verification](../../../holonight-files/docs/sdd/container-verification/VERIFICATION.md): exact four-path system Git trust repaired the reproduced container ownership rejection; extracted workflow, unprivileged acceptance under both locales and isolated installed-payload runtime passed. |
+
+### Reused acceptance and corrected evidence
+
+Images changed only tests and documentation; Viewer changed only documentation; Files changed only
+the container workflow and documentation. No provider implementation, public contract or consumer
+application code changed. Completed acceptance is reused without repeating unchanged builds.
+The consumer artifacts tested against Images `efe3e780327fa793fb76c82b18fddde15298120b` remain
+applicable because the new Images commit leaves production sources unchanged.
+
+Viewer's earlier `openDialog` failure in the Files orientation handoff came from a direct smoke
+invocation without the required private-bus runner: a desktop portal could serve the request instead
+of opening the fallback dialog. The corrected isolated invocation and full smoke pass supersede that
+failure assessment. No application defect was reproduced, no Viewer code fix was needed, and no new
+native manual check is claimed.
+
+Files' exact workflow body passed `task deps`, unprivileged `LC_ALL=C.UTF-8 task check` and
+`LC_ALL=en_US.UTF-8 task test` in the existing CI image: clean builds, 16/16 CTest in each locale,
+555 smoke cases with two existing native/performance opt-in skips, formatting, all 94 clang-tidy
+translation units, QML, licensing and staged installation checks. A separate read-only trust probe
+confirmed that root and UID 1001 trust only the four intended source paths; the exit trap restored
+build ownership. The isolated runtime image also passed. Container namespace restrictions skipped
+16 cross-filesystem and three cross-filesystem window cases; accelerated separator checks remained
+disabled, while six software scales passed. These limitations and the historical hosted failures are
+retained; local container acceptance is not a claim that the new hosted run has completed.
+
+### Publication CI snapshot
+
+Checked once at approximately 19:59 UTC on 2026-09-22 using `gh run list --repo
+lebedenko/<repository> --commit <published-sha> --limit 10 --json headSha,status,conclusion,url,name`.
+
+| Repository | Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|---|
+| holonight-images | `3633865d2f39e4f163f0159a0f252f88245379f0` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-images/actions/runs/35777273578) |
+| holonight-viewer | `737d7a99849701f985e927a09f18c475231a6d1d` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35777291627) |
+| holonight-viewer | `737d7a99849701f985e927a09f18c475231a6d1d` | Licensing | `completed` | `success` | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35777291629) |
+| holonight-files | `84d4023818978aa3d8dd72a1276d6fcee75cc3eb` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35777305850) |
+| holonight-files | `84d4023818978aa3d8dd72a1276d6fcee75cc3eb` | Licensing | `queued` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35777305980) |
+
+No waiting or polling was performed. Publication review passed committed whitespace checks for
+all three follow-ups. Umbrella closure passed `git diff --check`, local Markdown link validation
+and exact staged gitlink verification against the confirmed remote revisions. The separate umbrella
+closure commit is kept local as requested.
