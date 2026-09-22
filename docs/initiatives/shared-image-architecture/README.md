@@ -47,3 +47,9 @@ local verification, publication CI snapshot, and final integration evidence. The
 Final integration passed on 2026-09-22 using the published pins and compatible existing acceptance builds.
 The user confirmed manual native ecosystem checks were completed with no issues observed. Files build CI
 retains the recorded container Git ownership failure; local acceptance passed. Provider and Viewer build CI passed.
+
+The subsequent Files-only [orientation correction](../../../holonight-files/docs/sdd/image-orientation/SPEC.md)
+was published and pinned on 2026-09-22. Files now applies intrinsic orientation to original images and
+reports oriented dimensions; cached thumbnails contain already-oriented pixels and are decoded with Ignore.
+This supersedes the migration-time Files Ignore policy above without changing the provider or Viewer.
+The ledger records its acceptance evidence and publication CI snapshot.

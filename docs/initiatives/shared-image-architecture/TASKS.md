@@ -83,3 +83,36 @@ Checked once during closure on 2026-09-22 using `gh run list --repo lebedenko/<r
 Files' existing CI failure is the container Git ownership failure documented above, before compilation. It is
 retained as a CI infrastructure follow-up, not reported as a passing check. Integration acceptance is supported by
 the successful local builds/tests, isolated runtime evidence and user-confirmed manual checks.
+
+## Files orientation follow-up — published and pinned 2026-09-22
+
+With user authorization, published Files commit `f0a5ed66c16cc53b6d059778989d17e822a68367`
+(`fix: apply intrinsic image orientation to Files previews`) to canonical `origin/main` and
+confirmed the exact remote revision with `git ls-remote` before updating the umbrella gitlink.
+The original IMG-003/IMG-004 rows above retain their historical integration evidence.
+Provider and Viewer revisions are unchanged.
+
+Files now applies intrinsic EXIF orientation (including mirrors) to originals, publishes oriented
+full-resolution dimensions, and lazily regenerates thumbnails lacking `Files::OrientationPolicy=applied-v1`.
+Cached PNGs retain Ignore because their pixels are already oriented. Detailed scope and acceptance are in
+the [Files orientation SDD](../../../holonight-files/docs/sdd/image-orientation/SPEC.md) and
+[verification record](../../../holonight-files/docs/sdd/image-orientation/VERIFICATION.md).
+That record's publication-pending statement describes the earlier local handoff; this entry records
+the subsequent authorized publication.
+
+Reused completed local acceptance for the unchanged implementation: all 22 test-preset CTest entries,
+all 16 clean Release acceptance entries, final orientation/thumbnail regressions 30/30 in both Debug
+and Release, quality/install checks, isolated runtime, and user-confirmed manual Files/Viewer comparison.
+The recorded unrelated Viewer dialog-lifecycle regression remains a limitation; no Viewer fix or passing
+claim is included in this handoff. Publication review checked the committed diff and whitespace;
+documentation and pin changes do not require repeating unchanged application builds.
+
+Checked CI once after publication with `gh run list --repo lebedenko/holonight-files --commit
+f0a5ed66c16cc53b6d059778989d17e822a68367 --limit 5 --json headSha,status,conclusion,url,name`:
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `f0a5ed66c16cc53b6d059778989d17e822a68367` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35758528862) |
+| `f0a5ed66c16cc53b6d059778989d17e822a68367` | Licensing | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35758529031) |
+
+These are publication snapshots, not completed CI acceptance. No live waiting or polling was performed.
