@@ -207,3 +207,46 @@ failed; the network-permitted retry returned this snapshot. No polling or waitin
 Publication review confirmed the staged ten-file Viewer scope and exact instrumentation
 hashes from the final measurements. Umbrella whitespace, local Markdown links and the exact
 published gitlink were checked. This separate umbrella handoff commit remains local.
+
+## Files preview performance follow-up — published and pinned 2026-09-23 (Europe/Kyiv)
+
+Published Files `06c42f03534cdf57b2fb09f73bbfa69f029d0f9c`
+(`fix: avoid repeated preview decoding from rounded bounds`) to canonical `origin/main`.
+`git ls-remote origin refs/heads/main` confirmed that exact revision before pinning;
+Files' working tree was clean. The [local SDD](../../../holonight-files/docs/sdd/preview-performance/SPEC.md)
+and [verification record](../../../holonight-files/docs/sdd/preview-performance/VERIFICATION.md)
+record the completed implementation and measurements. Their local-only handoff notes
+precede the user's subsequent authorization to commit and pin, recorded here.
+
+The Files-local correction passes original requested bounds to full decoding, avoiding
+a second aspect-ratio fit that lost one pixel and caused repeated inadequate decodes.
+The synthetic 2300-pixel upgrade changed from 37–39 attempts without adequate pixels
+to one attempt and approximately 268 ms median. All 15 candidate performance trials
+passed with identical baseline/candidate instrumentation, encoded fixtures, providers
+and build configuration. Cache timings overlapped across trials; pressure-cycle RSS
+settled without demonstrated sustained growth. No shared provider, public API, QML or
+cache-policy change was made, and other gitlinks are unchanged.
+
+Reused completed acceptance: clean Release build with testing enabled, 114 focused
+preview/thumbnail/EXIF cases, six runner failure-path tests, all 23 CTest entries in
+`task check`, formatting, full C++/QML lint, REUSE, staged installation and QML policy/
+metadata checks passed. The network-disabled installed-runtime container passed as an
+ordinary user. Initial sandbox socket/OpenGL failures passed on the unrestricted rerun
+without disabling checks. Native sharp-preview task T5 remains open; neither synthetic
+fixtures nor offscreen measurements qualify native sharpness or compositor behavior.
+Historical integration/native acceptance remains unchanged; the initiative remains
+**Integrated** and this entry records only the scoped Files follow-up.
+
+Checked hosted CI once at approximately 23:47 UTC on 2026-09-22 (2026-09-23 locally),
+using `gh run list --repo lebedenko/holonight-files --commit
+06c42f03534cdf57b2fb09f73bbfa69f029d0f9c --limit 10 --json headSha,status,conclusion,url,name`.
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `06c42f03534cdf57b2fb09f73bbfa69f029d0f9c` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35799105733) |
+| `06c42f03534cdf57b2fb09f73bbfa69f029d0f9c` | Licensing | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35799105817) |
+
+No CI waiting or polling followed. Publication review verified the fifteen-file Files
+scope against the measured production/instrumentation hashes. Umbrella whitespace,
+local Markdown links and the exact published gitlink were checked. This separate
+umbrella checkpoint remains local alongside the existing local checkpoints.
