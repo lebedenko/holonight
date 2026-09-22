@@ -1,6 +1,6 @@
 # Shared image architecture
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -28,21 +28,22 @@ C++23, Qt Core/Gui, caller-owned open seekable QIODevice; no pathname reopening.
 2. Viewer and Files local adoption against that exact provider artifact.
 3. Publication/pinning when authorized, followed by final umbrella integration.
 
-Local consumer validation is authorized by the implementation request. Publication and pins are separate pending actions; no unpublished local work is an integrated state.
+Provider and consumer publication, pinning, and final integration are complete. The umbrella gitlinks identify the accepted revisions.
 
 ## Integration acceptance criteria
 
 - [x] Every repository package has a published commit and local verification.
-- [ ] Participating submodules are clean and pinned to published commits.
-- [ ] Contracts are compatible at those revisions.
-- [ ] Root builds/tests pass in dependency order.
-- [ ] Manual Viewer navigation/animation/SVG and Files preview checks pass.
+- [x] Participating submodules are clean and pinned to published commits.
+- [x] Contracts are compatible at those revisions.
+- [x] Root builds/tests pass in dependency order.
+- [x] Manual Viewer navigation/animation/SVG and Files preview checks pass.
 
 ## Published delivery
 
 The provider and both consumer migrations are published and pinned. [TASKS.md](TASKS.md) records the revisions,
-local verification and the one-time CI snapshot. The new `holonight-images` submodule is registered at
+local verification, publication CI snapshot, and final integration evidence. The new `holonight-images` submodule is registered at
 `git@github.com:lebedenko/holonight-images.git` and precedes its consumers in the installer build order.
 
-Final pinned-revision integration and manual native ecosystem checks remain pending. Files build CI failed on
-container Git ownership checks; Viewer build CI was still running when inspected. The initiative remains Accepted.
+Final integration passed on 2026-09-22 using the published pins and compatible existing acceptance builds.
+The user confirmed manual native ecosystem checks were completed with no issues observed. Files build CI
+retains the recorded container Git ownership failure; local acceptance passed. Provider and Viewer build CI passed.

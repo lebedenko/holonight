@@ -20,4 +20,4 @@ tests, and commits.
 
 - [Files refactoring and onboarding](files-holonight-alignment/README.md) — Accepted; Files published and pinned; final integration review pending.
 
-- [Shared image architecture](shared-image-architecture/README.md) — Accepted; provider and consumer migrations published and pinned; final integration review pending.
+- [Shared image architecture](shared-image-architecture/README.md) — Integrated; published pins verified and manual checks passed on 2026-09-22.
