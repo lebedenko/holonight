@@ -14,9 +14,9 @@ New codecs/guaranteed AVIF, KDE, shared QML, workers, global caches, daemons, SV
 
 | Repository | Ownership | Local SDD |
 |---|---|---|
-| holonight-images | Device-only processing and installed package | ../../../holonight-images/docs/sdd/shared-image-architecture/ |
-| holonight-viewer | Raster adoption and metadata formatting | ../../../holonight-viewer/docs/sdd/shared-image-architecture/ |
-| holonight-files | Verified-device adoption and metadata formatting | ../../../holonight-files/docs/sdd/shared-image-architecture/ |
+| holonight-images | Device-only processing and installed package | [SDD](../../../holonight-images/docs/sdd/shared-image-architecture/SPEC.md) |
+| holonight-viewer | Raster adoption and metadata formatting | [SDD](../../../holonight-viewer/docs/sdd/shared-image-architecture/SPEC.md) |
+| holonight-files | Verified-device adoption and metadata formatting | [SDD](../../../holonight-files/docs/sdd/shared-image-architecture/SPEC.md) |
 
 ## Cross-repository contracts
 
@@ -37,3 +37,13 @@ Local consumer validation is authorized by the implementation request. Publicati
 - [ ] Contracts are compatible at those revisions.
 - [ ] Root builds/tests pass in dependency order.
 - [ ] Manual Viewer navigation/animation/SVG and Files preview checks pass.
+
+## Local delivery
+
+Provider and consumer implementation is complete and locally verified. Repository commits and evidence are in
+[TASKS.md](TASKS.md). `holonight-images` is a local independent Git checkout awaiting canonical remote creation/publication;
+it is intentionally not an umbrella gitlink yet. Consumer gitlinks remain at their previously published baselines.
+
+Remaining integration steps: publish the provider and consumers when authorized, add/pin the provider and update
+consumer pins when instructed, then perform the final pinned-revision and manual native ecosystem review.
+Hosted CI has not been run for these local commits; workflow dependency revisions are prepared for publication.
