@@ -326,3 +326,42 @@ Hosted CI snapshot at approximately 10:51 UTC on 2026-09-23, queried once with
 The initial sandboxed push failed on system SSH configuration permissions; the
 network-permitted retry succeeded. No CI waiting or polling followed. This separate
 umbrella checkpoint remains local.
+
+## Files thumbnail cancellation — published and pinned 2026-09-23
+
+Published Files `67d8dd9710cf13510374d23f68ce3301b8793cf6`
+(`fix: propagate preview cancellation through thumbnails`) to canonical `origin/main`.
+`git ls-remote origin refs/heads/main` confirmed the exact revision before pinning;
+the Files working tree is clean. The [local SDD](../../../holonight-files/docs/sdd/preview-cancellation/README.md)
+and [verification record](../../../holonight-files/docs/sdd/preview-cancellation/VERIFICATION.md)
+record implementation and automated acceptance. Their local/uncommitted handoff
+notes precede the user's subsequent authorization to commit and pin.
+
+Each request's cancellation token now reaches thumbnail inspection, decoding and
+cache publication. Cancellation silently stops subsequent work and abandons
+uncommitted writes, preserving existing entries. Active codecs/filesystem operations
+and a commit already started remain cooperative. Images stays at
+`3633865d2f39e4f163f0159a0f252f88245379f0`; no provider API or other gitlink changes.
+
+Reused completed acceptance: eight reproduced failures now pass, 16 new cancellation
+cases pass, clean Release build, complete `task check` (25 CTest entries, full lint,
+formatting, licensing, staged installation and QML checks), isolated installed runtime,
+and 15/15 performance trials on each of baseline and candidate passed. Timing ranges
+largely overlap and decode-attempt counts are unchanged; no speedup is claimed.
+Publication review matched production and instrumentation hashes to the measured
+candidate and checked staged scope, whitespace and local documentation links.
+No unchanged expensive acceptance checks were repeated for this handoff.
+
+Hosted CI was checked once on 2026-09-23 with
+`gh run list --repo lebedenko/holonight-files --commit
+67d8dd9710cf13510374d23f68ce3301b8793cf6 --limit 10 --json headSha,status,conclusion,url,name`:
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `67d8dd9710cf13510374d23f68ce3301b8793cf6` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35864744176) |
+| `67d8dd9710cf13510374d23f68ce3301b8793cf6` | Licensing | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35864744495) |
+
+No CI waiting or polling followed. Native sharp-preview T5, mixed-monitor
+qualification and other deferred gates remain open. Historical initiative integration
+status is unchanged. This separate umbrella checkpoint remains local alongside the
+two existing local checkpoints.
