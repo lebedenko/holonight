@@ -52,9 +52,10 @@ All rows passed, including 72 user comparisons and the Files/Viewer walkthrough;
 original 1.25× was restored. See [current acceptance](SINGLE-MONITOR.md) for commands,
 evidence, retained failures and the final publication checkpoint.
 
-Second-monitor hardware, clipboard-service acceptance, unrelated release gates and
-the unknown-dimension runtime fixture remain explicit deferrals; none is reported
-as passed. No public API, provider design, format or cache-policy changes are in scope.
+At the single-monitor checkpoint, second-monitor hardware, clipboard-service
+acceptance, unrelated release gates and the unknown-dimension runtime fixture
+were explicit deferrals; none was reported as passed at that checkpoint. No public
+API, provider design, format or cache-policy changes are in scope.
 
 ### Approved scale amendment — 2026-09-23
 
@@ -68,3 +69,19 @@ The original frozen hash record and original runner are preserved; the separate
 providers, fixtures, observer, timing calculations and capture helper are unchanged.
 Focused validator tests pass 17/17, including rejection when a 1.6× matrix is
 reported as the original 1.5× matrix. No application/provider rebuild is required.
+
+### Scoped acceptance follow-up — 2026-09-23
+
+The supplied implementation plan resumes only clipboard-service and synthetic
+unknown-dimension acceptance, tracked as I-004/I-005 in [the ledger](TASKS.md).
+The existing Integrated status and completed single-monitor checks remain intact.
+Personal desktop configuration stays outside product code. Changes were initially
+kept local; the subsequent **“commit, publish, pin”** request authorizes publication
+and umbrella pins. Service acceptance requires
+user-driven checks and explicit cost acceptance. Mixed-monitor and unrelated
+release gates remain deferred.
+
+I-004 automated rejection and I-005 clipboard-service acceptance are complete
+locally, including fresh-login startup, user-driven native checks and explicit
+cost acceptance. Their two deferrals are closed; see the linked ledger evidence.
+Physical mixed-monitor and unrelated release gates remain deferred.
