@@ -292,3 +292,37 @@ No CI waiting or status polling followed. The staged 23-file Files scope and
 umbrella whitespace, handoff links and published gitlink were reviewed. Historical
 integration status and unrelated pending work remain unchanged. This separate
 umbrella checkpoint remains local.
+
+## Viewer information-preview DPR — published and pinned 2026-09-23 (Europe/Kyiv)
+
+Published Viewer `2085b8f1f6d448a4da306d5ee022ef2ac58e5904`
+(`fix: use window DPR for information preview`) to canonical `origin/main`.
+`git ls-remote origin refs/heads/main` confirmed this exact revision before pinning;
+the Viewer working tree is clean. The [local SDD](../../../holonight-viewer/docs/sdd/information-preview-dpr/SPEC.md)
+and [verification record](../../../holonight-viewer/docs/sdd/information-preview-dpr/VERIFICATION.md)
+record the reproduced screen/window DPR mismatch and the one-line popup binding fix.
+The user reported manual checks done and authorized commit and pin on 2026-09-23,
+closing this popup's manual visual qualification. Files T5, physical mixed-monitor
+acceptance and unrelated deferred gates remain open; other gitlinks are unchanged.
+
+Reused completed acceptance: focused red/green DPR and painted-sampling regression,
+19/19 popup/canvas/geometry tests, all 22 CTest entries, clean Release build and
+isolated installed runtime passed. All required task-check components passed;
+the aggregate command stopped at test identifier-length diagnostics, then the
+corrected affected-file tidy check and remaining stages passed individually.
+Only acceptance documentation changed during this handoff; no unaffected build or
+runtime checks were repeated. Staged scope, whitespace and documentation links
+were reviewed. Historical initiative integration status remains unchanged.
+
+Hosted CI snapshot at approximately 10:51 UTC on 2026-09-23, queried once with
+`gh run list --repo lebedenko/holonight-viewer --commit
+2085b8f1f6d448a4da306d5ee022ef2ac58e5904 --limit 10 --json headSha,status,conclusion,url,name`:
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `2085b8f1f6d448a4da306d5ee022ef2ac58e5904` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35851155125) |
+| `2085b8f1f6d448a4da306d5ee022ef2ac58e5904` | Licensing | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-viewer/actions/runs/35851155018) |
+
+The initial sandboxed push failed on system SSH configuration permissions; the
+network-permitted retry succeeded. No CI waiting or polling followed. This separate
+umbrella checkpoint remains local.
