@@ -1,6 +1,6 @@
 # Preserve shared image outcomes
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -8,7 +8,7 @@ Preserve typed raster failures through Files and Viewer presentation and retain 
 
 ## Non-goals
 
-Provider/API changes, codecs, format coverage, limits, scheduling, cache budgets/formats, logging and performance claims. The subsequent user request authorizes consumer publication and umbrella pinning.
+Provider/API changes, codecs, format coverage, limits, scheduling, cache budgets/formats, logging and performance claims. Consumer publication and pinning are complete, including the qualification tooling and records authorized by the subsequent “publish and pin” request.
 
 ## Participating repositories
 
@@ -31,9 +31,40 @@ Unchanged Images Outcome contract at `3633865d2f39e4f163f0159a0f252f88245379f0`.
 ## Integration acceptance criteria
 
 - [x] Consumer packages locally verified and published.
-- [x] Clean submodules pinned to published commits.
+- [x] Initial clean candidate submodules pinned to published commits.
 - [x] Contracts reviewed at exact pinned revisions; the Images provider remains unchanged.
-- [ ] Umbrella integration builds/tests pass in dependency order.
-- [ ] Required native checks pass; sharp-preview T5 and mixed-monitor qualification remain open.
+- [x] Umbrella integration builds/tests pass in dependency order.
+- [x] Required single-monitor native checks pass: current-build Files sharp-preview T5 and a Files/Viewer outcomes walkthrough. Physical second-monitor qualification is explicitly deferred until hardware arrives and does not block this iteration.
 
-Automated implementation acceptance is complete. Consumers are committed and published; this umbrella checkpoint pins them. The initiative remains Accepted until umbrella integration and required native gates pass.
+- [x] Publish the runner extension/records and verify clean canonical pins for the final integration checkpoint.
+
+Automated and native acceptance passed. Published Files `05fa9f7` and Viewer
+`6f9c048` are clean and canonically available; this umbrella checkpoint closes
+I-003. Exact revisions and CI snapshots are recorded in [the ledger](TASKS.md).
+
+## Current qualification iteration — 2026-09-23
+
+The supplied single-monitor closure plan authorizes I-003 against the current published
+gitlinks. Use one frozen Release lab for actual compositor scales 1/1.25/1.6/2,
+20 cold/disk/memory pairs and 40 separate startup processes, plus separate visual
+captures and user comparisons. Preserve prior 1.25× evidence as historical only.
+All rows passed, including 72 user comparisons and the Files/Viewer walkthrough;
+original 1.25× was restored. See [current acceptance](SINGLE-MONITOR.md) for commands,
+evidence, retained failures and the final publication checkpoint.
+
+Second-monitor hardware, clipboard-service acceptance, unrelated release gates and
+the unknown-dimension runtime fixture remain explicit deferrals; none is reported
+as passed. No public API, provider design, format or cache-policy changes are in scope.
+
+### Approved scale amendment — 2026-09-23
+
+The user approved **“use 1.6”**. The required current matrix is now actual
+**1×, 1.25×, 1.6×, 2×**, retaining the same display mode, refresh rate, counts
+and thresholds. 1.5× is unavailable at this mode and is not passed. The runner
+accepts 1.6× and an explicit report matrix while preserving the historical default.
+Use `native-preview.py report --output <candidate>/native --scales 1 1.25 1.6 2`.
+The original frozen hash record and original runner are preserved; the separate
+`scale-amendment.json` records authorization and the amended runner hash. Binary,
+providers, fixtures, observer, timing calculations and capture helper are unchanged.
+Focused validator tests pass 17/17, including rejection when a 1.6× matrix is
+reported as the original 1.5× matrix. No application/provider rebuild is required.

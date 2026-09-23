@@ -53,3 +53,8 @@ was published and pinned on 2026-09-22. Files now applies intrinsic orientation 
 reports oriented dimensions; cached thumbnails contain already-oriented pixels and are decoded with Ignore.
 This supersedes the migration-time Files Ignore policy above without changing the provider or Viewer.
 The ledger records its acceptance evidence and publication CI snapshot.
+
+The subsequent [shared-outcomes qualification](../shared-image-outcomes/SINGLE-MONITOR.md)
+tracks the current published consumer pins and single-monitor closure separately
+from this initiative’s historical integration. Physical second-monitor hardware,
+clipboard-service and unrelated release deferrals remain explicit.
