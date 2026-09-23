@@ -250,3 +250,45 @@ No CI waiting or polling followed. Publication review verified the fifteen-file 
 scope against the measured production/instrumentation hashes. Umbrella whitespace,
 local Markdown links and the exact published gitlink were checked. This separate
 umbrella checkpoint remains local alongside the existing local checkpoints.
+
+## Files native preview follow-up — published and pinned 2026-09-23
+
+Published Files `8ba2a6bdec2c99ecb7c34ade107328204e2e180f`
+(`fix: use window DPR for native previews`) to canonical `origin/main`.
+`git ls-remote origin refs/heads/main` confirmed the exact revision before pinning;
+the Files working tree is clean. The [native acceptance SDD](../../../holonight-files/docs/sdd/native-preview-acceptance/README.md)
+and [verification record](../../../holonight-files/docs/sdd/native-preview-acceptance/VERIFICATION.md)
+retain the implementation, evidence and pending rows. Their local/uncommitted
+handoff notes precede the user's subsequent authorization to commit and pin.
+
+The passive, non-installed lab demonstrated a fractional screen/window DPR mismatch
+on native Wayland at 1.25×. Both Files preview consumers now use their owning window's
+DPR, protected by a deterministic regression. The lab, photographic pins, capture
+helper and evidence validator remain testing-only. No provider or other gitlink changes.
+
+Reused completed acceptance: clean final Release lab build, focused preview regressions,
+all 25 CTest targets, 16 tooling tests, full C++/QML lint, formatting, REUSE, staged
+installation, QML policy/metadata and isolated installed-runtime acceptance passed.
+The aggregate `task check` invocation stopped at observer lint findings; corrected
+lint and the remaining stages passed separately, as recorded in the Files SDD.
+At actual 1.25×, five photographic cold/disk/memory pairs and ten startup processes
+passed without threshold misses. The user reported no visible issues during the
+eight-fixture walkthrough, then requested that remaining native rows stay pending.
+Other scales, remaining captures and matched-reference inspection remain open;
+sharp-preview T5 is not closed. Original compositor scale remains 1.25×.
+
+Hosted CI snapshot at approximately 09:58 UTC on 2026-09-23, queried with the full
+published revision using `gh run list --repo lebedenko/holonight-files --commit
+8ba2a6bdec2c99ecb7c34ade107328204e2e180f --limit 10 --json headSha,status,conclusion,url,name`:
+
+| Revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `8ba2a6bdec2c99ecb7c34ade107328204e2e180f` | Build and checks | `in_progress` | pending (empty API conclusion) | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35845987770) |
+| `8ba2a6bdec2c99ecb7c34ade107328204e2e180f` | Licensing | `completed` | `success` | [GitHub Actions](https://github.com/lebedenko/holonight-files/actions/runs/35845987771) |
+
+An initial abbreviated-SHA query returned no runs; the full-SHA sandbox query had
+a connection failure and its network-permitted retry produced this snapshot.
+No CI waiting or status polling followed. The staged 23-file Files scope and
+umbrella whitespace, handoff links and published gitlink were reviewed. Historical
+integration status and unrelated pending work remain unchanged. This separate
+umbrella checkpoint remains local.
