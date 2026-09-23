@@ -2,6 +2,8 @@
 
 Status: Integrated
 
+See the authoritative [current architecture status](../shared-image-architecture/README.md#current-status--2026-09-23).
+
 ## Goal
 
 Preserve typed raster failures through Files and Viewer presentation and retain quiet metadata status internally. Cancellation remains silent.

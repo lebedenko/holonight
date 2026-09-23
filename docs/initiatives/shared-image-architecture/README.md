@@ -2,6 +2,24 @@
 
 Status: Integrated
 
+## Current status — 2026-09-23
+
+Architecture delivery and consumer outcome preservation are complete and Integrated.
+The [architecture ledger](TASKS.md) retains migration, orientation correction,
+provider hardening and performance-fix evidence. The [outcomes ledger](../shared-image-outcomes/TASKS.md)
+records typed outcomes, completed single-monitor qualification and subsequent
+unknown-dimension/clipboard-service acceptance closure. The
+[single-monitor record](../shared-image-outcomes/SINGLE-MONITOR.md) retains the
+1/1.25/1.6/2 matrix, failures and user acceptance; it is not repeated here.
+
+Earlier pending native/clipboard/unknown-dimension statements are historical and
+superseded by those closure records. Original measurements, failures and publication
+CI snapshots remain evidence at their stated revisions; pending CI is not a success
+claim. Physical mixed-monitor qualification and unrelated release gates remain
+intentional deferrals. Optional [maintenance](../shared-image-maintenance/README.md)
+adds local fuzzing and repeatable comparisons without reopening completed delivery.
+The umbrella gitlinks remain authoritative for current revisions.
+
 ## Goal
 
 Share image inspection, bounded raster decoding and EXIF mechanics through an independently buildable holonight-images provider. Qt codecs remain the extension point.
