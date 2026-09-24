@@ -12,7 +12,7 @@ COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readli
 PACKAGES = """base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
     tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
     syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
-    papirus-icon-theme breeze-icons hicolor-icon-theme""".split()
+    hicolor-icon-theme""".split()
 
 
 class DependencyChecks(unittest.TestCase):
@@ -36,7 +36,7 @@ printf 'pacman %s\\n' "$*" >> "$LOG"
 [[ "$1" = -T ]] || exit 98
 shift
 for package in "$@"; do
-  if [[ "$package" = "${MISSING_PACKAGE:-}" ||
+  if [[ " ${MISSING_PACKAGE:-} " = *" $package "* ||
         ( "$package" = qt6-wayland && "${PACKAGING:-merged}" = merged ) ]]; then
     printf '%s\\n' "$package"
   fi
@@ -121,16 +121,23 @@ printf 'Configure succeeded\\n'
         self.assertIn("tomlplusplus 3.4 config unavailable", result.stderr)
         self.assertIn("tomlplusplus >= 3.4 (Files)", result.stderr)
 
-    def test_icons_require_python_and_fallback_themes(self):
+    def test_icons_require_supported_python(self):
         result = self.check(CMAKE_FAILURE="Python 3.9 incompatible with requested 3.10")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Python >= 3.10 (icons)", result.stderr)
-        for package in ("papirus-icon-theme", "breeze-icons", "hicolor-icon-theme"):
-            with self.subTest(package=package):
+
+    def test_optional_icon_themes_do_not_block_installation(self):
+        for missing in ("papirus-icon-theme", "breeze-icons", "papirus-icon-theme breeze-icons"):
+            with self.subTest(missing=missing):
                 self.log.write_text("")
-                result = self.check(MISSING_PACKAGE=package)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn("sudo pacman -S --needed " + package, result.stderr)
+                result = self.check(MISSING_PACKAGE=missing)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("Configure succeeded", result.stdout)
+
+    def test_icons_require_hicolor_fallback(self):
+        result = self.check(MISSING_PACKAGE="hicolor-icon-theme")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sudo pacman -S --needed hicolor-icon-theme", result.stderr)
 
     def test_unrelated_missing_command(self):
         (self.bin / "git").unlink()

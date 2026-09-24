@@ -54,8 +54,10 @@ component is staged before the installer checks for collisions. Privilege is req
 is copied to `/usr` and caches are refreshed. The operation does not configure greetd, enable services, or create
 user configuration.
 
-Icons require Python 3.10+ and the Arch packages `papirus-icon-theme`, `breeze-icons`, and
-`hicolor-icon-theme` for declared fallback themes. Installation generates and validates both variants,
+Icons require Python 3.10+ and the Arch package `hicolor-icon-theme` for the base fallback.
+Papirus and Breeze are optional fallback themes; they can be installed globally or in user icon paths
+such as `~/.local/share/icons/`. If neither is available, icon lookup still falls back to hicolor.
+Installation generates and validates both variants,
 preserves their relative aliases, and installs them into `/usr/share/icons/HoloNight` and
 `/usr/share/icons/HoloNight-Dark`. The single immutable template/recoloring bundle goes into
 `/usr/share/holonight-icons`. Available GTK cache tooling refreshes both themes in staging and
