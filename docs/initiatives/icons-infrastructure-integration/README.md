@@ -1,6 +1,6 @@
 # Icons infrastructure integration
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -40,11 +40,11 @@ icons-owned artifacts; modified and unowned files are preserved and reported.
 
 ## Integration acceptance criteria
 
-- [ ] Icons package and documentation pass local verification and are published.
-- [ ] Icons and renderer checkouts are clean at the accepted published pins.
-- [ ] Disposable-root staging, ownership, collision, upgrade and uninstall tests pass.
-- [ ] Theme validation, rendering, preview inspection, licensing and installer checks pass.
-- [ ] Final ledger records commands, results, date and latest available CI status.
+- [x] Icons package and documentation pass local verification and are published.
+- [x] Icons and renderer checkouts are clean at the accepted published pins.
+- [x] Disposable-root staging, ownership, collision, upgrade and uninstall tests pass.
+- [x] Theme validation, rendering, preview inspection, licensing and installer checks pass.
+- [x] Final ledger records commands, results, date and latest available CI status.
 
 No pointer/focus automation or live installation is required: artwork and consumer behavior are unchanged.
 Icons publication is authorized; umbrella checkpoints remain local. Unrelated checkout changes are excluded.

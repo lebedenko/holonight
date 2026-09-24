@@ -24,3 +24,5 @@ tests, and commits.
 
 - [Shared image current status](shared-image-architecture/README.md#current-status--2026-09-23) — completed delivery, closure records and intentional deferrals.
 - [Shared image maintenance](shared-image-maintenance/README.md) — Accepted; local fuzzing and paired comparison tooling.
+
+- [Icons infrastructure integration](icons-infrastructure-integration/README.md) — Integrated; generated themes, system packaging, safe upgrades and umbrella verification.

@@ -3,8 +3,8 @@
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | III-001 | holonight-icons | Validated system staging and documentation | — | [SDD](../../../holonight-icons/docs/sdd/umbrella-packaging/README.md) | Done | 5eb892baa242e216121f28ff2b68b23ee03e833e | Clean task verify: 39 tests, rendering, previews, four REUSE checks; published origin/main confirmed with ls-remote |
-| III-002 | umbrella | Installation lifecycle, tasks and CI adoption | III-001 | — | Done | Implementation checkpoint (recorded at closure) | 24 installer tests; root icons verification; staged rendering; shell syntax, YAML and REUSE passed |
-| III-003 | umbrella | Verify integrated published revisions | III-001, III-002 | — | Ready | — | Final published-pin contract review |
+| III-002 | umbrella | Installation lifecycle, tasks and CI adoption | III-001 | — | Done | 2457ab9 | 24 installer tests; root icons verification; staged rendering; shell syntax, YAML and REUSE passed |
+| III-003 | umbrella | Verify integrated published revisions | III-001, III-002 | — | Done | Local closure commit | 2026-09-24: git ls-tree/status and canonical remote/API confirmation; contract review; provider task verify (39 tests), task test:installer (24 tests), staged renderer, YAML/shell/REUSE checks passed; details below |
 
 Baseline review (2026-09-24): 33 icons tests, 16 installer tests, source/theme validation, source REUSE,
 and offscreen rendering passed. Review found obsolete source-copy staging, missing dark-theme/cache/bundle
@@ -36,3 +36,24 @@ Icons CI checked once: [Theme verification](https://github.com/lebedenko/holonig
   final hashes. Earlier untracked caches remain unowned and are reported for optional manual removal.
 - Umbrella CI cannot run until these intentionally local commits are published. Its equivalent installer
   commands passed locally; the published icons CI result above is separate evidence.
+
+## Final integration review — 2026-09-24
+
+The icons checkout is clean and the umbrella gitlink equals published
+`5eb892baa242e216121f28ff2b68b23ee03e833e`; publication was confirmed with
+`git ls-remote origin refs/heads/main`. The unchanged Qt checkout is clean at its umbrella pin,
+`863af4183bdf09ce05199b37e8f5dfb46a311ba1`, also confirmed available through the canonical
+repository commit API. `git ls-tree HEAD holonight-icons holonight-qt` and repository status checks
+confirmed these exact revisions. No extra compatibility manifest was introduced.
+
+Reviewed the packaging CLI, installed locations, both theme names/inheritance, shared bundle,
+relative aliases, renderer compatibility, cache ownership, and upgrade/removal contracts at these
+revisions. Provider clean acceptance preceded umbrella acceptance; the commands/results above apply
+to implementation checkpoint `2457ab9`. Final closure only updates coordination documentation,
+so unchanged build/tests were reused. Markdown local-link checks, REUSE and diff whitespace checks
+cover closure. Generated previews were inspected as recorded in the provider SDD; no live UI
+interaction or full application rebuild was required for this infrastructure-only change.
+
+The host's missing Papirus package and unrelated package-manager checkout do not form part of the
+verified disposable installation state. They remain untouched. Umbrella checkpoints are local,
+including the provider pin checkpoint `cdf318a`; no umbrella publication or live installation occurred.

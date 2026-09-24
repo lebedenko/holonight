@@ -36,8 +36,7 @@ root, create an initiative under [`docs/initiatives/`](docs/initiatives/), and f
 initiative README is the stable contract; its `TASKS.md` is the restartable cross-repository ledger. Detailed
 requirements and implementation tasks belong in local repository SDDs.
 
-The original [`umbrella-project-idea.md`](umbrella-project-idea.md) is retained as design background. The workflow in
-`AGENTS.md` and the initiative templates are the operative contract.
+The workflow in [`AGENTS.md`](AGENTS.md) and the initiative templates is the operative contract.
 
 ## Installing from source
 
