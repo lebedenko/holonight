@@ -15,14 +15,14 @@ find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)
 find_package(Qt6WaylandScannerTools 6.11 REQUIRED)
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)
 find_package(tomlplusplus 3.4 CONFIG REQUIRED)
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
+find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ViewerWebP REQUIRED libwebp)
 pkg_check_modules(ViewerExif REQUIRED libexif)
 pkg_check_modules(ViewerWayland REQUIRED wayland-client wayland-protocols wayland-scanner)
 EOF
-  if ! cmake -S "$probe_dir" -B "$probe_dir/build" -G Ninja; then
-    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, Viewer GUI/private/QML modules, Python3, tomlplusplus >= 3.4 (Files), WebP, EXIF and Wayland development files is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
+  if ! cmake -S "$probe_dir" -B "$probe_dir/build" -G Ninja "-DPython3_EXECUTABLE=$(command -v python3)"; then
+    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, Viewer GUI/private/QML modules, Python >= 3.10 (icons), tomlplusplus >= 3.4 (Files), WebP, EXIF and Wayland development files is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
     return 1
   fi
 )
@@ -36,7 +36,8 @@ check_install_dependencies() {
   local missing_packages=() package_name
   local packages=(base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
     tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
-    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python)
+    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
+    papirus-icon-theme breeze-icons hicolor-icon-theme)
   if command -v pacman >/dev/null 2>&1; then
     while IFS= read -r package_name; do
       [[ -n "$package_name" ]] && missing_packages+=("$package_name")

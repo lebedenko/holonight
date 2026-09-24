@@ -5,5 +5,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: bash -n scripts/install.sh scripts/install-dependencies.sh
+      - run: 'git -c url.https://github.com/.insteadOf=git@github.com: submodule update --init holonight-icons'
+      - run: sudo apt-get update && sudo apt-get install -y libgtk-3-bin
+      - run: bash -n scripts/install.sh scripts/install-dependencies.sh scripts/uninstall.sh
       - run: python3 -m unittest discover -s tests -p 'test_install*.py' -v

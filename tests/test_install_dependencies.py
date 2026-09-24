@@ -11,7 +11,8 @@ HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
 COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner".split()
 PACKAGES = """base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
     tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
-    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python""".split()
+    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
+    papirus-icon-theme breeze-icons hicolor-icon-theme""".split()
 
 
 class DependencyChecks(unittest.TestCase):
@@ -43,7 +44,8 @@ done
 ''')
         self.command("cmake", '''
 printf 'cmake %s\\n' "$*" >> "$LOG"
-[[ "$1" = -S && "$3" = -B && "$5" = -G && "$6" = Ninja && "$#" = 6 ]] || exit 98
+[[ "$1" = -S && "$3" = -B && "$5" = -G && "$6" = Ninja && "$#" = 7 ]] || exit 98
+[[ "$7" = "-DPython3_EXECUTABLE=$PATH/python3" ]] || exit 98
 [[ "$2" = "$TMPDIR"/holonight-qt-check.* && "$4" = "$2/build" ]] || exit 98
 source_text="$(cat "$2/CMakeLists.txt")"
 [[ "$source_text" = *'find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)'* ]] || exit 97
@@ -52,6 +54,7 @@ source_text="$(cat "$2/CMakeLists.txt")"
 [[ "$source_text" = *'pkg_check_modules(ViewerWebP REQUIRED libwebp)'* ]] || exit 97
 [[ "$source_text" = *'pkg_check_modules(ViewerExif REQUIRED libexif)'* ]] || exit 97
 [[ "$source_text" = *'find_package(tomlplusplus 3.4 CONFIG REQUIRED)'* ]] || exit 97
+[[ "$source_text" = *'find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)'* ]] || exit 97
 if [[ -n "${CMAKE_FAILURE:-}" ]]; then
   printf 'CMake Error: %s\\n' "$CMAKE_FAILURE" >&2
   exit 1
@@ -117,6 +120,17 @@ printf 'Configure succeeded\\n'
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("tomlplusplus 3.4 config unavailable", result.stderr)
         self.assertIn("tomlplusplus >= 3.4 (Files)", result.stderr)
+
+    def test_icons_require_python_and_fallback_themes(self):
+        result = self.check(CMAKE_FAILURE="Python 3.9 incompatible with requested 3.10")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Python >= 3.10 (icons)", result.stderr)
+        for package in ("papirus-icon-theme", "breeze-icons", "hicolor-icon-theme"):
+            with self.subTest(package=package):
+                self.log.write_text("")
+                result = self.check(MISSING_PACKAGE=package)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("sudo pacman -S --needed " + package, result.stderr)
 
     def test_unrelated_missing_command(self):
         (self.bin / "git").unlink()

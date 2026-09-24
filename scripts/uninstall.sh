@@ -45,6 +45,18 @@ preserved=0
 for ((index=${#entries[@]}-1; index>=0; index--)); do
   IFS=$'\t' read -r module revision type mode expected relative <<< "${entries[index]}"
   path="$TARGET_ROOT$relative"
+  parent="${path%/*}"
+  unsafe_parent=0
+  while [[ "$parent" != / && "$parent" != . ]]; do
+    if [[ -L "$parent" ]]; then unsafe_parent=1; break; fi
+    parent="${parent%/*}"
+    parent="${parent:-/}"
+  done
+  if ((unsafe_parent)); then
+    printf 'preserved path under symlinked parent: %s\n' "$path" >&2
+    preserved=$((preserved + 1))
+    continue
+  fi
   case "$type" in
     f|l)
       [[ -e "$path" || -L "$path" ]] || continue
@@ -56,7 +68,7 @@ for ((index=${#entries[@]}-1; index>=0; index--)); do
         preserved=$((preserved + 1))
       fi ;;
     d)
-      if [[ -d "$path" ]]; then as_root rmdir -- "$path" 2>/dev/null || true; fi ;;
+      if [[ -d "$path" && ! -L "$path" ]]; then as_root rmdir -- "$path" 2>/dev/null || true; fi ;;
   esac
 done
 

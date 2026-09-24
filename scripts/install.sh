@@ -93,8 +93,15 @@ configure_and_stage() {
 
 stage_icons() {
   note "Staging holonight-icons"
-  mkdir -p "$BUILD_ROOT/stage/usr/share/icons/HoloNight"
-  cp -a "$REPO_ROOT/holonight-icons/HoloNight/." "$BUILD_ROOT/stage/usr/share/icons/HoloNight/"
+  python3 "$REPO_ROOT/holonight-icons/scripts/stage.py" --destdir "$BUILD_ROOT/stage"
+  # Generate caches before recording ownership, including for alternate roots.
+  # Deployment refreshes owned caches again and records their final hashes.
+  if command -v gtk-update-icon-cache >/dev/null; then
+    local theme
+    for theme in HoloNight HoloNight-Dark; do
+      gtk-update-icon-cache -q -t -f "$BUILD_ROOT/stage/usr/share/icons/$theme"
+    done
+  fi
 }
 
 hash_path() {
@@ -136,22 +143,69 @@ record_module_paths() {
 collision_check() {
   local manifest="$BUILD_ROOT/manifest.tsv" old_manifest="$TARGET_ROOT/$STATE_REL/manifest.tsv"
   local module revision type mode hash relative destination
-  local collisions=0
+  local collisions=0 parent
+  local preserved_caches="$BUILD_ROOT/preserved-icon-caches"
+  : > "$preserved_caches"
   while IFS=$'\t' read -r module revision type mode hash relative; do
-    [[ "$type" != d ]] || continue
     destination="$TARGET_ROOT$relative"
+    parent="${destination%/*}"
+    while [[ "$parent" != / && "$parent" != . ]]; do
+      [[ ! -L "$parent" ]] || die "symlinked installation parent: $parent"
+      parent="${parent%/*}"
+      parent="${parent:-/}"
+    done
+    if [[ "$type" = d ]]; then
+      [[ ! -L "$destination" && ( ! -e "$destination" || -d "$destination" ) ]] ||
+        die "installation directory is occupied by a file or symlink: $destination"
+      continue
+    fi
+    if [[ ( "$type" = f && -L "$destination" ) || ( -d "$destination" && ! -L "$destination" ) ]]; then
+      die "incompatible installation path type: $destination"
+    fi
     [[ ! -e "$destination" && ! -L "$destination" ]] && continue
     if [[ -f "$old_manifest" ]] && awk -F '\t' -v path="$relative" '$6 == path { found=1 } END { exit !found }' "$old_manifest"; then
       continue
     fi
+    # Older umbrella releases generated untracked caches. Preserve those files
+    # rather than adopting them as owned. Theme changes invalidate their timestamps.
+    case "$relative" in
+      /usr/share/icons/HoloNight/icon-theme.cache|/usr/share/icons/HoloNight-Dark/icon-theme.cache)
+        if [[ -f "$old_manifest" ]] && awk -F '\t' -v path="${relative%/*}/index.theme" \
+          '$1 == "holonight-icons" && $6 == path { found=1 } END { exit !found }' "$old_manifest"; then
+          note "Preserving unowned legacy cache: $destination (remove it manually to enable managed cache refresh)"
+          printf '%s\n' "$relative" >> "$preserved_caches"
+          continue
+        fi ;;
+    esac
     printf 'collision: %s already exists and is not owned by an earlier umbrella installation\n' "$destination" >&2
     collisions=1
   done < "$manifest"
   ((collisions == 0)) || die "installation aborted before modifying $TARGET_ROOT"
+  if [[ -s "$preserved_caches" ]]; then
+    awk -F '\t' 'NR == FNR { preserved[$0]=1; next } !($6 in preserved)' \
+      "$preserved_caches" "$manifest" > "$BUILD_ROOT/filtered-manifest.tsv"
+    mv "$BUILD_ROOT/filtered-manifest.tsv" "$manifest"
+  fi
 }
 
 as_root() {
   if [[ "$TARGET_ROOT" != "/" || EUID -eq 0 ]]; then "$@"; else sudo "$@"; fi
+}
+
+refresh_owned_icon_caches() {
+  command -v gtk-update-icon-cache >/dev/null || return 0
+  local theme relative hash manifest="$BUILD_ROOT/manifest.tsv"
+  for theme in HoloNight HoloNight-Dark; do
+    relative="/usr/share/icons/$theme/icon-theme.cache"
+    if awk -F '\t' -v path="$relative" '$1 == "holonight-icons" && $6 == path { found=1 } END { exit !found }' "$manifest"; then
+      as_root gtk-update-icon-cache -q -t -f "$TARGET_ROOT/usr/share/icons/$theme" ||
+        note "Cache refresh failed for $theme; recording the deployed cache for uninstall"
+      hash="$(hash_path "$TARGET_ROOT$relative")"
+      awk -F '\t' -v OFS='\t' -v path="$relative" -v hash="$hash" \
+        '$6 == path { $5=hash } { print }' "$manifest" > "$BUILD_ROOT/cache-manifest.tsv"
+      mv "$BUILD_ROOT/cache-manifest.tsv" "$manifest"
+    fi
+  done
 }
 
 copy_stage() {
@@ -168,6 +222,18 @@ copy_stage() {
         if [[ "$TARGET_ROOT" = "/" && EUID -ne 0 ]]; then sudo ln -sfn -- "$target" "$destination"; else ln -sfn -- "$target" "$destination"; fi ;;
     esac
   done < "$manifest"
+  # Retain original hashes for modified obsolete icons so a later uninstall
+  # preserves them too. The helper only removes proven unchanged icons payloads.
+  local old_manifest="$TARGET_ROOT/$STATE_REL/manifest.tsv"
+  if [[ -f "$old_manifest" ]]; then
+    as_root python3 "$SCRIPT_DIR/prune-icons.py" --root "$TARGET_ROOT" \
+      --old-manifest "$old_manifest" --new-manifest "$manifest" > "$BUILD_ROOT/retained-icons.tsv"
+    cat "$manifest" "$BUILD_ROOT/retained-icons.tsv" | sort -t $'\t' -k6,6 > "$BUILD_ROOT/next-manifest.tsv"
+    mv "$BUILD_ROOT/next-manifest.tsv" "$manifest"
+  fi
+  # Refresh after all copies/removals so cache timestamps reflect deployed trees.
+  # Rehash only our caches; never touch unowned caches or paths outside TARGET_ROOT.
+  refresh_owned_icon_caches
   as_root install -d -m 0755 "$TARGET_ROOT/$STATE_REL"
   as_root install -m 0644 "$manifest" "$TARGET_ROOT/$STATE_REL/manifest.tsv"
   git -C "$REPO_ROOT" submodule status > "$BUILD_ROOT/revisions"
@@ -178,7 +244,6 @@ refresh_system() {
   if [[ "$TARGET_ROOT" = "/" ]]; then
     as_root ldconfig
     as_root systemctl daemon-reload
-    command -v gtk-update-icon-cache >/dev/null && as_root gtk-update-icon-cache -q -t -f /usr/share/icons/HoloNight || true
     command -v update-desktop-database >/dev/null && as_root update-desktop-database /usr/share/applications || true
     command -v kbuildsycoca6 >/dev/null && as_root env XDG_MENU_PREFIX=arch- kbuildsycoca6 --noincremental || true
     as_root systemd-tmpfiles --create holonight-greeter.conf

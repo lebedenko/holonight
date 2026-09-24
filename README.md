@@ -55,6 +55,30 @@ component is staged before the installer checks for collisions. Privilege is req
 is copied to `/usr` and caches are refreshed. The operation does not configure greetd, enable services, or create
 user configuration.
 
+Icons require Python 3.10+ and the Arch packages `papirus-icon-theme`, `breeze-icons`, and
+`hicolor-icon-theme` for declared fallback themes. Installation generates and validates both variants,
+preserves their relative aliases, and installs them into `/usr/share/icons/HoloNight` and
+`/usr/share/icons/HoloNight-Dark`. The single immutable template/recoloring bundle goes into
+`/usr/share/holonight-icons`. Available GTK cache tooling refreshes both themes in staging and
+refreshes owned caches after deployment, recording their final hashes. Alternate-root installation
+refreshes only that root's themes, never host caches.
+
+**Naming migration:** `HoloNight` now means light. Select `HoloNight-Dark` explicitly for dark icons.
+The installer does not rewrite existing settings or change application defaults. A user-local theme
+can shadow the system theme; the icons repository's `task install:local` manages user-local copies
+separately. The installed recoloring command targets an existing user-local theme only, even when
+run from the system bundle. See the [icons documentation](holonight-icons/README.md).
+
+Upgrades remove obsolete icons-owned files and aliases only when they match the previous manifest.
+Modified files and nonempty directories containing unowned content are preserved and reported;
+retained managed paths keep their original ownership hashes for later uninstall. Files from an
+unmanaged legacy installation still trigger collision rejection. No blanket theme-directory removal
+is performed.
+
+Older umbrella installations generated an untracked `icon-theme.cache`. Upgrades preserve and report
+that unowned cache instead of overwriting it; theme changes invalidate its timestamp. Remove the
+reported legacy cache manually before a subsequent install to enable managed cache refresh.
+
 For unattended image/VM installation or integration testing, use `--yes` and an absolute alternate root:
 
 ```sh
@@ -66,3 +90,20 @@ Installed paths, content hashes, and pinned source revisions are recorded in
 `/var/lib/holonight/source-install/`. Uninstall removes only files that still match that record, preserves modified
 files and non-empty directories, and never removes user data, administrator configuration, logs, databases,
 credentials, or service state.
+
+## Icon development and verification
+
+Run from the umbrella root:
+
+```sh
+task icons:build       # both generated themes and the shared template bundle
+task icons:validate    # source, aliases, migration inventory and generated themes
+task icons:test        # Python validation, packaging and installation regressions
+task icons:verify      # full verification, staged rendering, previews and licensing
+task icons:preview    # family contact sheets in holonight-icons/build/previews
+task test:installer   # disposable-root packaging, upgrades, ownership and removal
+```
+
+Rendering tasks explicitly use the sibling umbrella-pinned `holonight-qt` renderer, overriding an
+external `HOLONIGHT_QT_SOURCE`. They need CMake, C++17 and Qt Core/Gui/Svg development packages;
+full verification also requires REUSE. Builds and tests require no live installation or UI automation.

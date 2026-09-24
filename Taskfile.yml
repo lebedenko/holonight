@@ -5,6 +5,34 @@ vars:
     sh: git submodule foreach --quiet 'printf "%s " "$name"'
 
 tasks:
+  icons:build:
+    desc: Build both icon variants and the template bundle
+    dir: holonight-icons
+    cmds: [task build]
+
+  icons:validate:
+    desc: Build and validate canonical icons and both generated themes
+    dir: holonight-icons
+    cmds: [task validate]
+
+  icons:test:
+    desc: Run icons regression and packaging tests
+    dir: holonight-icons
+    cmds: [task test]
+
+  icons:verify:
+    desc: Verify icons against the umbrella Qt renderer, with previews and licensing
+    dir: holonight-icons
+    cmds:
+      - env HOLONIGHT_QT_SOURCE='{{.ROOT_DIR}}/holonight-qt' task verify
+      - python3 '{{.ROOT_DIR}}/tests/check_staged_icons.py'
+
+  icons:preview:
+    desc: Generate icon family previews using the umbrella Qt renderer
+    dir: holonight-icons
+    cmds:
+      - env HOLONIGHT_QT_SOURCE='{{.ROOT_DIR}}/holonight-qt' task preview:icons
+
   license-check:
     desc: Validate REUSE metadata in the umbrella and initialized submodules
     cmds:
@@ -20,7 +48,7 @@ tasks:
       - reuse lint
 
   test:installer:
-    desc: Check dependency diagnostics and ownership in disposable roots
+    desc: Check dependencies and icon/application installation in disposable roots
     cmds:
       - python3 -m unittest discover -s tests -p 'test_install*.py' -v
 
