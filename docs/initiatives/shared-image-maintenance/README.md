@@ -42,6 +42,10 @@ retain original provenance. Do not equate whole CMake cache hashes with build se
 - [ ] Every repository work package has a published commit and passed local verification.
 - [ ] Participating submodules are clean and pinned to published commits.
 - [ ] Contracts reviewed at those revisions and root checks pass in dependency order.
-- [ ] Local evidence includes bounded fuzz campaigns and 50 fresh measurement processes.
+- [x] Local evidence includes bounded fuzz campaigns and 50 fresh measurement processes.
 
 No new manual ecosystem gate is introduced by these tooling-only changes.
+
+Local tooling handoffs are recorded in [the ledger](TASKS.md). Decode fuzzing
+retains an open Qt PDF/PDFium leak; tooling completion does not claim a clean
+decode campaign. Publication and integration remain pending.
