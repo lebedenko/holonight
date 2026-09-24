@@ -3,8 +3,8 @@
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | SVG-001 | holonight-images | Bounded SVG mechanics and package contract | — | [Tasks](../../../holonight-images/docs/sdd/shared-svg-support/TASKS.md) | Done | `3da5f4e51fe2eed9a1bd9f72c0ab523aa57a5ceb` | 2026-09-24: 36 raster/SVG tests, installed package and no-SVG-plugin test passed; clean Release build and affected correction checks passed. [Evidence](../../../holonight-images/docs/sdd/shared-svg-support/VERIFICATION.md). Published to canonical origin/main and pinned with user authorization |
-| SVG-002 | holonight-viewer | Adopt provider, retain local-image fallback | SVG-001 published and pinned | [Tasks](../../../holonight-viewer/docs/sdd/shared-svg-support/TASKS.md) | In Progress | `3b25553053602138b8a5064f31f406ed17559dbe` (local) | 2026-09-24: focused regressions, CTest 24/24, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-viewer/docs/sdd/shared-svg-support/VERIFICATION.md). Native visual report pending |
-| SVG-003 | holonight-files | Sharp static SVG previews and policy-aware caching | SVG-001 published and pinned | [Tasks](../../../holonight-files/docs/sdd/shared-svg-support/TASKS.md) | In Progress | `1ec432bc75531bfa0595bba493952c3346229376` (local) | 2026-09-24: focused regressions, CTest 27/27, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-files/docs/sdd/shared-svg-support/VERIFICATION.md). Native visual report pending |
+| SVG-002 | holonight-viewer | Adopt provider, retain local-image fallback | SVG-001 published and pinned | [Tasks](../../../holonight-viewer/docs/sdd/shared-svg-support/TASKS.md) | Done | `deade0f2ee01cae35987609f76a277486d1060fc` (local) | 2026-09-24: focused regressions, CTest 24/24, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-viewer/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
+| SVG-003 | holonight-files | Sharp static SVG previews and policy-aware caching | SVG-001 published and pinned | [Tasks](../../../holonight-files/docs/sdd/shared-svg-support/TASKS.md) | Done | `672b7193fd5523dd5d52dabe0c666044f81b9ab7` (local) | 2026-09-24: focused regressions, CTest 27/27, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-files/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
 | SVG-004 | umbrella | Verify integrated exact revisions | SVG-001–SVG-003 | — | Planned | — | Builds/tests, compatibility and manual ecosystem checks pending |
 
 Allowed states: Planned, Ready, In Progress, Done, Blocked, Superseded.
@@ -36,3 +36,12 @@ The user has agreed to check native Files preview/Quick Look resizing and Viewer
 That report is pending. SVG-002/SVG-003 remain In Progress until native acceptance is recorded. Consumer publication
 and gitlink updates are not yet authorized; current consumer pins are unchanged. No umbrella integration checks
 have run and the initiative remains Accepted. Local manual fixtures are under `build/shared-svg-manual/`.
+
+## Native acceptance handoff, 2026-09-24
+
+The user confirmed: "I've done manual check, SVGs rendered correctly in both applications."
+SVG-002 and SVG-003 are now Done with local automated and native acceptance. Separate documentation commits record
+this report in each consumer; whitespace and REUSE checks passed. No implementation changed or expensive builds
+were repeated. Both consumer main branches are ready for one complete push each (SDD, implementation and acceptance
+commits). Publication and consumer gitlink updates still require authorization. SVG-004 remains Planned until that
+handoff; the initiative is not yet Integrated.
