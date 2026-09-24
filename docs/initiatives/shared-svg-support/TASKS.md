@@ -3,8 +3,8 @@
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | SVG-001 | holonight-images | Bounded SVG mechanics and package contract | — | [Tasks](../../../holonight-images/docs/sdd/shared-svg-support/TASKS.md) | Done | `3da5f4e51fe2eed9a1bd9f72c0ab523aa57a5ceb` | 2026-09-24: 36 raster/SVG tests, installed package and no-SVG-plugin test passed; clean Release build and affected correction checks passed. [Evidence](../../../holonight-images/docs/sdd/shared-svg-support/VERIFICATION.md). Published to canonical origin/main and pinned with user authorization |
-| SVG-002 | holonight-viewer | Adopt provider, retain local-image fallback | SVG-001 published and pinned | [Tasks](../../../holonight-viewer/docs/sdd/shared-svg-support/TASKS.md) | Done | `deade0f2ee01cae35987609f76a277486d1060fc` (local) | 2026-09-24: focused regressions, CTest 24/24, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-viewer/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
-| SVG-003 | holonight-files | Sharp static SVG previews and policy-aware caching | SVG-001 published and pinned | [Tasks](../../../holonight-files/docs/sdd/shared-svg-support/TASKS.md) | Done | `672b7193fd5523dd5d52dabe0c666044f81b9ab7` (local) | 2026-09-24: focused regressions, CTest 27/27, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-files/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
+| SVG-002 | holonight-viewer | Adopt provider, retain local-image fallback | SVG-001 published and pinned | [Tasks](../../../holonight-viewer/docs/sdd/shared-svg-support/TASKS.md) | Done | `deade0f2ee01cae35987609f76a277486d1060fc` | 2026-09-24: focused regressions, CTest 24/24, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-viewer/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
+| SVG-003 | holonight-files | Sharp static SVG previews and policy-aware caching | SVG-001 published and pinned | [Tasks](../../../holonight-files/docs/sdd/shared-svg-support/TASKS.md) | Done | `672b7193fd5523dd5d52dabe0c666044f81b9ab7` | 2026-09-24: focused regressions, CTest 27/27, full task check, clean Release and isolated installed-runtime checks passed. [Evidence](../../../holonight-files/docs/sdd/shared-svg-support/VERIFICATION.md). User confirmed native SVG rendering passed |
 | SVG-004 | umbrella | Verify integrated exact revisions | SVG-001–SVG-003 | — | Planned | — | Builds/tests, compatibility and manual ecosystem checks pending |
 
 Allowed states: Planned, Ready, In Progress, Done, Blocked, Superseded.
@@ -45,3 +45,17 @@ this report in each consumer; whitespace and REUSE checks passed. No implementat
 were repeated. Both consumer main branches are ready for one complete push each (SDD, implementation and acceptance
 commits). Publication and consumer gitlink updates still require authorization. SVG-004 remains Planned until that
 handoff; the initiative is not yet Integrated.
+
+## Published consumer handoff, 2026-09-24
+
+User authorized "push then pin". Each consumer main branch was pushed once with its complete SDD, implementation
+and acceptance commits. `git ls-remote origin refs/heads/main` confirmed both canonical remote revisions before
+pinning: Viewer `deade0f2ee01cae35987609f76a277486d1060fc`, Files `672b7193fd5523dd5d52dabe0c666044f81b9ab7`.
+Both consumer working trees are clean. Latest hosted CI checked once per published revision:
+
+- Viewer: `deade0f2ee01cae35987609f76a277486d1060fc`, status `completed`, conclusion `success`,
+  [run 35998832352](https://github.com/lebedenko/holonight-viewer/actions/runs/35998832352).
+- Files: `672b7193fd5523dd5d52dabe0c666044f81b9ab7`, status `in_progress`, conclusion empty,
+  [run 35998835006](https://github.com/lebedenko/holonight-files/actions/runs/35998835006).
+
+No CI polling or waiting was performed. Files CI completion is not claimed and does not block the authorized pin.
