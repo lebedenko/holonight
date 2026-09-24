@@ -54,7 +54,7 @@ The umbrella installer preflight checks for the runtime package; it does not ins
 - [x] Provider fake D-Bus and injected-backend tests cover lifecycle, races and safe operations.
 - [x] Storage-only install consumption needs no libpulse; existing Audio consumption passes.
 - [x] Consumer filtering, actions, superseded navigation and removal recovery pass focused tests.
-- [ ] Each repository passes its required acceptance checks and has a published implementation commit.
-- [ ] Participating submodules are clean and pinned to published commits with compatible contracts.
-- [ ] Umbrella dependency checks and builds pass in dependency order.
+- [x] Each repository passes its required acceptance checks and has a published implementation commit.
+- [x] Participating submodules are clean and pinned to published commits with compatible contracts.
+- [x] Umbrella dependency checks and builds pass in dependency order.
 - [ ] Manual USB, optical, polkit and cross-application updates pass.
