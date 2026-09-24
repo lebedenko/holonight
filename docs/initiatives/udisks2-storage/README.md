@@ -16,8 +16,8 @@ Automatic mounting, unlocking encrypted storage, disk administration, network/FU
 | Repository | Ownership | Local SDD |
 |---|---|---|
 | holonight-system-services | Storage types, models, controller and private UDisks2 backend | [SDD](../../../holonight-system-services/docs/sdd/udisks2-storage/README.md) |
-| holonight-shell | Removable-device presentation and status popup | docs/sdd/udisks2-storage/ |
-| holonight-files | Devices sidebar, mount-then-open and removal recovery | docs/sdd/udisks2-storage/ |
+| holonight-shell | Removable-device presentation and status popup | [SDD](../../../holonight-shell/docs/sdd/udisks2-storage/SPEC.md) |
+| holonight-files | Devices sidebar, mount-then-open and removal recovery | [SDD](../../../holonight-files/docs/sdd/udisks2-storage/SPEC.md) |
 
 ## Cross-repository contracts
 
@@ -51,9 +51,9 @@ The umbrella installer preflight checks for the runtime package; it does not ins
 
 ## Integration acceptance criteria
 
-- [ ] Provider fake D-Bus and injected-backend tests cover lifecycle, races and safe operations.
-- [ ] Storage-only install consumption needs no libpulse; existing Audio consumption passes.
-- [ ] Consumer filtering, actions, superseded navigation and removal recovery pass focused tests.
+- [x] Provider fake D-Bus and injected-backend tests cover lifecycle, races and safe operations.
+- [x] Storage-only install consumption needs no libpulse; existing Audio consumption passes.
+- [x] Consumer filtering, actions, superseded navigation and removal recovery pass focused tests.
 - [ ] Each repository passes its required acceptance checks and has a published implementation commit.
 - [ ] Participating submodules are clean and pinned to published commits with compatible contracts.
 - [ ] Umbrella dependency checks and builds pass in dependency order.

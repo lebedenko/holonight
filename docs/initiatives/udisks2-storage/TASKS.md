@@ -4,8 +4,8 @@
 |---|---|---|---|---|---|---|---|
 | I-000 | umbrella | UDisks2 runtime dependency preflight | — | This initiative | Done | This checkpoint | 2026-09-24: 14 dependency fixtures and bash syntax check passed |
 | I-001 | holonight-system-services | Storage component | — | [SDD](../../../holonight-system-services/docs/sdd/udisks2-storage/README.md) | Done | 5f2ecda7eea653995f4c860bfb7f3a3f53beb279 (published) | 2026-09-24: clean build, 4/4 CTest suites; affected Storage rerun; format/diff/REUSE checks passed |
-| I-002 | holonight-shell | Storage widget and popup | I-001 published and pinned | docs/sdd/udisks2-storage/ | Ready | — | Baseline cdb58290d9f39178d44c7e4e09dcf50f4329bdfa |
-| I-003 | holonight-files | Devices and navigation recovery | I-001 published and pinned | docs/sdd/udisks2-storage/ | Ready | — | Baseline 672b7193fd5523dd5d52dabe0c666044f81b9ab7 |
+| I-002 | holonight-shell | Storage widget and popup | I-001 published and pinned | [SDD](../../../holonight-shell/docs/sdd/udisks2-storage/SPEC.md) | Done | f0fb0574beae8401970806c25e8242d964e70774 (local) | 2026-09-24: clean build, 1179 tests, scoped tidy/format, architecture, QML metadata and REUSE passed; QML lint retains existing Audio metadata warnings |
+| I-003 | holonight-files | Devices and navigation recovery | I-001 published and pinned | [SDD](../../../holonight-files/docs/sdd/udisks2-storage/SPEC.md) | Done | 7b15eee1f2ab09118e95133e5246b612ee88d341 (local) | 2026-09-24: clean build, 27/27 CTest suites, format/lint/REUSE, install/QML checks and isolated Docker desktop launch passed |
 | I-004 | umbrella | Integrated revision acceptance | I-001–I-003 | — | Planned | — | Pending published revisions and manual scenarios |
 
 Done requires a local implementation commit and passing local verification. Integration additionally requires
@@ -20,3 +20,9 @@ Shell and Files implementation may now start against this provider revision.
 Focused umbrella verification: `python3 -m unittest discover -s tests -p test_install_dependencies.py` (14 passed),
 `bash -n scripts/install-dependencies.sh`, and `git diff --check`, all on 2026-09-24. These are dependency fixture
 checks, not final ecosystem integration. The pre-existing untracked root `build/` was left untouched.
+
+Consumer handoff: local implementation commits are verified against the pinned provider. Consumer publication
+and pinning remain pending; this checkpoint deliberately leaves their gitlinks unchanged. Detailed command
+evidence is in each local SDD. User-confirmed USB display works directly and through a hub. The initial hub
+failure was a disconnected cable, resolved by reconnecting it; no code correction was required. Detailed
+cross-application unmount/Home recovery, optical media and polkit checks remain pending.
