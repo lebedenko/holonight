@@ -26,3 +26,5 @@ tests, and commits.
 - [Shared image maintenance](shared-image-maintenance/README.md) — Accepted; local fuzzing and paired comparison tooling.
 
 - [Icons infrastructure integration](icons-infrastructure-integration/README.md) — Integrated; generated themes, system packaging, safe upgrades and umbrella verification.
+
+- [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider verified locally; publication and consumer implementation pending.

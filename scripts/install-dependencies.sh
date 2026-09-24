@@ -37,7 +37,7 @@ check_install_dependencies() {
   # Papirus and Breeze are optional and may be installed in user icon paths.
   # Icon lookup still falls back to hicolor when neither theme is available.
   local packages=(base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
-    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
+    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd udisks2
     syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
     hicolor-icon-theme)
   if command -v pacman >/dev/null 2>&1; then

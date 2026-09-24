@@ -10,7 +10,7 @@ import unittest
 HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
 COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner".split()
 PACKAGES = """base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
-    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd
+    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd udisks2
     syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
     hicolor-icon-theme""".split()
 
@@ -104,6 +104,12 @@ printf 'Configure succeeded\\n'
         result = self.check(MISSING_PACKAGE="libsecret")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("sudo pacman -S --needed libsecret", result.stderr)
+        self.assertNotIn("cmake -S", self.log.read_text())
+
+    def test_missing_storage_runtime(self):
+        result = self.check(MISSING_PACKAGE="udisks2")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sudo pacman -S --needed udisks2", result.stderr)
         self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_missing_viewer_dependencies(self):
