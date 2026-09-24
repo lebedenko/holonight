@@ -24,5 +24,9 @@ checks, not final ecosystem integration. The pre-existing untracked root `build/
 Consumer handoff: local implementation commits are verified against the pinned provider. Consumer publication
 and pinning remain pending; this checkpoint deliberately leaves their gitlinks unchanged. Detailed command
 evidence is in each local SDD. User-confirmed USB display works directly and through a hub. The initial hub
-failure was a disconnected cable, resolved by reconnecting it; no code correction was required. Detailed
-cross-application unmount/Home recovery, optical media and polkit checks remain pending.
+failure was a disconnected cable, resolved by reconnecting it; no code correction was required.
+
+Manual follow-up on 2026-09-24: in response to the requested Shell-unmount scenario, the user confirmed
+that Files returns Home. This confirms cross-application unmount recovery. The explanatory message and
+both device-list updates were not explicitly confirmed. Optical-media and authorization-cancellation
+checks remain unconfirmed. The initiative remains Accepted, pending publication/pinning and final integration.
