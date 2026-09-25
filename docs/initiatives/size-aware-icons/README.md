@@ -34,16 +34,16 @@ Ordinary Places and Devices names resolve to monochrome semantic artwork at 16â€
 ## Dependency order
 
 1. `holonight-icons` contract and `holonight-qt` engine/API, independently.
-2. Migrate Shell, Files, AI, Settings, Packages, and Viewer against the verified local `holonight-qt` revision.
+2. Migrate Shell, Files, AI, Settings, Packages, and Viewer against the verified `holonight-qt` revision.
 3. Publish the completed repository commits and pin those revisions before umbrella integration.
 4. Run umbrella integration after all repository work packages are done and their exact commits are published.
 
-All repository implementation is committed locally. No commit in this initiative has been pushed or pinned. The current umbrella gitlinks remain authoritative until publication and integration.
+The repository work packages are published and verified locally. The umbrella gitlinks pin their published revisions. The separate artwork replacement and final ecosystem checks remain open.
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
+- [x] Every repository work package has a published commit and passed local verification.
+- [x] Participating submodules are clean and pinned to those published commits.
 - [ ] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
 - [ ] GTK 3 recoloring and GTK 4 symbolic recognition pass against generated theme fixtures.
