@@ -10,7 +10,7 @@ Give Files a 42 px shared header and fix platform-theme icon lookup so HoloNight
 
 - Change icon artwork or theme selection.
 - Change the already committed Files badge corners.
-- Publish commits or update umbrella gitlinks in this local handoff.
+- Close the manual desktop integration check in this publication handoff.
 
 ## Participating repositories
 
@@ -25,15 +25,15 @@ Give Files a 42 px shared header and fix platform-theme icon lookup so HoloNight
 
 ## Dependency order
 
-1. Verify and locally commit the Qt provider from baseline `0d5bdf094e6e759210531c4babdd2023e5d56485`.
-2. Verify and locally commit Files from baseline `c85e0e0d9d75e2ddcd2130fb23c8ba3fedc0051c`, built against that provider.
-3. Publish the repository commits and pin them only on user instruction, then run umbrella integration checks at those exact revisions.
+1. Verify and publish the Qt provider from baseline `0d5bdf094e6e759210531c4babdd2023e5d56485`.
+2. Verify and publish Files from baseline `c85e0e0d9d75e2ddcd2130fb23c8ba3fedc0051c`, built against that provider.
+3. Pin the published revisions, then complete umbrella integration checks at those exact revisions.
 
-Local handoff on 2026-09-26: Qt `61d0c16` and Files `b058f67` are separate, unpublished commits. Files was rebuilt and retested against the installed Qt commit. The full Files suite still has two unchanged assertion failures recorded in the [ledger](TASKS.md); the initiative remains unintegrated.
+Published handoff on 2026-09-26: Qt `61d0c16` and Files `1a46a54` are pinned as separate repository commits. Files passed its complete local check against the installed Qt provider. The initiative remains unintegrated pending the final manual desktop check and umbrella integration review.
 
 ## Integration acceptance criteria
 
-- [ ] Both local work packages pass their repository checks.
-- [ ] Both implementation commits are published and the gitlinks pin those exact revisions.
+- [x] Both local work packages pass their repository checks.
+- [x] Both implementation commits are published and the gitlinks pin those exact revisions.
 - [ ] Provider and consumer builds and tests pass in dependency order at the pinned revisions.
 - [ ] Manual Files appearance and navigation check passes in the desktop session.
