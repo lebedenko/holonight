@@ -1,6 +1,6 @@
 # Shared thumbnail disk cache
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -32,8 +32,8 @@ The provider uses C++23 and Qt Core/Gui and exports `HolonightThumbnails::Thumbn
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to published commits.
-- [ ] Cache contracts are compatible at the pinned revisions.
-- [ ] Provider and consumer builds/tests and root installer checks pass in dependency order.
-- [ ] Required manual Files and Viewer ecosystem checks pass.
+- [x] Every repository work package has a published commit and passed local verification.
+- [x] Participating submodules are clean and pinned to published commits.
+- [x] Cache contracts are compatible at the pinned revisions.
+- [x] Provider and consumer builds/tests and root installer checks pass in dependency order.
+- [x] Required manual Files and Viewer ecosystem checks pass.
