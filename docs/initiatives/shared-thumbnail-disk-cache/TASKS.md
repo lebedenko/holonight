@@ -3,9 +3,9 @@
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | THC-001 | holonight-thumbnails | Shared package and cache contract | — | [SDD](../../../holonight-thumbnails/docs/sdd/shared-thumbnail-cache/README.md) | Done | `d27addc044f277686850588147ec825c40c0f252` (published) | 2026-09-29: fresh Release build, cache and installed-package CTest 2/2, REUSE lint; clean working tree and canonical `origin/main` confirmed |
-| THC-002 | holonight-files | Shared disk-cache adoption | THC-001 | [SDD](../../../holonight-files/docs/sdd/shared-thumbnail-cache/README.md) | In Progress | — | Baseline: `dfacb4fb07cd68a8c847193599bf208ee21672b8`; provider: `d27addc044f277686850588147ec825c40c0f252` |
+| THC-002 | holonight-files | Shared disk-cache adoption | THC-001 | [SDD](../../../holonight-files/docs/sdd/shared-thumbnail-cache/README.md) | Done | `f1dd8c696fa4869c76900891a9788a92d77a9ce9` (published) | 2026-09-29: baseline `dfacb4fb07cd68a8c847193599bf208ee21672b8`, provider `d27addc044f277686850588147ec825c40c0f252`; focused 55 tests, full 27/27 CTest before descriptor miss correction, affected tests after it, lint/format/REUSE/install/QML and isolated runtime passed; canonical `origin/main` and clean checkout confirmed |
 | THC-003 | holonight-viewer | Shared disk-cache adoption | THC-001 | [SDD](../../../holonight-viewer/docs/sdd/shared-thumbnail-cache/SPEC.md) | Done | `5d812e9f7087a4beacaea5a8d2ab4ddc962d35f9` (published) | 2026-09-29: baseline `61a69092cb6ef0db592aff9ffacfba504f0fa9a1`, provider `d27addc044f277686850588147ec825c40c0f252`; 25/25 CTest, focused 45 thumbnail tests, builds, format/QML/REUSE/tidy, staged install and isolated runtime passed; canonical `origin/main` and clean checkout confirmed |
-| THC-004 | umbrella | Publish and verify integrated revisions | THC-001–THC-003 | This initiative | Planned | — | — |
+| THC-004 | umbrella | Verify published integrated revisions and native behavior | THC-001–THC-003 | This initiative | In Progress | — | Published pins ready; root integration and user-operated native check pending |
 
 Allowed states: `Planned`, `Ready`, `In Progress`, `Done`, `Blocked`, and `Superseded`.
 
