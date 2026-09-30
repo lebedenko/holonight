@@ -9,15 +9,17 @@ readonly MODULES=(holonight-config holonight-qt holonight-appearance-adapters ho
 TARGET_ROOT="/"
 ASSUME_YES=0
 CHECK_ONLY=0
+ADOPT_EXISTING=0
 BUILD_ROOT="$REPO_ROOT/.source-install"
 
 usage() {
   cat <<'EOF'
-Usage: scripts/install.sh [--check] [--yes] [--root <staging-root>]
+Usage: scripts/install.sh [--check] [--yes] [--adopt-existing] [--root <staging-root>]
 
   --check  Run distribution, checkout, toolchain, package, and account checks only.
   --yes    Do not prompt before copying the completed stage.
   --root   Install below an alternate root (for VM/image and integration testing).
+  --adopt-existing  Back up and replace unowned files; reject package-owned files.
 EOF
 }
 
@@ -28,6 +30,7 @@ while (($#)); do
   case "$1" in
     --check) CHECK_ONLY=1 ;;
     --yes) ASSUME_YES=1 ;;
+    --adopt-existing) ADOPT_EXISTING=1 ;;
     --root) shift; (($#)) || die "--root requires a path"; TARGET_ROOT="$1" ;;
     -h|--help) usage; exit 0 ;;
     *) die "unknown argument: $1" ;;
@@ -145,7 +148,9 @@ collision_check() {
   local module revision type mode hash relative destination
   local collisions=0 parent
   local preserved_caches="$BUILD_ROOT/preserved-icon-caches"
+  local adopted_paths="$BUILD_ROOT/adopted-paths"
   : > "$preserved_caches"
+  : > "$adopted_paths"
   while IFS=$'\t' read -r module revision type mode hash relative; do
     destination="$TARGET_ROOT$relative"
     parent="${destination%/*}"
@@ -177,10 +182,23 @@ collision_check() {
           continue
         fi ;;
     esac
+    if ((ADOPT_EXISTING)); then
+      command -v pacman >/dev/null || die "pacman is required to check ownership before adopting existing files"
+      pacman --root "$TARGET_ROOT" -Q >/dev/null 2>&1 || die "cannot read the package database for $TARGET_ROOT; refusing to adopt existing files"
+      # Query the selected root's package database, including in image installs.
+      if pacman --root "$TARGET_ROOT" -Qo -- "$relative" >/dev/null 2>&1; then
+        printf 'collision: %s is package-owned; remove its package before migration\n' "$destination" >&2
+        collisions=1
+      else
+        note "Will back up and adopt: $destination"
+        printf '%s\n' "$relative" >> "$adopted_paths"
+      fi
+      continue
+    fi
     printf 'collision: %s already exists and is not owned by an earlier umbrella installation\n' "$destination" >&2
     collisions=1
   done < "$manifest"
-  ((collisions == 0)) || die "installation aborted before modifying $TARGET_ROOT"
+  ((collisions == 0)) || die "installation aborted before modifying $TARGET_ROOT; for unmanaged source files, retry with --adopt-existing to back up and migrate them"
   if [[ -s "$preserved_caches" ]]; then
     awk -F '\t' 'NR == FNR { preserved[$0]=1; next } !($6 in preserved)' \
       "$preserved_caches" "$manifest" > "$BUILD_ROOT/filtered-manifest.tsv"
@@ -211,6 +229,18 @@ refresh_owned_icon_caches() {
 copy_stage() {
   local stage="$BUILD_ROOT/stage" manifest="$BUILD_ROOT/manifest.tsv"
   local module revision type mode hash relative source destination target
+  # Complete every backup before replacing any payload. mktemp avoids reusing
+  # a previous migration directory and cp -a preserves symlinks and metadata.
+  if [[ -s "$BUILD_ROOT/adopted-paths" ]]; then
+    local backup
+    as_root install -d -m 0700 "$TARGET_ROOT/var/backups"
+    backup="$(as_root mktemp -d "$TARGET_ROOT/var/backups/holonight-source-migration.XXXXXXXX")"
+    while IFS= read -r relative; do
+      as_root install -d "${backup}${relative%/*}"
+      as_root cp -a -- "$TARGET_ROOT$relative" "$backup$relative"
+    done < "$BUILD_ROOT/adopted-paths"
+    note "Existing files backed up to $backup"
+  fi
   while IFS=$'\t' read -r module revision type mode hash relative; do
     source="$stage$relative"; destination="$TARGET_ROOT$relative"
     case "$type" in
