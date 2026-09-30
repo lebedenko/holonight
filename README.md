@@ -76,6 +76,12 @@ retained managed paths keep their original ownership hashes for later uninstall.
 unmanaged legacy installation still trigger collision rejection. No blanket theme-directory removal
 is performed.
 
+To migrate existing files from an unmanaged source installation, run
+`task install -- --adopt-existing`. The installer rejects package-owned files and
+backs up all files being adopted under `/var/backups/holonight-source-migration.*`
+before replacing any payload. The new files enter the umbrella ownership manifest,
+so subsequent installs need no migration flag. Uninstall does not restore backups.
+
 Older umbrella installations generated an untracked `icon-theme.cache`. Upgrades preserve and report
 that unowned cache instead of overwriting it; theme changes invalidate its timestamp. Remove the
 reported legacy cache manually before a subsequent install to enable managed cache refresh.

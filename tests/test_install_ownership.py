@@ -109,6 +109,46 @@ class ViewerOwnership(unittest.TestCase):
         self.assertFalse((self.target / f"usr/bin/{self.executable}").exists())
         self.assertFalse((self.target / f"usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg").exists())
 
+    def migration_fixture(self, package_owned=False):
+        self.make_manifest()
+        existing = self.target / f"usr/bin/{self.executable}"
+        existing.parent.mkdir(parents=True)
+        existing.write_bytes(b"legacy executable")
+        pacman = self.commands / "pacman"
+        pacman.write_text(
+            '#!/bin/sh\ncase "$3" in\n-Q) exit 0;;\n-Qo) exit '
+            + ("0" if package_owned else "1") + ';;\nesac\nexit 2\n'
+        )
+        pacman.chmod(0o755)
+        return existing
+
+    def test_migration_backs_up_and_records_ownership(self):
+        existing = self.migration_fixture()
+        result = self.run_functions("ADOPT_EXISTING=1; collision_check; copy_stage")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        backups = list((self.target / "var/backups").glob("holonight-source-migration.*"))
+        self.assertEqual(len(backups), 1)
+        self.assertEqual((backups[0] / f"usr/bin/{self.executable}").read_bytes(), b"legacy executable")
+        self.assertEqual(existing.read_bytes(), self.payload[f"/usr/bin/{self.executable}"])
+        result = self.run_functions("collision_check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_migration_rejects_package_owned_files_before_copy(self):
+        existing = self.migration_fixture(package_owned=True)
+        result = self.run_functions("ADOPT_EXISTING=1; collision_check; copy_stage")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("is package-owned", result.stderr)
+        self.assertEqual(existing.read_bytes(), b"legacy executable")
+        self.assertFalse((self.target / "var").exists())
+
+    def test_migration_rejects_unreadable_package_database(self):
+        existing = self.migration_fixture()
+        (self.commands / "pacman").write_text("#!/bin/sh\nexit 1\n")
+        result = self.run_functions("ADOPT_EXISTING=1; collision_check; copy_stage")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("cannot read the package database", result.stderr)
+        self.assertEqual(existing.read_bytes(), b"legacy executable")
+
 
 class FilesOwnership(ViewerOwnership):
     module = "holonight-files"
