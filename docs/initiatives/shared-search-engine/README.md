@@ -34,8 +34,8 @@ Provide a reusable, fast fuzzy search engine and use it for recursive finding in
 
 ## Integration acceptance criteria
 
-- [ ] Provider passes relevance, cancellation, snapshot, and synthetic source tests.
-- [ ] The same two-million-path candidate list is benchmarked against fzf in Release; Files warm-index final-keystroke to stable-result p95 is under 100 ms on the user's machine. Index size, memory, cold progress, and first-result latency are recorded separately.
-- [ ] Files passes focused tests, required build/checks, and the user-performed native finder check.
+- [x] Provider passes relevance, cancellation, snapshot, and synthetic source tests.
+- [x] The same two-million-path candidate list is benchmarked against fzf in Release; Files warm-index final-keystroke to stable-result p95 is under 100 ms on the user's machine. Index size, memory, cold progress, and first-result latency are recorded separately.
+- [x] Files passes focused tests, required build/checks, and the user-performed native finder check.
 - [ ] Every participating repository has a published, verified commit and clean pinned gitlink.
 - [ ] Contracts and integration builds pass at those exact revisions.
