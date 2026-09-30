@@ -46,3 +46,6 @@
 [submodule "holonight-thumbnails"]
 	path = holonight-thumbnails
 	url = git@github.com:lebedenko/holonight-thumbnails.git
+[submodule "holonight-search"]
+	path = holonight-search
+	url = git@github.com:lebedenko/holonight-search.git
