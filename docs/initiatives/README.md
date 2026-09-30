@@ -28,3 +28,5 @@ tests, and commits.
 - [Icons infrastructure integration](icons-infrastructure-integration/README.md) — Integrated; generated themes, system packaging, safe upgrades and umbrella verification.
 
 - [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider verified locally; publication and consumer implementation pending.
+
+- [Shared search engine](shared-search-engine/README.md) — Accepted; provider verified locally; publication and Files adoption pending.
