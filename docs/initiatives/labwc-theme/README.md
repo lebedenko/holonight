@@ -37,6 +37,7 @@ apply recovery and revert. Optional labwc 0.20.2 headless smoke screenshots veri
 active/inactive focus, hover, maximize/restore, shade, menu, reload and 1×/2× rendering.
 
 Implementation evidence (2026-10-02): 7/7 component CTests passed with Qt 6.11.2;
-headless visual review completed on labwc 0.20.2 / wlroots 0.20.2. Component implementation: `holonight-appearance-adapters@8c7e328`, pinned by the
-umbrella integration commit. These are local commits; no published handoff is claimed. The original `ssd.png` was not present in the workspace, so the supplied
-Accent design specification is the visual reference.
+headless visual review completed on labwc 0.20.2 / wlroots 0.20.2. Component
+implementation: `holonight-appearance-adapters@8c7e328`, published to `origin/main`
+and pinned by the umbrella integration. The original `ssd.png` was not present in
+the workspace, so the supplied Accent design specification is the visual reference.
