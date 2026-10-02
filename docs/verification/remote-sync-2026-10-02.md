@@ -88,4 +88,10 @@ Snapshot time (UTC): `2026-10-02T17:39:35.690266+00:00`. All 17 checkout commits
 
 Failed runs are reported for Shell, Icons, AI, Greeter and Files. These results do not block the user-authorized
 pin update and are not claimed to pass. Thumbnails and Search have no available runs. Qt and Viewer
-CI pass at their published merge revisions. No implementation correction was made after publication.
+latest Licensing runs succeeded at their published merge revisions; this one-run-per-repository snapshot
+does not establish that every hosted workflow passed. No implementation correction was made after publication.
+
+After publishing the umbrella pin commit `b3b4e992c4e852186a2088bb76b693b6b0071abd`, its latest
+[Licensing run](https://github.com/lebedenko/holonight/actions/runs/37042305614) was `in_progress` with no
+conclusion. This observation predates the documentation-only wording correction; it is not CI evidence for
+that later documentation commit. No further CI query was made.
