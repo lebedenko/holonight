@@ -87,3 +87,6 @@ prefixes rather than globally installed builds.
 - [x] Root install/uninstall integration checks cover collision rejection, upgrade ownership, hashes, symlinks, permissions, and modified-file preservation.
 - [x] Real Arch installation validates binaries, QML modules, desktop/D-Bus metadata, units, caches, and Greeter assets.
 - [x] The final umbrella integration row records commands, results, and verification date.
+
+The follow-up [Developer Tooling and Standalone Serena](../developer-tooling/README.md) initiative standardizes
+local build layout, checked-in helpers and independent editor/indexing configuration for all 17 components.

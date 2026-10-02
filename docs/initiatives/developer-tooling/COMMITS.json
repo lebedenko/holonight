@@ -1,0 +1,19 @@
+{
+  "holonight-ai": "14c539b793135c54bc9728a4fe68bb4ddc0f478b",
+  "holonight-appearance-adapters": "f8279ef69576cba989086d5764e2fc1dfbf12790",
+  "holonight-config": "c00766670ba127c1b7c94cc6a9ac2fbe587eae8e",
+  "holonight-files": "bdd6865e20640a1b44b17abfb0b5803f809e9d5e",
+  "holonight-greeter": "a40d8c74bba1fea78f7ae5de6c774280d849a66c",
+  "holonight-hyprlock": "055ae7f87e3a8bf3dff58667b8106039c3475a9f",
+  "holonight-icons": "d287ecf4e2662e6b1f8d76b22705ed17f7dcbe30",
+  "holonight-images": "025c55c8d893ba51cf2abd6040c191f97b6fb642",
+  "holonight-pkg-manager": "71c6ebf62e52c361ac20409c8d85cfb7674107ea",
+  "holonight-qt": "854f3230e875856eee3e8f0539c0eddff1e826d1",
+  "holonight-search": "fa35ca559de0ffeca6c6c8975f9822390714448b",
+  "holonight-settings": "284c2479e6c5148c85504a088338208ee1d1ef3c",
+  "holonight-shell": "13187e320594d3f85897b26b50095db2d8b82fbf",
+  "holonight-system-services": "5460b0b6011f6b3fcea8368729e87e1def238fe7",
+  "holonight-thumbnails": "161911bb71c508d7da2acd5278af26959189c920",
+  "holonight-viewer": "f0ae044d16afe6a7dab46d8dc05fa8a0df0f4654",
+  "holonightd": "50df1b232910d15851515046ab1e8dc720ca31c6"
+}

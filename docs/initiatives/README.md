@@ -30,3 +30,5 @@ tests, and commits.
 - [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider verified locally; publication and consumer implementation pending.
 
 - [Shared search engine](shared-search-engine/README.md) — Accepted; provider verified locally; publication and Files adoption pending.
+
+- [Developer tooling and standalone Serena](developer-tooling/README.md) — accepted follow-up to maintainability standardization.

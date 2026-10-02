@@ -9,10 +9,10 @@ tasks:
     desc: Refresh the local Serena compilation database from existing builds
     dir: '{{.ROOT_DIR}}'
     preconditions:
-      - sh: test -f tooling/compilation.py
-        msg: Tracked tooling bundle is required.
+      - sh: test -f .serena/merge_compile_commands.py
+        msg: Local Serena setup is required (.serena/merge_compile_commands.py).
     cmds:
-      - python3 tooling/compilation.py
+      - python3 .serena/merge_compile_commands.py
 
   icons:build:
     desc: Build both icon variants and the template bundle
@@ -70,15 +70,3 @@ tasks:
     desc: Remove an umbrella-managed source installation
     cmds:
       - scripts/uninstall.sh {{.CLI_ARGS}}
-
-  tooling:sync:
-    desc: Explicitly copy the canonical bundle into all modules
-    cmds: [python3 tooling/sync.py]
-
-  tooling:drift:
-    desc: Check bundle drift without writing
-    cmds: [python3 tooling/sync.py --check]
-
-  tooling:refresh:
-    desc: Refresh the umbrella compilation database
-    cmds: [python3 tooling/compilation.py]

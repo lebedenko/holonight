@@ -1,7 +1,8 @@
 # Personal agent tooling is installed outside the umbrella repository contract.
 /.skills/
 /.source-install/
-/.serena/
+/.serena/*
+!/.serena/project.yml
 AGENTS.md
 CLAUDE.md
 
@@ -14,3 +15,5 @@ CLAUDE.md
 
 # Build artifacts and temporary files.
 /build/
+
+/tooling/__pycache__/

@@ -1,0 +1,76 @@
+{
+  "holonight": {
+    "head": "ee1186c03e148fd6e5f816fd87fa0587b14335bd",
+    "status": " M Taskfile.yml\n"
+  },
+  "holonight-ai": {
+    "head": "9f28e6cfb5169b89fb9a86a0043ffc0b4f5fa9ce",
+    "status": ""
+  },
+  "holonight-appearance-adapters": {
+    "head": "8c7e328c35569361c03fca6b5ea21c06dadbda85",
+    "status": ""
+  },
+  "holonight-config": {
+    "head": "03fa635cedc506e101a148fc54f7eb46d17c6de5",
+    "status": ""
+  },
+  "holonight-greeter": {
+    "head": "dc07ab97e83f26e47bc81fa103ed94871ca39242",
+    "status": ""
+  },
+  "holonight-hyprlock": {
+    "head": "69b957d3c174c7e18b07802f955e431da66590d9",
+    "status": ""
+  },
+  "holonight-icons": {
+    "head": "f5f13faffab86b8151760adf67efcc7d966d1a74",
+    "status": ""
+  },
+  "holonight-pkg-manager": {
+    "head": "cee638e5a1d617f363915474277e0eed6d6bff46",
+    "status": ""
+  },
+  "holonight-qt": {
+    "head": "d51194ea03c41881fb1099d313c806f869dc9051",
+    "status": ""
+  },
+  "holonight-settings": {
+    "head": "6240c8de852623db2fe6beeb2910a4e7e0eda1a3",
+    "status": ""
+  },
+  "holonight-shell": {
+    "head": "124fd165807112177aa612e2ce94bf2ff02f6492",
+    "status": ""
+  },
+  "holonight-system-services": {
+    "head": "3e2928eb55bbc3de2b1e877e29aa57d47077c05d",
+    "status": ""
+  },
+  "holonightd": {
+    "head": "6abf980986801bac3e66337e8566bc3c8ab44c62",
+    "status": ""
+  },
+  "holonight-images": {
+    "head": "ac11f23e9ff2d70b1c142b643bc2abb6dd69f6c1",
+    "status": ""
+  },
+  "holonight-thumbnails": {
+    "head": "d27addc044f277686850588147ec825c40c0f252",
+    "status": ""
+  },
+  "holonight-search": {
+    "head": "d12e441c06d1df87450514136c5a2d458d985ed3",
+    "status": ""
+  },
+  "holonight-files": {
+    "head": "2b8da3fccc0829a2b9c33b79e56304e9861f7b97",
+    "status": "",
+    "note": "Standalone .git directory; clean before migration verified separately."
+  },
+  "holonight-viewer": {
+    "head": "4887d96ce4be5648bda12b676055f9cf3eb28e82",
+    "status": "",
+    "note": "Standalone .git directory; clean before migration verified separately."
+  }
+}

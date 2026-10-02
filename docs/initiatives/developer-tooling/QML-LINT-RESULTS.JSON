@@ -1,0 +1,34 @@
+[
+  {
+    "module": "holonight-qt",
+    "exit": 0
+  },
+  {
+    "module": "holonight-shell",
+    "exit": 0
+  },
+  {
+    "module": "holonight-ai",
+    "exit": 0
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "exit": 0
+  },
+  {
+    "module": "holonight-settings",
+    "exit": 0
+  },
+  {
+    "module": "holonight-greeter",
+    "exit": 0
+  },
+  {
+    "module": "holonight-viewer",
+    "exit": 0
+  },
+  {
+    "module": "holonight-files",
+    "exit": 0
+  }
+]
