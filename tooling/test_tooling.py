@@ -113,6 +113,19 @@ class ToolingTests(unittest.TestCase):
         _, report = compilation.merge(self.root)
         self.assertEqual(report['origins'][str(self.source)], 'holonight-config/build/debug/compile_commands.json')
 
+    def test_qt_test_tool_environment_overrides(self):
+        for module in ('holonight-qt', 'holonight-shell'):
+            with patch.dict(os.environ, {'QML': '/tools with spaces/qml', 'QMLLINT': '/tools with spaces/qmllint'}), \
+                 patch.object(workflow, 'prepare'), patch.object(workflow, 'packages', return_value={}), \
+                 patch.object(workflow, 'refresh'), patch.object(workflow, 'run') as run:
+                workflow.configure({'module': module}, 'test')
+                args = run.call_args.args[0]
+                self.assertIn('-DQMLLINT=/tools with spaces/qmllint', args)
+                self.assertEqual('-DHOLONIGHT_QML_EXECUTABLE=/tools with spaces/qml' in args,
+                                 module == 'holonight-qt')
+                self.assertEqual('-DHOLONIGHT_QMLLINT_EXECUTABLE=/tools with spaces/qmllint' in args,
+                                 module == 'holonight-qt')
+
     def test_drift_check_read_only(self):
         from sync import FILES
         module = self.root / 'standalone'

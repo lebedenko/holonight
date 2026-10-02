@@ -6,12 +6,12 @@ No source warning cleanup, host installation, publication, or umbrella pin updat
 ## Passed
 
 - All 17 Taskfiles parse; applicable capabilities and independent Serena configurations are present.
-- Ten helper fixtures cover owned/dependency and canonical/legacy database precedence, invalid/stale commands,
+- Eleven helper fixtures cover owned/dependency and canonical/legacy database precedence, invalid/stale commands,
   preservation on failed refresh, source overrides, paths with spaces, missing metadata, drift without writes,
   explicit prefixes without builds, and exclusion of vendor/probe sources from formatting.
 - Bundle drift check and `git diff --check` pass. Root instantiated clangd and component configurations use the selected database.
 - All 16 CMake components configure and build with Debug and Release presets. Test builds and CTest pass for
-  15 components after rerunning private-socket fixtures outside the sandbox. Qt test configuration is blocked below.
+  15 components after rerunning private-socket fixtures outside the sandbox. Qt now also passes its full 95-test workflow, as recorded below.
 - Every CMake component configures in an exported standalone checkout under a path containing spaces, using an
   explicit dependency prefix. Standalone Config and Hyprlock build/test; standalone Qt builds Config from an
   arbitrary source override into its own prefix. These checks do not use an umbrella parent.
@@ -37,17 +37,33 @@ compilation coverage remain ignored under `build/tooling-verification` and `.cac
 
 ## Open acceptance blockers
 
-1. **Qt tests:** the existing installed-package test requires `patchelf`, which is absent. Both Debug and Release
-   builds pass, but test configuration stops at `tests/CMakeLists.txt`. Make that prerequisite available and run
-   `task test`; no acceptance target was disabled or substituted. Doctor reports this prerequisite.
-2. **Hyprlock extensionless Bash recognition:** the installed Serena Bash filename matcher supports `.sh` and `.bash`,
+1. **Hyprlock extensionless Bash recognition:** the installed Serena Bash filename matcher supports `.sh` and `.bash`,
    but rejects `scripts/status` with `Cannot extract symbols`. Retrieval from `.sh` files succeeds. This requires
    Serena support for extensionless files or an explicitly approved compatibility change; server startup is not
    counted as successful recognition. No upstream runtime was patched and the installed helper name is preserved.
-3. **Existing source formatting/static analysis:** Appearance Adapters, Greeter, System Services and Thumbnails fail
+2. **Existing source formatting/static analysis:** Appearance Adapters, Greeter, System Services and Thumbnails fail
    the common formatting baseline on existing source files. Config tidy finds existing missing braces; daemon tidy
    finds existing trailing-comma and C/systemd macro diagnostics. These are source findings, not missing include/import
    or unsupported compiler flag errors. They remain outside this configuration initiative's cleanup scope.
 
 Hyprlock's original nested graphical acceptance remains available as `task test`/`task test:nested`, with automated
 checks as `task test:auto`. No native pointer/focus automation or manual desktop checks were performed.
+
+## Qt tool discovery follow-up — 2026-10-02
+
+- `task -d holonight-qt test` passes all 95 tests, including installed-package and example startup checks.
+  `patchelf` is available in the existing environment; its discovery remains unchanged.
+- A fresh ignored `build/tool-discovery-fresh` configuration succeeds without `/usr/lib/qt6/bin` on PATH,
+  with an unrelated qmllint first on PATH. It selects `/usr/lib/qt6/bin/qmllint` and its sibling qml,
+  substitutes absolute paths into the installed-package script, and does not cache automatic tool paths.
+- Eight focused resolver fixtures pass: imported/default/configuration-specific locations, configuration
+  precedence, sibling precedence, relative/absolute install bins, explicit overrides, missing/invalid tools,
+  paths containing spaces, and reconfiguration against a different installation.
+- Valid direct overrides containing spaces reach the real installed-package script with quoting intact;
+  an invalid direct override fails with the variable name and missing executable path.
+- All eleven shared helper fixtures pass, including QML/QMLLINT environment forwarding and compatibility
+  with other modules. Bundle 1.0.1 is synchronized across all 17 modules; drift and diff whitespace checks pass.
+- Qt editor metadata and the umbrella compilation database were refreshed after verification.
+- Required daemon checks also pass formatting and all 111 tests. `task -d holonightd tidy-src` still fails on
+  existing C99 compound literals and a missing enum trailing comma, covered by the source-analysis blocker above.
+- Changes are committed locally using Conventional Commits. Publication and umbrella submodule pins are unchanged.
