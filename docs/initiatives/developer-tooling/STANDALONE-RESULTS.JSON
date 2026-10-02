@@ -1,0 +1,87 @@
+[
+  {
+    "module": "holonight-ai",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-ai"
+  },
+  {
+    "module": "holonight-appearance-adapters",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-appearance-adapters"
+  },
+  {
+    "module": "holonight-config",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-config"
+  },
+  {
+    "module": "holonight-files",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-files"
+  },
+  {
+    "module": "holonight-greeter",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-greeter"
+  },
+  {
+    "module": "holonight-hyprlock",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-hyprlock"
+  },
+  {
+    "module": "holonight-images",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-images"
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-pkg-manager"
+  },
+  {
+    "module": "holonight-qt",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-qt"
+  },
+  {
+    "module": "holonight-search",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-search"
+  },
+  {
+    "module": "holonight-settings",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-settings"
+  },
+  {
+    "module": "holonight-shell",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-shell"
+  },
+  {
+    "module": "holonight-system-services",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-system-services"
+  },
+  {
+    "module": "holonight-thumbnails",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-thumbnails"
+  },
+  {
+    "module": "holonight-viewer",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-viewer"
+  },
+  {
+    "module": "holonightd",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonightd"
+  },
+  {
+    "module": "holonight-qt source override",
+    "exit": 0,
+    "root": "/tmp/holonight standalone spaces 787sxmmk/holonight-qt"
+  }
+]

@@ -1,0 +1,7 @@
+records=2000000 index_ms=3814
+VmHWM:	 1376712 kB
+VmRSS:	 1376712 kB
+query=lambda hits=80 p50_ms=6 p95_ms=7
+query=lambda audit hits=80 p50_ms=6 p95_ms=7
+query=audit lambda hits=80 p50_ms=6 p95_ms=7
+query=document 42 hits=80 p50_ms=76 p95_ms=95

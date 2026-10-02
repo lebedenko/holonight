@@ -1,0 +1,386 @@
+[
+  {
+    "module": "holonight-config",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 2.5,
+    "log": "build/tooling-verification/config-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-config",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 3.9,
+    "log": "build/tooling-verification/config-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-config",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 1.0,
+    "log": "build/tooling-verification/config-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-qt",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 161.1,
+    "log": "build/tooling-verification/qt-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-qt",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 170.7,
+    "log": "build/tooling-verification/qt-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-qt",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 0.6,
+    "log": "build/tooling-verification/qt-test.log",
+    "final_result": "Blocked: patchelf missing"
+  },
+  {
+    "module": "holonight-images",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 6.3,
+    "log": "build/tooling-verification/images-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-images",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 6.3,
+    "log": "build/tooling-verification/images-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-images",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 13.9,
+    "log": "build/tooling-verification/images-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-thumbnails",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 3.4,
+    "log": "build/tooling-verification/thumbnails-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-thumbnails",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 3.4,
+    "log": "build/tooling-verification/thumbnails-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-thumbnails",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 8.4,
+    "log": "build/tooling-verification/thumbnails-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-search",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 4.3,
+    "log": "build/tooling-verification/search-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-search",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 6.1,
+    "log": "build/tooling-verification/search-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-search",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 6.0,
+    "log": "build/tooling-verification/search-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-system-services",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 16.5,
+    "log": "build/tooling-verification/system-services-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-system-services",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 19.7,
+    "log": "build/tooling-verification/system-services-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-system-services",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 77.3,
+    "log": "build/tooling-verification/system-services-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-appearance-adapters",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 10.4,
+    "log": "build/tooling-verification/appearance-adapters-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-appearance-adapters",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 12.9,
+    "log": "build/tooling-verification/appearance-adapters-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-appearance-adapters",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 14.9,
+    "log": "build/tooling-verification/appearance-adapters-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-hyprlock",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 0.1,
+    "log": "build/tooling-verification/hyprlock-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-hyprlock",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 0.1,
+    "log": "build/tooling-verification/hyprlock-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-hyprlock",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 0.2,
+    "log": "build/tooling-verification/hyprlock-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonightd",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 32.6,
+    "log": "build/tooling-verification/holonightd-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonightd",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 43.2,
+    "log": "build/tooling-verification/holonightd-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonightd",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 53.0,
+    "log": "build/tooling-verification/holonightd-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-greeter",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 29.4,
+    "log": "build/tooling-verification/greeter-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-greeter",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 30.8,
+    "log": "build/tooling-verification/greeter-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-greeter",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 68.6,
+    "log": "build/tooling-verification/greeter-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-settings",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 44.6,
+    "log": "build/tooling-verification/settings-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-settings",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 45.6,
+    "log": "build/tooling-verification/settings-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-settings",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 117.2,
+    "log": "build/tooling-verification/settings-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-viewer",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 60.8,
+    "log": "build/tooling-verification/viewer-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-viewer",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 61.7,
+    "log": "build/tooling-verification/viewer-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-viewer",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 253.8,
+    "log": "build/tooling-verification/viewer-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-files",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 95.3,
+    "log": "build/tooling-verification/files-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-files",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 99.9,
+    "log": "build/tooling-verification/files-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-files",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 436.7,
+    "log": "build/tooling-verification/files-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 69.5,
+    "log": "build/tooling-verification/pkg-manager-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 71.9,
+    "log": "build/tooling-verification/pkg-manager-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 215.8,
+    "log": "build/tooling-verification/pkg-manager-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-ai",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 166.3,
+    "log": "build/tooling-verification/ai-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-ai",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 173.2,
+    "log": "build/tooling-verification/ai-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-ai",
+    "preset": "test",
+    "exit": 0,
+    "seconds": 457.1,
+    "log": "build/tooling-verification/ai-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  },
+  {
+    "module": "holonight-shell",
+    "preset": "debug",
+    "exit": 0,
+    "seconds": 467.1,
+    "log": "build/tooling-verification/shell-debug.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-shell",
+    "preset": "release",
+    "exit": 0,
+    "seconds": 486.8,
+    "log": "build/tooling-verification/shell-release.log",
+    "final_result": "Passed"
+  },
+  {
+    "module": "holonight-shell",
+    "preset": "test",
+    "exit": 1,
+    "seconds": 1049.7,
+    "log": "build/tooling-verification/shell-test.log",
+    "final_result": "Passed after private-socket reruns where required"
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "module": "holonight-ai",
+    "preset": "test",
+    "exit": 0
+  },
+  {
+    "module": "holonight-greeter",
+    "preset": "test",
+    "exit": 0
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "preset": "test",
+    "exit": 0
+  },
+  {
+    "module": "holonight-qt",
+    "preset": "debug",
+    "exit": 0
+  },
+  {
+    "module": "holonight-settings",
+    "preset": "test",
+    "exit": 0
+  },
+  {
+    "module": "holonight-shell",
+    "preset": "test",
+    "exit": 0,
+    "note": "Production modules only; existing 37-singleton packaging check also passed."
+  },
+  {
+    "module": "holonight-viewer",
+    "preset": "test",
+    "exit": 0
+  },
+  {
+    "module": "holonight-files",
+    "preset": "test",
+    "exit": 0
+  }
+]

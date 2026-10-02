@@ -1,0 +1,34 @@
+{
+  "holonight-files": {
+    "cpp": {
+      "result": "{}"
+    },
+    "qml": {
+      "result": "{}"
+    }
+  },
+  "holonight-greeter": {
+    "cpp": {
+      "result": "{}"
+    },
+    "qml": {
+      "result": "{}"
+    }
+  },
+  "holonight-ai": {
+    "cpp": {
+      "result": "{}"
+    },
+    "qml": {
+      "result": "{}"
+    }
+  },
+  "holonight-settings": {
+    "cpp": {
+      "result": "{}"
+    },
+    "qml": {
+      "result": "{}"
+    }
+  }
+}

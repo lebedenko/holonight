@@ -32,3 +32,4 @@ tests, and commits.
 - [Shared search engine](shared-search-engine/README.md) — Accepted; reopened on 2026-10-02 for user-requested adjustments. Previous provider and Files delivery is published; Files exclusions are published, pinned and native-verified; baseline lint and corrected-revision reacceptance remain pending.
 
 - [Manual configuration editing and Settings interoperability](configuration-editing-interoperability/README.md) — Draft; preservation unresolved; Files search Settings page deferred.
+- [Developer tooling and standalone Serena](developer-tooling/README.md) — accepted follow-up to maintainability standardization.

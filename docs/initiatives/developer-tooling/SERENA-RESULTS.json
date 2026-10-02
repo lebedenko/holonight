@@ -1,0 +1,97 @@
+{
+  "holonight-thumbnails": {
+    "cpp": "{\"Namespace\": [\"HolonightThumbnails\"]}"
+  },
+  "holonight-search": {
+    "cpp": "{\"Namespace\": [\"HolonightSearch\"]}"
+  },
+  "holonight-images": {
+    "cpp": "{\"Namespace\": [\"HolonightImages\"]}",
+    "python": "{\"Constant\": [\"ROOT\"], \"Function\": [\"digest\", \"inventory\", \"seeds\", \"main\"]}"
+  },
+  "holonight-system-services": {
+    "cpp": "{\"Namespace\": [\"HoloNight\"]}"
+  },
+  "holonight-qt": {
+    "cpp": "{\"Namespace\": [\"(anonymous namespace)\"], \"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"T.Menu\"]}",
+    "python": "{\"Variable\": [\"parser\", \"args\", \"command\", \"exe\", \"root\", \"env\", \"key\", \"path\", \"prefix\", \"selected\", \"metadata\", \"cmd\", \"bus\", \"log\", \"result\"]}",
+    "bash": "{\"Variable\": [\"qml_root\", \"qml_root\", \"failed\", \"style_types\", \"style_use\", \"core_types\", \"IFS\", \"namespace\", \"namespace\", \"failed\", \"failed\", \"failed\", \"failed\", \"failed\", \"has_style_use\", \"has_style_use\", \"failed\", \"failed\", \"failed\", \"failed\"]}"
+  },
+  "holonight-appearance-adapters": {
+    "cpp": "{\"Namespace\": [\"Holonight\"]}",
+    "python": "{\"Variable\": [\"windows\", \"title\", \"window\", \"adapter\", \"output\", \"temporary\", \"root\", \"runtime\", \"config\", \"env\", \"key\", \"fixture\", \"appearance\", \"log\", \"compositor\", \"client\", \"sockets\", \"pointer\", \"response\"], \"Class\": [\"Pointer\"], \"Function\": [\"capture\"]}",
+    "bash": "{\"Variable\": [\"dbus_run\", \"xvfb_run\", \"probe\", \"fixture\", \"HOME\", \"XDG_CONFIG_HOME\", \"GSETTINGS_BACKEND\"]}"
+  },
+  "holonight-icons": {
+    "cpp": "{\"Function\": [\"check\", \"read\", \"write\", \"plain\", \"countColor\", \"countGlyph\", \"main\"]}",
+    "python": "{\"Function\": [\"bundle_files\", \"build\"]}"
+  },
+  "holonightd": {
+    "cpp": "{\"Namespace\": [\"(anonymous namespace)\"], \"Function\": [\"main\"]}",
+    "bash": "{\"Variable\": [\"mode\", \"repo_root\", \"candidates\", \"artifacts\", \"artifacts\"], \"Function\": [\"usage\"]}"
+  },
+  "holonight-greeter": {
+    "cpp": "{\"Variable\": [\"Q_LOGGING_CATEGORY\"], \"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"Controls.ApplicationWindow\"]}",
+    "python": "{\"Variable\": [\"root\", \"build\", \"name\", \"entries\", \"entry\", \"directory\", \"sources\"]}",
+    "bash": "{\"Variable\": [\"live_root\", \"getty_was_active\", \"getty_was_active\"], \"Function\": [\"restore_getty\"]}"
+  },
+  "holonight-settings": {
+    "cpp": "{\"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"Flickable\"]}",
+    "python": "{\"Constant\": [\"TYPES\"], \"Function\": [\"violations\", \"main\"]}",
+    "bash": "{\"Variable\": [\"repo_root\", \"build_dir\", \"build_dir\", \"qmltypes_file\"]}"
+  },
+  "holonight-viewer": {
+    "cpp": "{\"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"HnApplicationWindow\"]}",
+    "python": "{\"Constant\": [\"TYPES\"], \"Function\": [\"violations\", \"main\"]}",
+    "bash": "{\"Variable\": [\"repo_root\", \"build_dir\", \"build_dir\", \"qmltypes_file\"]}"
+  },
+  "holonight-files": {
+    "cpp": "{\"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"HnApplicationWindow\"]}",
+    "python": "{\"Constant\": [\"TYPES\"], \"Function\": [\"violations\", \"main\"]}",
+    "bash": "{\"Variable\": [\"root\", \"build_dir\", \"build_dir\", \"metadata\"]}"
+  },
+  "holonight-ai": {
+    "cpp": "{\"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"ColumnLayout\"]}",
+    "python": "{\"Function\": [\"stop\", \"main\"]}",
+    "bash": "{\"Variable\": [\"repo_root\", \"build_dir\", \"build_root\", \"build_root\", \"chat_module_dir\", \"qmltypes_file\", \"required_types\", \"missing_types\", \"missing_types\"]}"
+  },
+  "holonight-pkg-manager": {
+    "cpp": "{\"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"HnListDelegate\"]}",
+    "python": "{\"Function\": [\"stop\", \"main\"]}",
+    "bash": "{\"Variable\": [\"repo_root\", \"build_dir\", \"build_root\", \"build_root\", \"packages_module_dir\", \"qmltypes_file\", \"required_types\", \"missing_types\", \"missing_types\"]}"
+  },
+  "holonight-shell": {
+    "cpp": "{\"Namespace\": [\"(anonymous namespace)\"], \"Function\": [\"main\"]}",
+    "qml": "{\"Object\": [\"Item\"]}",
+    "python": "{\"Function\": [\"uninstall\", \"main\"]}",
+    "bash": "{\"Function\": [\"usage\"], \"Variable\": [\"VERSION\", \"PUBLISH\", \"PUBLISH\", \"VERSION\", \"TAG\", \"REPO_ROOT\"]}"
+  },
+  "holonight-config": {
+    "cpp": "{\"Namespace\": [\"HoloNight\"]}"
+  },
+  "holonight-hyprlock": {
+    "bash": "{\"Variable\": [\"source_dir\", \"CDPATH\", \"preview_root\"]}",
+    "extensionless": [
+      {
+        "type": "text",
+        "text": "Error executing tool get_symbols_overview: ValueError: Cannot extract symbols from file scripts/status. Active language servers: ['bash']"
+      }
+    ]
+  },
+  "umbrella": {
+    "cpp": "holonight-config/src/path.cpp: HoloNight namespace retrieved",
+    "database": {
+      "databases": 101,
+      "commands": 4592,
+      "uncovered_translation_units": 22,
+      "stale_rejected": 4
+    }
+  }
+}

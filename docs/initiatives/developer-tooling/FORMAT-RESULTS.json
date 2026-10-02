@@ -1,0 +1,62 @@
+[
+  {
+    "module": "holonight-ai",
+    "exit": 0
+  },
+  {
+    "module": "holonight-appearance-adapters",
+    "exit": 201
+  },
+  {
+    "module": "holonight-config",
+    "exit": 0
+  },
+  {
+    "module": "holonight-files",
+    "exit": 0
+  },
+  {
+    "module": "holonight-greeter",
+    "exit": 201
+  },
+  {
+    "module": "holonight-images",
+    "exit": 0
+  },
+  {
+    "module": "holonight-pkg-manager",
+    "exit": 0
+  },
+  {
+    "module": "holonight-qt",
+    "exit": 0
+  },
+  {
+    "module": "holonight-search",
+    "exit": 0
+  },
+  {
+    "module": "holonight-settings",
+    "exit": 0
+  },
+  {
+    "module": "holonight-shell",
+    "exit": 0
+  },
+  {
+    "module": "holonight-system-services",
+    "exit": 201
+  },
+  {
+    "module": "holonight-thumbnails",
+    "exit": 201
+  },
+  {
+    "module": "holonight-viewer",
+    "exit": 0
+  },
+  {
+    "module": "holonightd",
+    "exit": 0
+  }
+]
