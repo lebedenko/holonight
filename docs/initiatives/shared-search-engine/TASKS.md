@@ -14,7 +14,26 @@ S-001–S-003 retain the historical 2026-09-30 delivery evidence; they do not ac
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | S-004 | umbrella | Specify reported behavior, expected results, owning repositories, exact baselines and adjustment work packages | Approved exclusion/reload plan | Files exclusion SDD below | Done | This checkpoint | 2026-10-02: approved Files-only exclusion/reload scope; exact Files baseline `2b8da3fccc0829a2b9c33b79e56304e9861f7b97`; provider unchanged |
-| S-005 | umbrella | Verify corrected published revisions and native finder behavior | S-004, S-006 | — | Planned | — | Pending baseline lint resolution, authorized publication/pinning and corrected-revision integration |
-| S-006 | `holonight-files` | Search indexing exclusions, search config reload, diagnostics and cache invalidation | S-004; unchanged pinned provider | [SDD](../../../holonight-files/docs/sdd/search-index-exclusions/README.md) | In Progress | `823a9216d7e6e7835e5b543b6ca491452a64e3ba` (local) | Baseline `2b8da3fccc0829a2b9c33b79e56304e9861f7b97`; 38 focused tests, 27 CTest entries, changed-file tidy, remaining checks and isolated runtime passed; user native acceptance confirmed 2026-10-02. Full task check blocked by baseline tidy errors; committed locally/unpublished; no pin authorization |
+| S-005 | umbrella | Verify corrected published revisions and native finder behavior | S-004, S-006 | — | Planned | — | Files published and pinned; pending baseline lint resolution and corrected-revision integration |
+| S-006 | `holonight-files` | Search indexing exclusions, search config reload, diagnostics and cache invalidation | S-004; unchanged pinned provider | [SDD](../../../holonight-files/docs/sdd/search-index-exclusions/README.md) | In Progress | `b6e4a9680faba9fde74eed0d2cbebe193d5d2aa5` (published) | Baseline `2b8da3fccc0829a2b9c33b79e56304e9861f7b97`; 38 focused tests, 27 CTest entries, changed-file tidy, remaining checks and isolated runtime passed; user native acceptance confirmed 2026-10-02. Implementation `823a921` plus documentation closure `b6e4a96` published and pinned at user request. Full task check remains blocked by baseline tidy errors; final reacceptance pending |
 
 `Done` records a locally verified repository commit. The initiative becomes `Integrated` only after S-005 records integration checks and the required native result for the adjusted delivery.
+
+## Files publication and pin — 2026-10-02
+
+The user authorized publication and pinning after reviewing the recorded baseline lint blocker.
+Files implementation `823a921` and documentation closure `b6e4a96` were sent in one `git push origin main`.
+`git ls-remote origin refs/heads/main` confirmed canonical `lebedenko/holonight-files` at
+`b6e4a9680faba9fde74eed0d2cbebe193d5d2aa5`; the Files working tree is clean. This checkpoint updates only
+its gitlink; the search provider pin is unchanged. The umbrella checkpoint remains local.
+
+CI checked once, without waiting or polling: the latest available run was **Licensing**, revision
+`b6e4a9680faba9fde74eed0d2cbebe193d5d2aa5`, status `in_progress`, conclusion not yet available,
+[run 37007830595](https://github.com/lebedenko/holonight-files/actions/runs/37007830595).
+This records that run's state, not successful CI or an older revision's acceptance.
+
+Documentation-only closure changed no application code after the recorded focused tests, CTest, native check
+and isolated runtime acceptance. Documentation links, REUSE and diff checks passed before publication.
+The user accepted the native exclusion/reload behavior at the same implementation code. Required full local lint
+is still blocked by the recorded baseline findings; S-006 remains In Progress and S-005 remains Planned.
+Publication and pinning do not mark Shared Search Integrated. No final umbrella integration is claimed.

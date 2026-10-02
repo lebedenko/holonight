@@ -29,6 +29,6 @@ tests, and commits.
 
 - [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider and consumers published and pinned; USB discovery and Files unmount recovery confirmed. Discovery review, optical media, authorization cancellation, recovery message and device-list update checks remain open.
 
-- [Shared search engine](shared-search-engine/README.md) — Accepted; reopened on 2026-10-02 for user-requested adjustments. Previous provider and Files delivery is published; Files exclusions are implemented and native-verified locally; baseline lint and corrected-revision reacceptance remain pending.
+- [Shared search engine](shared-search-engine/README.md) — Accepted; reopened on 2026-10-02 for user-requested adjustments. Previous provider and Files delivery is published; Files exclusions are published, pinned and native-verified; baseline lint and corrected-revision reacceptance remain pending.
 
 - [Manual configuration editing and Settings interoperability](configuration-editing-interoperability/README.md) — Draft; preservation unresolved; Files search Settings page deferred.
