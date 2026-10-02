@@ -1,6 +1,7 @@
 # Personal agent tooling is installed outside the umbrella repository contract.
 /.skills/
 /.source-install/
+/.serena/
 AGENTS.md
 CLAUDE.md
 
