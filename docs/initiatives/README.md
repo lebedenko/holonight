@@ -27,6 +27,8 @@ tests, and commits.
 
 - [Icons infrastructure integration](icons-infrastructure-integration/README.md) — Integrated; generated themes, system packaging, safe upgrades and umbrella verification.
 
-- [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider verified locally; publication and consumer implementation pending.
+- [Shared UDisks2 storage](udisks2-storage/README.md) — Accepted; provider and consumers published and pinned; USB discovery and Files unmount recovery confirmed. Discovery review, optical media, authorization cancellation, recovery message and device-list update checks remain open.
 
-- [Shared search engine](shared-search-engine/README.md) — Accepted; provider verified locally; publication and Files adoption pending.
+- [Shared search engine](shared-search-engine/README.md) — Accepted; reopened on 2026-10-02 for user-requested adjustments. Previous provider and Files delivery is published; Files exclusions are implemented and native-verified locally; baseline lint and corrected-revision reacceptance remain pending.
+
+- [Manual configuration editing and Settings interoperability](configuration-editing-interoperability/README.md) — Draft; preservation unresolved; Files search Settings page deferred.
