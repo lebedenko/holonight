@@ -18,7 +18,7 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
 | `holonightd` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonightd/docs/sdd/local-ci/README.md) |
-| `holonight-config` | Repository-owned CI scripts, task and workflow parity | Pending |
+| `holonight-config` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-config/docs/sdd/local-ci/README.md) |
 | `holonight-qt` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-images` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-thumbnails` | Repository-owned CI scripts, task and workflow parity | Pending |
