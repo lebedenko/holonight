@@ -1,6 +1,17 @@
 # Shared HoloNight search engine
 
-Status: Integrated
+Status: Accepted
+
+## Current status — 2026-10-02
+
+Reopened at the user's request: Shared Search requires adjustments and is not yet integrated.
+The 2026-09-30 publication and verification remain historical evidence for that delivery.
+The approved adjustment is Files-owned indexing exclusions and finder-time configuration reload.
+Files started from baseline `2b8da3fccc0829a2b9c33b79e56304e9861f7b97` and is now published and pinned at
+`b6e4a9680faba9fde74eed0d2cbebe193d5d2aa5` following user authorization. The search provider pin remains unchanged.
+Native exclusions/reload acceptance passed; baseline full-project lint and final corrected-revision integration remain open.
+See [Files exclusion SDD](../../../holonight-files/docs/sdd/search-index-exclusions/README.md).
+Final acceptance must cover the corrected behavior and its published revisions.
 
 ## Goal
 
@@ -36,6 +47,7 @@ Provide a reusable, fast fuzzy search engine and use it for recursive finding in
 
 - [x] Provider passes relevance, cancellation, snapshot, and synthetic source tests.
 - [x] The same two-million-path candidate list is benchmarked against fzf in Release; Files warm-index final-keystroke to stable-result p95 is under 100 ms on the user's machine. Index size, memory, cold progress, and first-result latency are recorded separately.
-- [x] Files passes focused tests, required build/checks, and the user-performed native finder check.
-- [x] Every participating repository has a published, verified commit and clean pinned gitlink.
-- [x] Contracts and integration builds pass at those exact revisions.
+- [ ] Requested adjustments are specified, implemented, and verified in the owning repositories.
+- [ ] Files passes focused tests, required build/checks, and the user-performed native finder check for the adjusted behavior.
+- [ ] Every participating repository has a published, verified commit and clean pinned gitlink for the final delivery.
+- [ ] Contracts and integration builds pass at those exact revisions after adjustment acceptance.

@@ -58,3 +58,14 @@ The umbrella installer preflight checks for the runtime package; it does not ins
 - [x] Participating submodules are clean and pinned to published commits with compatible contracts.
 - [x] Umbrella dependency checks and builds pass in dependency order.
 - [ ] Manual USB, optical, polkit and cross-application updates pass.
+
+## Discovery review before final integration
+
+I-005 reviews provider discovery/lifecycle events and Shell/Files filtering from UDisks properties across USB,
+hubs, SSDs, SD readers, eMMC, optical media, encrypted backing-device duplication and daemon reconnection.
+No manually maintained VID:PID database is planned. Files' nonempty ConnectionBus assumption must be validated:
+[UDisks](https://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Drive.html) includes eMMC under
+`sdio` and treats Removable as heuristic. Evidence and concrete correction packages precede implementation decisions.
+Existing optical, authorization-cancellation, recovery-message and device-list-update acceptance remains open.
+
+- [ ] I-005 discovery review and any resulting correction packages pass before final integration.
