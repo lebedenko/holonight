@@ -23,7 +23,7 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 | `holonight-images` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-images/docs/sdd/local-ci/README.md) |
 | `holonight-thumbnails` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-thumbnails/docs/sdd/local-ci/README.md) |
 | `holonight-search` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-search/docs/sdd/local-ci/README.md) |
-| `holonight-system-services` | Repository-owned CI scripts, task and workflow parity | Pending |
+| `holonight-system-services` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-system-services/docs/sdd/local-ci/README.md) |
 | `holonight-icons` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-hyprlock` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-appearance-adapters` | Repository-owned CI scripts, task and workflow parity | Pending |
