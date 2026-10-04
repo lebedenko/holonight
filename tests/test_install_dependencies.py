@@ -35,12 +35,19 @@ class DependencyChecks(unittest.TestCase):
 printf 'pacman %s\\n' "$*" >> "$LOG"
 [[ "$1" = -T ]] || exit 98
 shift
+if [[ -n "${PACMAN_FAILURE:-}" ]]; then
+  printf 'error: package database unavailable\\n' >&2
+  exit "$PACMAN_FAILURE"
+fi
+status=0
 for package in "$@"; do
   if [[ " ${MISSING_PACKAGE:-} " = *" $package "* ||
         ( "$package" = qt6-wayland && "${PACKAGING:-merged}" = merged ) ]]; then
     printf '%s\\n' "$package"
+    status=127
   fi
 done
+exit "$status"
 ''')
         self.command("cmake", '''
 printf 'cmake %s\\n' "$*" >> "$LOG"
@@ -110,6 +117,13 @@ printf 'Configure succeeded\\n'
         result = self.check(MISSING_PACKAGE="udisks2")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("sudo pacman -S --needed udisks2", result.stderr)
+        self.assertNotIn("cmake -S", self.log.read_text())
+
+    def test_package_database_failure_stops_preflight(self):
+        result = self.check(PACMAN_FAILURE="1")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("package database unavailable", result.stderr)
+        self.assertIn("pacman dependency check failed (exit 1)", result.stderr)
         self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_missing_viewer_dependencies(self):

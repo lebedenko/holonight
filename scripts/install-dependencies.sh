@@ -41,9 +41,17 @@ check_install_dependencies() {
     syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
     hicolor-icon-theme)
   if command -v pacman >/dev/null 2>&1; then
+    local package_output package_status=0
+    package_output="$(pacman -T "${packages[@]}")" || package_status=$?
+    # Deptest returns 127 for unsatisfied dependencies; other failures must
+    # not be mistaken for an empty (successful) dependency report.
+    if ((package_status != 0 && package_status != 127)); then
+      printf 'error: pacman dependency check failed (exit %s)\n' "$package_status" >&2
+      return 1
+    fi
     while IFS= read -r package_name; do
       [[ -n "$package_name" ]] && missing_packages+=("$package_name")
-    done < <(pacman -T "${packages[@]}" 2>/dev/null || true)
+    done <<< "$package_output"
   else
     missing_commands+=(pacman)
   fi
