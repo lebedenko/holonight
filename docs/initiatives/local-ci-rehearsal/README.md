@@ -1,6 +1,6 @@
 # Local CI Rehearsal
 
-Status: Draft
+Status: Accepted
 
 ## Goal
 
@@ -30,7 +30,7 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 | `holonight-ai` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-ai/docs/sdd/local-ci/README.md) |
 | `holonight-pkg-manager` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-pkg-manager/docs/sdd/local-ci/README.md) |
 | `holonight-greeter` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-greeter/docs/sdd/local-ci/README.md) |
-| `holonight-shell` | Repository-owned CI scripts, task and workflow parity | Pending |
+| `holonight-shell` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-shell/docs/sdd/local-ci/README.md) |
 | `holonight-settings` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-viewer` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-files` | Repository-owned CI scripts, task and workflow parity | Pending |
@@ -45,9 +45,20 @@ compiler options, environment and provider revisions. Failures are never skipped
 Complete logs, source state, tool versions and lane results live in ignored build/ci.
 Host source is mounted read-only. Container layers may be cached.
 
-The holonightd pilot has no provider dependency. Remaining contracts and specialized
-acceptance lanes must be inspected before accepting the full initiative. This ledger
-records decisions and evidence; pinned gitlinks remain authoritative integration state.
+All participating repositories and their existing validation workflows have been
+inspected. Settings retains its private D-Bus, import-policy and installed-startup
+checks. Viewer retains standard and sanitizer lanes plus a second installed-runtime
+container without workspace mounts or networking. Files retains both locale runs,
+installed-runtime fixtures and required filesystem-isolation coverage. Provider
+revisions belong in each module's shared lane scripts and local SDD; correct an
+incompatible published provider only with concrete API or verification evidence.
+
+The common immutable build image and checksum-pinned supplements establish matching
+environments; REUSE uses its pinned 6.2.0 environment. Disposable runner prerequisites
+for required namespaces remain infrastructure setup, without modifying local host
+AppArmor profiles or sysctls. This ledger records decisions and evidence; pinned
+gitlinks remain authoritative integration state. Acceptance settles scope and order;
+it does not claim the remaining implementations or integration have passed.
 
 ## Dependency order
 
