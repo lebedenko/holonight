@@ -33,7 +33,7 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 | `holonight-shell` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-shell/docs/sdd/local-ci/README.md) |
 | `holonight-settings` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-settings/docs/sdd/local-ci/README.md) |
 | `holonight-viewer` | Repository-owned CI scripts, task and workflow parity | [SDD](../../../holonight-viewer/docs/sdd/local-ci/README.md) |
-| `holonight-files` | Repository-owned CI scripts, task and workflow parity | Pending |
+| `holonight-files` | Repository-owned CI scripts, task and workflow parity | [SDD](../../../holonight-files/docs/sdd/local-ci/README.md) |
 
 ## Cross-repository contracts
 
@@ -57,8 +57,10 @@ The common immutable build image and checksum-pinned supplements establish match
 environments; REUSE uses its pinned 6.2.0 environment. Disposable runner prerequisites
 for required namespaces remain infrastructure setup, without modifying local host
 AppArmor profiles or sysctls. This ledger records decisions and evidence; pinned
-gitlinks remain authoritative integration state. Acceptance settles scope and order;
-it does not claim the remaining implementations or integration have passed.
+gitlinks remain authoritative integration state. All 17 module implementations have
+passed local acceptance and are committed locally; TASKS.md records their evidence.
+The initiative remains Accepted pending authorized publication, pin changes and
+final integration.
 
 ## Dependency order
 
@@ -72,7 +74,7 @@ it does not claim the remaining implementations or integration have passed.
 
 ## Integration acceptance criteria
 
-- [ ] Every module passes all local validation lanes and preserves specialized checks.
+- [x] Every module passes all local validation lanes and preserves specialized checks.
 - [ ] Every work package has a published implementation commit.
 - [ ] Participating submodules are clean and pinned to published commits.
 - [ ] Provider revisions and contracts match at the exact pinned revisions.
