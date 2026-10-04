@@ -1,0 +1,395 @@
+{
+  "checked_at": "2026-10-04T17:26:04.291720+00:00",
+  "repositories": {
+    "holonight-ai": {
+      "revision": "dbf192c39ea11aeaf901c0597a2ad2e3e3a3f96a",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:47Z",
+          "databaseId": 37220412281,
+          "headSha": "dbf192c39ea11aeaf901c0597a2ad2e3e3a3f96a",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-ai/actions/runs/37220412281",
+          "workflowName": "CI"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:47Z",
+          "databaseId": 37220412253,
+          "headSha": "dbf192c39ea11aeaf901c0597a2ad2e3e3a3f96a",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-ai/actions/runs/37220412253",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-appearance-adapters": {
+      "revision": "7c8bcb89ae90ac1db818eb4aa786ce356ff333f2",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:25:33Z",
+          "databaseId": 37220461605,
+          "headSha": "7c8bcb89ae90ac1db818eb4aa786ce356ff333f2",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-appearance-adapters/actions/runs/37220461605",
+          "workflowName": "CI"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:25:33Z",
+          "databaseId": 37220461597,
+          "headSha": "7c8bcb89ae90ac1db818eb4aa786ce356ff333f2",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-appearance-adapters/actions/runs/37220461597",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-config": {
+      "revision": "b4b0a2482979338079699198d4f4249b6e78e338",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:30Z",
+          "databaseId": 37220393188,
+          "headSha": "b4b0a2482979338079699198d4f4249b6e78e338",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-config/actions/runs/37220393188",
+          "workflowName": "CI"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:30Z",
+          "databaseId": 37220393172,
+          "headSha": "b4b0a2482979338079699198d4f4249b6e78e338",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-config/actions/runs/37220393172",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-files": {
+      "revision": "4d95dd7737217a84e06aedd83755c041650c024b",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:57Z",
+          "databaseId": 37220422171,
+          "headSha": "4d95dd7737217a84e06aedd83755c041650c024b",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-files/actions/runs/37220422171",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:57Z",
+          "databaseId": 37220422139,
+          "headSha": "4d95dd7737217a84e06aedd83755c041650c024b",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-files/actions/runs/37220422139",
+          "workflowName": "Build and checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-greeter": {
+      "revision": "d99e0a17f95af977a42785957e9311597e38bab0",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:51Z",
+          "databaseId": 37220416495,
+          "headSha": "d99e0a17f95af977a42785957e9311597e38bab0",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-greeter/actions/runs/37220416495",
+          "workflowName": "Publish CI Image"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:51Z",
+          "databaseId": 37220416482,
+          "headSha": "d99e0a17f95af977a42785957e9311597e38bab0",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-greeter/actions/runs/37220416482",
+          "workflowName": "CI"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:51Z",
+          "databaseId": 37220416465,
+          "headSha": "d99e0a17f95af977a42785957e9311597e38bab0",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-greeter/actions/runs/37220416465",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-hyprlock": {
+      "revision": "def9618fca833535275e8a8aa9a0e577acda8377",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:45Z",
+          "databaseId": 37220409962,
+          "headSha": "def9618fca833535275e8a8aa9a0e577acda8377",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-hyprlock/actions/runs/37220409962",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:45Z",
+          "databaseId": 37220409937,
+          "headSha": "def9618fca833535275e8a8aa9a0e577acda8377",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-hyprlock/actions/runs/37220409937",
+          "workflowName": "Build and package checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-icons": {
+      "revision": "46178e998eea9cee446f17c7ab164eb513a74ed2",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:43Z",
+          "databaseId": 37220407914,
+          "headSha": "46178e998eea9cee446f17c7ab164eb513a74ed2",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-icons/actions/runs/37220407914",
+          "workflowName": "Theme verification"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-images": {
+      "revision": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:35Z",
+          "databaseId": 37220399054,
+          "headSha": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-images/actions/runs/37220399054",
+          "workflowName": "Build and checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-pkg-manager": {
+      "revision": "c84af366c4043dbc8508140605b19290e9cc60ac",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:49Z",
+          "databaseId": 37220415088,
+          "headSha": "c84af366c4043dbc8508140605b19290e9cc60ac",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-pkg-manager/actions/runs/37220415088",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:49Z",
+          "databaseId": 37220415026,
+          "headSha": "c84af366c4043dbc8508140605b19290e9cc60ac",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-pkg-manager/actions/runs/37220415026",
+          "workflowName": "CI"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-qt": {
+      "revision": "43cae7b9e2b04d10882e2319caf25b85af8cacc2",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:33Z",
+          "databaseId": 37220396962,
+          "headSha": "43cae7b9e2b04d10882e2319caf25b85af8cacc2",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-qt/actions/runs/37220396962",
+          "workflowName": "CI"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:33Z",
+          "databaseId": 37220396942,
+          "headSha": "43cae7b9e2b04d10882e2319caf25b85af8cacc2",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-qt/actions/runs/37220396942",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-search": {
+      "revision": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:41Z",
+          "databaseId": 37220406566,
+          "headSha": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-search/actions/runs/37220406566",
+          "workflowName": "Build and checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-settings": {
+      "revision": "9829718cc01a4aab5c378493b9228406954cc143",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:52Z",
+          "databaseId": 37220417825,
+          "headSha": "9829718cc01a4aab5c378493b9228406954cc143",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-settings/actions/runs/37220417825",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:52Z",
+          "databaseId": 37220417822,
+          "headSha": "9829718cc01a4aab5c378493b9228406954cc143",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-settings/actions/runs/37220417822",
+          "workflowName": "CI"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-system-services": {
+      "revision": "3d76f6df2006813d5c160745dfe03a6cea4e1b83",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:41Z",
+          "databaseId": 37220406133,
+          "headSha": "3d76f6df2006813d5c160745dfe03a6cea4e1b83",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-system-services/actions/runs/37220406133",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:41Z",
+          "databaseId": 37220406094,
+          "headSha": "3d76f6df2006813d5c160745dfe03a6cea4e1b83",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-system-services/actions/runs/37220406094",
+          "workflowName": "Build and component checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-thumbnails": {
+      "revision": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:40Z",
+          "databaseId": 37220404728,
+          "headSha": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-thumbnails/actions/runs/37220404728",
+          "workflowName": "Build and checks"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-viewer": {
+      "revision": "025bba9107dcc1016b3cb0e5588d533fe7443825",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:54Z",
+          "databaseId": 37220419857,
+          "headSha": "025bba9107dcc1016b3cb0e5588d533fe7443825",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-viewer/actions/runs/37220419857",
+          "workflowName": "Build and checks"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:54Z",
+          "databaseId": 37220419823,
+          "headSha": "025bba9107dcc1016b3cb0e5588d533fe7443825",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonight-viewer/actions/runs/37220419823",
+          "workflowName": "Licensing"
+        }
+      ],
+      "error": ""
+    },
+    "holonightd": {
+      "revision": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-04T17:24:21Z",
+          "databaseId": 37220384089,
+          "headSha": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+          "status": "completed",
+          "url": "https://github.com/lebedenko/holonightd/actions/runs/37220384089",
+          "workflowName": "Licensing"
+        },
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T17:24:21Z",
+          "databaseId": 37220384080,
+          "headSha": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonightd/actions/runs/37220384080",
+          "workflowName": "CI"
+        }
+      ],
+      "error": ""
+    },
+    "holonight-shell": {
+      "revision": "a15b2aa90d2e803bc82f8e4a58c05ee220de19bb",
+      "checked_at": "2026-10-04T18:15:38.204053+00:00",
+      "query_exit": 0,
+      "runs": [
+        {
+          "conclusion": "",
+          "createdAt": "2026-10-04T18:15:17Z",
+          "databaseId": 37223709825,
+          "headSha": "a15b2aa90d2e803bc82f8e4a58c05ee220de19bb",
+          "status": "in_progress",
+          "url": "https://github.com/lebedenko/holonight-shell/actions/runs/37223709825",
+          "workflowName": "CI"
+        }
+      ],
+      "error": ""
+    }
+  }
+}

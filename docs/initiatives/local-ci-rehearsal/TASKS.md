@@ -19,10 +19,22 @@
 | CI-015 | `holonight-settings` | Rehearse all push validation via task ci | CI-014 | [SDD](../../../holonight-settings/docs/sdd/local-ci/README.md) | Done | `0639858`, `9829718` (local) | 2026-10-04: full task ci exits 0; all three lanes pass (55 CTest, private D-Bus, import-policy fixtures, QML checks, four installed startup modes and activation prefix, full static/consumer, REUSE). Exact-provider host task tidy and 55 tests pass with clang 23. Launcher/context regressions, 1,995-file isolation and 12 host-owned evidence files pass. Qt corrected to published 8d11e3e and ShellConfig to published 50143ee for existing API/version requirements. No publication/pin update |
 | CI-016 | `holonight-viewer` | Rehearse all push validation via task ci | CI-015 | [SDD](../../../holonight-viewer/docs/sdd/local-ci/README.md) | Done | `ae21cc6`, `2a0d2d0`, `025bba9` (local) | 2026-10-04: full task ci exits 0; standard/sanitizer/licensing and installed-runtime checks pass (25 CTest each, ten pixel style/scale checks each, six runtime formats). Exact-provider native task check/clang 23 and affected retests pass. Eight launcher/tooling regressions, 11,496-file isolation and host-owned evidence pass. Qt corrected to published f10e8c8 for existing lowercaseLetters APIs. Runtime warning follow-up passes. No publication/pin update |
 | CI-017 | `holonight-files` | Rehearse all push validation via task ci | CI-016 | [SDD](../../../holonight-files/docs/sdd/local-ci/README.md) | Done | `c05eadc`, `6c1dc0a`, `4d95dd7` (local) | 2026-10-04: clean build/test/static/package and both locales pass (21 CTest each); required offline namespace and REUSE lanes pass. Runtime-only offscreen-environment correction passes installed verification and all nine fixtures; the preceding full task ci exit 201 is retained accurately. Native task check/clang 23 and affected both-locale retests pass; 116-unit native/pinned audits, eleven regressions, 61 fixture hashes, unavailable-namespace fault propagation, 78,421-file isolation and 3,412 host-owned artifacts pass. Six provider pins preserved. No publication/pin update |
-| CI-018 | umbrella | Verify published and pinned integration | CI-001–CI-017 | — | Planned | — | Publication and pin changes excluded from this session |
+| CI-018 | umbrella | Verify published and pinned integration | CI-001–CI-017 | — | Planned | — | Publication and pin changes authorized on 2026-10-04; final exact-pin ecosystem integration remains outstanding |
 
 States: Planned, Ready, In Progress, Done, Blocked, Superseded.
 Done requires a local commit and completed local verification; it does not mean Integrated.
 Record exact acceptance commands, results and verification date before final integration.
 
 2026-10-03 launcher follow-up: CI-001–CI-004 preserve rootless Podman UID/GID mapping with keep-id; all four launcher regressions and documentation licensing pass per module. Docker application checks remain valid. Real Podman execution is unverified because it is not installed.
+
+2026-10-04 publication handoff: the user authorized committing, publishing and
+pinning, with careful merges of concurrent repository work. See
+[PUBLICATION.md](PUBLICATION.md) for published revisions, merge acceptance and
+the one-time hosted CI snapshot. Earlier “local”/“no publication” statements above
+record their original verification dates rather than current publication state.
+
+Publication completed on 2026-10-04: all 17 module revisions are published and
+pinned by the umbrella handoff commit. Appearance Adapters merge `7c8bcb8` and
+Shell merge `a15b2aa` preserve incoming work and pass affected local acceptance;
+umbrella merge `6451c23` retains the installer fix. CI-018 remains Planned because
+exact-pin ecosystem integration has not been performed.

@@ -11,7 +11,10 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 ## Non-goals
 
 - Registry publication, releases and artifact uploads.
-- Pushes and umbrella submodule-pin changes in this session.
+- Releases and changes to dependency revisions without compatibility evidence.
+
+The user authorized publication and umbrella pin changes on 2026-10-04; see
+[the publication handoff](PUBLICATION.md) for exact revisions and hosted CI evidence.
 
 ## Participating repositories
 
@@ -59,8 +62,8 @@ for required namespaces remain infrastructure setup, without modifying local hos
 AppArmor profiles or sysctls. This ledger records decisions and evidence; pinned
 gitlinks remain authoritative integration state. All 17 module implementations have
 passed local acceptance and are committed locally; TASKS.md records their evidence.
-The initiative remains Accepted pending authorized publication, pin changes and
-final integration.
+The initiative remains Accepted pending final ecosystem integration. Publication
+and pin changes are authorized and recorded separately in the handoff.
 
 ## Dependency order
 
@@ -75,7 +78,7 @@ final integration.
 ## Integration acceptance criteria
 
 - [x] Every module passes all local validation lanes and preserves specialized checks.
-- [ ] Every work package has a published implementation commit.
-- [ ] Participating submodules are clean and pinned to published commits.
+- [x] Every work package has a published implementation commit.
+- [x] Participating submodules are clean and pinned to published commits.
 - [ ] Provider revisions and contracts match at the exact pinned revisions.
 - [ ] Required ecosystem integration checks pass in dependency order.
