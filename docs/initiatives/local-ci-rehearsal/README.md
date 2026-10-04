@@ -31,7 +31,7 @@ GitHub CI. Start with holonightd, then adopt module by module after local accept
 | `holonight-pkg-manager` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-pkg-manager/docs/sdd/local-ci/README.md) |
 | `holonight-greeter` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-greeter/docs/sdd/local-ci/README.md) |
 | `holonight-shell` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-shell/docs/sdd/local-ci/README.md) |
-| `holonight-settings` | Repository-owned CI scripts, task and workflow parity | Pending |
+| `holonight-settings` | Repository-owned CI scripts, task and workflow parity | [Local SDD](../../../holonight-settings/docs/sdd/local-ci/README.md) |
 | `holonight-viewer` | Repository-owned CI scripts, task and workflow parity | Pending |
 | `holonight-files` | Repository-owned CI scripts, task and workflow parity | Pending |
 
