@@ -9,6 +9,13 @@ INSTALLER = Path(__file__).resolve().parents[1] / "scripts/install.sh"
 
 
 class InstallOrder(unittest.TestCase):
+    def test_system_services_provider_precedes_qt(self):
+        script = INSTALLER.read_text()
+        modules = re.search(r"^readonly MODULES=\(([^)]*)\)$", script, re.MULTILINE)
+        self.assertIsNotNone(modules)
+        order = modules.group(1).split()
+        self.assertLess(order.index("holonight-system-services"), order.index("holonight-qt"))
+
     def test_search_provider_precedes_files(self):
         script = INSTALLER.read_text()
         modules = re.search(r"^readonly MODULES=\(([^)]*)\)$", script, re.MULTILINE)
