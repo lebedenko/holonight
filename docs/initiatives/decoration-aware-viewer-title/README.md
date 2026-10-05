@@ -2,6 +2,8 @@
 
 Status: Accepted
 
+Presentation policy superseded by [backend-aware external title presentation](../external-window-title-presentation/README.md). Historical scope and verification records below remain unchanged.
+
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
 ## Goal
