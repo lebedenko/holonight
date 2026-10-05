@@ -1,0 +1,12 @@
+# Configuration architecture — Coordination Ledger
+
+| ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
+|---|---|---|---|---|---|---|---|
+| CA-001 | `holonight-config` | Neutral documents, schemas, preserving edits, locked storage and appearance v2 | — | [holonight-config](../../../holonight-config/docs/sdd/configuration-architecture/README.md) | Done | `7e83cacde8911452741420a29abbfe4465b7d52b` | 2026-10-05: focused CTest/installed consumer, full tidy/format and clean `task ci` passed; canonical origin/main published. Latest [CI run](https://github.com/lebedenko/holonight-config/actions/runs/37367211537): revision `7e83cac`, queued, conclusion empty at one-time check. |
+| CA-002 | `holonight-qt` | Reusable Qt watching and appearance reads | CA-001 | [holonight-qt](../../../holonight-qt/docs/sdd/configuration-architecture/README.md) | Ready | — | Baseline `c434d6821140d5269550cb2388820f9cbfb2e163`; acceptance pending |
+| CA-003 | `holonight-shell` | Shell-owned schema and validated sparse reads | CA-002 | [holonight-shell](../../../holonight-shell/docs/sdd/configuration-architecture/README.md) | Planned | — | Baseline `589ddc4023766ade9d95bdbc04bdfca502c0cdd0`; acceptance pending |
+| CA-004 | `holonight-appearance-adapters` | v1/v2 compatibility and isolated application | CA-003 | [holonight-appearance-adapters](../../../holonight-appearance-adapters/docs/sdd/configuration-architecture/README.md) | Planned | — | Baseline `7c8bcb89ae90ac1db818eb4aa786ce356ff333f2`; acceptance pending |
+| CA-005 | `holonight-settings` | Pending edits, per-value conflicts, resets and guarded rollback | CA-001–CA-004 | [holonight-settings](../../../holonight-settings/docs/sdd/configuration-architecture/README.md) | Planned | — | Baseline `9829718cc01a4aab5c378493b9228406954cc143`; acceptance pending |
+| CA-006 | umbrella | Published revisions, contracts, standalone consumers and manual ecosystem integration | CA-001–CA-005 | This initiative | Planned | — | Pending all local acceptance and manual checks |
+
+States: Planned, Ready, In Progress, Done, Blocked, Superseded. Done requires a locally verified commit; Integrated requires final umbrella acceptance.

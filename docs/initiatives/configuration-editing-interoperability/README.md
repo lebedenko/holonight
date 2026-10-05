@@ -1,6 +1,9 @@
 # Manual configuration editing and Settings interoperability
 
-Status: Draft
+Status: Abandoned
+
+Replaced by [configuration architecture](../configuration-architecture/README.md). All work packages are superseded.
+The proposed Files search-exclusion page in Settings is explicitly cancelled; Files owns its settings UI.
 
 ## Goal
 
