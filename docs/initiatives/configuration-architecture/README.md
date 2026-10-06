@@ -21,6 +21,7 @@ Replaces [configuration editing interoperability](../configuration-editing-inter
 | `holonight-shell` | Shell-owned schema and validated sparse reads | [holonight-shell SDD](../../../holonight-shell/docs/sdd/configuration-architecture/README.md) |
 | `holonight-appearance-adapters` | v1/v2 compatibility and isolated application | [holonight-appearance-adapters SDD](../../../holonight-appearance-adapters/docs/sdd/configuration-architecture/README.md) |
 | `holonight-settings` | Pending edits, per-value conflicts, resets and guarded rollback | [holonight-settings SDD](../../../holonight-settings/docs/sdd/configuration-architecture/README.md) |
+| `holonight-viewer` | Standalone acceptance fixture corrections only; configuration adoption remains deferred | [Viewer verification SDD](../../../holonight-viewer/docs/sdd/configuration-architecture-verification/README.md) |
 
 ## Cross-repository contracts
 
@@ -69,23 +70,26 @@ revision still being current; concurrent changes survive and must not be reporte
 3. Shell schema.
 4. Appearance adapters compatibility.
 5. Settings adoption after all readers pass.
-6. Umbrella integration.
+6. Standalone consumer acceptance (including CA-006a Viewer fixture corrections).
+7. Umbrella integration.
 
 Providers must be published and pinned before dependent work begins. Each package owns one repository.
 
 ## Integration acceptance criteria
 
-- [ ] Preservation fixtures cover comments, unknown fields, quoted/dotted keys, inline tables, multiline strings, Unicode, CRLF, arrays/AoT, insertion/reset and rejected patches.
-- [ ] Merge, convergence, conflicts/reset, cooperating locks and revision-change aborts pass.
-- [ ] Unreadable files, permissions, interrupted writes, replacement failures, symlink retargeting and durability outcomes pass.
-- [ ] v1 behavior remains compatible; sparse v2/reset and surgical first-save upgrades pass; unsupported versions cannot be overwritten.
-- [ ] Runtime invalid/startup/missing/delete/recreate and unchanged-signal scenarios pass.
-- [ ] Settings Save/Discard, external updates, per-value resolution, partial saves and adapter/rollback concurrency pass.
-- [ ] Each repository passes required clean acceptance and installed-package checks at accepted provider revisions.
-- [ ] Files and Viewer pass standalone checks without Shell or Settings installed.
-- [ ] Every participating submodule is clean and pinned to a canonical published implementation commit.
+- [x] Preservation fixtures cover comments, unknown fields, quoted/dotted keys, inline tables, multiline strings, Unicode, CRLF, arrays/AoT, insertion/reset and rejected patches.
+- [x] Merge, convergence, conflicts/reset, cooperating locks and revision-change aborts pass.
+- [x] Unreadable files, permissions, interrupted writes, replacement failures, symlink retargeting and durability outcomes pass.
+- [x] v1 behavior remains compatible; sparse v2/reset and surgical first-save upgrades pass; unsupported versions cannot be overwritten.
+- [x] Runtime invalid/startup/missing/delete/recreate and unchanged-signal scenarios pass.
+- [x] Settings Save/Discard, external updates, per-value resolution, partial saves and adapter/rollback concurrency pass.
+- [x] Each repository passes required clean acceptance and installed-package checks at accepted provider revisions.
+- [x] Files and Viewer pass standalone checks without Shell or Settings installed.
+- [x] Every participating submodule is clean and pinned to a canonical published implementation commit.
 - [ ] Dependency-order integration and user-operated concurrent-edit/appearance checks are recorded with dates and revisions.
 
 Staged saves must additionally return the exact pre-write snapshot captured under the advisory lock. This is the
 rollback baseline: a pre-lock read can precede unrelated edits merged during saving. CA-001a adds this additive
 contract and corrects appearance storage-error classification before Settings adoption.
+
+Automated integration evidence and remaining manual requirements: [verification record](VERIFICATION.md).

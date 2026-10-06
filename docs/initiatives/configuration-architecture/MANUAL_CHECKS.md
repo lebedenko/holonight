@@ -58,8 +58,9 @@ same terminal. Both application windows now have independent baselines and edit 
 3. In the first window, change workspace count to 8 without saving. In the second, change it to 9 and save.
    Review the first window's conflict: baseline, external and pending values must be visible. Choose **Keep pending**
    for that preference and save; unrelated values and text must survive.
-4. Repeat a same-value conflict, choose **Accept external**, and confirm only that preference's draft is removed.
-   Other pending preferences remain editable and dirty.
+4. Make another pending preference change in the first window, then repeat a conflict on workspace count with
+   different pending and external values. Choose **Accept external** for workspace count and confirm only its draft
+   is removed. The other pending preference must remain editable and dirty.
 5. Expand **Defaults and overrides**, reset workspace count, and save. It must return to its default while the `count`
    assignment disappears; comments, surrounding sections and unknown fields remain.
 6. Make a pending change, edit the document in a text editor to an invalid known value, and save in Settings.
