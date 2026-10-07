@@ -1,6 +1,7 @@
 # User-operated configuration checks
 
-These checks remain pending until the user reports the results. Automated tests do not substitute for them.
+User reported all checks passed on 2026-10-07, with repeated separator binding-loop warnings as the only issue.
+The warning correction and exact verification revisions are recorded in [VERIFICATION.md](VERIFICATION.md).
 Use the accepted revisions in `TASKS.md`; the Settings binary must be rebuilt from its recorded implementation commit.
 Do not automate pointer movement or window focus. All interaction below is performed by the user.
 

@@ -1,6 +1,6 @@
 # Configuration architecture integration verification
 
-Date: 2026-10-06. Initiative remains Accepted until user-operated checks pass.
+Automated standalone verification: 2026-10-06. Manual result reported: 2026-10-07. Initiative remains Accepted until the final accepted SDK follow-up is recorded.
 
 ## Published implementation acceptance
 
@@ -35,10 +35,20 @@ Detailed command/output artifacts are retained under each consumer's `build/conf
 
 ## User-operated checks
 
-[Manual guide](MANUAL_CHECKS.md). Results pending; user confirmed they are running the checks. The coordinator requested concurrent-edit, per-value keep/accept, reset, invalid-document recovery and appearance/native-output observations. No desktop pointer or focus automation was performed. Manual results, date and exact implementation revisions must be recorded before CA-006 becomes Done or this initiative becomes Integrated.
+[Manual guide](MANUAL_CHECKS.md). On 2026-10-07 the user reported all checks passed: concurrent editing, per-value resolution, reset, invalid-document recovery and appearance application checks. The only observed issue was repeated `HnSettingsRow`/`HnSeparator` implicit-height binding-loop warnings, tracked by CA-002b. Native adapter availability was not separately enumerated; this report does not claim every desktop-specific adapter was installed. No desktop pointer or focus automation was performed. These checks used Config `d6a392b41991f70a004d58f7694c7b6115cb7280`, Qt `98803bca05e16ae0d0784a6cb43b0ace561385de`, Shell `e490ff73f3da4b3a671aaf0496c8dbdc94a53ff8`, adapters `95a9078e8d4f0b2d9c5a69ee6040388558eb9251` and Settings `7bec8a8a20127bfa04c72edfdf380866959c3b48`. The subsequent separator-only correction requires automated warning-sensitive consumer verification; configuration behavior and effective appearance contracts remain unchanged.
 
 ## Final automated review
 
 All participating repositories and unchanged standalone providers were clean and at canonical `origin/main` revisions after publication. Viewer's one-time hosted check for `66b1ea4fdc1878b344440dd68674a4c1f646dbeb` was in_progress, conclusion empty: [run 37445706427](https://github.com/lebedenko/holonight-viewer/actions/runs/37445706427). No hosted completion polling was performed.
 
 Complete local logs were inspected: Files full acceptance 829 lines; Viewer clean acceptance 350 lines, static-analysis initial/resumed 147/90 lines, final licensing/import/install 38 lines and affected tests 60 lines. Final actionable diagnostics were zero; initial fixture annotation errors and sandbox socket restrictions were corrected and the affected checks passed. Documentation links and final diff were checked before checkpointing.
+
+## Separator warning correction — 2026-10-07
+
+Qt `8eadfa36396315da56d734a83b2145b6d71d51cc` fixes synchronous geometry re-entry while evaluating Settings row implicit height, and computes paint bounds after thickness-driven resizing. A warning-sensitive six-row layout fixture reproduces the user's exact warning on the previous revision. Six DPR rendering registrations pass after correction; synchronous thickness/visibility and physical coverage contracts remain intact. Config reader, schema and editing contracts are unchanged.
+
+Focused source/test analysis and format passed. Clean Qt `task ci` passed build-test and licensing at `build/ci/20261007T163140Z-z1y22sdx/`, 98/98 registrations; complete 1043/27-line logs reviewed. Five expected CMake private-module ABI notices were checked against matching Qt/toolchain versions; no actionable or runtime binding-loop diagnostics remained. The clean lane consumes Config d6a392b.
+
+Unchanged Settings was built in `build/separator-qt-acceptance` with `CMAKE_PREFIX_PATH` naming the isolated corrected Qt install and its accepted Config/System/Shell SDK. `tests/check_settings_startup.py` passed four production startup modes and two controls acceptance modes at DPR 1.25 and 1.5625 (12/12), verifying loaded plugin origins and rejecting unexpected diagnostics. Logs: `build/separator-provider-acceptance-build.log`, `build/separator-provider-startup.log`. No Settings source changes.
+
+Published canonical Qt revision confirmed before pinning. One-time hosted [CI observation](https://github.com/lebedenko/holonight-qt/actions/runs/37653739282): exact revision in_progress, conclusion empty. No hosted polling performed.
