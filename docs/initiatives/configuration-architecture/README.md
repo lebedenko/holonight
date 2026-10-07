@@ -1,6 +1,6 @@
 # Configuration architecture improvement
 
-Status: Accepted
+Status: Integrated
 
 ## Goal
 
@@ -86,10 +86,10 @@ Providers must be published and pinned before dependent work begins. Each packag
 - [x] Each repository passes required clean acceptance and installed-package checks at accepted provider revisions.
 - [x] Files and Viewer pass standalone checks without Shell or Settings installed.
 - [x] Every participating submodule is clean and pinned to a canonical published implementation commit.
-- [ ] Dependency-order integration and user-operated concurrent-edit/appearance checks are recorded with dates and revisions.
+- [x] Dependency-order integration and user-operated concurrent-edit/appearance checks are recorded with dates and revisions.
 
 Staged saves must additionally return the exact pre-write snapshot captured under the advisory lock. This is the
 rollback baseline: a pre-lock read can precede unrelated edits merged during saving. CA-001a adds this additive
 contract and corrects appearance storage-error classification before Settings adoption.
 
-Automated integration evidence and remaining manual requirements: [verification record](VERIFICATION.md).
+Automated and user-operated integration evidence: [verification record](VERIFICATION.md).

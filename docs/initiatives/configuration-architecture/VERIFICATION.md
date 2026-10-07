@@ -1,6 +1,6 @@
 # Configuration architecture integration verification
 
-Automated standalone verification: 2026-10-06. Manual result reported: 2026-10-07. Initiative remains Accepted until the final accepted SDK follow-up is recorded.
+Automated standalone verification: 2026-10-06. Manual result reported: 2026-10-07. Final integration completed on 2026-10-07.
 
 ## Published implementation acceptance
 
@@ -52,3 +52,21 @@ Focused source/test analysis and format passed. Clean Qt `task ci` passed build-
 Unchanged Settings was built in `build/separator-qt-acceptance` with `CMAKE_PREFIX_PATH` naming the isolated corrected Qt install and its accepted Config/System/Shell SDK. `tests/check_settings_startup.py` passed four production startup modes and two controls acceptance modes at DPR 1.25 and 1.5625 (12/12), verifying loaded plugin origins and rejecting unexpected diagnostics. Logs: `build/separator-provider-acceptance-build.log`, `build/separator-provider-startup.log`. No Settings source changes.
 
 Published canonical Qt revision confirmed before pinning. One-time hosted [CI observation](https://github.com/lebedenko/holonight-qt/actions/runs/37653739282): exact revision in_progress, conclusion empty. No hosted polling performed.
+
+## Final integration — 2026-10-07
+
+After CA-002b publication/pinning, `task deps` refreshed Settings, Files and Viewer SDKs. Provider-state metadata confirms Qt `8eadfa36396315da56d734a83b2145b6d71d51cc` and clean source hashes in all three prefixes. A process-mapping inspection found no applications using those SDKs before refresh.
+
+Accepted-provider follow-ups, with explicit SDK `LD_LIBRARY_PATH` and isolated headless/D-Bus environments:
+
+- Settings: `ctest --test-dir build/test -R 'settings_startup|settings_controls' --output-on-failure`: 6/6 passed, 15.10 seconds; no unexpected diagnostics.
+- Files: `ctest --test-dir build/test -R 'files-separator|files-provider-revisions' --output-on-failure`: 13/13 passed, 8.11 seconds.
+- Viewer: `ctest --test-dir build/test -R 'viewer-menu-separators|viewer-runtime-probe' --output-on-failure`: 11/11 passed, 73.53 seconds.
+
+For each standalone consumer, install the accepted Qt SDK build into a disposable DESTDIR payload with `cmake --install build/deps/holonight-qt --prefix /usr`. Derive a final runtime image from the already verified matching runtime by copying only that payload. Run `docker run --rm --network none holonight-configuration-files-final` and `holonight-configuration-viewer-final`: both complete installed-runtime scripts passed. No Shell/Settings, source mounts or network access were added. Final image IDs: Files `sha256:a8a74c9bebd55076a4dc87ac54d56b31cad9eb83aa857d91778af4fd9735e3b3`; Viewer `sha256:bb8f6b1bbce55e1bd093543b73682a310d20707b4b373d6e23a1836365c5a5dd`.
+
+Final follow-up logs: each consumer's `build/separator-final-providers.log`, `build/separator-final-consumer-tests.log`, `build/separator-final-runtime-image.log` and `build/separator-final-installed-runtime.log`. Complete outputs were inspected; no actionable errors or runtime binding-loop warnings remained. Earlier full consumer acceptance remains applicable to unchanged code; the affected separator/runtime checks were repeated at the final provider revision.
+
+Umbrella closure checks: `task license-check` passed for the umbrella and initialized submodules; `task test:installer` passed 37/37 in 181.525 seconds; `bash -n scripts/install.sh scripts/install-dependencies.sh scripts/uninstall.sh` passed. Logs: `build/configuration-final-licensing.log`, `build/configuration-final-installer.log`. Local documentation links and `git diff --check` passed. Final audit compared each participating/provider HEAD with the authoritative gitlink and canonical origin/main; all matched and all submodules were clean.
+
+The user-reported manual pass is retained at its recorded revisions. The subsequent change is confined to separator geometry, with warning-sensitive rendering and actual Settings consumer checks passing; configuration editing, reload, conflict and adapter behavior are unchanged. All acceptance requirements are satisfied. CA-006 is Done and the initiative is Integrated.
