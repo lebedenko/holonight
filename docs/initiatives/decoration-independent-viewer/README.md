@@ -10,7 +10,9 @@ Show content headings only in fullscreen; preserve native content titles in ever
 
 ## Non-goals
 
-- Publication, deployment, submodule pin updates, and unrelated Shell edits.
+- Deployment and unrelated Shell edits.
+
+Publication and submodule pin updates were authorized separately on 2026-10-08.
 
 ## Participating repositories
 
@@ -37,7 +39,7 @@ Local handoffs use explicit staged provider prefixes. Publication and pinning ar
 
 ## Integration acceptance criteria
 
-- [ ] Every repository work package has a published commit and passed local verification.
+- [x] Every repository work package has a published commit and passed local verification.
 - [ ] Participating submodules are clean and pinned to those published commits.
 - [ ] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
