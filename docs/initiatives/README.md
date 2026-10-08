@@ -34,3 +34,5 @@ tests, and commits.
 - [Configuration architecture](configuration-architecture/README.md) — Integrated; Appearance and Shell first, preserving edits and app-owned configuration.
 - [Manual configuration editing and Settings interoperability](configuration-editing-interoperability/README.md) — Abandoned; replaced by configuration architecture; Files Settings page cancelled.
 - [Developer tooling and standalone Serena](developer-tooling/README.md) — accepted follow-up to maintainability standardization.
+
+- [Decoration-independent Viewer](decoration-independent-viewer/README.md) — Accepted; replaces the abandoned decoration-aware Viewer and external window title presentation initiatives. Local verification and native integration are recorded in its ledger.

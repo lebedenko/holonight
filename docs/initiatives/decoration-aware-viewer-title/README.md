@@ -1,6 +1,6 @@
 # Decoration-aware Viewer toolbar titles
 
-Status: Accepted
+Status: Abandoned
 
 Presentation policy superseded by [backend-aware external title presentation](../external-window-title-presentation/README.md). Historical scope and verification records below remain unchanged.
 
@@ -40,3 +40,5 @@ This session explicitly permits local provider → Viewer verification before pu
 - [ ] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
 - [ ] Required manual ecosystem checks pass.
+
+Replaced by [Decoration-independent Viewer](../decoration-independent-viewer/README.md). Historical implementation and verification are retained.

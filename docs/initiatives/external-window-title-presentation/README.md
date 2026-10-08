@@ -1,6 +1,6 @@
 # Backend-aware external title presentation
 
-Status: Accepted
+Status: Abandoned
 
 Allowed statuses: `Draft`, `Accepted`, `Integrated`, or `Abandoned`.
 
@@ -46,3 +46,5 @@ This authorized local implementation uses staged provider install trees before p
 - [ ] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
 - [ ] Required manual ecosystem checks pass.
+
+Replaced by [Decoration-independent Viewer](../decoration-independent-viewer/README.md). Historical implementation and verification are retained.
