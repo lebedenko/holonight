@@ -37,4 +37,4 @@ tests, and commits.
 
 - [Decoration-independent Viewer](decoration-independent-viewer/README.md) — Accepted; replaces the abandoned decoration-aware Viewer and external window title presentation initiatives. Local verification and native integration are recorded in its ledger.
 
-- [FileChooser portal](filechooser-portal/README.md) — Accepted; Files provider local delivery in progress; standalone backend and Shell routing follow its published and pinned handoff.
+- [FileChooser portal](filechooser-portal/README.md) — Accepted; Files provider locally committed and verified, publication/pin authorization pending; standalone backend and Shell routing follow its published and pinned handoff.
