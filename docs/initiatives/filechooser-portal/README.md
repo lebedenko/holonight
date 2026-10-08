@@ -17,7 +17,7 @@ Keep Files' command handling, operations, restore/persistence and existing searc
 | Repository | Ownership in this initiative | Local SDD |
 |---|---|---|
 | holonight-files | Installed browsing Core/Quick provider; application adoption | [SDD](../../../holonight-files/docs/sdd/filechooser-provider/README.md) |
-| xdg-desktop-portal-holonight | Protocol, lifecycle, chooser, Wayland parenting | Pending repository creation |
+| xdg-desktop-portal-holonight | Protocol, lifecycle, chooser, Wayland parenting | [SDD](../../../xdg-desktop-portal-holonight/docs/sdd/filechooser/README.md) |
 | holonight-shell | FileChooser routing; preserve Settings identity | Pending provider handoff |
 
 ## Cross-repository contracts
