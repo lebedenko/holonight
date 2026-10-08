@@ -23,7 +23,7 @@ Show content headings only in fullscreen; preserve native content titles in ever
 
 ## Cross-repository contracts
 
-Remove the decoration QML helpers and compositor title-bar observations and explicit refresh API. Preserve inventory/PID/fullscreen, activation and event refresh. Shell plugins use IID /3.0 and metadata version 3. Viewer reuses its heading computation for grid native titles.
+Remove the decoration QML helpers and compositor title-bar observations and explicit refresh API. Preserve inventory/PID/fullscreen, activation and event refresh. Shell plugins use IID /3.0 with matching metadata IID. Viewer reuses its heading computation for grid native titles.
 
 ## Dependency order
 
@@ -41,4 +41,6 @@ Local handoffs use explicit staged provider prefixes. Publication and pinning ar
 - [ ] Participating submodules are clean and pinned to those published commits.
 - [ ] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
-- [ ] Required manual ecosystem checks pass.
+- [x] Required native Viewer title/toolbar/fullscreen checks passed by user confirmation on 2026-10-08.
+
+Native Viewer title/toolbar/fullscreen checks passed by user confirmation on 2026-10-08. This local acceptance is separate from final review at published, pinned revisions.
