@@ -2,10 +2,10 @@
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| I-001 | holonight-viewer | Fullscreen-only heading and accurate native titles | — | [SDD](../../../holonight-viewer/docs/sdd/decoration-independent-viewer/README.md) | Ready | — | Baseline `c79bb8eff4199b6d7504adb4526672a3274d5652` |
-| I-002 | holonight-qt | Remove decoration helpers and dependencies | I-001 | [SDD](../../../holonight-qt/docs/sdd/decoration-independent-viewer/README.md) | Ready | — | Baseline `8eadfa36396315da56d734a83b2145b6d71d51cc` |
-| I-003 | holonight-system-services | Remove decoration contract; preserve compositor behavior | I-002 | [SDD](../../../holonight-system-services/docs/sdd/decoration-independent-viewer/README.md) | Ready | — | Baseline `398804a7cce5a57f9f6870c4e7ec99e9b1f3ddaa` |
-| I-004 | holonight-shell | Compositor adapter and plugin ABI 3 | I-003 | [SDD](../../../holonight-shell/docs/sdd/decoration-independent-viewer/README.md) | Ready | — | Baseline `e490ff73f3da4b3a671aaf0496c8dbdc94a53ff8` |
+| I-001 | holonight-viewer | Fullscreen-only heading and accurate native titles | — | [SDD](../../../holonight-viewer/docs/sdd/decoration-independent-viewer/README.md) | Done | `e2670ec2359f6b818a811cb8a93466ac1995b4e1` (local) | 2026-10-08: task check and all 27 tests passed; native checks passed by user confirmation. |
+| I-002 | holonight-qt | Remove decoration helpers and dependencies | I-001 | [SDD](../../../holonight-qt/docs/sdd/decoration-independent-viewer/README.md) | Done | `6c7ac33004702e166b8c152dcde918296be54286` (local) | 2026-10-08: clean ON/OFF builds; 95/86 checks covered with affected input retests passing; package/QML/format/REUSE and focused lint passed. |
+| I-003 | holonight-system-services | Remove decoration contract; preserve compositor behavior | I-002 | [SDD](../../../holonight-system-services/docs/sdd/decoration-independent-viewer/README.md) | Done | `39472e6dcafc93acea218a234213c346be256586` (local) | 2026-10-08: enabled 6/6 and disabled 2/2 suites, install consumers and focused lint/format passed; unrelated AudioBackend global format blocker retained. |
+| I-004 | holonight-shell | Compositor adapter and plugin ABI 3 | I-003 | [SDD](../../../holonight-shell/docs/sdd/decoration-independent-viewer/README.md) | In Progress | — | Final local acceptance against consistent staged provider prefix is running; unrelated working-tree edits preserved. |
 | I-005 | umbrella | Verify published integrated revisions and native ecosystem | I-001–I-004 | — | Planned | — | Publication, pinning and manual checks pending |
 
 Allowed states:
@@ -19,3 +19,5 @@ Allowed states:
 
 `Done` on a repository task is a local checkpoint, not an integrated initiative. Record integration commands, results,
 and verification date in the final umbrella row before setting the initiative status to `Integrated`.
+
+Native Viewer checks passed by user confirmation on 2026-10-08. No publication, deployment, CI polling or gitlink changes occurred. Final umbrella integration remains Planned until published and pinned revisions can be reviewed.
