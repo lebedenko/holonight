@@ -4,7 +4,7 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 readonly STATE_REL="var/lib/holonight/source-install"
-readonly MODULES=(holonight-config holonight-system-services holonight-qt holonight-appearance-adapters holonight-icons holonight-images holonight-thumbnails holonight-search holonight-shell holonight-settings holonight-viewer holonight-files holonight-ai holonight-pkg-manager holonight-greeter holonightd)
+readonly MODULES=(holonight-config holonight-system-services holonight-qt holonight-appearance-adapters holonight-icons holonight-images holonight-thumbnails holonight-search holonight-shell holonight-settings holonight-viewer holonight-files xdg-desktop-portal-holonight holonight-ai holonight-pkg-manager holonight-greeter holonightd)
 
 TARGET_ROOT="/"
 ASSUME_YES=0
@@ -81,7 +81,7 @@ configure_and_stage() {
       args+=( -DBUILD_GTK_PROBES=OFF -DHOLONIGHT_QT_DIR="$prefix_path" -DHOLONIGHT_CONFIG_DIR="$prefix_path" ) ;;
     holonight-qt)
       args+=( -DBUILD_DEMO=OFF -DBUILD_CONTROLS_GALLERY=OFF -DBUILD_QT5_PROBES=OFF ) ;;
-    holonight-viewer|holonight-files)
+    holonight-viewer|holonight-files|xdg-desktop-portal-holonight)
       args+=( -DQML_IMPORT_PATH="$prefix_path/lib/qt6/qml" ) ;;
     holonight-ai)
       args+=( -DHOLONIGHT_QML_IMPORT_PATH="$prefix_path/lib/qt6/qml" ) ;;

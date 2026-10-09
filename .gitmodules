@@ -49,3 +49,6 @@
 [submodule "holonight-search"]
 	path = holonight-search
 	url = git@github.com:lebedenko/holonight-search.git
+[submodule "xdg-desktop-portal-holonight"]
+	path = xdg-desktop-portal-holonight
+	url = git@github.com:lebedenko/xdg-desktop-portal-holonight.git

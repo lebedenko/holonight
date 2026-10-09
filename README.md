@@ -20,6 +20,7 @@ implementation stays in the component repositories.
 | `holonight-images` | Shared image inspection, raster decoding and metadata | Pinned submodule |
 | `holonight-viewer` | Static image viewer | Pinned submodule |
 | `holonight-files` | Keyboard-driven file manager | Pinned submodule |
+| `xdg-desktop-portal-holonight` | Standalone Wayland FileChooser portal | Pinned submodule |
 | `holonight-system-services` | Shared Qt/C++ system-control integration | Pinned submodule |
 | `holonightd` | HoloNight service | Pinned submodule |
 

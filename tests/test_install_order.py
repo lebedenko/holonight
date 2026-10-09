@@ -32,3 +32,10 @@ class InstallOrder(unittest.TestCase):
         self.assertLess(order.index("holonight-images"), provider)
         self.assertLess(provider, order.index("holonight-files"))
         self.assertLess(provider, order.index("holonight-viewer"))
+
+    def test_filechooser_backend_follows_installed_providers(self):
+        script = INSTALLER.read_text()
+        order = re.search(r"^readonly MODULES=\(([^)]*)\)$", script, re.MULTILINE).group(1).split()
+        backend = order.index("xdg-desktop-portal-holonight")
+        for provider in ("holonight-qt", "holonight-search", "holonight-files"):
+            self.assertLess(order.index(provider), backend)

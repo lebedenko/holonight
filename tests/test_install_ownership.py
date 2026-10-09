@@ -17,6 +17,10 @@ class ViewerOwnership(unittest.TestCase):
     module = "holonight-viewer"
     executable = "hn-viewer"
     app_id = "org.holonight.Viewer"
+    binary_dir = "bin"
+    entry_dir = "share/applications"
+    entry_suffix = ".desktop"
+    auxiliary_path = None
 
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -44,9 +48,9 @@ class ViewerOwnership(unittest.TestCase):
         self.build = self.root / ".source-install"
         self.stage = self.build / "stage"
         self.payload = {
-            f"/usr/bin/{self.executable}": b"viewer executable\n",
-            f"/usr/share/applications/{self.app_id}.desktop": b"viewer desktop entry\n",
-            f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg": b"viewer icon\n",
+            f"/usr/{self.binary_dir}/{self.executable}": b"viewer executable\n",
+            f"/usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}": b"viewer desktop entry\n",
+            (self.auxiliary_path or f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg"): b"viewer icon\n",
         }
         for relative, data in self.payload.items():
             path = self.stage / relative.lstrip("/")
@@ -81,7 +85,7 @@ class ViewerOwnership(unittest.TestCase):
 
     def test_unowned_legacy_install_is_rejected_without_changes(self):
         self.make_manifest()
-        existing = self.target / f"usr/bin/{self.executable}"
+        existing = self.target / f"usr/{self.binary_dir}/{self.executable}"
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"legacy or package-owned executable")
         result = self.run_functions("collision_check")
@@ -94,9 +98,10 @@ class ViewerOwnership(unittest.TestCase):
         self.make_manifest()
         result = self.run_functions("collision_check; copy_stage")
         self.assertEqual(result.returncode, 0, result.stderr)
-        desktop = self.target / f"usr/share/applications/{self.app_id}.desktop"
+        desktop = self.target / f"usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}"
         desktop.write_bytes(b"user modified desktop entry")
         unrelated = self.target / "usr/bin/other-app"
+        unrelated.parent.mkdir(parents=True, exist_ok=True)
         unrelated.write_bytes(b"unrelated")
         result = subprocess.run(
             ["bash", str(ROOT / "scripts/uninstall.sh"), "--yes", "--root", str(self.target)],
@@ -106,12 +111,12 @@ class ViewerOwnership(unittest.TestCase):
         self.assertIn("preserved modified path", result.stderr)
         self.assertEqual(desktop.read_bytes(), b"user modified desktop entry")
         self.assertEqual(unrelated.read_bytes(), b"unrelated")
-        self.assertFalse((self.target / f"usr/bin/{self.executable}").exists())
-        self.assertFalse((self.target / f"usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg").exists())
+        self.assertFalse((self.target / f"usr/{self.binary_dir}/{self.executable}").exists())
+        self.assertFalse((self.target / (self.auxiliary_path or f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg").lstrip("/")).exists())
 
     def migration_fixture(self, package_owned=False):
         self.make_manifest()
-        existing = self.target / f"usr/bin/{self.executable}"
+        existing = self.target / f"usr/{self.binary_dir}/{self.executable}"
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"legacy executable")
         pacman = self.commands / "pacman"
@@ -128,8 +133,8 @@ class ViewerOwnership(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         backups = list((self.target / "var/backups").glob("holonight-source-migration.*"))
         self.assertEqual(len(backups), 1)
-        self.assertEqual((backups[0] / f"usr/bin/{self.executable}").read_bytes(), b"legacy executable")
-        self.assertEqual(existing.read_bytes(), self.payload[f"/usr/bin/{self.executable}"])
+        self.assertEqual((backups[0] / f"usr/{self.binary_dir}/{self.executable}").read_bytes(), b"legacy executable")
+        self.assertEqual(existing.read_bytes(), self.payload[f"/usr/{self.binary_dir}/{self.executable}"])
         result = self.run_functions("collision_check")
         self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -154,6 +159,16 @@ class FilesOwnership(ViewerOwnership):
     module = "holonight-files"
     executable = "hn-files"
     app_id = "org.holonight.Files"
+
+
+class FileChooserOwnership(ViewerOwnership):
+    module = "xdg-desktop-portal-holonight"
+    executable = "xdg-desktop-portal-holonight"
+    app_id = "org.freedesktop.impl.portal.desktop.holonight_filechooser"
+    binary_dir = "libexec"
+    entry_dir = "share/dbus-1/services"
+    entry_suffix = ".service"
+    auxiliary_path = "/usr/share/xdg-desktop-portal/portals/holonight-filechooser.portal"
 
 
 if __name__ == "__main__":
