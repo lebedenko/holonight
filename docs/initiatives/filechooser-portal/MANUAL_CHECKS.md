@@ -1,7 +1,9 @@
 # Real application acceptance — I-004
 
 Status: Published/pinned backend and Shell routing are ready. Automated isolated
-broker checks passed; manual execution remains pending. See [evidence](VERIFICATION.md).
+broker checks passed. On 2026-10-09 the user reported the requested live Viewer
+file selection, Settings folder selection, cancellation/reopen and keyboard checks
+passed on Hyprland. Other matrix cases remain pending. See [evidence](VERIFICATION.md).
 The prior native probe pass validates the chooser follow-up, not these real-broker
 and sandbox document-access checks.
 

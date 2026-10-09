@@ -89,9 +89,15 @@ automated.
 
 Backend startup logged a Qt host-portal registration diagnostic: “Could not
 register app ID: App info not found for ''”. D-Bus activation and expected methods
-remain available; successful chooser presentation and application results still
-require the requested manual checks. The implementation does not expose a version
+remain available; the user subsequently reported the requested chooser and
+application checks passed. No resolution of the startup diagnostic is claimed. The implementation does not expose a version
 property on its private virtual interface; the public broker version lookup passes.
-Viewer file selection, Settings folder selection, cancellation/reopen and keyboard
-checks were requested from the user; no result is claimed yet. Full native and
-sandbox acceptance remains pending.
+On 2026-10-09, after deployment checkpoint 76e82c4, the user reported that the
+requested live manual checks passed: Viewer image selection, Settings wallpaper
+folder selection, cancellation/reopen in both applications, and keyboard navigation
+on Hyprland. This is user-reported acceptance, without automated UI interaction.
+
+Multiple-file results, save/overwrite results, parent disappearance, sandbox
+document grants, and the remaining Sway/labwc native matrix were not included in
+that request and remain unverified. I-004 stays In Progress; the initiative remains
+Accepted until those required cases are recorded.
