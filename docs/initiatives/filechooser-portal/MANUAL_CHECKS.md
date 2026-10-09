@@ -1,6 +1,7 @@
 # Real application acceptance — I-004
 
-Status: Prepared; execution waits for published/pinned backend and Shell routing.
+Status: Published/pinned backend and Shell routing are ready. Automated isolated
+broker checks passed; manual execution remains pending. See [evidence](VERIFICATION.md).
 The prior native probe pass validates the chooser follow-up, not these real-broker
 and sandbox document-access checks.
 
