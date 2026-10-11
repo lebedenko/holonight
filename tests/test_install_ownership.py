@@ -21,6 +21,10 @@ class ViewerOwnership(unittest.TestCase):
     entry_dir = "share/applications"
     entry_suffix = ".desktop"
     auxiliary_path = None
+    service_paths = ()
+    fixture_payload = True
+    desktop_path = None
+    collision_path = None
 
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -49,10 +53,12 @@ class ViewerOwnership(unittest.TestCase):
         self.stage = self.build / "stage"
         self.payload = {
             f"/usr/{self.binary_dir}/{self.executable}": b"viewer executable\n",
-            f"/usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}": b"viewer desktop entry\n",
+            (self.desktop_path or f"/usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}"): b"viewer desktop entry\n",
             (self.auxiliary_path or f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg"): b"viewer icon\n",
         }
-        for relative, data in self.payload.items():
+        self.payload.update({path: b"service entry\n" for path in self.service_paths})
+        self.stage.mkdir(parents=True)
+        for relative, data in (self.payload.items() if self.fixture_payload else ()):
             path = self.stage / relative.lstrip("/")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
@@ -85,7 +91,7 @@ class ViewerOwnership(unittest.TestCase):
 
     def test_unowned_legacy_install_is_rejected_without_changes(self):
         self.make_manifest()
-        existing = self.target / f"usr/{self.binary_dir}/{self.executable}"
+        existing = self.target / (self.collision_path or f"/usr/{self.binary_dir}/{self.executable}").lstrip("/")
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"legacy or package-owned executable")
         result = self.run_functions("collision_check")
@@ -98,7 +104,7 @@ class ViewerOwnership(unittest.TestCase):
         self.make_manifest()
         result = self.run_functions("collision_check; copy_stage")
         self.assertEqual(result.returncode, 0, result.stderr)
-        desktop = self.target / f"usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}"
+        desktop = self.target / (self.desktop_path or f"/usr/{self.entry_dir}/{self.app_id}{self.entry_suffix}").lstrip("/")
         desktop.write_bytes(b"user modified desktop entry")
         unrelated = self.target / "usr/bin/other-app"
         unrelated.parent.mkdir(parents=True, exist_ok=True)
@@ -112,11 +118,13 @@ class ViewerOwnership(unittest.TestCase):
         self.assertEqual(desktop.read_bytes(), b"user modified desktop entry")
         self.assertEqual(unrelated.read_bytes(), b"unrelated")
         self.assertFalse((self.target / f"usr/{self.binary_dir}/{self.executable}").exists())
+        for relative in self.service_paths:
+            self.assertFalse((self.target / relative.lstrip("/")).exists())
         self.assertFalse((self.target / (self.auxiliary_path or f"/usr/share/icons/hicolor/scalable/apps/{self.app_id}.svg").lstrip("/")).exists())
 
     def migration_fixture(self, package_owned=False):
         self.make_manifest()
-        existing = self.target / f"usr/{self.binary_dir}/{self.executable}"
+        existing = self.target / (self.collision_path or f"/usr/{self.binary_dir}/{self.executable}").lstrip("/")
         existing.parent.mkdir(parents=True)
         existing.write_bytes(b"legacy executable")
         pacman = self.commands / "pacman"
@@ -133,8 +141,8 @@ class ViewerOwnership(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         backups = list((self.target / "var/backups").glob("holonight-source-migration.*"))
         self.assertEqual(len(backups), 1)
-        self.assertEqual((backups[0] / f"usr/{self.binary_dir}/{self.executable}").read_bytes(), b"legacy executable")
-        self.assertEqual(existing.read_bytes(), self.payload[f"/usr/{self.binary_dir}/{self.executable}"])
+        self.assertEqual((backups[0] / (self.collision_path or f"/usr/{self.binary_dir}/{self.executable}").lstrip("/")).read_bytes(), b"legacy executable")
+        self.assertEqual(existing.read_bytes(), self.payload[self.collision_path or f"/usr/{self.binary_dir}/{self.executable}"])
         result = self.run_functions("collision_check")
         self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -159,6 +167,51 @@ class FilesOwnership(ViewerOwnership):
     module = "holonight-files"
     executable = "hn-files"
     app_id = "org.holonight.Files"
+
+
+class AiOwnership(ViewerOwnership):
+    module = "holonight-ai"
+    executable = "holonight-chat"
+    app_id = "org.holonight.Chat"
+    auxiliary_path = "/usr/share/icons/hicolor/scalable/apps/holonight-ai.svg"
+    service_paths = ("/usr/share/dbus-1/services/org.holonight.Chat.service",)
+
+
+class PackagesOwnership(ViewerOwnership):
+    module = "holonight-pkg-manager"
+    executable = "holonight-packages"
+    app_id = "org.holonight.Packages"
+    auxiliary_path = "/usr/share/icons/hicolor/scalable/apps/holonight-pkg-manager.svg"
+    service_paths = ("/usr/bin/holonight-packaged",
+                     "/usr/share/dbus-1/services/org.holonight.Packages1.service",
+                     "/usr/lib/systemd/user/holonight-packaged.service")
+
+
+class HyprlockOwnership(ViewerOwnership):
+    fixture_payload = False
+    module = "holonight-hyprlock"
+    executable = "status"
+    binary_dir = "libexec/holonight-hyprlock"
+    desktop_path = "/etc/xdg/hypr/hyprlock.conf"
+    collision_path = desktop_path
+    auxiliary_path = "/usr/share/holonight-hyprlock/wallpaper.png"
+    service_paths = ("/usr/share/holonight-hyprlock/no-avatar.png",)
+
+    def setUp(self):
+        super().setUp()
+        # Exercise the actual asset package through the installer's CMake path.
+        checkout = self.root / self.module
+        shutil.copytree(ROOT / self.module, checkout,
+                        ignore=shutil.ignore_patterns(".git", "build*", ".cache"))
+        result = self.run_functions(f"configure_and_stage {self.module}")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.payload = {"/" + str(path.relative_to(self.stage)): path.read_bytes()
+                        for path in self.stage.rglob("*") if path.is_file()}
+        (self.build / "after").write_text("".join(path + "\n" for path in sorted(self.payload)))
+        config = self.payload[self.desktop_path].decode()
+        self.assertIn("/usr/share/holonight-hyprlock", config)
+        self.assertIn("/usr/libexec/holonight-hyprlock/status", config)
+        self.assertTrue(os.access(self.stage / "usr/libexec/holonight-hyprlock/status", os.X_OK))
 
 
 class FileChooserOwnership(ViewerOwnership):

@@ -1,5 +1,6 @@
 """Keep installed providers ahead of the applications that consume them."""
 
+import configparser
 from pathlib import Path
 import re
 import unittest
@@ -9,6 +10,13 @@ INSTALLER = Path(__file__).resolve().parents[1] / "scripts/install.sh"
 
 
 class InstallOrder(unittest.TestCase):
+    def test_every_submodule_is_installed_exactly_once(self):
+        modules = re.search(r"^readonly MODULES=\(([^)]*)\)$", INSTALLER.read_text(), re.MULTILINE)
+        self.assertIsNotNone(modules)
+        config = configparser.ConfigParser()
+        config.read(INSTALLER.parents[1] / ".gitmodules")
+        self.assertCountEqual(modules.group(1).split(), [config[section]["path"] for section in config.sections()])
+
     def test_system_services_provider_precedes_qt(self):
         script = INSTALLER.read_text()
         modules = re.search(r"^readonly MODULES=\(([^)]*)\)$", script, re.MULTILINE)

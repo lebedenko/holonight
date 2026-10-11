@@ -66,6 +66,18 @@ refreshes owned caches after deployment, recording their final hashes. Alternate
 refreshes only that root's themes, never host caches.
 
 **Naming migration:** `HoloNight` now means light. Select `HoloNight-Dark` explicitly for dark icons.
+
+Installed menu entries include **HoloNight AI** (`holonight-chat`) and **HoloNight Packages**
+(`holonight-packages`), with application SVGs in the hicolor fallback theme.
+
+The installer also stages the HoloNight Hyprlock fallback: `/etc/xdg/hypr/hyprlock.conf`,
+`/usr/libexec/holonight-hyprlock/status`, and assets in `/usr/share/holonight-hyprlock`.
+Runtime requires hyprlock 0.9.6 or newer, PAM, Inter, Rajdhani, and JetBrainsMono Nerd Font;
+WirePlumber's `wpctl` is optional for the volume indicator. Install these requirements separately.
+An existing `~/.config/hypr/hyprlock.conf` takes precedence. Installation does not change user
+configuration, install system packages, or enable services. Unmanaged system Hyprlock configuration
+receives the same collision protection and explicit migration backups as other installed files.
+
 The installer does not rewrite existing settings or change application defaults. A user-local theme
 can shadow the system theme; the icons repository's `task install:local` manages user-local copies
 separately. The installed recoloring command targets an existing user-local theme only, even when
