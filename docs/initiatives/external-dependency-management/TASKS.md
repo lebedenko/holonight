@@ -2,7 +2,7 @@
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | In Progress | `523cb8b` | Exact baseline, 250 supplement entries/103 names and contracts reviewed; local SDD drafts await repository handoff commits |
+| EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | Done | `523cb8b` + documentation checkpoints below | Exact baseline, 250 supplement entries/103 names and contracts reviewed; all 18 local SDDs committed separately and validated |
 | EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | Done | `523cb8b` | 32 tooling and 67 installer fixtures passed; generated profiles, installed-provider smoke and final diff review passed |
 | EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; publication pending; Debian qualification is EDM-023 |
 | EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-003 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; implementation awaits handoff |
@@ -31,10 +31,39 @@ local verification; it does not make this initiative Integrated. Provider handof
 remotes before dependent implementation and pin updates. Record final commands/results/date in EDM-022 before closure.
 
 
-All 18 local SDDs currently exist as uncommitted files in their respective working trees. No repository adoption or submodule pin update has occurred.
+All 18 local SDDs are committed in their owning repositories. These are documentation checkpoints, not adoption
+implementation commits. Repository adoption remains Planned; submodule pins remain at the audited baselines.
 
-Foundation checkpoint: `523cb8b` on local `main`. Publication is not authorized yet. The qualified Arch images
+Foundation checkpoints `523cb8b` and `1019c4e` were published to `origin/main` on 2026-10-12. The qualified Arch images
 remain local; their immutable IDs and evidence are in [VERIFICATION.md](VERIFICATION.md). Repository adoption
 remains Planned until the qualified environment and canonical tooling handoff are available. The full initiative
 is not implemented or integrated. No application CMake, vendored headers, active CI launchers or gitlinks have
 been migrated by the foundation checkpoint.
+
+## Repository-local SDD documentation checkpoints — 2026-10-12
+
+Each commit contains only `docs/sdd/external-dependency-management/SPEC.md`, with message
+`docs(deps): record external dependency adoption specification`. All are local and unpublished.
+Baselines, work-package IDs, canonical metadata references and whitespace were checked;
+all 18 repository working trees are clean. No application acceptance result is claimed.
+
+| Repository | SDD documentation commit |
+|---|---|
+| holonight-ai | `0d8c54e166fb4e34ee1e496421c4bd98339a95c1` |
+| holonight-appearance-adapters | `37508f71ed37a16b824329c303083a08cf88aa2f` |
+| holonight-config | `854784a32f16c231ada49db9b6188e79c5903900` |
+| holonight-files | `2a71f3a9b7faf4542ddad1f7e6c7a686d869a80e` |
+| holonight-greeter | `31e8f8ece6d4bb4e90d11433a253150726535916` |
+| holonight-hyprlock | `a366a31eaf1b6836a84882a47fe74c34469f7be0` |
+| holonight-icons | `7684b021a5b74c7d4e34b7dd05bb3bdd02456473` |
+| holonight-images | `ce9bf6957f6efa51a3f5dbf9f51d95fb9b48cd6f` |
+| holonight-pkg-manager | `8042ed3890fc3bf226dc7d4c991459cd5c5599a2` |
+| holonight-qt | `2a6fcb0ef29d20e3413f425914ec1cf171b82306` |
+| holonight-search | `993929cc717f3beaf99c60e01441dc3e86dfe7cf` |
+| holonight-settings | `b99c2fcc97a2d7e7c6f6f48f087cdb9fd1536452` |
+| holonight-shell | `27567a918aae67ad43dba0e813b3f40ed14e539b` |
+| holonight-system-services | `3bd6ebca0c0e5f51768105fa1970007e3e83da65` |
+| holonight-thumbnails | `59fb2e92e8794e06db2ff8a1a6ec5cc1ebc66c03` |
+| holonight-viewer | `74eee36c7484b37dcece55b5cdf71d84f21c93bb` |
+| holonightd | `569905495a8ec0089a62c86c1b39ca68953ae01e` |
+| xdg-desktop-portal-holonight | `926de7ccff8146235a014c52a8da890dcc3b0919` |
