@@ -2,9 +2,9 @@
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | In Progress | — | Exact baseline and all 103 supplement names captured; final review pending |
-| EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | In Progress | — | Focused tooling/preflight/ownership regressions pass; final review pending |
-| EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | In Progress | — | Clean QMarkdown build/staging passes locally with Qt 6.12.0; Offline full/minimal Arch prerequisite qualification passed; no published digests; Debian qualification is EDM-023 |
+| EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | In Progress | `523cb8b` | Exact baseline, 250 supplement entries/103 names and contracts reviewed; local SDD drafts await repository handoff commits |
+| EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | Done | `523cb8b` | 32 tooling and 67 installer fixtures passed; generated profiles, installed-provider smoke and final diff review passed |
+| EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; publication pending; Debian qualification is EDM-023 |
 | EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-003 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; implementation awaits handoff |
 | EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-003 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `39472e6dcafc93acea218a234213c346be256586`; implementation awaits handoff |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-003, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation awaits handoff |
@@ -32,3 +32,9 @@ remotes before dependent implementation and pin updates. Record final commands/r
 
 
 All 18 local SDDs currently exist as uncommitted files in their respective working trees. No repository adoption or submodule pin update has occurred.
+
+Foundation checkpoint: `523cb8b` on local `main`. Publication is not authorized yet. The qualified Arch images
+remain local; their immutable IDs and evidence are in [VERIFICATION.md](VERIFICATION.md). Repository adoption
+remains Planned until the qualified environment and canonical tooling handoff are available. The full initiative
+is not implemented or integrated. No application CMake, vendored headers, active CI launchers or gitlinks have
+been migrated by the foundation checkpoint.
