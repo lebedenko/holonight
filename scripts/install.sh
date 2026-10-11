@@ -54,6 +54,7 @@ preflight() {
     *) die "unsupported distribution '${PRETTY_NAME:-unknown}'; source installation currently supports Arch Linux and Arch-derived systems" ;;
   esac
 
+  [[ -z "${HOLONIGHT_EXTERNAL_PREFIX:-}" ]] || die "system deployment requires package-managed external libraries; HOLONIGHT_EXTERNAL_PREFIX is for development/staging"
   check_install_dependencies || return 1
 
   getent passwd greeter >/dev/null || die "the greeter system account is missing; install/configure greetd before installing HoloNight Greeter"

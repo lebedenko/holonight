@@ -1,0 +1,32 @@
+{
+  "profile": "full",
+  "requested_image": "holonight-deps-full:external-dependencies",
+  "image_id": "sha256:dc3d1e15907ef1c97c5edc9a00a9dbd1969ba76465e04d6d4e415f509beca1bb",
+  "network": "none",
+  "features": {
+    "BUILD_GTK_PROBES": true,
+    "BUILD_QT5_PROBES": true
+  },
+  "repositories": [
+    "holonight-ai",
+    "holonight-appearance-adapters",
+    "holonight-config",
+    "holonight-files",
+    "holonight-greeter",
+    "holonight-hyprlock",
+    "holonight-icons",
+    "holonight-images",
+    "holonight-pkg-manager",
+    "holonight-qt",
+    "holonight-search",
+    "holonight-settings",
+    "holonight-shell",
+    "holonight-system-services",
+    "holonight-thumbnails",
+    "holonight-viewer",
+    "holonightd",
+    "xdg-desktop-portal-holonight"
+  ],
+  "prerequisite_qualification": "passed",
+  "repository_acceptance": "pending adoption"
+}

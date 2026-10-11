@@ -1,0 +1,1724 @@
+[
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml Network Concurrent Sql DBus)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 16,
+    "declaration": "find_package(HolonightQt REQUIRED COMPONENTS Controls Wayland)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 25,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 26,
+    "declaration": "pkg_check_modules(LIBSECRET REQUIRED libsecret-1)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 47,
+    "declaration": "option(BUILD_TESTS \"Build unit tests (requires network access at configure time)\" OFF)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 48,
+    "declaration": "option(ENABLE_COVERAGE \"Instrument for gcov/gcovr coverage reporting\" OFF)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 65,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 67,
+    "declaration": "find_package(GTest CONFIG QUIET)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 70,
+    "declaration": "FetchContent_Declare("
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "CMakeLists.txt",
+    "line": 77,
+    "declaration": "FetchContent_MakeAvailable(googletest)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "src/rendering/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "src/rendering/CMakeLists.txt",
+    "line": 2,
+    "declaration": "pkg_check_modules(MD4C REQUIRED IMPORTED_TARGET md4c)  # REQ-C-001"
+  },
+  {
+    "repository": "holonight-ai",
+    "baseline": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "file": "src/rendering/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(KF6SyntaxHighlighting REQUIRED)            # REQ-C-002"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 14,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "pkg_check_modules(JSON_GLIB REQUIRED IMPORTED_TARGET json-glib-1.0)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 16,
+    "declaration": "pkg_check_modules(GIO REQUIRED IMPORTED_TARGET gio-2.0)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 41,
+    "declaration": "find_package(HolonightQt CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 42,
+    "declaration": "find_package(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 43,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Xml)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 44,
+    "declaration": "find_package(KF6Config QUIET)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 70,
+    "declaration": "option(BUILD_GTK_PROBES \"Build isolated GTK Tier 1 probe binaries\" ON)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 72,
+    "declaration": "pkg_check_modules(GTK3 REQUIRED IMPORTED_TARGET gtk+-3.0)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 73,
+    "declaration": "pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 81,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-appearance-adapters",
+    "baseline": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "file": "CMakeLists.txt",
+    "line": 89,
+    "declaration": "find_package(GTest REQUIRED)"
+  },
+  {
+    "repository": "holonight-config",
+    "baseline": "d6a392b41991f70a004d58f7694c7b6115cb7280",
+    "file": "CMakeLists.txt",
+    "line": 14,
+    "declaration": "option(BUILD_TESTING \"Build tests\" OFF)"
+  },
+  {
+    "repository": "holonight-config",
+    "baseline": "d6a392b41991f70a004d58f7694c7b6115cb7280",
+    "file": "CMakeLists.txt",
+    "line": 16,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-config",
+    "baseline": "d6a392b41991f70a004d58f7694c7b6115cb7280",
+    "file": "CMakeLists.txt",
+    "line": 17,
+    "declaration": "pkg_check_modules(TOMLPLUSPLUS REQUIRED IMPORTED_TARGET tomlplusplus)"
+  },
+  {
+    "repository": "holonight-config",
+    "baseline": "d6a392b41991f70a004d58f7694c7b6115cb7280",
+    "file": "tests/consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 11,
+    "declaration": "option(BUILD_FILES_APP \"Build hn-files and application regressions\" ON)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 12,
+    "declaration": "option(BUILD_FILE_BROWSER_QUICK \"Build the passive QML listing\" ON)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 13,
+    "declaration": "option(BUILD_TESTING \"Build tests\" OFF)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 14,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 22,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Gui Quick Qml QuickControls2 Svg)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 23,
+    "declaration": "find_package(HolonightQt CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 24,
+    "declaration": "find_package(tomlplusplus 3.4 CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 25,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 26,
+    "declaration": "find_package(HolonightImages CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 27,
+    "declaration": "find_package(HolonightThumbnails CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 28,
+    "declaration": "find_package(HolonightSearch CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 29,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED COMPONENTS Storage)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 30,
+    "declaration": "find_package(QMarkdown 1.0 CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 44,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 45,
+    "declaration": "find_package(GTest CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "CMakeLists.txt",
+    "line": 57,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "libs/file-browser/CMakeLists.txt",
+    "line": 22,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Gui Quick Qml QuickControls2)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "libs/file-browser/CMakeLists.txt",
+    "line": 23,
+    "declaration": "find_package(HolonightQt CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "libs/file-browser/HolonightFileBrowserConfig.cmake.in",
+    "line": 3,
+    "declaration": "find_dependency(Qt6 6.11 COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "libs/file-browser/HolonightFileBrowserConfig.cmake.in",
+    "line": 8,
+    "declaration": "find_dependency(Qt6 6.11 COMPONENTS Gui Quick Qml QuickControls2)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "libs/file-browser/HolonightFileBrowserConfig.cmake.in",
+    "line": 9,
+    "declaration": "find_dependency(HolonightQt CONFIG)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/CMakeLists.txt",
+    "line": 13,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS OpenGL)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/CMakeLists.txt",
+    "line": 14,
+    "declaration": "pkg_check_modules(EXIF REQUIRED IMPORTED_TARGET libexif)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/CMakeLists.txt",
+    "line": 90,
+    "declaration": "option(FILES_ACCELERATED_SEPARATOR_TESTS \"Run GPU separator acceptance (requires OpenGL)\" OFF)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/CMakeLists.txt",
+    "line": 105,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/file-browser/consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "option(PLUGIN_ONLY \"Load the QML plugin without linking Quick\" OFF)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/file-browser/consumer/CMakeLists.txt",
+    "line": 5,
+    "declaration": "option(QUICK \"Exercise the installed QML module\" OFF)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/file-browser/consumer/CMakeLists.txt",
+    "line": 7,
+    "declaration": "find_package(HolonightFileBrowser REQUIRED COMPONENTS Core Quick)"
+  },
+  {
+    "repository": "holonight-files",
+    "baseline": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "file": "tests/file-browser/consumer/CMakeLists.txt",
+    "line": 9,
+    "declaration": "find_package(HolonightFileBrowser REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 13,
+    "declaration": "option(BUILD_TESTING \"Build tests\" ON)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Quick Qml Network DBus)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 18,
+    "declaration": "find_package(HolonightQt 0.1.1 REQUIRED COMPONENTS Core Controls)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 32,
+    "declaration": "find_package(LayerShellQt REQUIRED)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(tomlplusplus CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 94,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Test QmlPrivate)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 95,
+    "declaration": "find_package(GTest REQUIRED)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "CMakeLists.txt",
+    "line": 97,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-greeter",
+    "baseline": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "file": "tests/diagnostics/qtquick-caret/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Quick Test)"
+  },
+  {
+    "repository": "holonight-icons",
+    "baseline": "a8debec1399b59c218b2faa8f54047e5d3bc7984",
+    "file": "tests/kde/CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Svg)"
+  },
+  {
+    "repository": "holonight-icons",
+    "baseline": "a8debec1399b59c218b2faa8f54047e5d3bc7984",
+    "file": "tests/kde/CMakeLists.txt",
+    "line": 7,
+    "declaration": "find_package(KF6IconThemes REQUIRED)"
+  },
+  {
+    "repository": "holonight-icons",
+    "baseline": "a8debec1399b59c218b2faa8f54047e5d3bc7984",
+    "file": "tests/rendering/CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core Gui Svg)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 5,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Svg)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 7,
+    "declaration": "pkg_check_modules(EXIF REQUIRED IMPORTED_TARGET libexif)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 8,
+    "declaration": "pkg_check_modules(WebP REQUIRED IMPORTED_TARGET libwebp)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 25,
+    "declaration": "find_package(GTest REQUIRED)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "CMakeLists.txt",
+    "line": 28,
+    "declaration": "option(HOLONIGHT_IMAGES_FUZZING \"Build local Clang/libFuzzer harnesses (not installed)\" OFF)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "cmake/HolonightImagesConfig.cmake.in",
+    "line": 3,
+    "declaration": "find_dependency(Qt6 6.11 COMPONENTS Core Gui Svg)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "cmake/HolonightImagesConfig.cmake.in",
+    "line": 4,
+    "declaration": "find_dependency(PkgConfig)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "cmake/HolonightImagesConfig.cmake.in",
+    "line": 5,
+    "declaration": "pkg_check_modules(EXIF REQUIRED IMPORTED_TARGET libexif)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "cmake/HolonightImagesConfig.cmake.in",
+    "line": 6,
+    "declaration": "pkg_check_modules(WebP REQUIRED IMPORTED_TARGET libwebp)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "tests/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-images",
+    "baseline": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(HolonightImages 0.1 CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 14,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml Network Sql DBus Concurrent)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "find_package(HolonightQt REQUIRED COMPONENTS Controls)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 34,
+    "declaration": "option(BUILD_TESTS \"Build unit tests\" OFF)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 35,
+    "declaration": "option(ENABLE_COVERAGE \"Instrument for gcov/gcovr coverage reporting\" OFF)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 39,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 40,
+    "declaration": "find_package(GTest CONFIG QUIET)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 43,
+    "declaration": "FetchContent_Declare("
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "CMakeLists.txt",
+    "line": 50,
+    "declaration": "FetchContent_MakeAvailable(googletest)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "apps/packaged/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS DBus)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "src/application/CMakeLists.txt",
+    "line": 21,
+    "declaration": "find_package(ICU REQUIRED COMPONENTS uc)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "src/backends/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "src/backends/CMakeLists.txt",
+    "line": 2,
+    "declaration": "pkg_check_modules(Alpm REQUIRED IMPORTED_TARGET libalpm)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "src/persistence/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "src/persistence/CMakeLists.txt",
+    "line": 2,
+    "declaration": "pkg_check_modules(Alpm REQUIRED IMPORTED_TARGET libalpm)"
+  },
+  {
+    "repository": "holonight-pkg-manager",
+    "baseline": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "file": "tests/CMakeLists.txt",
+    "line": 149,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS QmlPrivate)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 17,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Widgets Quick QuickControls2 QuickShapes Svg)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 18,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS GuiPrivate)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 19,
+    "declaration": "find_package(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 32,
+    "declaration": "option(BUILD_TESTS \"Build GTest suite\" OFF)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "option(BUILD_DEMO \"Build visual demo app\" OFF)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 34,
+    "declaration": "option(BUILD_CONTROLS_GALLERY \"Build the shared controls gallery\" OFF)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 35,
+    "declaration": "option(BUILD_QT5_PROBES \"Build non-installed Qt 5 compatibility discovery targets\" OFF)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 36,
+    "declaration": "option(BUILD_WAYLAND \"Build the optional Wayland layer-surface component\" ON)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 43,
+    "declaration": "find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Test Widgets)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 47,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "CMakeLists.txt",
+    "line": 48,
+    "declaration": "find_package(GTest REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "cmake/HolonightQtConfig.cmake.in",
+    "line": 4,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2 Svg)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "cmake/HolonightQtConfig.cmake.in",
+    "line": 5,
+    "declaration": "find_dependency(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "cmake/HolonightQtConfig.cmake.in",
+    "line": 10,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS WaylandClient)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "cmake/HolonightQtConfig.cmake.in",
+    "line": 11,
+    "declaration": "find_dependency(Wayland REQUIRED COMPONENTS Client)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "docs/sdd/unified-qtquick-controls/audit/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "docs/sdd/unified-qtquick-controls/audit/CMakeLists.txt",
+    "line": 12,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test QuickPrivate)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "qml/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Qt6 ${Qt6_VERSION} EXACT REQUIRED COMPONENTS QuickPrivate QuickControls2Private QuickTemplates2Private)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/CMakeLists.txt",
+    "line": 224,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS OpenGL)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/CMakeLists.txt",
+    "line": 231,
+    "declaration": "option(HOLONIGHT_ACCELERATED_SEPARATOR_TESTS \"Run GPU separator acceptance (requires OpenGL)\" OFF)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/CMakeLists.txt",
+    "line": 285,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/CMakeLists.txt",
+    "line": 336,
+    "declaration": "find_package(Qt6 ${Qt6_VERSION} EXACT REQUIRED COMPONENTS QuickPrivate QuickTemplates2Private)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/CMakeLists.txt",
+    "line": 366,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/test_package_install.cmake.in",
+    "line": 84,
+    "declaration": "find_package(HolonightQt REQUIRED COMPONENTS Core Controls Theme)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/test_package_install.cmake.in",
+    "line": 85,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Qml Quick QuickControls2 Widgets)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tests/test_package_install.cmake.in",
+    "line": 168,
+    "declaration": "find_package(HolonightQt REQUIRED COMPONENTS Wayland)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tools/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(KF6SyntaxHighlighting QUIET)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "tools/theme-generator/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(KF6SyntaxHighlighting REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "wayland/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "wayland/CMakeLists.txt",
+    "line": 2,
+    "declaration": "find_package(Qt6WaylandScannerTools 6.11 REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "wayland/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(WaylandScanner REQUIRED)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "wayland/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(Wayland REQUIRED COMPONENTS Client)"
+  },
+  {
+    "repository": "holonight-qt",
+    "baseline": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "file": "wayland/CMakeLists.txt",
+    "line": 5,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-search",
+    "baseline": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+    "file": "CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-search",
+    "baseline": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(GTest CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-search",
+    "baseline": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+    "file": "cmake/HolonightSearchConfig.cmake.in",
+    "line": 3,
+    "declaration": "find_dependency(Qt6 6.11 COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-search",
+    "baseline": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(HolonightSearch CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 14,
+    "declaration": "option(BUILD_APP \"Build the HoloNight Settings application\" ON)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "option(BUILD_TESTS \"Build unit and integration tests\" OFF)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 16,
+    "declaration": "option(ENABLE_COVERAGE \"Instrument tests for gcov/gcovr coverage\" OFF)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 19,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 20,
+    "declaration": "find_package(HoloNightConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 21,
+    "declaration": "find_package(HoloNightShellConfig 0.2 REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 22,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 25,
+    "declaration": "find_package(HolonightQt REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 32,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Gui Quick Qml DBus)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(HolonightQt REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 35,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 43,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Gui DBus Qml Quick Test)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 44,
+    "declaration": "find_package(HolonightQt REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "CMakeLists.txt",
+    "line": 45,
+    "declaration": "find_package(GTest CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "tests/CMakeLists.txt",
+    "line": 92,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(HoloNightConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-settings",
+    "baseline": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 5,
+    "declaration": "find_package(HoloNightShellConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 12,
+    "declaration": "option(BUILD_TESTS \"Build unit tests (requires network access at configure time)\" OFF)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 13,
+    "declaration": "option(ENABLE_COVERAGE \"Instrument for gcov/gcovr coverage reporting\" OFF)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 28,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml DBus Network Concurrent Sql QuickControls2)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 29,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 30,
+    "declaration": "find_package(HolonightQt REQUIRED COMPONENTS Wayland)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 31,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED COMPONENTS Audio Storage Compositor)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(Qt6 COMPONENTS WaylandClient WaylandClientPrivate QUIET)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 34,
+    "declaration": "find_package(Qt6WaylandScannerTools REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 38,
+    "declaration": "find_package(WaylandScanner REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 39,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 40,
+    "declaration": "pkg_check_modules(QT6_WAYLAND_CLIENT REQUIRED Qt6WaylandClient)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 41,
+    "declaration": "pkg_check_modules(WAYLAND_CLIENT REQUIRED wayland-client)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 42,
+    "declaration": "pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 43,
+    "declaration": "pkg_check_modules(TOMLPLUSPLUS REQUIRED IMPORTED_TARGET tomlplusplus)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 44,
+    "declaration": "pkg_check_modules(LIBSECRET REQUIRED libsecret-1)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 45,
+    "declaration": "pkg_check_modules(POLKIT_AGENT REQUIRED IMPORTED_TARGET polkit-agent-1)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 46,
+    "declaration": "pkg_check_modules(POLKIT_QT_AGENT REQUIRED IMPORTED_TARGET polkit-qt6-agent-1>=0.200.0)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 47,
+    "declaration": "pkg_check_modules(POLKIT_QT_CORE REQUIRED IMPORTED_TARGET polkit-qt6-core-1>=0.200.0)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 207,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test QuickTest)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 209,
+    "declaration": "find_package(GTest CONFIG QUIET)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 212,
+    "declaration": "FetchContent_Declare("
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "CMakeLists.txt",
+    "line": 219,
+    "declaration": "FetchContent_MakeAvailable(googletest)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/CMakeLists.txt",
+    "line": 7,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/CMakeLists.txt",
+    "line": 8,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/CMakeLists.txt",
+    "line": 9,
+    "declaration": "pkg_check_modules(TOMLPLUSPLUS REQUIRED IMPORTED_TARGET tomlplusplus)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/cmake/HoloNightShellConfigConfig.cmake.in",
+    "line": 4,
+    "declaration": "find_dependency(HoloNightConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/cmake/HoloNightShellConfigConfig.cmake.in",
+    "line": 5,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/cmake/HoloNightShellConfigConfig.cmake.in",
+    "line": 6,
+    "declaration": "find_dependency(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "libs/holonight-shell-config/cmake/HoloNightShellConfigConfig.cmake.in",
+    "line": 7,
+    "declaration": "pkg_check_modules(TOMLPLUSPLUS REQUIRED IMPORTED_TARGET tomlplusplus)"
+  },
+  {
+    "repository": "holonight-shell",
+    "baseline": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "file": "tests/shell-config-package-consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(HoloNightShellConfig CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 13,
+    "declaration": "option(BUILD_TESTS \"Build unit and package-consumer tests\" OFF)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 15,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 17,
+    "declaration": "option(BUILD_COMPOSITOR \"Build the Compositor component\" ON)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 18,
+    "declaration": "option(BUILD_COMPOSITOR_WAYLAND \"Build compositor Wayland protocol implementations\" ON)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 20,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Network)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 22,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Gui WaylandClient)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 27,
+    "declaration": "option(BUILD_AUDIO \"Build the Audio component\" ON)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 28,
+    "declaration": "option(BUILD_STORAGE \"Build the Storage component\" ON)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 30,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 32,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "pkg_check_modules(LIBPULSE REQUIRED IMPORTED_TARGET libpulse)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 66,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS DBus)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 117,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "CMakeLists.txt",
+    "line": 118,
+    "declaration": "find_package(GTest CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 4,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS Core)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 12,
+    "declaration": "find_dependency(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 13,
+    "declaration": "pkg_check_modules(LIBPULSE REQUIRED IMPORTED_TARGET libpulse)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 17,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS DBus)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 21,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS Network)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 23,
+    "declaration": "find_dependency(Qt6 REQUIRED COMPONENTS Gui WaylandClient)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 24,
+    "declaration": "find_dependency(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "cmake/HoloNightSystemServicesConfig.cmake.in",
+    "line": 25,
+    "declaration": "pkg_check_modules(WAYLAND_CLIENT REQUIRED IMPORTED_TARGET wayland-client)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "src/compositor/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Network)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "src/compositor/CMakeLists.txt",
+    "line": 17,
+    "declaration": "find_package(Qt6 REQUIRED COMPONENTS Gui WaylandClient)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "src/compositor/CMakeLists.txt",
+    "line": 18,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "src/compositor/CMakeLists.txt",
+    "line": 19,
+    "declaration": "pkg_check_modules(WAYLAND_CLIENT REQUIRED IMPORTED_TARGET wayland-client)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "tests/compositor-consumer/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED COMPONENTS Compositor)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED)"
+  },
+  {
+    "repository": "holonight-system-services",
+    "baseline": "39472e6dcafc93acea218a234213c346be256586",
+    "file": "tests/storage-consumer/CMakeLists.txt",
+    "line": 4,
+    "declaration": "find_package(HoloNightSystemServices REQUIRED COMPONENTS Storage)"
+  },
+  {
+    "repository": "holonight-thumbnails",
+    "baseline": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+    "file": "CMakeLists.txt",
+    "line": 6,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui)"
+  },
+  {
+    "repository": "holonight-thumbnails",
+    "baseline": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(GTest REQUIRED)"
+  },
+  {
+    "repository": "holonight-thumbnails",
+    "baseline": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+    "file": "cmake/HolonightThumbnailsConfig.cmake.in",
+    "line": 3,
+    "declaration": "find_dependency(Qt6 6.11 COMPONENTS Core Gui)"
+  },
+  {
+    "repository": "holonight-thumbnails",
+    "baseline": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+    "file": "tests/package-consumer/CMakeLists.txt",
+    "line": 3,
+    "declaration": "find_package(HolonightThumbnails 0.1 CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 8,
+    "declaration": "option(VIEWER_ENABLE_SANITIZERS \"Instrument Viewer-owned code with ASan and UBSan\" OFF)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 28,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 29,
+    "declaration": "find_package(HolonightQt CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 30,
+    "declaration": "find_package(HolonightImages CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 31,
+    "declaration": "find_package(HolonightThumbnails CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "option(BUILD_TESTING \"Build smoke tests\" OFF)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 37,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 38,
+    "declaration": "find_package(GTest CONFIG REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "CMakeLists.txt",
+    "line": 46,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "apps/viewer/platform/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "apps/viewer/platform/CMakeLists.txt",
+    "line": 2,
+    "declaration": "pkg_check_modules(WaylandClient REQUIRED IMPORTED_TARGET wayland-client)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "apps/viewer/platform/CMakeLists.txt",
+    "line": 3,
+    "declaration": "pkg_check_modules(WaylandProtocols REQUIRED wayland-protocols)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "apps/viewer/platform/CMakeLists.txt",
+    "line": 4,
+    "declaration": "pkg_check_modules(WaylandScanner REQUIRED wayland-scanner)"
+  },
+  {
+    "repository": "holonight-viewer",
+    "baseline": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "file": "tests/CMakeLists.txt",
+    "line": 29,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 33,
+    "declaration": "find_package(SQLite3 REQUIRED)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 35,
+    "declaration": "find_package(PkgConfig QUIET)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 37,
+    "declaration": "pkg_check_modules(LIBSYSTEMD QUIET IMPORTED_TARGET libsystemd)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 49,
+    "declaration": "option(HOLONIGHTD_WARNINGS_AS_ERRORS \"Treat compiler warnings as errors\" OFF)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 68,
+    "declaration": "option(BUILD_TESTS \"Build unit tests\" OFF)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 69,
+    "declaration": "option(ENABLE_COVERAGE \"Instrument for gcov/gcovr coverage reporting\" OFF)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 86,
+    "declaration": "find_package(GTest CONFIG QUIET)"
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 89,
+    "declaration": "FetchContent_Declare("
+  },
+  {
+    "repository": "holonightd",
+    "baseline": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "file": "CMakeLists.txt",
+    "line": 96,
+    "declaration": "FetchContent_MakeAvailable(googletest)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 7,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui GuiPrivate Quick Qml QuickControls2 DBus Concurrent)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 9,
+    "declaration": "find_package(HolonightFileBrowser CONFIG REQUIRED COMPONENTS Core Quick)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 10,
+    "declaration": "find_package(HolonightSearch CONFIG REQUIRED)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 11,
+    "declaration": "find_package(HolonightQt CONFIG REQUIRED)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 12,
+    "declaration": "find_package(PkgConfig REQUIRED)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "CMakeLists.txt",
+    "line": 13,
+    "declaration": "pkg_check_modules(WaylandClient REQUIRED IMPORTED_TARGET wayland-client)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "tests/CMakeLists.txt",
+    "line": 1,
+    "declaration": "find_package(Qt6 6.11 REQUIRED COMPONENTS Test)"
+  },
+  {
+    "repository": "xdg-desktop-portal-holonight",
+    "baseline": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae",
+    "file": "tests/CMakeLists.txt",
+    "line": 13,
+    "declaration": "find_package(Python3 REQUIRED COMPONENTS Interpreter)"
+  }
+]

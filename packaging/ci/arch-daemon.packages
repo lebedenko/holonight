@@ -1,0 +1,15 @@
+base-devel
+clang
+cmake
+gcovr
+git
+go-task
+gtest
+ninja
+nlohmann-json
+pkgconf
+python
+reuse
+sqlite
+systemd
+tomlplusplus

@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+pkgname=qmarkdown
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='Shared Qt Quick Markdown renderer with installed CMake and QML metadata'
+arch=('x86_64')
+url='https://github.com/lebedenko/qmarkdown'
+license=('MIT')
+# Use the upstream Release configuration; Arch's default LTO warns in the pinned cmark bundle.
+options=('!lto')
+depends=('qt6-base' 'qt6-declarative')
+makedepends=('cmake' 'ninja' 'git')
+_commit=595ca4fea32155766c2eafb3b670995d2ea75a2f
+source=("git+https://github.com/lebedenko/qmarkdown.git#commit=$_commit")
+sha256sums=('SKIP') # Git source identity is the full commit above.
+
+build() {
+  cmake -S qmarkdown -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF \
+    -DQMARKDOWN_BUILD_EXAMPLES=OFF -DQMARKDOWN_BUILD_BENCHMARKS=OFF
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+}

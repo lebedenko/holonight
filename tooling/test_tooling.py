@@ -68,10 +68,10 @@ class ToolingTests(unittest.TestCase):
         package.mkdir(parents=True)
         (package / 'HoloNightConfigConfig.cmake').write_text('')
         config = {'dependencies':[{'module':'holonight-config', 'package':'HoloNightConfig','source_variable':'HOLONIGHT_CONFIG_SOURCE'}]}
-        with patch.dict(os.environ, {'HOLONIGHT_DEPENDENCY_PREFIX':str(location)}), patch.object(workflow, 'run') as run:
+        with patch.dict(os.environ, {'HOLONIGHT_DEPENDENCY_PREFIX':str(location)}), patch.object(workflow, 'check_external', return_value={}), patch.object(workflow, 'run') as run:
             workflow.prepare(config)
             run.assert_not_called()
-        with patch.dict(os.environ, {'HOLONIGHT_DEPENDENCY_PREFIX':str(self.root / 'missing')}):
+        with patch.dict(os.environ, {'HOLONIGHT_DEPENDENCY_PREFIX':str(self.root / 'missing')}), patch.object(workflow, 'check_external', return_value={}):
             with self.assertRaisesRegex(RuntimeError, 'Missing HoloNightConfig'):
                 workflow.prepare(config)
 
@@ -116,8 +116,8 @@ class ToolingTests(unittest.TestCase):
     def test_qt_test_tool_environment_overrides(self):
         for module in ('holonight-qt', 'holonight-shell'):
             with patch.dict(os.environ, {'QML': '/tools with spaces/qml', 'QMLLINT': '/tools with spaces/qmllint'}), \
-                 patch.object(workflow, 'prepare'), patch.object(workflow, 'packages', return_value={}), \
-                 patch.object(workflow, 'refresh'), patch.object(workflow, 'run') as run:
+                 patch.object(workflow, 'check_external', return_value={}), patch.object(workflow, 'packages', return_value={}), \
+                 patch.object(workflow, 'ROOT', self.root), patch.object(workflow, 'refresh'), patch.object(workflow, 'run') as run:
                 workflow.configure({'module': module}, 'test')
                 args = run.call_args.args[0]
                 self.assertIn('-DQMLLINT=/tools with spaces/qmllint', args)

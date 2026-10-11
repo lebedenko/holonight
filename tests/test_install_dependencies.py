@@ -9,10 +9,9 @@ import unittest
 
 HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
 COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner".split()
-PACKAGES = """base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
-    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd udisks2
-    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
-    hicolor-icon-theme""".split()
+PROFILE = HELPER.parent / 'install-profile.sh'
+PACKAGES = [line.strip() for line in PROFILE.read_text().splitlines()[2:-1]]
+
 
 
 class DependencyChecks(unittest.TestCase):
@@ -26,9 +25,11 @@ class DependencyChecks(unittest.TestCase):
         self.probes.mkdir()
         self.log = self.root / "commands"
         self.env = {"PATH": str(self.bin), "TMPDIR": str(self.probes), "LOG": str(self.log)}
-        for name in ("mktemp", "rm", "cat"):
+        for name in ("mktemp", "rm", "cat", "cp", "dirname"):
             (self.bin / name).symlink_to(shutil.which(name))
         for name in COMMANDS:
+            if name in {'cp', 'dirname'}:
+                continue
             self.command(name, 'printf "%s\\n" "$0 $*" >> "$LOG"\nexit 98\n')
         self.command("c++", 'cat >/dev/null\nexit "${COMPILER_STATUS:-0}"\n')
         self.command("pacman", '''
@@ -55,13 +56,16 @@ printf 'cmake %s\\n' "$*" >> "$LOG"
 [[ "$7" = "-DPython3_EXECUTABLE=$PATH/python3" ]] || exit 98
 [[ "$2" = "$TMPDIR"/holonight-qt-check.* && "$4" = "$2/build" ]] || exit 98
 source_text="$(cat "$2/CMakeLists.txt")"
-[[ "$source_text" = *'find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)'* ]] || exit 97
+[[ "$source_text" = *'WaylandClient)'* ]] || exit 97
 [[ "$source_text" = *'find_package(Qt6WaylandScannerTools 6.11 REQUIRED)'* ]] || exit 97
-[[ "$source_text" = *'COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)'* ]] || exit 97
-[[ "$source_text" = *'pkg_check_modules(ViewerWebP REQUIRED libwebp)'* ]] || exit 97
-[[ "$source_text" = *'pkg_check_modules(ViewerExif REQUIRED libexif)'* ]] || exit 97
+[[ "$source_text" = *'find_package(Qt6 ${Qt6_VERSION} EXACT REQUIRED COMPONENTS'* ]] || exit 97
+[[ "$source_text" = *'REQUIRED libwebp)'* ]] || exit 97
+[[ "$source_text" = *'REQUIRED libexif)'* ]] || exit 97
 [[ "$source_text" = *'find_package(tomlplusplus 3.4 CONFIG REQUIRED)'* ]] || exit 97
 [[ "$source_text" = *'find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)'* ]] || exit 97
+[[ "$source_text" = *'find_package(QMarkdown 1.0...<2.0 CONFIG REQUIRED)'* ]] || exit 97
+[[ "$source_text" = *'QMarkdown.qmltypes'* ]] || exit 97
+[[ "$source_text" != *'find_package(GTest'* ]] || exit 97
 if [[ -n "${CMAKE_FAILURE:-}" ]]; then
   printf 'CMake Error: %s\\n' "$CMAKE_FAILURE" >&2
   exit 1

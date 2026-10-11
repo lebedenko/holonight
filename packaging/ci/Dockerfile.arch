@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Explicit image preparation; normal acceptance runs use --network=none.
+FROM archlinux@sha256:eb8f6dcc89a38977c9735f10fcf6ae4afe496283e7008eb7a3420cdba31fbd04 AS base
+ARG ARCH_SNAPSHOT=2026/09/30
+RUN printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "$ARCH_SNAPSHOT" > /etc/pacman.d/mirrorlist \
+    && pacman -Syyuu --noconfirm
+
+FROM base AS daemon
+COPY packaging/ci/arch-daemon.packages /tmp/requirements
+RUN pacman -S --needed --noconfirm $(cat /tmp/requirements) \
+    && pacman -Q > /usr/share/holonight-ci-packages.txt \
+    && pacman -Scc --noconfirm
+RUN ln -s /usr/bin/go-task /usr/local/bin/task
+WORKDIR /work
+
+FROM base AS full-base
+COPY packaging/ci/arch-full.packages /tmp/requirements
+RUN pacman -S --needed --noconfirm $(cat /tmp/requirements) \
+    && pacman -Q > /usr/share/holonight-ci-packages.txt \
+    && pacman -Scc --noconfirm
+RUN ln -s /usr/bin/go-task /usr/local/bin/task \
+    && localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV QT_QPA_PLATFORM=offscreen QSG_RHI_BACKEND=software
+WORKDIR /work
+
+FROM full-base AS qmarkdown-package
+COPY packaging/qmarkdown/PKGBUILD /work/qmarkdown-package/PKGBUILD
+RUN useradd --create-home builder && chown -R builder:builder /work/qmarkdown-package
+USER builder
+WORKDIR /work/qmarkdown-package
+ENV CMAKE_BUILD_PARALLEL_LEVEL=2
+RUN makepkg --noconfirm
+
+FROM full-base AS full
+COPY --from=qmarkdown-package /work/qmarkdown-package/qmarkdown-[0-9]*.pkg.tar.zst /tmp/
+RUN pacman -U --noconfirm /tmp/qmarkdown-[0-9]*.pkg.tar.zst \
+    && pacman -Q > /usr/share/holonight-ci-packages.txt
+WORKDIR /work

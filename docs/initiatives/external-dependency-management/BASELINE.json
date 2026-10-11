@@ -1,0 +1,43 @@
+{
+  "umbrella": "38146d8f474317f3f8d72699f60e6d16a71dd165",
+  "gitlinks": {
+    "holonight-ai": "777affc646b44bfb757bd2616f5cd7a218897cba",
+    "holonight-appearance-adapters": "95a9078e8d4f0b2d9c5a69ee6040388558eb9251",
+    "holonight-config": "d6a392b41991f70a004d58f7694c7b6115cb7280",
+    "holonight-files": "e8af0a8312133609f2ddd30e87d084be78971a8c",
+    "holonight-greeter": "d99e0a17f95af977a42785957e9311597e38bab0",
+    "holonight-hyprlock": "def9618fca833535275e8a8aa9a0e577acda8377",
+    "holonight-icons": "a8debec1399b59c218b2faa8f54047e5d3bc7984",
+    "holonight-images": "d834984dc413dc9e56f7f3157fa605d6a8667088",
+    "holonight-pkg-manager": "879bea1f4b71a2ddf185f45fc2d3e153edc46ac5",
+    "holonight-qt": "680d709de4d1d8e8697d6a69a99f15ef891ef7b2",
+    "holonight-search": "26067775e2eac3d9a779b3114dfbddc96834c7de",
+    "holonight-settings": "6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42",
+    "holonight-shell": "d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de",
+    "holonight-system-services": "39472e6dcafc93acea218a234213c346be256586",
+    "holonight-thumbnails": "2284b1822b0f8f856677e14d21d91e8fa10bd98c",
+    "holonight-viewer": "2b696a328ec109bd11fe6e1b67e37ea727c8bff5",
+    "holonightd": "c6a9f9e1a353322bf7a3430cdab8392890348ccb",
+    "xdg-desktop-portal-holonight": "7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae"
+  },
+  "worktrees": {
+    "holonight-ai": [],
+    "holonight-appearance-adapters": [],
+    "holonight-config": [],
+    "holonight-files": [],
+    "holonight-greeter": [],
+    "holonight-hyprlock": [],
+    "holonight-icons": [],
+    "holonight-images": [],
+    "holonight-pkg-manager": [],
+    "holonight-qt": [],
+    "holonight-search": [],
+    "holonight-settings": [],
+    "holonight-shell": [],
+    "holonight-system-services": [],
+    "holonight-thumbnails": [],
+    "holonight-viewer": [],
+    "holonightd": [],
+    "xdg-desktop-portal-holonight": []
+  }
+}

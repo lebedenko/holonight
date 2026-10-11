@@ -1,0 +1,6 @@
+**
+!packaging/
+!packaging/ci/
+!packaging/ci/**
+!packaging/qmarkdown/
+!packaging/qmarkdown/**

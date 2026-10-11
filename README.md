@@ -49,6 +49,13 @@ task install -- --check
 task install
 ```
 
+Install shared QMarkdown 1.x separately before running the installer. The pinned Arch recipe is in
+[packaging/qmarkdown](packaging/qmarkdown/README.md). The installer checks its library, CMake exports and QML
+metadata before building; QMarkdown files remain owned by the package manager and survive umbrella uninstall.
+Dependency acquisition is an explicit operation. `task deps` prepares supplied local sources; configuration and
+normal builds consume installed prerequisites. See [the dependency initiative](docs/initiatives/external-dependency-management/README.md)
+for rollout and qualification status.
+
 The installer supports Arch Linux and Arch-derived distributions. It checks the pinned submodules, compiler, build
 tools, system packages, and Greeter account without installing packages. Builds run without privilege and every
 component is staged before the installer checks for collisions. Privilege is requested only when the completed stage

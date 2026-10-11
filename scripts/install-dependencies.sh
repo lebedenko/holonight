@@ -8,38 +8,29 @@ check_qt_wayland_capabilities() (
   trap 'rm -rf -- "$probe_dir"' EXIT
   trap 'exit 130' INT
   trap 'exit 143' TERM
-  cat > "$probe_dir/CMakeLists.txt" <<'EOF'
-cmake_minimum_required(VERSION 3.25)
-project(HoloNightDependencyCheck LANGUAGES CXX)
-find_package(Qt6 6.11 REQUIRED COMPONENTS WaylandClient)
-find_package(Qt6WaylandScannerTools 6.11 REQUIRED)
-find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui GuiPrivate DBus Quick Qml QuickControls2 Svg)
-find_package(tomlplusplus 3.4 CONFIG REQUIRED)
-find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(ViewerWebP REQUIRED libwebp)
-pkg_check_modules(ViewerExif REQUIRED libexif)
-pkg_check_modules(ViewerWayland REQUIRED wayland-client wayland-protocols wayland-scanner)
-EOF
+  local helper_dir
+  helper_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  cp "$helper_dir/../tooling/install-profile.cmake" "$probe_dir/CMakeLists.txt"
   if ! cmake -S "$probe_dir" -B "$probe_dir/build" -G Ninja "-DPython3_EXECUTABLE=$(command -v python3)"; then
-    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, Viewer GUI/private/QML modules, Python >= 3.10 (icons), tomlplusplus >= 3.4 (Files), WebP, EXIF and Wayland development files is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
+    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, matching Qt private modules, Python >= 3.10 (icons), tomlplusplus >= 3.4 (Files), installed shared QMarkdown 1.x with QML metadata, and the full installation profile is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
     return 1
   fi
 )
 
 check_install_dependencies() {
   local missing_commands=() command_name
-  for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent mktemp rm cat python3 wayland-scanner; do
+  for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent mktemp rm cat dirname python3 wayland-scanner; do
     command -v "$command_name" >/dev/null 2>&1 || missing_commands+=("$command_name")
   done
 
   local missing_packages=() package_name
   # Papirus and Breeze are optional and may be installed in user icon paths.
   # Icon lookup still falls back to hicolor when neither theme is available.
-  local packages=(base-devel cmake ninja pkgconf qt6-base qt6-declarative qt6-svg layer-shell-qt
-    tomlplusplus json-glib gtk3 gtk4 wayland wayland-protocols libpulse libsecret pacman sqlite systemd udisks2
-    syntax-highlighting md4c greetd cage libwebp libexif qt6-imageformats python
-    hicolor-icon-theme)
+  local helper_dir
+  helper_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  # shellcheck source=install-profile.sh
+  . "$helper_dir/install-profile.sh"
+  local packages=("${HOLONIGHT_INSTALL_PACKAGES[@]}")
   if command -v pacman >/dev/null 2>&1; then
     local package_output package_status=0
     package_output="$(pacman -T "${packages[@]}")" || package_status=$?

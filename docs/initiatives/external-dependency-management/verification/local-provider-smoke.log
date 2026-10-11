@@ -1,0 +1,56 @@
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "3.0.7")
+-- Checking for module 'tomlplusplus'
+--   Found tomlplusplus, version 3.4.0
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/holonight-config
+[0/2] Re-checking globbed directories...
+[1/9] Building CXX object CMakeFiles/holonight_config.dir/src/appearance.cpp.o
+[2/9] Building CXX object CMakeFiles/holonight_config.dir/src/appearance_document.cpp.o
+[3/9] Building CXX object CMakeFiles/holonight_config.dir/src/codec.cpp.o
+[4/9] Building CXX object CMakeFiles/holonight_config.dir/src/document_store.cpp.o
+[5/9] Building CXX object CMakeFiles/holonight_config.dir/src/path.cpp.o
+[6/9] Building CXX object CMakeFiles/holonight_config.dir/src/document.cpp.o
+[7/9] Building CXX object CMakeFiles/holonight_config.dir/src/store.cpp.o
+[8/9] Linking CXX shared library libholonight_config.so
+-- Install configuration: "Debug"
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/share/licenses/HoloNightConfig/LICENSE
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/share/licenses/HoloNightConfig/GPL-3.0-or-later.txt
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/lib/libholonight_config.so
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/store.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/result.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/path.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/document.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/diagnostic.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/config.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/codec.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/appearance_document.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/include/holonight/config/appearance.h
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/lib/cmake/HoloNightConfig/HoloNightConfigTargets.cmake
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/lib/cmake/HoloNightConfig/HoloNightConfigTargets-debug.cmake
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/lib/cmake/HoloNightConfig/HoloNightConfigConfig.cmake
+-- Installing: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/lib/cmake/HoloNightConfig/HoloNightConfigConfigVersion.cmake
+-- Up-to-date: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/deps/prefix/share/licenses/HoloNightConfig/LICENSE
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/holonight provider paths with spaces 2j8gknvw/consumer/build/debug
+[1/2] Building CXX object CMakeFiles/consumer.dir/main.cpp.o
+[2/2] Linking CXX executable consumer
+holonight-config: compatible source, toolchain and installed package are current
+Refresh: 8 compile commands; editor build build/debug
+Passed local source preparation, cache reuse, configure without preparation and installed-package consumer: /tmp/holonight provider paths with spaces 2j8gknvw

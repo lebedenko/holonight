@@ -17,6 +17,7 @@ tests, and commits.
 | Initiative | Status | Priority | Scheduling |
 |---|---|---|---|
 | [GTK Visual Fidelity](gtk-visual-fidelity/README.md) | Draft | Low | Deferred until explicitly prioritized |
+| [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) | Draft | Deferred | Deferred until External Dependency Management is Integrated and the user explicitly prioritizes it |
 
 - [Files refactoring and onboarding](files-holonight-alignment/README.md) — Accepted; Files published and pinned; final integration review pending.
 
@@ -40,3 +41,5 @@ tests, and commits.
 - [FileChooser portal](filechooser-portal/README.md) — Accepted; Files provider published and pinned. Standalone backend has a locally verified implementation checkpoint; reported native chooser issues await individual fixes. Backend publication, Shell routing and ecosystem acceptance remain pending.
 
 - [Installation completeness](installation-completeness/README.md) — Accepted; launchers published and menu visibility confirmed; Hyprlock installer coverage locally verified; final ecosystem integration pending.
+
+- [External dependency management](external-dependency-management/README.md) — Accepted; canonical tooling and environment preparation in progress; repository adoption and final integration pending.

@@ -1,0 +1,15 @@
+{
+  "profile": "daemon",
+  "requested_image": "holonight-deps-daemon:external-dependencies",
+  "image_id": "sha256:17f90982a6c56a84d706706f75ebd91b0e123df2fa84d6f0d444f6eedcecd93d",
+  "network": "none",
+  "features": {
+    "BUILD_GTK_PROBES": true,
+    "BUILD_QT5_PROBES": true
+  },
+  "repositories": [
+    "holonightd"
+  ],
+  "prerequisite_qualification": "passed",
+  "repository_acceptance": "pending adoption"
+}

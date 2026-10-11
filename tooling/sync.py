@@ -8,7 +8,7 @@ import shutil
 import sys
 
 FILES = ['VERSION', 'workflow.py', 'compilation.py', 'qml_policy.py', 'clang-format',
-         'clang-tidy-qt', 'clang-tidy-cpp', 'clang-tidy-tests', 'clangd', 'README.md']
+         'clang-tidy-qt', 'clang-tidy-cpp', 'clang-tidy-tests', 'clangd', 'README.md', 'external.py', 'external-packages.json', 'providers.cmake']
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

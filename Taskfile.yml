@@ -82,3 +82,13 @@ tasks:
   tooling:refresh:
     desc: Refresh the umbrella compilation database
     cmds: [python3 tooling/compilation.py]
+
+  deps:validate:
+    desc: Validate canonical external declarations and generated production requirements
+    cmds:
+      - python3 tooling/generate-install-profile.py --check
+      - python3 -m unittest discover -s tooling -p 'test_*.py' -v
+
+  deps:profile:
+    desc: Regenerate the production installation dependency profile explicitly
+    cmds: [python3 tooling/generate-install-profile.py]
