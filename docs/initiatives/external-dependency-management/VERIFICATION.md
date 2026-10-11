@@ -49,6 +49,6 @@ smoke was rerun successfully. No compiler-warning suppression flags were added.
 
 Historical supplements remain fully preserved: 250 entries, 103 distinct names. Classification describes direct
 profile requirements versus transitive package-manager resolution. No hosted CI result or manual ecosystem result
-is claimed. All 18 original gitlinks remain unchanged. No packages were installed on the host by this work.
+is claimed. At foundation verification time, all 18 original gitlinks were unchanged; subsequent documentation publication/pins are recorded in TASKS.md. No packages were installed on the host by this work.
 
 Committed log copies normalize trailing whitespace only; complete raw logs remain in /tmp and .cache.

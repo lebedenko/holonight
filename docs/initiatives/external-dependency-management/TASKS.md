@@ -32,7 +32,8 @@ remotes before dependent implementation and pin updates. Record final commands/r
 
 
 All 18 local SDDs are committed in their owning repositories. These are documentation checkpoints, not adoption
-implementation commits. Repository adoption remains Planned; submodule pins remain at the audited baselines.
+implementation commits. Repository adoption remains Planned; all 18 submodule pins now select these published
+SDD documentation revisions. The original audit baselines remain recorded in BASELINE.json.
 
 Foundation checkpoints `523cb8b` and `1019c4e` were published to `origin/main` on 2026-10-12. The qualified Arch images
 remain local; their immutable IDs and evidence are in [VERIFICATION.md](VERIFICATION.md). Repository adoption
@@ -43,7 +44,8 @@ been migrated by the foundation checkpoint.
 ## Repository-local SDD documentation checkpoints — 2026-10-12
 
 Each commit contains only `docs/sdd/external-dependency-management/SPEC.md`, with message
-`docs(deps): record external dependency adoption specification`. All are local and unpublished.
+`docs(deps): record external dependency adoption specification`. All were published to canonical `origin/main`
+and verified with `git ls-remote` before pinning on 2026-10-12.
 Baselines, work-package IDs, canonical metadata references and whitespace were checked;
 all 18 repository working trees are clean. No application acceptance result is claimed.
 
@@ -67,3 +69,33 @@ all 18 repository working trees are clean. No application acceptance result is c
 | holonight-viewer | `74eee36c7484b37dcece55b5cdf71d84f21c93bb` |
 | holonightd | `569905495a8ec0089a62c86c1b39ca68953ae01e` |
 | xdg-desktop-portal-holonight | `926de7ccff8146235a014c52a8da890dcc3b0919` |
+
+## Publication and pin verification — 2026-10-12
+
+All submodules are clean. Canonical remote branch tips match the exact pinned documentation commits.
+`git show --check` and baseline-parent/specification-only checks passed in each repository.
+Latest CI was queried once after publication; pending/missing runs are not acceptance evidence.
+No implementation or manual integration acceptance is claimed, and the initiative remains Accepted.
+
+| Repository | CI revision | Status | Conclusion | Latest run |
+|---|---|---|---|---|
+| holonight-ai | `0d8c54e166fb4e34ee1e496421c4bd98339a95c1` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-ai/actions/runs/38180145072) |
+| holonight-appearance-adapters | `37508f71ed37a16b824329c303083a08cf88aa2f` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-appearance-adapters/actions/runs/38180149067) |
+| holonight-config | `854784a32f16c231ada49db9b6188e79c5903900` | completed | success | [run](https://github.com/lebedenko/holonight-config/actions/runs/38180153878) |
+| holonight-files | `2a71f3a9b7faf4542ddad1f7e6c7a686d869a80e` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-files/actions/runs/38180157745) |
+| holonight-greeter | `31e8f8ece6d4bb4e90d11433a253150726535916` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-greeter/actions/runs/38180162106) |
+| holonight-hyprlock | `a366a31eaf1b6836a84882a47fe74c34469f7be0` | completed | success | [run](https://github.com/lebedenko/holonight-hyprlock/actions/runs/38180166382) |
+| holonight-icons | `7684b021a5b74c7d4e34b7dd05bb3bdd02456473` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-icons/actions/runs/38180171276) |
+| holonight-images | `ce9bf6957f6efa51a3f5dbf9f51d95fb9b48cd6f` | completed | success | [run](https://github.com/lebedenko/holonight-images/actions/runs/38180176031) |
+| holonight-pkg-manager | `8042ed3890fc3bf226dc7d4c991459cd5c5599a2` | completed | success | [run](https://github.com/lebedenko/holonight-pkg-manager/actions/runs/38180180070) |
+| holonight-qt | `2a6fcb0ef29d20e3413f425914ec1cf171b82306` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-qt/actions/runs/38180183755) |
+| holonight-search | `993929cc717f3beaf99c60e01441dc3e86dfe7cf` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-search/actions/runs/38180187439) |
+| holonight-settings | `b99c2fcc97a2d7e7c6f6f48f087cdb9fd1536452` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-settings/actions/runs/38180191572) |
+| holonight-shell | `27567a918aae67ad43dba0e813b3f40ed14e539b` | queued | Pending | [run](https://github.com/lebedenko/holonight-shell/actions/runs/38180196167) |
+| holonight-system-services | `3bd6ebca0c0e5f51768105fa1970007e3e83da65` | completed | success | [run](https://github.com/lebedenko/holonight-system-services/actions/runs/38180199580) |
+| holonight-thumbnails | `59fb2e92e8794e06db2ff8a1a6ec5cc1ebc66c03` | in_progress | Pending | [run](https://github.com/lebedenko/holonight-thumbnails/actions/runs/38180203410) |
+| holonight-viewer | `74eee36c7484b37dcece55b5cdf71d84f21c93bb` | queued | Pending | [run](https://github.com/lebedenko/holonight-viewer/actions/runs/38180207239) |
+| holonightd | `569905495a8ec0089a62c86c1b39ca68953ae01e` | queued | Pending | [run](https://github.com/lebedenko/holonightd/actions/runs/38180211785) |
+| xdg-desktop-portal-holonight | `—` | Missing | — | No run returned |
+
+CI snapshot times (UTC): 2026-10-11T22:23:46.765764+00:00 through 2026-10-11T22:23:48.212561+00:00.
