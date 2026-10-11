@@ -38,7 +38,7 @@ Current pinned provider revisions remain unchanged. Integration at updated appli
 ## Integration acceptance criteria
 
 - [ ] Every repository work package has a published commit and passed local verification.
-- [ ] Participating submodules are clean and pinned to those published commits.
-- [ ] Cross-repository contracts are compatible at the pinned revisions.
+- [x] Participating submodules are clean and pinned to those published commits.
+- [x] Cross-repository contracts are compatible at the pinned revisions.
 - [ ] Root integration builds and tests pass in dependency order.
-- [ ] Required manual ecosystem checks pass.
+- [x] User confirmed both applications appear in the application menu on 2026-10-11.
