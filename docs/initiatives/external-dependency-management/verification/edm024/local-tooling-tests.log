@@ -1,0 +1,43 @@
+test_changed_package_exports_are_recorded_even_at_same_version (test_external.ExternalDependencies.test_changed_package_exports_are_recorded_even_at_same_version) ... ok
+test_changed_provider_configuration_archives_incompatible_install_tree (test_external.ExternalDependencies.test_changed_provider_configuration_archives_incompatible_install_tree) ... ok
+test_cmake_rejects_external_internal_provider_and_replaces_stale_directory (test_external.ExternalDependencies.test_cmake_rejects_external_internal_provider_and_replaces_stale_directory) ... ok
+test_configure_never_prepares_sources (test_external.ExternalDependencies.test_configure_never_prepares_sources) ... ok
+test_core_only_profile_does_not_require_qml_or_svg_packages (test_external.ExternalDependencies.test_core_only_profile_does_not_require_qml_or_svg_packages) ... ok
+test_disabled_compositor_avoids_wayland_and_gui_discovery (test_external.ExternalDependencies.test_disabled_compositor_avoids_wayland_and_gui_discovery) ... ok
+test_duplicate_internal_installations_are_rejected (test_external.ExternalDependencies.test_duplicate_internal_installations_are_rejected) ... ok
+test_external_sources_are_explicit_and_conflicts_fail_before_build (test_external.ExternalDependencies.test_external_sources_are_explicit_and_conflicts_fail_before_build) ... ok
+test_incompatible_installed_version_fails_without_acquisition (test_external.ExternalDependencies.test_incompatible_installed_version_fails_without_acquisition) ... ok
+test_installed_config_with_spaces_and_stable_evidence (test_external.ExternalDependencies.test_installed_config_with_spaces_and_stable_evidence) ... ok
+test_internal_packages_cannot_resolve_from_external_prefix (test_external.ExternalDependencies.test_internal_packages_cannot_resolve_from_external_prefix) ... ok
+test_minimal_daemon_profile_has_no_gui_or_systemd (test_external.ExternalDependencies.test_minimal_daemon_profile_has_no_gui_or_systemd) ... ok
+test_preset_and_explicit_feature_selection_reach_probe_and_cmake (test_external.ExternalDependencies.test_preset_and_explicit_feature_selection_reach_probe_and_cmake) ... ok
+test_preset_compiler_and_qt_context_is_shared_with_prerequisite_probe (test_external.ExternalDependencies.test_preset_compiler_and_qt_context_is_shared_with_prerequisite_probe) ... ok
+test_production_profile_excludes_test_dependencies (test_external.ExternalDependencies.test_production_profile_excludes_test_dependencies) ... ok
+test_provider_preparation_only_passes_supported_component_switches (test_external.ExternalDependencies.test_provider_preparation_only_passes_supported_component_switches) ... ok
+test_required_gmock_target_is_not_silently_skipped (test_external.ExternalDependencies.test_required_gmock_target_is_not_silently_skipped) ... ok
+test_reuse_is_invalidated_by_compiler_qt_options_features_build_type_and_source (test_external.ExternalDependencies.test_reuse_is_invalidated_by_compiler_qt_options_features_build_type_and_source) ... ok
+test_unknown_declaration_and_feature_are_errors (test_external.ExternalDependencies.test_unknown_declaration_and_feature_are_errors) ... ok
+test_unused_external_source_override_is_not_prepared_in_minimal_profile (test_external.ExternalDependencies.test_unused_external_source_override_is_not_prepared_in_minimal_profile) ... ok
+test_unversioned_sources_have_content_signatures (test_external.ExternalDependencies.test_unversioned_sources_have_content_signatures) ... ok
+test_canonical_test_precedes_legacy_test (test_tooling.ToolingTests.test_canonical_test_precedes_legacy_test) ... ok
+test_drift_check_read_only (test_tooling.ToolingTests.test_drift_check_read_only) ... ok
+test_explicit_prefix_does_not_build (test_tooling.ToolingTests.test_explicit_prefix_does_not_build) ... ok
+test_failed_refresh_preserves_database (test_tooling.ToolingTests.test_failed_refresh_preserves_database) ... ok
+test_format_inventory_excludes_vendor_and_probes (test_tooling.ToolingTests.test_format_inventory_excludes_vendor_and_probes) ... ok
+test_invalid_and_stale (test_tooling.ToolingTests.test_invalid_and_stale) ... ok
+test_missing_qml_metadata (test_tooling.ToolingTests.test_missing_qml_metadata) ... ok
+test_owned_test_precedes_debug_and_dependency (test_tooling.ToolingTests.test_owned_test_precedes_debug_and_dependency) ... ok
+test_qt_test_tool_environment_overrides (test_tooling.ToolingTests.test_qt_test_tool_environment_overrides) ... ok
+test_source_override_and_missing_source (test_tooling.ToolingTests.test_source_override_and_missing_source) ... ok
+test_umbrella_owned_build_precedes_other_modules_dependency (test_tooling.ToolingTests.test_umbrella_owned_build_precedes_other_modules_dependency) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 1.736s
+
+OK
+provider: compatible source, toolchain and installed package are current
+provider: compatible source, toolchain and installed package are current
+provider: compatible source, toolchain and installed package are current
+provider: compatible source, toolchain and installed package are current
+provider: compatible source, toolchain and installed package are current
+provider: compatible source, toolchain and installed package are current

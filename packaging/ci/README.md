@@ -23,12 +23,16 @@ Do not replace repository `images.json`, release containers or runtime rehearsal
 adoption work packages must switch these together after image qualification. Keep standalone source-provider pins;
 umbrella integration continues to use its exact gitlinks.
 
-Debian release coverage remains required. The current `debian:trixie` release lane does not satisfy Qt >= 6.11 merely
-by installing the distribution's Qt development packages. A pinned Debian environment needs a separately prepared,
-package-managed Qt >= 6.11 installation, matching private modules and all release acceptance dependencies before
-qualification. No Debian Qt artifact has been supplied or qualified in this work package; the existing release lane
-is preserved until that handoff is available. The locally cached Debian base digest was audited as
-`debian@sha256:d07d1b51c39f51188e60be9b64e6bf769fa94e187f092bc32b91305cfa34ba5a`.
+Pre-release CI prioritizes the qualified Arch full and daemon environments. Debian qualification is deferred
+(EDM-023 is Superseded); Debian package mappings and portable discovery remain available without a qualified
+support claim. Shell’s release build gate migration belongs to EDM-012 and must preserve tests, linting and
+quality checks. No application workflow changes are part of EDM-024.
+
+Publication is manual to `ghcr.io/lebedenko/holonight-deps`, using `arch-full-<commit>` and
+`arch-daemon-<commit>` tags. Qualify locally before pushing the exact image IDs, resolve registry digests,
+then pull each digest and compare its image ID with the qualified identity. Consumers use digest references.
+No hosted image-building workflow or distro matrix is introduced. Docker contexts admit only the recipe,
+its ignore rules, package lists and PKGBUILD; local source trees, builds and package artifacts are excluded.
 
 Status and evidence belong to the initiative ledger. A recipe, a local image ID, or an older passing CI run does not
 establish qualification of a newly built environment.

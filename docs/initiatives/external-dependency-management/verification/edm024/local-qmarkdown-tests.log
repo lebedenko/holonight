@@ -1,0 +1,9 @@
+test_installer_has_no_external_acquisition_or_staging (test_install_qmarkdown.QMarkdownOwnership.test_installer_has_no_external_acquisition_or_staging) ... ok
+test_system_package_survives_umbrella_install_and_uninstall (test_install_qmarkdown.QMarkdownOwnership.test_system_package_survives_umbrella_install_and_uninstall) ... ok
+test_missing_system_package_fails_before_configuration (test_install_qmarkdown.QMarkdownPreflight.test_missing_system_package_fails_before_configuration) ... ok
+test_shared_library_and_metadata_failures_are_actionable (test_install_qmarkdown.QMarkdownPreflight.test_shared_library_and_metadata_failures_are_actionable) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.243s
+
+OK

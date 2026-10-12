@@ -1,6 +1,9 @@
 **
 !packaging/
 !packaging/ci/
-!packaging/ci/**
+!packaging/ci/Dockerfile.arch
+!packaging/ci/Dockerfile.arch.dockerignore
+!packaging/ci/arch-daemon.packages
+!packaging/ci/arch-full.packages
 !packaging/qmarkdown/
-!packaging/qmarkdown/**
+!packaging/qmarkdown/PKGBUILD

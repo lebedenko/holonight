@@ -1,0 +1,205 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.arch
+#1 transferring dockerfile: 1.95kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/archlinux@sha256:eb8f6dcc89a38977c9735f10fcf6ae4afe496283e7008eb7a3420cdba31fbd04
+#2 DONE 0.9s
+
+#3 [base 1/2] FROM docker.io/library/archlinux@sha256:eb8f6dcc89a38977c9735f10fcf6ae4afe496283e7008eb7a3420cdba31fbd04
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.17kB done
+#4 DONE 0.0s
+
+#5 [base 2/2] RUN printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "2026/09/30" > /etc/pacman.d/mirrorlist     && pacman -Syyuu --noconfirm
+#5 CACHED
+
+#6 [full-base 1/4] COPY packaging/ci/arch-full.packages /tmp/requirements
+#6 CACHED
+
+#7 [full-base 2/4] RUN pacman -S --needed --noconfirm $(cat /tmp/requirements)     && pacman -Q > /usr/share/holonight-ci-packages.txt     && pacman -Scc --noconfirm
+#7 CACHED
+
+#8 [full-base 3/4] RUN ln -s /usr/bin/go-task /usr/local/bin/task     && localedef -i en_US -f UTF-8 en_US.UTF-8
+#8 CACHED
+
+#9 [full-base 4/4] WORKDIR /work
+#9 CACHED
+
+#10 [qmarkdown-package 1/4] COPY packaging/qmarkdown/PKGBUILD /work/qmarkdown-package/PKGBUILD
+#10 DONE 0.1s
+
+#11 [qmarkdown-package 2/4] RUN useradd --create-home builder && chown -R builder:builder /work/qmarkdown-package
+#11 DONE 0.4s
+
+#12 [qmarkdown-package 3/4] WORKDIR /work/qmarkdown-package
+#12 DONE 0.1s
+
+#13 [qmarkdown-package 4/4] RUN makepkg --noconfirm
+#13 1.548 ==> Making package: qmarkdown 1.1.0-1 (Mon Oct 12 13:07:24 2026)
+#13 1.551 ==> Checking runtime dependencies...
+#13 1.625 ==> Checking buildtime dependencies...
+#13 1.652 ==> Retrieving sources...
+#13 1.673   -> Cloning qmarkdown git repo...
+#13 1.680 Cloning into bare repository '/work/qmarkdown-package/qmarkdown'...
+#13 9.279 ==> Validating source files with sha256sums...
+#13 9.282     qmarkdown ... Skipped
+#13 9.294 ==> Extracting sources...
+#13 9.308   -> Creating working copy of qmarkdown git repo...
+#13 9.311 Cloning into 'qmarkdown'...
+#13 9.320 done.
+#13 9.387 Switched to a new branch 'makepkg'
+#13 9.396 ==> Starting build()...
+#13 9.588 -- The C compiler identification is GNU 16.2.1
+#13 9.738 -- The CXX compiler identification is GNU 16.2.1
+#13 9.746 -- Detecting C compiler ABI info
+#13 9.833 -- Detecting C compiler ABI info - done
+#13 9.840 -- Check for working C compiler: /usr/sbin/cc - skipped
+#13 9.841 -- Detecting C compile features
+#13 9.841 -- Detecting C compile features - done
+#13 9.860 -- Detecting CXX compiler ABI info
+#13 9.944 -- Detecting CXX compiler ABI info - done
+#13 9.954 -- Check for working CXX compiler: /usr/sbin/c++ - skipped
+#13 9.955 -- Detecting CXX compile features
+#13 9.955 -- Detecting CXX compile features - done
+#13 10.03 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+#13 10.10 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+#13 10.10 -- Found Threads: TRUE
+#13 10.10 -- Performing Test HAVE_STDATOMIC
+#13 10.25 -- Performing Test HAVE_STDATOMIC - Success
+#13 10.25 -- Found WrapAtomic: TRUE
+#13 10.27 -- Found OpenGL: /usr/lib/libOpenGL.so
+#13 10.27 -- Found WrapOpenGL: TRUE
+#13 10.28 -- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+#13 10.45 -- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+#13 10.46 -- Configuring done (1.0s)
+#13 10.48 -- Generating done (0.0s)
+#13 10.48 -- Build files have been written to: /work/qmarkdown-package/src/build
+#13 10.51 [1/50] Copying QMarkdown qml sources into build dir
+#13 10.52 [2/50] Copying QMarkdown qml resources into build dir
+#13 10.55 [3/50] Populating .qmlls.ini file at /work/qmarkdown-package/src/build/.qt/.qmlls.build.ini
+#13 10.62 [4/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/buffer.c.o
+#13 10.64 [5/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/cmark.c.o
+#13 10.65 [6/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/cmark_ctype.c.o
+#13 10.75 [7/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/commonmark.c.o
+#13 10.77 [8/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/houdini_href_e.c.o
+#13 10.79 [9/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/houdini_html_e.c.o
+#13 10.83 [10/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/blocks.c.o
+#13 10.84 [11/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/houdini_html_u.c.o
+#13 10.90 [12/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/html.c.o
+#13 10.95 [13/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/iterator.c.o
+#13 11.01 [14/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/latex.c.o
+#13 11.06 [15/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/man.c.o
+#13 11.17 [16/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/inlines.c.o
+#13 11.21 [17/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/node.c.o
+#13 11.22 [18/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/references.c.o
+#13 11.26 [19/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/render.c.o
+#13 11.40 [20/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/utf8.c.o
+#13 11.45 [21/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/xml.c.o
+#13 11.68 [22/50] Automatic MOC for target QMarkdown
+#13 11.78 [23/50] Building C object third_party/cmark/CMakeFiles/qmarkdown_cmark.dir/src/scanners.c.o
+#13 11.79 [24/50] Running AUTOMOC file extraction for target QMarkdown
+#13 11.79 [25/50] Running rcc for resource qmake_QMarkdown
+#13 11.80 [26/50] Running moc --collect-json for target QMarkdown
+#13 11.81 [27/50] Generating .rcc/qmlcache/QMarkdown_qmlcache_loader.cpp
+#13 11.83 [28/50] Running rcc for resource QMarkdown_raw_qml_0
+#13 11.85 [29/50] Automatic QML type registration for target QMarkdown
+#13 11.93 [30/50] Generating .rcc/qmlcache/QMarkdown_MarkdownView_qml.cpp, .rcc/qmlcache/QMarkdown_MarkdownView_qml.cpp.aotstats
+#13 13.82 [31/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/qmarkdown_qmltyperegistrations.cpp.o
+#13 13.83 [32/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/.qt/rcc/qrc_qmake_QMarkdown.cpp.o
+#13 14.98 [33/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/QMarkdown_autogen/mocs_compilation.cpp.o
+#13 15.26 [34/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/decodescheduler.cpp.o
+#13 17.93 [35/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/markdownstyle.cpp.o
+#13 18.27 [36/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/resourcecontroller.cpp.o
+#13 18.99 [37/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/document.cpp.o
+#13 20.40 [38/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/inline.cpp.o
+#13 21.02 [39/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/viewstate.cpp.o
+#13 22.13 [40/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/formatintervals.cpp.o
+#13 22.40 [41/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/private/formattedtext.cpp.o
+#13 23.30 [42/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/.rcc/qmlcache/QMarkdown_qmlcache_loader.cpp.o
+#13 23.32 [43/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/.qt/rcc/qrc_QMarkdown_raw_qml_0.cpp.o
+#13 25.20 [44/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdown.dir/.rcc/qmlcache/QMarkdown_MarkdownView_qml.cpp.o
+#13 25.47 [45/50] Linking CXX shared library src/QMarkdown/libQMarkdown.so.1.1.0
+#13 25.48 [46/50] Creating library symlink src/QMarkdown/libQMarkdown.so.1 src/QMarkdown/libQMarkdown.so
+#13 25.64 [47/50] Automatic MOC for target QMarkdownPlugin
+#13 25.65 [48/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdownPlugin.dir/QMarkdownPlugin_autogen/mocs_compilation.cpp.o
+#13 26.47 [49/50] Building CXX object src/QMarkdown/CMakeFiles/QMarkdownPlugin.dir/QMarkdownPlugin_QMarkdownPlugin.cpp.o
+#13 26.57 [50/50] Linking CXX shared module qml/QMarkdown/libQMarkdownPlugin.so
+#13 26.57 ==> Entering fakeroot environment...
+#13 28.13 ==> Starting package()...
+#13 28.14 -- Install configuration: "Release"
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/share/licenses/QMarkdown/cmark/COPYING
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/share/licenses/QMarkdown/cmark/PROVENANCE.md
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/libQMarkdown.so.1.1.0
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/libQMarkdown.so.1
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/libQMarkdown.so
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/libQMarkdownPlugin.so
+#13 28.15 -- Set non-toolchain portion of runtime path of "/work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/libQMarkdownPlugin.so" to "$ORIGIN/../../../"
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/qmldir
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/QMarkdown.qmltypes
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/MarkdownView.qml
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/Private/qmldir
+#13 28.15 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/qt6/qml/QMarkdown/Private/private.qmltypes
+#13 28.16 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/cmake/QMarkdown/QMarkdownConfig.cmake
+#13 28.16 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/cmake/QMarkdown/QMarkdownConfigVersion.cmake
+#13 28.16 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/cmake/QMarkdown/QMarkdownTargets.cmake
+#13 28.16 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/lib/cmake/QMarkdown/QMarkdownTargets-release.cmake
+#13 28.16 -- Installing: /work/qmarkdown-package/pkg/qmarkdown/usr/share/licenses/QMarkdown/LICENSE
+#13 28.16 ==> Tidying install...
+#13 28.17   -> Removing libtool files...
+#13 28.17   -> Removing static library files...
+#13 28.18   -> Purging unwanted files...
+#13 28.19   -> Stripping unneeded symbols from binaries and libraries...
+#13 29.37   -> Compressing man and info pages...
+#13 29.38 ==> Checking for packaging issues...
+#13 29.41 ==> Creating package "qmarkdown"...
+#13 29.42   -> Generating .PKGINFO file...
+#13 29.47   -> Generating .BUILDINFO file...
+#13 29.57   -> Generating .MTREE file...
+#13 29.58   -> Compressing package...
+#13 29.61 ==> Creating package "qmarkdown-debug"...
+#13 29.61   -> Generating .PKGINFO file...
+#13 29.66   -> Generating .BUILDINFO file...
+#13 29.73   -> Generating .MTREE file...
+#13 29.76   -> Compressing package...
+#13 29.81 ==> Leaving fakeroot environment.
+#13 29.81 ==> Finished making: qmarkdown 1.1.0-1 (Mon Oct 12 13:07:52 2026)
+#13 DONE 29.8s
+
+#14 [full 1/3] COPY --from=qmarkdown-package /work/qmarkdown-package/qmarkdown-[0-9]*.pkg.tar.zst /tmp/
+#14 DONE 0.1s
+
+#15 [full 2/3] RUN pacman -U --noconfirm /tmp/qmarkdown-[0-9]*.pkg.tar.zst     && pacman -Q > /usr/share/holonight-ci-packages.txt
+#15 0.212 loading packages...
+#15 0.212 resolving dependencies...
+#15 0.214 looking for conflicting packages...
+#15 0.216
+#15 0.216 Package (1)  New Version  Net Change
+#15 0.216
+#15 0.216 qmarkdown    1.1.0-1        1.17 MiB
+#15 0.216
+#15 0.216 Total Installed Size:  1.17 MiB
+#15 0.216
+#15 0.216 :: Proceed with installation? [Y/n]
+#15 0.216 checking keyring...
+#15 0.216 checking package integrity...
+#15 0.216 loading package files...
+#15 0.216 checking for file conflicts...
+#15 0.219 :: Processing package changes...
+#15 0.219 installing qmarkdown...
+#15 0.265 :: Running post-transaction hooks...
+#15 0.265 (1/1) Arming ConditionNeedsUpdate...
+#15 DONE 0.3s
+
+#16 [full 3/3] WORKDIR /work
+#16 DONE 0.1s
+
+#17 exporting to image
+#17 exporting layers
+#17 exporting layers 0.8s done
+#17 writing image sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7 done
+#17 naming to docker.io/library/holonight-deps-full:arch-handoff 0.0s done
+#17 DONE 0.9s

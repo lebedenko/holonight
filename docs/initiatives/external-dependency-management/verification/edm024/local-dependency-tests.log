@@ -1,0 +1,20 @@
+test_files_requires_supported_tomlplusplus (test_install_dependencies.DependencyChecks.test_files_requires_supported_tomlplusplus) ... ok
+test_icons_require_hicolor_fallback (test_install_dependencies.DependencyChecks.test_icons_require_hicolor_fallback) ... ok
+test_icons_require_supported_python (test_install_dependencies.DependencyChecks.test_icons_require_supported_python) ... ok
+test_incompatible_compiler (test_install_dependencies.DependencyChecks.test_incompatible_compiler) ... ok
+test_merged_packaging_without_standalone_package (test_install_dependencies.DependencyChecks.test_merged_packaging_without_standalone_package) ... ok
+test_missing_capabilities_and_configuration_failures (test_install_dependencies.DependencyChecks.test_missing_capabilities_and_configuration_failures) ... ok
+test_missing_compiler (test_install_dependencies.DependencyChecks.test_missing_compiler) ... ok
+test_missing_package_manager (test_install_dependencies.DependencyChecks.test_missing_package_manager) ... ok
+test_missing_storage_runtime (test_install_dependencies.DependencyChecks.test_missing_storage_runtime) ... ok
+test_missing_viewer_dependencies (test_install_dependencies.DependencyChecks.test_missing_viewer_dependencies) ... ok
+test_optional_icon_themes_do_not_block_installation (test_install_dependencies.DependencyChecks.test_optional_icon_themes_do_not_block_installation) ... ok
+test_package_database_failure_stops_preflight (test_install_dependencies.DependencyChecks.test_package_database_failure_stops_preflight) ... ok
+test_standalone_packaging (test_install_dependencies.DependencyChecks.test_standalone_packaging) ... ok
+test_unrelated_missing_command (test_install_dependencies.DependencyChecks.test_unrelated_missing_command) ... ok
+test_unrelated_missing_package (test_install_dependencies.DependencyChecks.test_unrelated_missing_package) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.639s
+
+OK

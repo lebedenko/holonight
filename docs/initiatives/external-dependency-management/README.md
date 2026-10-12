@@ -6,7 +6,8 @@ Status: Accepted
 
 Standardize all 18 standalone repositories on installed external dependencies, explicit local source preparation
 and locked CI environments. CMake, normal builds and the umbrella installer must never acquire dependencies.
-Support Arch development/deployment and preserve qualified Debian release coverage.
+Prioritize a lightweight qualified Arch environment for pre-release development, deployment and CI.
+Debian qualification is deferred; retain portable discovery and Debian package mappings without claiming support.
 
 ## Non-goals
 
@@ -65,12 +66,14 @@ See [INVENTORY.md](INVENTORY.md) for direct requirements and [CMAKE-AUDIT.json](
 - Compatibility evidence includes source content/revision, compiler/toolchain, Qt, build type/options/features,
   selected paths and versions. Incompatible caches/install trees are preserved for inspection and never reused.
 - QMarkdown is a separately owned system package. Its accepted source revision is
-  `595ca4fea32155766c2eafb3b670995d2ea75a2f`; the installer preflights it and never owns/removes its payload.
+  `b71740c7e0f26b0709f5e929a79e8d01dba56071` (version 1.1.0); the installer preflights it and never owns/removes its payload.
 - The production installer profile is generated from declarations; test dependencies remain excluded.
 - CI images use pinned bases, dated package repositories and package-manager resolution. Build/runtime images
   use compatible Qt/toolchains. Acquire packages/providers explicitly before offline configuration/acceptance.
-- Qualified immutable image digests and published provider handoffs precede repository adoption. Debian release
-  coverage needs a qualified package-managed Qt >=6.11/private-module environment; distro availability is not evidence.
+- Qualified immutable Arch image digests and published tooling/provider handoffs precede repository adoption
+  (EDM-024). Debian qualification (EDM-023) is Superseded for this pre-release initiative.
+- EDM-012 includes moving Shell’s release build gate to the qualified Arch environment while preserving tests,
+  linting and quality checks. No application workflows change in the environment handoff.
 - Publication and umbrella pin updates are separate authorized handoffs. No unpublished commit is pinned.
 
 ## Dependency order
@@ -93,7 +96,7 @@ implementation handoff. Repository-local commits do not alter umbrella pins or i
 - [ ] holonightd builds without vendored headers; systemd ON/OFF and parsing/serialization/notification tests pass.
 - [ ] QMarkdown package contents and Files startup pass; umbrella uninstall preserves package ownership.
 - [ ] Qualified full Qt and minimal daemon environments retain image/package/source/feature evidence and offline acceptance.
-- [ ] Debian release coverage uses a qualified environment meeting Qt/private requirements.
+- [ ] Shell’s release build gate uses the qualified Arch environment with tests, linting and quality checks preserved.
 - [ ] Clean repository acceptance passes in dependency order, then umbrella staging/install/uninstall checks pass.
 - [ ] Manual session, greeter, portal and compositor checks pass without pointer/focus automation.
 

@@ -1,0 +1,6 @@
+/usr/lib/libQMarkdown.so.1 is owned by qmarkdown 1.1.0-1
+/usr/lib/qt6/qml/QMarkdown/libQMarkdownPlugin.so is owned by qmarkdown 1.1.0-1
+/usr/lib/qt6/qml/QMarkdown/qmldir is owned by qmarkdown 1.1.0-1
+/usr/lib/qt6/qml/QMarkdown/QMarkdown.qmltypes is owned by qmarkdown 1.1.0-1
+/usr/share/licenses/QMarkdown/LICENSE is owned by qmarkdown 1.1.0-1
+/usr/share/licenses/QMarkdown/cmark/COPYING is owned by qmarkdown 1.1.0-1

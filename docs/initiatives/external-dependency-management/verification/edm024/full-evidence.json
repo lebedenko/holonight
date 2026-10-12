@@ -1,0 +1,32 @@
+{
+  "profile": "full",
+  "requested_image": "holonight-deps-full:arch-handoff",
+  "image_id": "sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7",
+  "network": "none",
+  "features": {
+    "BUILD_GTK_PROBES": true,
+    "BUILD_QT5_PROBES": true
+  },
+  "repositories": [
+    "holonight-ai",
+    "holonight-appearance-adapters",
+    "holonight-config",
+    "holonight-files",
+    "holonight-greeter",
+    "holonight-hyprlock",
+    "holonight-icons",
+    "holonight-images",
+    "holonight-pkg-manager",
+    "holonight-qt",
+    "holonight-search",
+    "holonight-settings",
+    "holonight-shell",
+    "holonight-system-services",
+    "holonight-thumbnails",
+    "holonight-viewer",
+    "holonightd",
+    "xdg-desktop-portal-holonight"
+  ],
+  "prerequisite_qualification": "passed",
+  "repository_acceptance": "pending adoption"
+}
