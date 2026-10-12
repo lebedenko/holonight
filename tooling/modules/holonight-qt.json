@@ -34,6 +34,7 @@
         "Core",
         "Gui",
         "Widgets",
+        "Qml",
         "Quick",
         "QuickControls2",
         "QuickShapes",
@@ -43,6 +44,16 @@
         "QuickControls2Private",
         "QuickTemplates2Private"
       ]
+    },
+    {
+      "id": "qt",
+      "scope": [
+        "build"
+      ],
+      "components": [
+        "WaylandClient"
+      ],
+      "feature": "BUILD_WAYLAND"
     },
     {
       "id": "qt-wayland",
