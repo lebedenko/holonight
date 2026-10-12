@@ -13,7 +13,8 @@
       "id": "toml",
       "scope": [
         "build"
-      ]
+      ],
+      "discovery": "pkg-config"
     },
     {
       "id": "compiler",

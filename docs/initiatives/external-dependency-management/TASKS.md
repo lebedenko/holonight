@@ -5,7 +5,7 @@
 | EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | Done | `523cb8b` + documentation checkpoints below | Exact baseline, 250 supplement entries/103 names and contracts reviewed; all 18 local SDDs committed separately and validated |
 | EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | Done | `523cb8b` | 32 tooling and 67 installer fixtures passed; generated profiles, installed-provider smoke and final diff review passed |
 | EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; historical qualification retained; current publication/handoff is EDM-024 |
-| EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; qualified digest images available; refresh local SPEC during adoption |
+| EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Done | `0ccd25f323662f50a47bb048be636160f2b7c135` (local; publication pending) | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; 2026-10-12: bundle 2.0.0, pkg-config declaration and qualified offline Arch CI adopted; 4 launcher + 3 discovery/cache regressions, both CTest entries, release, format/tidy and REUSE pass; full evidence in local SPEC; publication/pin approval pending |
 | EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; next implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; qualified digest images available; refresh local SPEC during adoption |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation awaits handoff |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`; implementation awaits handoff |
@@ -119,3 +119,17 @@ EDM-024 is complete: both qualified Arch images are available by the immutable r
 qualification checkpoint `8f437c03c6b8da4ead2d16d938b6fb1c4f0a9702`; the completed handoff publishes that checkpoint
 and its publication evidence together. EDM-004 and EDM-005 are Ready; adoption and application acceptance have
 not started. The initiative remains Accepted. The original audit and all historical qualification evidence are retained.
+
+## EDM-004 local acceptance handoff — 2026-10-12
+
+Config implementation `0ccd25f323662f50a47bb048be636160f2b7c135` is locally committed and verified;
+its working tree is clean. Canonical `origin/main` was confirmed at the exact assigned baseline before adoption.
+Publication and the umbrella pin update await approval. No dependent implementation may use this unpublished revision.
+EDM-004 Done records local acceptance only; initiative integration and hosted CI are not claimed.
+
+Config preserves its pkg-config toml++ interface and custom test framework. Its canonical declaration now overrides
+the catalog discovery mechanism to pkg-config, matching CMake and the copied standalone declaration. The generated
+production installer probe is refreshed; package requirements are unchanged. Bundle drift and declaration equality
+checks pass, and all 32 shared tooling fixtures pass. Three clean offline CI lanes pass, including test/release builds,
+the installed-package consumer, full format/tidy and separate REUSE licensing. Complete logs were reviewed and
+toolchain, warnings and commands recorded in the local SPEC. No gitlinks change in this local handoff preparation.
