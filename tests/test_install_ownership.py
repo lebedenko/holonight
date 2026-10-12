@@ -168,6 +168,17 @@ class FilesOwnership(ViewerOwnership):
     executable = "hn-files"
     app_id = "org.holonight.Files"
 
+    def test_configure_exposes_system_qmarkdown_without_system_provider_prefix(self):
+        cmake = self.commands / "cmake"
+        arguments = self.root / "cmake-arguments"
+        cmake.write_text('#!/bin/sh\nprintf "%s\\n" "$@" >> "' + str(arguments) + '"\n')
+        cmake.chmod(0o755)
+        result = self.run_functions(f"configure_and_stage {self.module}")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        args = arguments.read_text().splitlines()
+        self.assertIn(f"-DCMAKE_PREFIX_PATH={self.stage}/usr;/usr/lib/cmake/QMarkdown", args)
+        self.assertIn(f"-DQML_IMPORT_PATH={self.stage}/usr/lib/qt6/qml", args)
+
 
 class AiOwnership(ViewerOwnership):
     module = "holonight-ai"
