@@ -1,0 +1,19 @@
+The push refers to repository [ghcr.io/lebedenko/holonight-deps]
+ff1f2df106b2: Preparing
+8b8b5aa13435: Preparing
+bd2af992786e: Preparing
+7b87e8131afc: Preparing
+7aca3336b5ea: Preparing
+92565f73568a: Preparing
+3bf3522a4c32: Preparing
+7aca3336b5ea: Waiting
+92565f73568a: Waiting
+3bf3522a4c32: Waiting
+ff1f2df106b2: Pushed
+8b8b5aa13435: Pushed
+7aca3336b5ea: Layer already exists
+7b87e8131afc: Pushed
+3bf3522a4c32: Layer already exists
+92565f73568a: Layer already exists
+bd2af992786e: Pushed
+arch-daemon-8f437c0: digest: sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec size: 1783

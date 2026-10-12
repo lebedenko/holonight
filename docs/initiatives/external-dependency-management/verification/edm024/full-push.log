@@ -1,0 +1,27 @@
+The push refers to repository [ghcr.io/lebedenko/holonight-deps]
+5f70bf18a086: Preparing
+fb7100ff1c0d: Preparing
+0e231fc25624: Preparing
+8e6b9899c795: Preparing
+0810a0cc6231: Preparing
+8ea05210addc: Preparing
+807420b491bc: Preparing
+7aca3336b5ea: Preparing
+92565f73568a: Preparing
+3bf3522a4c32: Preparing
+8ea05210addc: Waiting
+807420b491bc: Waiting
+7aca3336b5ea: Waiting
+92565f73568a: Waiting
+3bf3522a4c32: Waiting
+5f70bf18a086: Pushed
+fb7100ff1c0d: Pushed
+0e231fc25624: Pushed
+0810a0cc6231: Pushed
+8e6b9899c795: Pushed
+807420b491bc: Pushed
+92565f73568a: Pushed
+7aca3336b5ea: Pushed
+3bf3522a4c32: Pushed
+8ea05210addc: Pushed
+arch-full-8f437c0: digest: sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40 size: 2413

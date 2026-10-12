@@ -36,3 +36,7 @@ its ignore rules, package lists and PKGBUILD; local source trees, builds and pac
 
 Status and evidence belong to the initiative ledger. A recipe, a local image ID, or an older passing CI run does not
 establish qualification of a newly built environment.
+
+The current EDM-024 published digest references, qualified image IDs, package inventories and exact next
+implementation baselines are recorded in [initiative verification](../../docs/initiatives/external-dependency-management/VERIFICATION.md)
+and the [coordination ledger](../../docs/initiatives/external-dependency-management/TASKS.md).

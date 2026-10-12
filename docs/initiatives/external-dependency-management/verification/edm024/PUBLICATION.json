@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-12",
+  "recipe_commit": "8f437c03c6b8da4ead2d16d938b6fb1c4f0a9702",
+  "registry": "ghcr.io/lebedenko/holonight-deps",
+  "status": "published and digest identity verified",
+  "full": {
+    "tag": "arch-full-8f437c0",
+    "image_id": "sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7",
+    "push": "passed",
+    "registry_digest": "sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40",
+    "digest_pull_identity_verified": true,
+    "digest_reference": "ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40",
+    "pulled_image_id": "sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7",
+    "anonymous_digest_pull": "passed"
+  },
+  "daemon": {
+    "tag": "arch-daemon-8f437c0",
+    "image_id": "sha256:17f90982a6c56a84d706706f75ebd91b0e123df2fa84d6f0d444f6eedcecd93d",
+    "push": "passed",
+    "registry_digest": "sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec",
+    "digest_pull_identity_verified": true,
+    "digest_reference": "ghcr.io/lebedenko/holonight-deps@sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec",
+    "pulled_image_id": "sha256:17f90982a6c56a84d706706f75ebd91b0e123df2fa84d6f0d444f6eedcecd93d",
+    "anonymous_digest_pull": "passed"
+  },
+  "verified_at_utc": "2026-10-12T14:12:37.383604+00:00"
+}

@@ -5,8 +5,8 @@
 | EDM-001 | umbrella | Baseline, audit, contracts and repository SDDs | — | README.md | Done | `523cb8b` + documentation checkpoints below | Exact baseline, 250 supplement entries/103 names and contracts reviewed; all 18 local SDDs committed separately and validated |
 | EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | Done | `523cb8b` | 32 tooling and 67 installer fixtures passed; generated profiles, installed-provider smoke and final diff review passed |
 | EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; historical qualification retained; current publication/handoff is EDM-024 |
-| EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; implementation awaits handoff |
-| EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `39472e6dcafc93acea218a234213c346be256586`; implementation awaits handoff |
+| EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; qualified digest images available; refresh local SPEC during adoption |
+| EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; next implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; qualified digest images available; refresh local SPEC during adoption |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation awaits handoff |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`; implementation awaits handoff |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `a8debec1399b59c218b2faa8f54047e5d3bc7984`; implementation awaits handoff |
@@ -24,7 +24,7 @@
 | EDM-020 | holonightd | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `c6a9f9e1a353322bf7a3430cdab8392890348ccb`; implementation awaits handoff |
 | EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `def9618fca833535275e8a8aa9a0e577acda8377`; implementation awaits handoff |
 | EDM-023 | umbrella | Debian release environment qualification | EDM-002 | packaging/ci/README.md | Superseded | — | Deferred for pre-release Arch priorities; mappings retained without qualified support |
-| EDM-024 | umbrella | Qualify, manually publish and hand off current Arch environments | EDM-002, EDM-003 | packaging/ci/README.md | In Progress | — | Offline QMarkdown 1.1.0/full qualification passed; daemon qualification reused after identity/input checks; digest publication pending |
+| EDM-024 | umbrella | Qualify, manually publish and hand off current Arch environments | EDM-002, EDM-003 | packaging/ci/README.md | Done | `8f437c0` + publication checkpoint | Offline full qualification and daemon reuse passed; both registry digest pulls preserve qualified IDs; anonymous availability verified; see [VERIFICATION](VERIFICATION.md) |
 | EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024 | — | Planned | — | Automated and manual ecosystem acceptance pending; pins unchanged |
 
 Allowed states: Planned, Ready, In Progress, Done, Blocked, Superseded. Done requires a local commit and passed
@@ -33,7 +33,7 @@ remotes before dependent implementation and pin updates. Record final commands/r
 
 
 All 18 local SDDs are committed in their owning repositories. These are documentation checkpoints, not adoption
-implementation commits. Repository adoption remains Planned; all 18 submodule pins now select these published
+implementation commits. These checkpoints did not start adoption; all 18 submodule pins select these published
 SDD documentation revisions. The original audit baselines remain recorded in BASELINE.json.
 
 Foundation checkpoints `523cb8b` and `1019c4e` were published to `origin/main` on 2026-10-12. The qualified Arch images
@@ -113,3 +113,9 @@ this Arch contract and the current QMarkdown source. Original audit baselines re
 SPEC history. Adopt canonical bundle 2.0.0, portable installed dependency discovery and explicit source preparation;
 use published qualified digest references for offline CI acceptance. No submodule pins change in this handoff.
 EDM-012 includes Shell’s release build gate migration to Arch while preserving tests, linting and quality checks.
+
+EDM-024 is complete: both qualified Arch images are available by the immutable registry references in
+[VERIFICATION.md](VERIFICATION.md) and `verification/edm024/PUBLICATION.json`. Canonical tooling is unchanged from
+qualification checkpoint `8f437c03c6b8da4ead2d16d938b6fb1c4f0a9702`; the completed handoff publishes that checkpoint
+and its publication evidence together. EDM-004 and EDM-005 are Ready; adoption and application acceptance have
+not started. The initiative remains Accepted. The original audit and all historical qualification evidence are retained.

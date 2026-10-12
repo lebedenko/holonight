@@ -78,7 +78,7 @@ layers were cached; QMarkdown was rebuilt cleanly. The build context transfer wa
 | Installer dependency/QMarkdown fixtures | 15 + 4 passed | edm024/local-dependency-tests.log, local-qmarkdown-tests.log |
 | Generated profiles | No drift | `python3 tooling/generate-install-profile.py --check` |
 | Licensing | Passed | edm024/reuse.log |
-| Daemon reuse | Identity and complete pacman inventory unchanged; no Qt/GTK packages | Historical daemon-evidence.json and daemon-packages.txt |
+| Daemon reuse | Identity and complete pacman inventory unchanged; no Qt/GTK packages | edm024/daemon-reuse.json; historical daemon-evidence.json and daemon-packages.txt |
 
 Daemon identity remains `sha256:17f90982a6c56a84d706706f75ebd91b0e123df2fa84d6f0d444f6eedcecd93d`.
 Dockerfile.arch, daemon package list and qualification/tooling inputs match the historical baseline. The narrowed
@@ -88,7 +88,7 @@ historical inventory byte for byte.
 
 Complete build and prerequisite logs reviewed: no compiler warnings; Qt’s standard private ABI warnings remain,
 with exact module versions enforced. Optional Vulkan headers are absent; software/offscreen rendering passes.
-No warning suppression was added. Registry publication and digest identity checks are pending.
+No warning suppression was added. Registry publication and digest identity checks passed; immutable references follow below.
 
 Commands for this iteration:
 
@@ -111,3 +111,36 @@ Canonical Config and System Services `origin/main` tips were confirmed by `git l
 at the exact handoff baselines recorded in TASKS.md.
 
 Application acceptance and final integration remain pending. Debian is deferred, not qualified.
+
+### Publication and handoff — 2026-10-12
+
+Recipe/qualification checkpoint: `8f437c03c6b8da4ead2d16d938b6fb1c4f0a9702`.
+The first push was rejected as unauthenticated. After the user authenticated Docker, manual publication succeeded
+for the exact qualified images with tags `arch-full-8f437c0` and `arch-daemon-8f437c0`.
+
+| Profile | Immutable registry reference | Qualified/pulled image ID |
+|---|---|---|
+| full | `ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40` | `sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7` |
+| daemon | `ghcr.io/lebedenko/holonight-deps@sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec` | `sha256:17f90982a6c56a84d706706f75ebd91b0e123df2fa84d6f0d444f6eedcecd93d` |
+
+Registry digests are manifest identities, distinct from local image IDs. Both digest pulls succeeded and
+`docker image inspect --format '{{.Id}}' <digest-reference>` matched each qualified image ID exactly.
+Both references also passed anonymous digest pulls using an empty Docker configuration, confirming availability
+for standalone CI consumers. `verification/edm024/PUBLICATION.json` records the verification time and identities;
+`*-push.log`, `*-pull.log` and `*-anonymous-pull.log` retain the successful registry commands’ output.
+
+```sh
+docker push ghcr.io/lebedenko/holonight-deps:arch-full-8f437c0
+docker push ghcr.io/lebedenko/holonight-deps:arch-daemon-8f437c0
+docker image inspect --format '{{json .RepoDigests}}' ghcr.io/lebedenko/holonight-deps:arch-full-8f437c0 ghcr.io/lebedenko/holonight-deps:arch-daemon-8f437c0
+docker pull ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40
+docker pull ghcr.io/lebedenko/holonight-deps@sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec
+docker image inspect --format '{{.Id}}' ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40 ghcr.io/lebedenko/holonight-deps@sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec
+docker --config /tmp/edm024-anonymous-docker pull ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40
+docker --config /tmp/edm024-anonymous-docker pull ghcr.io/lebedenko/holonight-deps@sha256:cfd5daeb5745c71e72062aa9926b4ca1636599987f93697a1bf79e17693768ec
+```
+
+EDM-024 is Done. EDM-004/005 are Ready at the exact baselines recorded in TASKS.md. The completed umbrella
+handoff publishes the qualification checkpoint and this publication record in one Git push to canonical
+`origin/main`. Application acceptance remains pending; the initiative remains Accepted. No application workflow,
+repository adoption implementation or gitlink changes are included.
