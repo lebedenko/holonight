@@ -129,7 +129,8 @@
         "test"
       ],
       "components": [
-        "Test"
+        "Test",
+        "QmlPrivate"
       ]
     },
     {
