@@ -8,7 +8,7 @@
 | EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Done | `0ccd25f323662f50a47bb048be636160f2b7c135` | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; 2026-10-12: bundle 2.0.0, pkg-config declaration and qualified offline Arch CI adopted; 4 launcher + 3 discovery/cache regressions, both CTest entries, release, format/tidy and REUSE pass; full evidence in local SPEC; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38279431526 |
 | EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Done | `70614eb70329af7014853c2973e5624acf0b251e` | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; 2026-10-12: bundle 2.0.0, Qt >=6.11 and installed GTest/GMock adopted; all eight offline acceptance lanes pass, including 195 backend tests, installed consumers, Release/Core builds, full format/tidy and REUSE; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38289139967; full evidence in local SPEC and handoff below |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Done | `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; 2026-10-12: bundle 2.0.0, explicit preparation and five qualified offline lanes pass; Full 97/97, Minimal 86/86, Release install, strict tidy across 76 units, QML checks and REUSE; 5 launcher + 12 dependency regressions; published to canonical origin/main and pinned after approval; latest CI Licensing in_progress (pending), run 38309160449; full evidence in local SPEC and handoff below |
-| EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`; implementation baseline `37508f71ed37a16b824329c303083a08cf88aa2f`; published Config `0ccd25f323662f50a47bb048be636160f2b7c135`, Services `70614eb70329af7014853c2973e5624acf0b251e`, Qt `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`; EDM-024 full image qualified |
+| EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Done | `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e` | 2026-10-13: bundle 2.0.0 and explicit providers adopted; Full 11/11, Minimal 8/8, Release install, strict format/tidy across 15 units, REUSE, 6 launcher + 16 dependency regressions pass locally; published once to canonical origin/main and pinned locally; latest CI completed/failure at this revision, run 38318125058 (GHCR image pull unauthorized before build); full evidence in local SPEC and handoff below |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `a8debec1399b59c218b2faa8f54047e5d3bc7984`; implementation awaits handoff |
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d834984dc413dc9e56f7f3157fa605d6a8667088`; implementation awaits handoff |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2284b1822b0f8f856677e14d21d91e8fa10bd98c`; implementation awaits handoff |
@@ -220,3 +220,55 @@ this ledger, leaves every other work-package state unchanged and preserves exist
 The umbrella checkpoint remains local, the initiative remains Accepted, and EDM-022 manual/final ecosystem
 acceptance and Debian qualification remain deferred. Canonical bundle/declaration/profile and whitespace checks
 pass; documentation-only handoff does not require repeating the unchanged application acceptance builds.
+
+## EDM-007 accepted handoff — 2026-10-13
+
+Adapters' audit baseline remains `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`;
+implementation started at confirmed canonical `37508f71ed37a16b824329c303083a08cf88aa2f`.
+The local Ready checkpoint is `80e17e4`. Published providers used for acceptance:
+Config `0ccd25f323662f50a47bb048be636160f2b7c135`, System Services
+`70614eb70329af7014853c2973e5624acf0b251e`, and Qt
+`7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`.
+
+Fixture cleanup `0b8efad` and adoption `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e`
+were published together in one push to canonical
+`git@github.com:lebedenko/holonight-appearance-adapters.git` `main`.
+`git ls-remote origin refs/heads/main` confirmed the exact published adoption revision;
+the Adapters working tree is clean and synchronized with origin/main. The gitlink
+selects this published revision. This umbrella checkpoint remains local.
+
+Local acceptance used the qualified EDM-024 full Arch image
+`ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`
+and the retained separate REUSE image. Explicit preparation exported the exact provider
+revisions from local checkouts and installed them through `task deps PRESET=test` with
+canonical options and Debug preparation. Provider source/toolchain/package/option
+identities were recorded and checked; incompatible preparation was archived.
+All acceptance containers used `--pull=never --network=none`, read-only prepared
+inputs, host UID/GID and isolated runtime directories.
+
+`python3 scripts/ci/run.py` performed clean acceptance. After fixture/static-only
+corrections, `python3 scripts/ci/run.py --lane static --lane full --lane minimal --lane licensing`
+reran affected lanes; the unaffected Release result was retained. Full passed 11/11
+CTest entries, Minimal passed 8/8, and both retained all 14 GTest cases, CLI contracts,
+GTK/labwc behavior, rollback/recovery and canonical-document mutation checks.
+Release build/install, staged install/uninstall and non-installed probes, isolated
+GTK majors/linkage, canonical formatting, strict tidy across all 15 owned units and
+included fragment, REUSE, 6 launcher and 16 dependency regressions passed.
+Complete log locations, toolchain/package identities, expected private-Qt/Xvfb notices
+and preparation corrections are recorded in the local SPEC. Canonical declaration
+comparison, `python3 tooling/sync.py --check --module holonight-appearance-adapters`,
+`python3 tooling/generate-install-profile.py --check`, shell syntax and final diffs passed.
+
+Latest available CI was queried once using `gh run list --branch main --limit 1`:
+[CI run 38318125058](https://github.com/lebedenko/holonight-appearance-adapters/actions/runs/38318125058),
+revision `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e`, created `2026-10-12T22:41:53Z`,
+status `completed`, conclusion `failure`. Its failure log shows the preparation pull
+of the qualified GHCR image was rejected as `unauthorized`; no hosted provider or
+Adapters build ran. This is recorded as a failed hosted check, not acceptance success.
+No polling or CI completion wait was performed, and no additional implementation
+push was made. Registry-access resolution remains external to this repository handoff.
+
+Only EDM-007 changes to Done. The initiative remains Accepted; Debian qualification,
+manual ecosystem acceptance and final integration remain deferred. Other work-package
+states and existing untracked umbrella artifacts are unchanged. The umbrella checkpoint
+must not be published as part of this handoff.
