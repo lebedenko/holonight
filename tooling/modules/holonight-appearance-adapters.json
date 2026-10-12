@@ -65,14 +65,14 @@
     {
       "id": "gtk3",
       "scope": [
-        "test"
+        "build"
       ],
       "feature": "BUILD_GTK_PROBES"
     },
     {
       "id": "gtk4",
       "scope": [
-        "test"
+        "build"
       ],
       "feature": "BUILD_GTK_PROBES"
     },
@@ -80,13 +80,15 @@
       "id": "xvfb",
       "scope": [
         "test"
-      ]
+      ],
+      "feature": "BUILD_GTK_PROBES"
     },
     {
       "id": "dbus",
       "scope": [
         "test"
-      ]
+      ],
+      "feature": "BUILD_GTK_PROBES"
     },
     {
       "id": "compiler",
@@ -132,15 +134,6 @@
       "targets": [
         "GTest::gtest",
         "GTest::gtest_main"
-      ]
-    },
-    {
-      "id": "qt",
-      "scope": [
-        "test"
-      ],
-      "components": [
-        "Test"
       ]
     }
   ],
