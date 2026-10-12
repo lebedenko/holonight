@@ -6,7 +6,7 @@
 | EDM-002 | umbrella | Versioned declarations, prefix/validation/cache tooling and installer profile | EDM-001 | tooling/README.md | Done | `523cb8b` | 32 tooling and 67 installer fixtures passed; generated profiles, installed-provider smoke and final diff review passed |
 | EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; historical qualification retained; current publication/handoff is EDM-024 |
 | EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Done | `0ccd25f323662f50a47bb048be636160f2b7c135` | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; 2026-10-12: bundle 2.0.0, pkg-config declaration and qualified offline Arch CI adopted; 4 launcher + 3 discovery/cache regressions, both CTest entries, release, format/tidy and REUSE pass; full evidence in local SPEC; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38279431526 |
-| EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; next implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; qualified digest images available; refresh local SPEC during adoption |
+| EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Done | `70614eb70329af7014853c2973e5624acf0b251e` | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; 2026-10-12: bundle 2.0.0, Qt >=6.11 and installed GTest/GMock adopted; all eight offline acceptance lanes pass, including 195 backend tests, installed consumers, Release/Core builds, full format/tidy and REUSE; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38289139967; full evidence in local SPEC and handoff below |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation awaits handoff |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`; implementation awaits handoff |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `a8debec1399b59c218b2faa8f54047e5d3bc7984`; implementation awaits handoff |
@@ -25,7 +25,7 @@
 | EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `def9618fca833535275e8a8aa9a0e577acda8377`; implementation awaits handoff |
 | EDM-023 | umbrella | Debian release environment qualification | EDM-002 | packaging/ci/README.md | Superseded | — | Deferred for pre-release Arch priorities; mappings retained without qualified support |
 | EDM-024 | umbrella | Qualify, manually publish and hand off current Arch environments | EDM-002, EDM-003 | packaging/ci/README.md | Done | `8f437c0` + publication checkpoint | Offline full qualification and daemon reuse passed; both registry digest pulls preserve qualified IDs; anonymous availability verified; see [VERIFICATION](VERIFICATION.md) |
-| EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024 | — | Planned | — | Automated and manual ecosystem acceptance pending; pins unchanged |
+| EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024 | — | Planned | — | Automated and manual ecosystem acceptance pending; published Config and System Services adoption pins recorded in handoffs below |
 
 Allowed states: Planned, Ready, In Progress, Done, Blocked, Superseded. Done requires a local commit and passed
 local verification; it does not make this initiative Integrated. Provider handoffs must be available on canonical
@@ -155,3 +155,33 @@ Local acceptance remains the reviewed offline three-lane evidence in Config's SP
 and installer fixtures (68) passed during adoption; generated installer profile drift and commit whitespace checks passed.
 This handoff changes only Config's gitlink and this ledger. The umbrella checkpoint remains local; the initiative
 remains Accepted and EDM-022 integration acceptance is still pending.
+
+## EDM-005 approved publication and pin — 2026-10-12
+
+User approved publication of the three verified System Services commits and its umbrella pin update:
+`616501a` (formatting), `5a3a07f` (API-preserving static-analysis cleanup), and
+`70614eb70329af7014853c2973e5624acf0b251e` (EDM-005 adoption).
+`git push origin main` completed once; `git ls-remote origin refs/heads/main` confirmed the full adoption revision
+on canonical `git@github.com:lebedenko/holonight-system-services.git`. Its working tree is clean and its upstream
+is synchronized. The gitlink selects this published revision. This section supersedes the pinned local SPEC's
+pre-publication pending status; its complete local acceptance evidence is retained without a documentation-only push.
+
+All eight clean offline acceptance lanes passed: Full Debug with 195 backend tests and all three installed
+consumers followed by Release without tests; Audio-only; Storage-only with a private D-Bus session; Compositor
+with and without Wayland; Core-only without CTest; full format/strict tidy across 37 owned translation units;
+and separate REUSE licensing. Launcher (4), dependency (5), and canonical external-tooling (21) regressions passed.
+The final documentation licensing check also passed. Exact commands, package identities, feature switches,
+complete-log review and documented informational/suppressed diagnostics are in the local SPEC.
+
+Latest CI was queried once with
+`gh run list --repo lebedenko/holonight-system-services --branch main --limit 1 --json headSha,status,conclusion,url,workflowName,createdAt`.
+The returned Licensing run was created at `2026-10-12T18:10:35Z` and reports:
+
+| CI revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `70614eb70329af7014853c2973e5624acf0b251e` | Licensing | in_progress | Pending (empty API conclusion) | [run](https://github.com/lebedenko/holonight-system-services/actions/runs/38289139967) |
+
+No CI completion is claimed, and no polling or waiting was performed. Historical documentation CI results do
+not verify this implementation. The checkpoint changes only System Services' gitlink and this coordination ledger;
+existing untracked artifacts are untouched. The umbrella checkpoint stays local, the initiative remains Accepted,
+and final ecosystem integration remains pending EDM-022. Bundle drift and commit whitespace checks pass.
