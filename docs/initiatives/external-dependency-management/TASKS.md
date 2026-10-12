@@ -7,7 +7,7 @@
 | EDM-003 | umbrella | System QMarkdown package and Arch CI prerequisite qualification | EDM-002 | packaging/ci/README.md | Done | `523cb8b` | Clean pinned QMarkdown package and offline full/minimal Arch prerequisite qualification passed; historical qualification retained; current publication/handoff is EDM-024 |
 | EDM-004 | holonight-config | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Done | `0ccd25f323662f50a47bb048be636160f2b7c135` | Audit baseline `d6a392b41991f70a004d58f7694c7b6115cb7280`; next implementation baseline `854784a32f16c231ada49db9b6188e79c5903900`; 2026-10-12: bundle 2.0.0, pkg-config declaration and qualified offline Arch CI adopted; 4 launcher + 3 discovery/cache regressions, both CTest entries, release, format/tidy and REUSE pass; full evidence in local SPEC; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38279431526 |
 | EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Done | `70614eb70329af7014853c2973e5624acf0b251e` | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; 2026-10-12: bundle 2.0.0, Qt >=6.11 and installed GTest/GMock adopted; all eight offline acceptance lanes pass, including 195 backend tests, installed consumers, Release/Core builds, full format/tidy and REUSE; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38289139967; full evidence in local SPEC and handoff below |
-| EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; test-only QmlPrivate declared; local implementation authorized, publication/pinning pending approval |
+| EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Done | `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; 2026-10-12: bundle 2.0.0, explicit preparation and five qualified offline lanes pass; Full 97/97, Minimal 86/86, Release install, strict tidy across 76 units, QML checks and REUSE; 5 launcher + 12 dependency regressions; published to canonical origin/main and pinned after approval; latest CI Licensing in_progress (pending), run 38309160449; full evidence in local SPEC and handoff below |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `95a9078e8d4f0b2d9c5a69ee6040388558eb9251`; implementation awaits handoff |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `a8debec1399b59c218b2faa8f54047e5d3bc7984`; implementation awaits handoff |
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d834984dc413dc9e56f7f3157fa605d6a8667088`; implementation awaits handoff |
@@ -185,3 +185,38 @@ No CI completion is claimed, and no polling or waiting was performed. Historical
 not verify this implementation. The checkpoint changes only System Services' gitlink and this coordination ledger;
 existing untracked artifacts are untouched. The umbrella checkpoint stays local, the initiative remains Accepted,
 and final ecosystem integration remains pending EDM-022. Bundle drift and commit whitespace checks pass.
+
+## EDM-006 approved publication and pin — 2026-10-13
+
+User approved publication of the three verified Qt commits and its local umbrella pin/handoff checkpoint:
+`a173dc97317891a07ede5d5f6fcf4c7f0b42812e` (test lint cleanup),
+`158476f01a6db5d7cea3c2b9fa76ddb113ccedbe` (QML binding cleanup), and
+`7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` (EDM-006 adoption).
+`git push origin main` completed once; `git ls-remote origin refs/heads/main` confirmed the full adoption revision
+on canonical `git@github.com:lebedenko/holonight-qt.git`. Qt's working tree is clean and its upstream synchronized.
+The gitlink selects this published revision. This handoff supersedes the pinned local SPEC's pending publication
+status while retaining its implementation and verification record without a documentation-only Qt push.
+
+Local acceptance on 2026-10-12 passed all five qualified offline lanes: Full Debug (97/97 CTest entries), Minimal
+(86/86), production Release build/install, canonical formatting and strict tidy across 76 owned translation units
+with QML lint/import/qmltypes policies, and REUSE in its separate image. Applicable installed-package consumers,
+syntax-enabled themes and syntax-disabled absence, unavailable Wayland requests, example startup tests and Qt5
+probes passed. Launcher (5), dependency/cache (12) and umbrella tooling (32) regressions passed. Final review's
+test variable-name correction passed focused tidy/build/smoke and formatting checks; final documentation REUSE
+and diff checks passed. Complete logs, exact image/provider compatibility identities and hashes are recorded in
+Qt's local SPEC and VERIFICATION.json. Existing shader/software, optional Kirigami Addons and explicit Fusion
+GTest skips remain documented; no skip policy was added or broadened.
+
+Latest CI was queried once with
+`gh run list --repo lebedenko/holonight-qt --branch main --limit 1 --json headSha,status,conclusion,url,workflowName,createdAt`.
+The returned Licensing run was created at `2026-10-12T21:12:26Z` and reports:
+
+| CI revision | Workflow | Status | Conclusion | Run |
+|---|---|---|---|---|
+| `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Licensing | in_progress | Pending (empty API conclusion) | [run](https://github.com/lebedenko/holonight-qt/actions/runs/38309160449) |
+
+No CI completion is claimed; no polling or waiting was performed. This checkpoint changes only Qt's gitlink and
+this ledger, leaves every other work-package state unchanged and preserves existing untracked artifacts.
+The umbrella checkpoint remains local, the initiative remains Accepted, and EDM-022 manual/final ecosystem
+acceptance and Debian qualification remain deferred. Canonical bundle/declaration/profile and whitespace checks
+pass; documentation-only handoff does not require repeating the unchanged application acceptance builds.
