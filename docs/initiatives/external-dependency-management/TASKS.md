@@ -266,7 +266,15 @@ status `completed`, conclusion `failure`. Its failure log shows the preparation 
 of the qualified GHCR image was rejected as `unauthorized`; no hosted provider or
 Adapters build ran. This is recorded as a failed hosted check, not acceptance success.
 No polling or CI completion wait was performed, and no additional implementation
-push was made. Registry-access resolution remains external to this repository handoff.
+push was made.
+
+Registry follow-up on 2026-10-13: after the owner changed package visibility, a fresh
+anonymous GHCR manifest request returned HTTP 200 and the exact qualified digest
+`sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`.
+The failed job was rerun with `gh run rerun 38318125058 --failed`. A single subsequent
+status query recorded attempt 2 at the same implementation revision as `in_progress`,
+with no conclusion yet. Hosted acceptance remains pending; no completion wait,
+implementation change or additional publication push was performed.
 
 Only EDM-007 changes to Done. The initiative remains Accepted; Debian qualification,
 manual ecosystem acceptance and final integration remain deferred. Other work-package
