@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=qmarkdown
-pkgver=1.0.0
+pkgver=1.1.0
 pkgrel=1
 pkgdesc='Shared Qt Quick Markdown renderer with installed CMake and QML metadata'
 arch=('x86_64')
@@ -10,7 +10,7 @@ license=('MIT')
 options=('!lto')
 depends=('qt6-base' 'qt6-declarative')
 makedepends=('cmake' 'ninja' 'git')
-_commit=595ca4fea32155766c2eafb3b670995d2ea75a2f
+_commit=b71740c7e0f26b0709f5e929a79e8d01dba56071
 source=("git+https://github.com/lebedenko/qmarkdown.git#commit=$_commit")
 sha256sums=('SKIP') # Git source identity is the full commit above.
 
