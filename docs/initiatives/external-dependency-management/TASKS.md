@@ -12,7 +12,7 @@
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Done | `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb` | 2026-10-13: bundle 2.0.0, explicit hash-validated renderer fixture, Qt >=6.11 and offline five-lane acceptance adopted; 47 Python tests, 19 launcher/dependency regressions, 282 Qt masters, GTK3/GTK4 symbolic checks, previews, Release staging, canonical format/strict tidy and four REUSE roots pass locally; two separate cleanup/adoption commits published in one push and pinned locally; latest CI run 38369393516 attempt 1 in_progress, conclusion null, at this revision; full evidence in local SPEC and handoff below |
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38385319992; full evidence in local SPEC |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Done | `c9ae0ad9a64e8ce28ee669b5463ef1bec74bc16d` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; both CTest registrations, all 11 cache cases, Release/external-prefix consumer, format/strict tidy across 3 units, REUSE and 19 launcher/dependency regressions pass locally; separate cleanup/adoption commits published together to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38398351495; full evidence in local SPEC and handoff below |
-| EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation awaits handoff |
+| EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation baseline `993929cc717f3beaf99c60e01441dc3e86dfe7cf`, confirmed on canonical origin/main with a clean checkout on 2026-10-13; next-iteration handoff below; no implementation or acceptance result claimed |
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
@@ -499,3 +499,59 @@ three units, REUSE, 19 module regressions and 32 canonical tooling fixtures. Can
 installer-profile consistency and whitespace checks pass at the published implementation.
 This checkpoint changes only Thumbnails' gitlink and this ledger and remains local. The initiative
 remains Accepted; Viewer, Files, final integration and unrelated untracked artifacts are unchanged.
+
+## Next iteration: EDM-011 Search — Ready, 2026-10-13
+
+The next iteration completes the remaining reusable provider adoption before Files (EDM-015).
+Assign only `holonight-search`, work package EDM-011, from exact canonical origin/main
+`993929cc717f3beaf99c60e01441dc3e86dfe7cf`. On 2026-10-13, `git -C holonight-search
+ls-remote origin refs/heads/main` confirmed that revision and the checkout was clean at it.
+Planning inspected Search's AGENTS.md, local SPEC, CMake/presets, Task commands,
+launcher/workflow, dependency declarations, provider/consumer tests and benchmark comparison.
+EDM-002 and EDM-024 are Done; Search has no internal source providers to prepare.
+The initiative remains Accepted. Detailed implementation decisions, changed files and evidence
+belong in Search's [local SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md).
+
+Implementation sequence:
+
+1. Update the local SPEC with this implementation baseline while preserving its historical audit
+   baseline. Synchronize canonical bundle 2.0.0 and Search declarations. Preserve C++23,
+   Qt Core >=6.11, package 0.1.0 and `HolonightSearch::Search`; require installed GTest >=1.14
+   CONFIG for tests. Verify the declared Qt Test requirement against actual usage before
+   settling declarations, and keep fzf exclusively in the test/benchmark profile.
+2. Make `task deps` explicit prerequisite preparation/validation. Ordinary configure/build/test
+   commands must not acquire packages or prepare sources. Support installed external prefixes,
+   paths containing spaces and compatibility evidence; archive incompatible artifacts.
+3. Adopt the qualified EDM-024 full image
+   `ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`
+   and the accepted separate REUSE image. Add explicit launcher preparation before acceptance;
+   retain build-test and benchmark gates and add Release installation, canonical static checks
+   and licensing. Acceptance uses `--pull=never --network=none`, read-only inputs, caller UID/GID
+   and private runtime directories. Retire benchmark-time fzf download/extraction; use the
+   qualified image's installed fzf and retain historical package evidence.
+4. Verify focused launcher/discovery/cache regressions, then run one clean acceptance and review
+   complete logs. Record preparation identities, versions, options, commands and limitations in
+   the local SPEC and structured evidence. If canonical formatting/tidy requires broad cleanup,
+   keep behavior-preserving cleanup separate from dependency adoption.
+5. Commit only verified Search work using Conventional Commits. Publication and umbrella pinning
+   remain separate authorized handoffs. After publication, confirm the canonical revision and
+   query latest CI once, recording its exact revision/status/conclusion/link without polling.
+
+Acceptance must retain all provider CTest cases, an installed-package consumer and the representative
+Release benchmark: two million records, the same complete candidate list for fzf, four existing
+queries returning 80 hits, and all 20 fzf samples per query. Preserve the distinction between
+provider warm-query timings and fzf ingestion/filter timings; record environment/version changes
+without inventing a performance threshold. Test missing/incompatible Qt and GTest, testing OFF
+without GTest, unavailable fzf in the benchmark profile, external prefixes/spaces, compatible cache
+reuse and stale/tampered preparation rejection. Release staging must exclude tests/benchmark tools.
+Canonical declaration/bundle/installer-profile checks, format, strict tidy and REUSE must pass.
+
+Iteration completion means a clean, locally verified Search commit and reviewable handoff evidence;
+it does not mean ecosystem integration. Files remains Planned until Search is published and pinned
+and its own handoff is prepared. Viewer and Shell are eligible for separate future planning, but
+are outside this iteration. Debian qualification, new ranking behavior, new fuzz campaigns and
+manual ecosystem integration remain outside EDM-011.
+
+This planning change marks only EDM-011 Ready. It performs no implementation, publication,
+submodule pin update or CI query. Before an implementer starts, create the required local umbrella
+checkpoint and provide its exact revision together with the Search baseline above.

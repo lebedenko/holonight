@@ -69,15 +69,6 @@
         "GTest::gtest",
         "GTest::gtest_main"
       ]
-    },
-    {
-      "id": "qt",
-      "scope": [
-        "test"
-      ],
-      "components": [
-        "Test"
-      ]
     }
   ],
   "external_features": {}
