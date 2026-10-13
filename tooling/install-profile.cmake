@@ -52,7 +52,7 @@ find_package(Qt6 6.11 REQUIRED COMPONENTS Gui Quick Qml QuickControls2 Svg)
 # holonight-files: toml
 find_package(tomlplusplus 3.4 CONFIG REQUIRED)
 # holonight-files: qmarkdown
-find_package(QMarkdown 1.0...<2.0 CONFIG REQUIRED)
+find_package(QMarkdown 1.1 CONFIG REQUIRED)
 if(NOT TARGET QMarkdown::QMarkdown)
   message(FATAL_ERROR "holonight-files: installed QMarkdown lacks QMarkdown::QMarkdown")
 endif()

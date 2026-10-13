@@ -86,7 +86,8 @@
       "scope": [
         "build"
       ],
-      "feature": "BUILD_FILES_APP"
+      "feature": "BUILD_FILES_APP",
+      "version": "1.1"
     },
     {
       "id": "exif",
