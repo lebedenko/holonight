@@ -10,7 +10,7 @@
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Done | `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; 2026-10-12: bundle 2.0.0, explicit preparation and five qualified offline lanes pass; Full 97/97, Minimal 86/86, Release install, strict tidy across 76 units, QML checks and REUSE; 5 launcher + 12 dependency regressions; published to canonical origin/main and pinned after approval; latest CI Licensing in_progress (pending), run 38309160449; full evidence in local SPEC and handoff below |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Done | `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e` | 2026-10-13: bundle 2.0.0 and explicit providers adopted; Full 11/11, Minimal 8/8, Release install, strict format/tidy across 15 units, REUSE, 6 launcher + 16 dependency regressions pass locally; published once to canonical origin/main and pinned locally; CI rerun attempt 2 completed/success at this revision, run 38318125058 (original GHCR authorization failure preserved below); full evidence in local SPEC and handoff below |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Done | `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb` | 2026-10-13: bundle 2.0.0, explicit hash-validated renderer fixture, Qt >=6.11 and offline five-lane acceptance adopted; 47 Python tests, 19 launcher/dependency regressions, 282 Qt masters, GTK3/GTK4 symbolic checks, previews, Release staging, canonical format/strict tidy and four REUSE roots pass locally; two separate cleanup/adoption commits published in one push and pinned locally; latest CI run 38369393516 attempt 1 in_progress, conclusion null, at this revision; full evidence in local SPEC and handoff below |
-| EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` (local) | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; unpublished and gitlink unchanged; full evidence in local SPEC |
+| EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38385319992; full evidence in local SPEC |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2284b1822b0f8f856677e14d21d91e8fa10bd98c`; implementation awaits handoff |
 | EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation awaits handoff |
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
@@ -401,3 +401,28 @@ remains the published implementation baseline. Publication and pinning remain se
 no CI query, push or pin update is performed here. This ledger checkpoint remains local, unrelated untracked
 artifacts are preserved, and the initiative remains Accepted. Thumbnails/downstream consumers, Debian
 qualification, new fuzz campaigns and final manual ecosystem integration remain later work packages.
+
+## EDM-009 publication and pin — 2026-10-13
+
+User requested the Images pin. Its verified cleanup `d84903464e6e9143c60444949a5c1f3e0acbd768`
+and adoption `ae827d78db9cc21f9537c27f50f49baf879324da` were published together in one push to
+canonical `git@github.com:lebedenko/holonight-images.git` main, as the prerequisite for selecting a
+published revision. `git ls-remote origin refs/heads/main` confirmed the exact adoption commit.
+Images is clean and synchronized with origin/main. The umbrella gitlink now selects that revision.
+This supersedes the local completion record and pinned SPEC's pending publication/pin status;
+their complete local acceptance evidence is retained without a documentation-only Images push.
+
+Latest CI was queried once with
+`gh run list --repo lebedenko/holonight-images --branch main --limit 1 --json headSha,status,conclusion,url,workflowName,createdAt`.
+The Build and checks run, created at `2026-10-13T10:43:31Z`, reports revision
+`ae827d78db9cc21f9537c27f50f49baf879324da`, status `in_progress`, and an empty conclusion
+(pending): [run 38385319992](https://github.com/lebedenko/holonight-images/actions/runs/38385319992).
+No CI completion is claimed; no polling or waiting was performed.
+
+Local verification remains the four-lane offline acceptance, affected release/static reruns,
+3/3 CTest registrations and 36 provider cases, installed/external-prefix consumers, Clang fuzz
+builds, format/strict tidy across ten units, REUSE, 19 module regressions and 32 canonical tooling
+fixtures documented above. Canonical bundle/installer-profile drift and whitespace checks pass.
+This checkpoint changes only Images' gitlink and this ledger, preserves unrelated untracked
+artifacts and remains local. The initiative remains Accepted; later work-package states and
+final ecosystem integration are unchanged.
