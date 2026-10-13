@@ -12,7 +12,7 @@
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Done | `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb` | 2026-10-13: bundle 2.0.0, explicit hash-validated renderer fixture, Qt >=6.11 and offline five-lane acceptance adopted; 47 Python tests, 19 launcher/dependency regressions, 282 Qt masters, GTK3/GTK4 symbolic checks, previews, Release staging, canonical format/strict tidy and four REUSE roots pass locally; two separate cleanup/adoption commits published in one push and pinned locally; latest CI run 38369393516 attempt 1 in_progress, conclusion null, at this revision; full evidence in local SPEC and handoff below |
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38385319992; full evidence in local SPEC |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Done | `c9ae0ad9a64e8ce28ee669b5463ef1bec74bc16d` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; both CTest registrations, all 11 cache cases, Release/external-prefix consumer, format/strict tidy across 3 units, REUSE and 19 launcher/dependency regressions pass locally; separate cleanup/adoption commits published together to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38398351495; full evidence in local SPEC and handoff below |
-| EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation baseline `993929cc717f3beaf99c60e01441dc3e86dfe7cf`, confirmed on canonical origin/main with a clean checkout on 2026-10-13; next-iteration handoff below; no implementation or acceptance result claimed |
+| EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Done | `5e71fd7c6494084b4fcc1b5b7a8df9bb2e690bdc` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG, explicit preparation and qualified five-lane offline CI adopted; all six provider tests, Debug/Release installed consumers, full two-million-record benchmark, Release staging, format/strict tidy across four units and REUSE pass locally; 20 module + 32 canonical tooling regressions pass; separate cleanup/adoption commits published together to canonical origin/main and pinned locally; latest CI Build and checks attempt 1 in_progress, no conclusion, run 38409565751 at this revision; full evidence in local SPEC and handoff below |
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
@@ -555,3 +555,32 @@ manual ecosystem integration remain outside EDM-011.
 This planning change marks only EDM-011 Ready. It performs no implementation, publication,
 submodule pin update or CI query. Before an implementer starts, create the required local umbrella
 checkpoint and provide its exact revision together with the Search baseline above.
+
+## EDM-011 Search publication and pin handoff — 2026-10-13
+
+User authorized publication and pinning after local acceptance. Search's clean `main`
+published both completed commits in one push: `56fa411` (behavior-preserving static-check
+cleanup) and `5e71fd7c6494084b4fcc1b5b7a8df9bb2e690bdc` (dependency adoption).
+`git -C holonight-search ls-remote origin refs/heads/main` confirmed the latter exact
+canonical revision before pinning. The submodule working tree is clean.
+
+Local verification: explicit preparation and all five clean offline acceptance lanes passed
+at `build/ci/20261013T134825Z-tnsa2kj6`; all six provider tests, Debug/Release installed
+consumers, complete two-million-record/four-query benchmark with 80 hits and 20 samples per
+query, eight-file Release staging, canonical format/strict tidy across four owned units,
+REUSE, 20 module regressions and 32 canonical tooling fixtures passed. Documentation closure
+licensing also passed. Commands, versions, benchmark measurements, implementation/log hashes
+and limits remain in Search's [local SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md)
+and its verification JSON files. Declaration equality, bundle drift, installer-profile,
+workflow syntax and whitespace checks passed; final committed implementation matches the
+acceptance hashes. No application rebuild is required for this umbrella-only checkpoint.
+
+One latest CI query after publication returned [Build and checks, run 38409565751](https://github.com/lebedenko/holonight-search/actions/runs/38409565751),
+at exact revision `5e71fd7c6494084b4fcc1b5b7a8df9bb2e690bdc`, attempt 1,
+status `in_progress`, conclusion empty (pending). No completion or success is claimed;
+no polling or waiting was performed. Pinning proceeds as authorized independently of CI completion.
+
+This local umbrella checkpoint changes only Search's gitlink and this ledger. EDM-011 is Done;
+the initiative remains Accepted. Files still requires its own Ready handoff; downstream adoption,
+Debian qualification and final ecosystem integration remain deferred. Unrelated untracked
+umbrella files are preserved. The umbrella checkpoint is not published.
