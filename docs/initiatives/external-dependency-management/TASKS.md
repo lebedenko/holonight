@@ -16,7 +16,7 @@
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
-| EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Baseline `e8af0a8312133609f2ddd30e87d084be78971a8c`; implementation baseline `b1022c9297712878114ba3d827f970d7b16f3ce6`; approved EDM-015 handoff below |
+| EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; locally committed only, publication and pin pending; complete evidence and retained limitations in local SDD |
 | EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation awaits handoff |
 | EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `777affc646b44bfb757bd2616f5cd7a218897cba`; implementation awaits handoff |
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`; implementation awaits handoff |
@@ -595,3 +595,30 @@ Preserve standalone Core/Quick, shared QMarkdown >=1.1, Storage enabled/Audio di
 all existing application/isolation/runtime gates and explicit preparation with offline acceptance.
 Completion is locally verified and committed; publication and gitlink updates remain separate.
 Only EDM-015 is made Ready. The initiative remains Accepted.
+
+## EDM-015 local completion handoff — 2026-10-13
+
+Files is clean on local `main` at `7de2d9961a0feea28e41f80c4e834542faf1fefa`, following
+separate behavior-preserving consumer cleanup `d94aa5298d46394c1168c8568096be88279e81c5`.
+Implementation starts from confirmed canonical `origin/main` baseline
+`b1022c9297712878114ba3d827f970d7b16f3ce6`; Ready handoff checkpoint is
+`5438cecea111cd54de33b6bdb1bf477555707811`. Original audit baseline remains in the local SDD.
+
+Local acceptance covers installed dependencies, Core/Quick/full builds and consumers,
+Debug/Release, both locale suites (25/25 registrations each), mandatory filesystem isolation
+(16 worker + 3 window cases, no skips), canonical format/strict tidy across 121 owned units,
+QML lint/import/metadata, REUSE, staged installation and installed desktop/runtime acceptance
+with 13 healthy/fault fixtures. Twenty dependency, thirteen launcher, four tidy adapter,
+one real-CMake provider preparation and thirty-two canonical tooling regressions pass.
+Initial clean-run failures are preserved and corrected with focused incremental verification;
+compatible compiler and provider artifacts are reused. Full log hashes, package/toolchain
+versions, exact provider identities/options, runtime image ID, changed files and existing
+native/performance/reserved-block probe skips are recorded in the Files-local
+[SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) and
+[VERIFICATION](../../../holonight-files/docs/sdd/external-dependency-management/VERIFICATION.json).
+No host isolation policy was installed and no new native/performance campaign was added.
+
+EDM-015 is Done locally. The initiative remains Accepted; no downstream work package is
+made Ready and no umbrella integration check is claimed. The Files gitlink remains
+`b1022c9297712878114ba3d827f970d7b16f3ce6`. Neither Files commit nor this handoff is published;
+canonical remote confirmation, one latest CI query and pinning remain later authorized steps.
