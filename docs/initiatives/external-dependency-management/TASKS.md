@@ -17,7 +17,7 @@
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
 | EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38457731671; complete evidence and retained limitations in local SDD |
-| EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Done | `99b0eea555837932073b488d2a1ae9f66bb037ea` | Audit baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation baseline `926de7ccff8146235a014c52a8da890dcc3b0919`; 2026-10-14: bundle 2.0.0, ordered Config/Qt/Search/Files Core/Quick preparation and qualified offline CI adopted; CTest 2/2 (49 main passes + staged real activation), Release five-file staging, canonical format/strict tidy across 9 units, QML and REUSE pass; 15 dependency + 11 launcher + 32 canonical fixtures pass; separate cleanup `61d4ddf`; clean locally committed, publication/pinning pending; full evidence in local SDD |
+| EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Done | `99b0eea555837932073b488d2a1ae9f66bb037ea` | Audit baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation baseline `926de7ccff8146235a014c52a8da890dcc3b0919`; 2026-10-14: bundle 2.0.0, ordered Config/Qt/Search/Files Core/Quick preparation and qualified offline CI adopted; CTest 2/2 (49 main passes + staged real activation), Release five-file staging, canonical format/strict tidy across 9 units, QML and REUSE pass; 15 dependency + 11 launcher + 32 canonical fixtures pass; separate cleanup `61d4ddf`; published to canonical origin/main and pinned locally; latest CI Build and checks queued (pending), run 38476779407; full evidence in local SDD |
 | EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `777affc646b44bfb757bd2616f5cd7a218897cba`; implementation awaits handoff |
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`; implementation awaits handoff |
 | EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation awaits handoff |
@@ -693,3 +693,32 @@ one latest CI query and pinning remain separate authorized handoffs. Fresh nativ
 Wayland/compositor/broker review, routing, Debian qualification and the existing
 native-probe shutdown follow-up remain pending/outside this iteration. No integration
 check or hosted CI success is claimed; unrelated untracked artifacts are preserved.
+
+## EDM-016 Portal publication and pin — 2026-10-14
+
+After user authorization, both verified Portal commits were published together in
+one push to canonical `origin/main`: getter cleanup `61d4ddf` and dependency adoption
+`99b0eea555837932073b488d2a1ae9f66bb037ea`.
+`git -C xdg-desktop-portal-holonight ls-remote origin refs/heads/main` confirmed the
+exact adoption revision before pinning. Portal is clean and synchronized with
+origin/main. The umbrella gitlink now selects that published revision.
+
+One latest CI query returned [Build and checks, run 38476779407](https://github.com/lebedenko/xdg-desktop-portal-holonight/actions/runs/38476779407),
+created `2026-10-13T22:17:32Z`, at
+`99b0eea555837932073b488d2a1ae9f66bb037ea`, attempt 1, event `push`:
+status `queued`, conclusion empty (pending). No hosted success is claimed;
+no polling or waiting was performed. Pinning proceeds independently of CI completion
+as authorized. UTC publication timestamps correspond to the local date above.
+
+Recorded local acceptance remains valid: both CTest registrations and real staged
+activation, Debug/Release, exact five-file production staging, 15 dependency + 11
+launcher + 32 canonical regressions, canonical format/strict tidy across nine owned
+units, QML/REUSE and declaration/bundle/profile/syntax/whitespace checks pass.
+Detailed log and implementation hashes remain in Portal's local SDD/evidence.
+Publication changes no implementation and requires no application rebuild.
+
+This section supersedes publication/pinning-pending statements in the historical
+local handoff and pinned SDD. EDM-016 remains Done and the initiative remains
+Accepted. Fresh manual Wayland/compositor/broker review and ecosystem integration
+remain pending. This checkpoint changes only the Portal gitlink and this ledger
+and remains local; unrelated untracked artifacts are preserved.
