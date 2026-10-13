@@ -29,7 +29,9 @@
       "package": "HolonightFileBrowser",
       "source_variable": "HOLONIGHT_FILES_SOURCE",
       "options": [
-        "-DBUILD_FILES_APP=OFF"
+        "-DBUILD_FILES_APP=OFF",
+        "-DBUILD_FILE_BROWSER_QUICK=ON",
+        "-DBUILD_TESTING=OFF"
       ]
     }
   ],
