@@ -9,7 +9,7 @@
 | EDM-005 | holonight-system-services | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Done | `70614eb70329af7014853c2973e5624acf0b251e` | Audit baseline `39472e6dcafc93acea218a234213c346be256586`; implementation baseline `3bd6ebca0c0e5f51768105fa1970007e3e83da65`; 2026-10-12: bundle 2.0.0, Qt >=6.11 and installed GTest/GMock adopted; all eight offline acceptance lanes pass, including 195 backend tests, installed consumers, Release/Core builds, full format/tidy and REUSE; published to canonical origin/main and pinned; latest CI Licensing in_progress (pending), run 38289139967; full evidence in local SPEC and handoff below |
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Done | `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; 2026-10-12: bundle 2.0.0, explicit preparation and five qualified offline lanes pass; Full 97/97, Minimal 86/86, Release install, strict tidy across 76 units, QML checks and REUSE; 5 launcher + 12 dependency regressions; published to canonical origin/main and pinned after approval; latest CI Licensing in_progress (pending), run 38309160449; full evidence in local SPEC and handoff below |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Done | `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e` | 2026-10-13: bundle 2.0.0 and explicit providers adopted; Full 11/11, Minimal 8/8, Release install, strict format/tidy across 15 units, REUSE, 6 launcher + 16 dependency regressions pass locally; published once to canonical origin/main and pinned locally; CI rerun attempt 2 completed/success at this revision, run 38318125058 (original GHCR authorization failure preserved below); full evidence in local SPEC and handoff below |
-| EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Canonical implementation baseline `7684b021a5b74c7d4e34b7dd05bb3bdd02456473`; audit baseline retained in local SPEC; bundle 2.0.0 and qualified image accepted |
+| EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Done | `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb` | 2026-10-13: bundle 2.0.0, explicit hash-validated renderer fixture, Qt >=6.11 and offline five-lane acceptance adopted; 47 Python tests, 19 launcher/dependency regressions, 282 Qt masters, GTK3/GTK4 symbolic checks, previews, Release staging, canonical format/strict tidy and four REUSE roots pass locally; two separate cleanup/adoption commits published in one push and pinned locally; latest CI run 38369393516 attempt 1 in_progress, conclusion null, at this revision; full evidence in local SPEC and handoff below |
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d834984dc413dc9e56f7f3157fa605d6a8667088`; implementation awaits handoff |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2284b1822b0f8f856677e14d21d91e8fa10bd98c`; implementation awaits handoff |
 | EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation awaits handoff |
@@ -285,3 +285,74 @@ EDM-008 is Ready at canonical Icons baseline
 manual ecosystem acceptance and final integration remain deferred. Other work-package
 states and existing untracked umbrella artifacts are unchanged. The umbrella checkpoint
 must not be published as part of this handoff.
+
+## EDM-008 accepted handoff — 2026-10-13
+
+Icons adopted external dependency management from canonical implementation baseline
+`7684b021a5b74c7d4e34b7dd05bb3bdd02456473`. Its local SDD preserves audit baseline
+`a8debec1399b59c218b2faa8f54047e5d3bc7984` and records the complete contract, file
+changes, environment identities and acceptance:
+[SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) and
+[structured evidence](../../../holonight-icons/docs/sdd/external-dependency-management/verification/acceptance.json).
+
+Separate Icons commits, published together in one completed push to canonical origin/main:
+
+- `647fbe5`: behavior-preserving canonical formatting and tidy cleanup for the two C++ tools.
+- `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb`: explicit dependency/fixture preparation,
+  installed-prerequisite validation, offline CI lanes, regressions and contributor/SDD evidence.
+
+`git -C holonight-icons ls-remote origin refs/heads/main` confirmed the exact published
+implementation revision before pinning. The Icons checkout is clean. Canonical module
+JSON/CMake declarations and bundle 2.0.0 are byte-identical locally; production installer
+profiles exclude Qt/GTK/rendering/font/Xvfb/KDE test prerequisites. No GTest is required.
+Generation, staging, artwork, metadata, aliases, payload, recovery and assertions are preserved.
+
+The prepared fixture is the actual Qt renderer cpp/header from
+`7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`, with exact hashes in the local SDD evidence.
+Local `task deps` requires explicit `HOLONIGHT_QT_SOURCE`; ordinary rendering consumes
+only the validated prepared fixture. CI `--prepare` acquires images/that exact revision
+explicitly and invokes `task deps`. Acceptance starts no containers without compatible
+preparation, uses `--pull=never --network=none`, read-only inputs, the caller account and
+private runtime directories. Incompatible artifacts are archived; supplementary package
+downloads, root bootstrap and acceptance-time provider acquisition are retired.
+
+The accepted build image is
+`ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`;
+licensing retains its separate pinned REUSE image. Qualified versions: GCC 16.2.1,
+CMake 4.4.3, Clang 22.1.8, Python 3.14.7, Qt Core/Gui/Svg 6.11.2,
+GTK3 3.24.52, GTK4 4.22.5 and REUSE 6.2.0.
+
+Local verification:
+
+- `python3 scripts/ci/run.py --prepare --qt-source ../holonight-qt`: pass.
+- Clean `python3 scripts/ci/run.py`: verification, licensing, minimal, release and static pass
+  at `build/ci/20261013T081036Z-qqve3cdb`; complete logs inspected.
+- Verification/minimal each pass all 47 existing Python tests. Actual Qt rendering passes
+  282 masters at 12 sizes/scales and four palettes; temporary inherited Places/Actions
+  checks pass all 11 sizes at 1x/2x. GTK3/GTK4 each pass 174 symbolic lookups/two-color
+  renders per theme. Preview generation passes.
+- Canonical format passes for both owned C++ tools; strict tidy passes for the enabled Qt
+  tool. Release staging validates both themes/template bundle and excludes compiled tests.
+  Four REUSE roots pass. Existing rollback, recoloring, staging and installed-command
+  recovery coverage remains intact; 56 assertion diagnostic texts preserve their order.
+- Eight launcher and initially ten dependency regressions pass in clean acceptance.
+  Explicit missing-GTK-package coverage was then added; all eleven dependency tests pass
+  both locally and in the same offline immutable image. Unchanged application acceptance
+  was not repeated. Total final focused regressions: 19.
+- Documentation/artifact-upload closure: workflow YAML validated; four-root licensing rerun
+  passes at `build/ci/20261013T081504Z-5_8m0v4t`. Declaration equality, bundle/profile drift,
+  staged diffs and whitespace checks pass. Environmental notices and the preserved GTK4
+  deprecated symbolic assertion are explained in the local SDD; owned compiler/tidy
+  warnings are resolved.
+
+A single latest-run query after publication recorded
+[CI run 38369393516](https://github.com/lebedenko/holonight-icons/actions/runs/38369393516),
+at revision `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb`, attempt 1, status
+`in_progress`, conclusion `null`. Hosted acceptance remains pending at the recorded query;
+no live wait, polling, rerun or additional implementation push was performed.
+
+Only EDM-008 changes to Done. The initiative remains Accepted. Debian qualification,
+explicit native KDE execution (Qt >=6.11 and `KF6::IconThemes`, `VERIFY_KDE=OFF` by default),
+manual ecosystem acceptance and final integration remain deferred. Other work-package
+states and existing untracked umbrella artifacts are unchanged. This umbrella pin checkpoint
+remains local and must not be published as part of this handoff.
