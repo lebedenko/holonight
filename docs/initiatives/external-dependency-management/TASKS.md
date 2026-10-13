@@ -16,7 +16,7 @@
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
-| EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; locally committed only, publication and pin pending; complete evidence and retained limitations in local SDD |
+| EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38457731671; complete evidence and retained limitations in local SDD |
 | EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation awaits handoff |
 | EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `777affc646b44bfb757bd2616f5cd7a218897cba`; implementation awaits handoff |
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`; implementation awaits handoff |
@@ -622,3 +622,23 @@ EDM-015 is Done locally. The initiative remains Accepted; no downstream work pac
 made Ready and no umbrella integration check is claimed. The Files gitlink remains
 `b1022c9297712878114ba3d827f970d7b16f3ce6`. Neither Files commit nor this handoff is published;
 canonical remote confirmation, one latest CI query and pinning remain later authorized steps.
+
+## EDM-015 Files publication and pin — 2026-10-13
+
+After user authorization, both verified Files commits were published together in one push
+to canonical `origin/main`: cleanup `d94aa5298d46394c1168c8568096be88279e81c5` and adoption
+`7de2d9961a0feea28e41f80c4e834542faf1fefa`.
+`git -C holonight-files ls-remote origin refs/heads/main` confirmed the exact adoption revision.
+The umbrella gitlink now selects this published revision; Files is clean and synchronized
+with origin/main. This section supersedes the historical local completion and pinned local
+SDD's pending publication/pin status, preserving their complete local acceptance evidence.
+
+One latest CI query returned [Build and checks, run 38457731671](https://github.com/lebedenko/holonight-files/actions/runs/38457731671),
+created `2026-10-13T19:48:09Z`, at `7de2d9961a0feea28e41f80c4e834542faf1fefa`:
+status `in_progress`, conclusion empty (pending). No hosted success is claimed;
+no CI wait or repeat query was performed.
+
+EDM-015 remains Done and the initiative remains Accepted. No downstream package is made
+Ready and no ecosystem integration is claimed. This umbrella checkpoint remains local;
+unrelated untracked artifacts are preserved. Publication introduces no implementation
+changes and does not invalidate the recorded local acceptance.
