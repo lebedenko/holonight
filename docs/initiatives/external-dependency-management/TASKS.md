@@ -10,7 +10,7 @@
 | EDM-006 | holonight-qt | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Done | `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68` | Audit baseline `680d709de4d1d8e8697d6a69a99f15ef891ef7b2`; implementation baseline `2a6fcb0ef29d20e3413f425914ec1cf171b82306`; Config provider `0ccd25f323662f50a47bb048be636160f2b7c135`; 2026-10-12: bundle 2.0.0, explicit preparation and five qualified offline lanes pass; Full 97/97, Minimal 86/86, Release install, strict tidy across 76 units, QML checks and REUSE; 5 launcher + 12 dependency regressions; published to canonical origin/main and pinned after approval; latest CI Licensing in_progress (pending), run 38309160449; full evidence in local SPEC and handoff below |
 | EDM-007 | holonight-appearance-adapters | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Done | `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e` | 2026-10-13: bundle 2.0.0 and explicit providers adopted; Full 11/11, Minimal 8/8, Release install, strict format/tidy across 15 units, REUSE, 6 launcher + 16 dependency regressions pass locally; published once to canonical origin/main and pinned locally; CI rerun attempt 2 completed/success at this revision, run 38318125058 (original GHCR authorization failure preserved below); full evidence in local SPEC and handoff below |
 | EDM-008 | holonight-icons | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Done | `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb` | 2026-10-13: bundle 2.0.0, explicit hash-validated renderer fixture, Qt >=6.11 and offline five-lane acceptance adopted; 47 Python tests, 19 launcher/dependency regressions, 282 Qt masters, GTK3/GTK4 symbolic checks, previews, Release staging, canonical format/strict tidy and four REUSE roots pass locally; two separate cleanup/adoption commits published in one push and pinned locally; latest CI run 38369393516 attempt 1 in_progress, conclusion null, at this revision; full evidence in local SPEC and handoff below |
-| EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Audit baseline `d834984dc413dc9e56f7f3157fa605d6a8667088`; canonical implementation baseline `ce9bf6957f6efa51a3f5dbf9f51d95fb9b48cd6f` confirmed clean and remote on 2026-10-13; bundle 2.0.0 and EDM-024 full Arch handoff accepted |
+| EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` (local) | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; unpublished and gitlink unchanged; full evidence in local SPEC |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2284b1822b0f8f856677e14d21d91e8fa10bd98c`; implementation awaits handoff |
 | EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `26067775e2eac3d9a779b3114dfbddc96834c7de`; implementation awaits handoff |
 | EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d5c5e8d50f6cd4d3ccabb6b8d242ff56914977de`; implementation awaits handoff |
@@ -356,3 +356,48 @@ explicit native KDE execution (Qt >=6.11 and `KF6::IconThemes`, `VERIFY_KDE=OFF`
 manual ecosystem acceptance and final integration remain deferred. Other work-package
 states and existing untracked umbrella artifacts are unchanged. This umbrella pin checkpoint
 remains local and must not be published as part of this handoff.
+
+## EDM-009 local completion — 2026-10-13
+
+Images started from canonical origin/main `ce9bf6957f6efa51a3f5dbf9f51d95fb9b48cd6f`,
+confirmed with `git ls-remote` and a clean checkout. Audit baseline `d834984dc413dc9e56f7f3157fa605d6a8667088`
+remains historical. The local Ready checkpoint is `318ce54`.
+
+Two verified Conventional Commits are local on Images main:
+
+- `d84903464e6e9143c60444949a5c1f3e0acbd768`: API-preserving canonical static-analysis cleanup.
+- `ae827d78db9cc21f9537c27f50f49baf879324da`: EDM-009 dependency tooling and qualified offline CI adoption.
+
+Complete requirements, changed files, environment/package identities, commands, reviewed warnings and
+acceptance are in the Images [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md),
+[acceptance reports/log hashes](../../../holonight-images/docs/sdd/external-dependency-management/verification/acceptance.json)
+and [environment inventory](../../../holonight-images/docs/sdd/external-dependency-management/verification/environment.json).
+Images has no internal providers or reduced-feature profile. Public declarations, package version 0.1.0,
+`HolonightImages::Images`, exported Qt/EXIF/WebP interfaces, existing test assertions and fuzzing interfaces
+are preserved. Supplemental downloads/extraction are retired; historical package evidence is retained.
+
+`python3 scripts/ci/run.py --prepare` acquires the qualified EDM-024 full Arch and pinned REUSE images.
+Compatible preparation is mandatory before every acceptance lane. All acceptance containers use
+`--pull=never --network=none`, read-only source/preparation, caller UID/GID, rootless Podman mapping and
+private runtime directories, with parallelism two. Actual Docker acceptance passed; real Podman execution
+is not claimed.
+
+Clean `python3 scripts/ci/run.py` passed all four lanes at
+`build/ci/20261013T102018Z-x17x6m1i`: Release provider tests (all three CTest registrations and all 36
+GTest cases, with no skips), installed-package consumer, SVG without image plugins, optional Clang fuzz
+builds, Release staging/external-prefix consumer, canonical format/strict tidy over all ten owned units,
+and REUSE. Eight launcher and eleven dependency regressions passed within acceptance.
+Log review identified an inherited unused QML preset variable; after removing it and refreshing preparation,
+affected release/static lanes passed at `build/ci/20261013T102409Z-3aqh6u2h`. Eleven dependency regressions
+also passed with the final presets. Unaffected provider/fuzz acceptance was retained. Exact Release staging
+contains nine expected files. Final documentation REUSE passes at `build/ci/20261013T102830Z-6y7cryqe`
+(76/76 files). Complete logs were inspected; owned compiler/tidy warnings are resolved, with expected
+malformed-input diagnostics, optional Vulkan discovery and targeted ABI/API/complexity annotations documented.
+Canonical tooling's 32 fixtures, declaration equality, bundle/installer-profile drift, workflow YAML,
+shell/Python syntax and whitespace checks pass.
+
+Only EDM-009 changes to Done. Images is clean with two unpublished local commits; the umbrella gitlink
+remains the published implementation baseline. Publication and pinning remain separate authorized handoffs;
+no CI query, push or pin update is performed here. This ledger checkpoint remains local, unrelated untracked
+artifacts are preserved, and the initiative remains Accepted. Thumbnails/downstream consumers, Debian
+qualification, new fuzz campaigns and final manual ecosystem integration remain later work packages.
