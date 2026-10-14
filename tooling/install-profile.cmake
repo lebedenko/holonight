@@ -95,6 +95,11 @@ find_package(tomlplusplus CONFIG REQUIRED)
 # holonight-greeter: python
 # holonight-greeter: fonts
 # holonight-greeter: mime
+# holonight-greeter: task
+# holonight-greeter: clang-format
+# holonight-greeter: clang
+# holonight-greeter: reuse
+# holonight-greeter: ripgrep
 # holonight-hyprlock: hyprlock
 # holonight-hyprlock: compiler
 # holonight-hyprlock: cmake
