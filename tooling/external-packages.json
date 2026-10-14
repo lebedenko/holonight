@@ -823,6 +823,18 @@
           "clang-format"
         ]
       }
+    },
+    "gcovr": {
+      "discovery": "tool",
+      "package": "gcovr",
+      "packages": {
+        "arch": [
+          "gcovr"
+        ],
+        "debian": [
+          "gcovr"
+        ]
+      }
     }
   }
 }

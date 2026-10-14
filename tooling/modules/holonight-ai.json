@@ -125,7 +125,46 @@
       "scope": [
         "runtime"
       ]
+    },
+    {
+      "id": "task",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang-format",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "reuse",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "dbus",
+      "scope": [
+        "test"
+      ]
+    },
+    {
+      "id": "gcovr",
+      "scope": [
+        "test"
+      ],
+      "feature": "ENABLE_COVERAGE"
     }
   ],
-  "external_features": {}
+  "external_features": {
+    "ENABLE_COVERAGE": false
+  }
 }

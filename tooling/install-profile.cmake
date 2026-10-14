@@ -17,6 +17,10 @@ find_package(KF6SyntaxHighlighting REQUIRED)
 # holonight-ai: python
 # holonight-ai: fonts
 # holonight-ai: mime
+# holonight-ai: task
+# holonight-ai: clang-format
+# holonight-ai: clang
+# holonight-ai: reuse
 # holonight-appearance-adapters: qt
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Xml)
 # holonight-appearance-adapters: gio
