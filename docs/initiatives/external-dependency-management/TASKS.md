@@ -737,3 +737,7 @@ as required by its existing QML harness. Adopt bundle 2.0.0 and the qualified fu
 Local automated acceptance is the gate; fresh user-operated desktop review remains for final integration.
 No publication, system installation, Shell restart or gitlink update is authorized by this handoff.
 Settings stays Planned, and the initiative stays Accepted. Implementation evidence belongs in Shell's local SDD.
+
+Canonical follow-up: preserve Shell's existing explicit tidy compiler-database selection, scoped coverage validation,
+single invocation per source and owned-header filter in bundle 2.0.0 before adoption. Existing Shell tidy
+regressions cover the retained contract; this corrects a synchronization regression without changing application behavior.
