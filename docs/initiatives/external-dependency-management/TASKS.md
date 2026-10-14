@@ -18,7 +18,7 @@
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Done | `90ca5b0f007e76aaf0caa12628ab079811c905f9` | 2026-10-14: bundle 2.0.0, explicit ordered providers and all three qualified offline lanes pass; standard and sanitizer CTest 27/27, strict tidy across 64 owned units, isolated installed runtime, metadata/GIO/QML/REUSE and focused regressions pass; separate compatibility cleanup `b2aaa5f`; published to canonical origin/main and pinned; latest Build and checks CI in_progress, conclusion empty (pending), run 38580865404; full evidence in local SDD and handoff below |
 | EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38457731671; complete evidence and retained limitations in local SDD |
 | EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Done | `99b0eea555837932073b488d2a1ae9f66bb037ea` | Audit baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation baseline `926de7ccff8146235a014c52a8da890dcc3b0919`; 2026-10-14: bundle 2.0.0, ordered Config/Qt/Search/Files Core/Quick preparation and qualified offline CI adopted; CTest 2/2 (49 main passes + staged real activation), Release five-file staging, canonical format/strict tidy across 9 units, QML and REUSE pass; 15 dependency + 11 launcher + 32 canonical fixtures pass; separate cleanup `61d4ddf`; published to canonical origin/main and pinned locally; latest CI Build and checks queued (pending), run 38476779407; full evidence in local SDD |
-| EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `777affc646b44bfb757bd2616f5cd7a218897cba`; implementation awaits handoff |
+| EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Done | `dab860496323d321709a675141d553958bddf968` | 2026-10-14: bundle 2.0.0, installed Qt/GTest/GMock and explicit Config/Qt preparation adopted; four qualified offline lanes pass, CTest 714/714, both style QML subsets 59/59, composer scales 1 and 1.25, build/installed startup, Release staging, strict tidy across 127 units, QML/REUSE and 27 focused regressions pass; separate compatibility fix `549ab34`; published to canonical origin/main and pinned locally; CI and Licensing in_progress, conclusion empty (pending), runs 38595038940 and 38595038661 at this revision; local SDD/evidence and publication handoff below |
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`; implementation awaits handoff |
 | EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation awaits handoff |
 | EDM-020 | holonightd | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `c6a9f9e1a353322bf7a3430cdab8392890348ccb`; implementation awaits handoff |
@@ -935,3 +935,123 @@ and pinned SDD.
 EDM-014 remains Done and the initiative remains Accepted. Other unfinished repository packages remain Planned;
 fresh native desktop review and ecosystem integration remain EDM-022. This umbrella checkpoint changes only
 the Viewer gitlink and this ledger and remains local. Unrelated untracked initiative/packaging artifacts are preserved.
+
+## Planning handoff: EDM-017 AI — Ready, 2026-10-14 (historical)
+
+Plan prepared from umbrella `16424f4e5e5936d39e6355cbcd39439375453c06` after Viewer's published
+handoff. Assign only `holonight-ai`, work package EDM-017, at clean canonical origin/main
+`0d8c54e166fb4e34ee1e496421c4bd98339a95c1`. Preserve the original audit baseline in the local
+SDD. Canonical `git ls-remote origin refs/heads/main` confirmed AI and both providers on this date.
+EDM-002, EDM-024, EDM-004 and EDM-006 are Done. Planning inspected AI's AGENTS.md, local SPEC,
+CMake/test inventory, presets, Task commands, CI launcher/lanes/workflows and canonical declarations.
+Detailed implementation decisions and evidence belong in AI's
+[local SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md).
+
+Prepare providers in order: Config `0ccd25f323662f50a47bb048be636160f2b7c135`, then Qt
+`7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`. Qt must retain Controls and BUILD_WAYLAND=ON;
+disable provider tests/demo/gallery for application preparation. Use bundle 2.0.0 and the qualified
+full Arch image
+`ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`,
+plus the accepted separate pinned REUSE image. Record source revisions/content, compiler/Qt versions,
+features, paths and preparation signatures; reuse provider artifacts only when those identities match.
+
+Implementation sequence:
+
+1. Update the local SDD with this handoff and implementation baseline. Audit direct declarations
+   against actual build/test/tool/runtime use, including Task, format/tidy, REUSE, coverage-only gcovr,
+   and helpers exercised by the CI lanes. Correct canonical declarations in a separate umbrella
+   coordinator handoff if needed, then synchronize the standalone declarations and bundle.
+   Preserve required libsecret-1 and md4c pkg-config discovery and KF6SyntaxHighlighting discovery.
+   Require production Qt >=6.11 and installed GTest >=1.14 CONFIG with GTest::gtest/GTest::gmock;
+   remove FetchContent and the network-required BUILD_TESTS description. Qt Test remains required
+   when tests are enabled; the inspected C++ QML harness does not require adding QuickTest.
+2. Make `task deps` the explicit preparation path. Normal configure/build/test/static commands
+   validate installed prerequisites without source preparation or acquisition. Preserve all presets,
+   C++23, coverage instrumentation and scoped tidy behavior. Refresh stale provider revision variables,
+   the mutable-image tidy helper and contributor guidance, including AGENTS.md's outdated automatic
+   preparation description. Keep internal-prefix isolation separate from external-prefix discovery.
+3. Replace acceptance-time provider fetches and package bootstrap with explicit preparation before
+   offline lanes. Preserve build-test, static-checks and licensing, adding clean Release staging to
+   acceptance. Acquire both pinned build and licensing images explicitly on fresh hosted runners;
+   run acceptance with --pull=never and --network=none, read-only inputs, caller UID/GID and private
+   runtime directories. Retire or redirect obsolete project-image publishing/build entrypoints so
+   active workflows and developer helpers use the same qualified contract.
+4. Run focused launcher and real-CMake discovery/cache regressions first, then one clean acceptance
+   and review complete logs. Record exact identities, commands, log/content hashes, warning review
+   and limitations in the local SDD and structured verification evidence. Keep any broad
+   behavior-preserving Qt/Clang compatibility cleanup separate from dependency adoption.
+5. Finish with a clean, locally verified repository commit using Conventional Commits and a
+   reviewable handoff. Publication and umbrella pinning remain separate authorized steps; after
+   publication confirm canonical availability and query current CI once without polling.
+
+Acceptance preserves all existing CTest registrations, domain/provider/persistence/credential tests,
+canonical import/styling policy and fixtures, and isolated runtime Controls acceptance for Holonight
+and Fusion. Retain composer checks at scales 1 and 1.25 and the existing style-specific QML subset.
+Preserve application/rendering metatype extraction, merged metadata and singleton registration;
+the test-double acceptance executable and generated module remain isolated from production resources.
+Build-tree and installed startup must pass default, environment, command-line and external-config
+style modes. Installed checks must reject preparation/build QML paths, retain relative installed
+QML discovery and verify the configured D-Bus activation Exec path. Stage Release production payload
+without tests or fixtures. Strict format/tidy, QML lint/types/policies and REUSE must pass.
+
+Dependency regressions cover missing/old Qt and GTest, missing GMock, tests OFF without GTest,
+missing libsecret/md4c/syntax packages, missing internal Controls/Wayland providers, internal/global
+prefix leakage, external prefixes and paths with spaces, stale/tampered preparation rejection,
+compatible reuse and feature/toolchain changes. Verify coverage configuration/instrumentation remains
+usable without imposing a new coverage threshold. Declaration equality, bundle drift, generated
+installer-profile consistency and Python/shell/YAML/whitespace checks gate closure.
+
+Only EDM-017 is Ready. Package Manager, Greeter, Daemon and Hyprlock remain Planned for subsequent
+individual handoffs; their dependencies are already adopted. EDM-022 remains Planned until all
+repository adoptions are Done and published/pinned. Debian qualification, AI product changes,
+live model-service calls and fresh user-operated desktop review are outside this iteration.
+The initiative remains Accepted. This planning change modifies only the umbrella ledger and claims
+no application build, hosted CI result, implementation, publication or gitlink update. Before assigning
+implementation, commit a local umbrella planning checkpoint and supply its exact revision with the
+AI baseline and work-package ID above.
+
+## EDM-017 AI — published and pinned, 2026-10-14
+
+Published the completed AI change to canonical `git@github.com:lebedenko/holonight-ai.git`,
+`main` -> `origin/main`, in one push containing separate compatibility and adoption commits:
+
+- `549ab344cac6f989e56b2404e49a69a1b4fede52`: align the square composer action with native text metrics while retaining
+  all existing equality, geometry, accessibility and compact-mode assertions.
+- `dab860496323d321709a675141d553958bddf968`: installed dependencies, bundle 2.0.0, explicit
+  preparation, qualified offline CI and verification evidence.
+
+Canonical `git ls-remote origin refs/heads/main` confirms
+`dab860496323d321709a675141d553958bddf968`; AI is clean and the umbrella gitlink selects that
+published revision. Declaration checkpoint `f6621567ddef06e14403a387c4bf99a5a6b679d6` remains
+separate from AI implementation. Detailed decisions and commands are in the pinned
+[local SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) and
+[structured verification](../../../holonight-ai/docs/sdd/external-dependency-management/verification.json).
+The local evidence's publication fields describe its pre-publication acceptance checkpoint;
+this umbrella handoff records subsequent publication and pinning.
+
+Local acceptance: clean four-lane run `20261014T151030Z-0d98xrcy`, `JOBS=8`, all lanes pass.
+CTest 714/714; composer 4/4 for Holonight/Fusion at scales 1 and 1.25; each style QML subset
+59/59; all four build-tree and installed startup selectors; separate Release/tests-OFF staging,
+fixture exclusion, build/preparation path isolation and configured D-Bus activation pass.
+Strict format/tidy (existing 127-unit target), QML lint/types/policies and REUSE pass, as do
+12 launcher, 15 real-CMake, 21 canonical dependency and 11 canonical tooling regressions.
+Coverage configuration and instrumented compilation pass without introducing a threshold.
+Complete logs and hashes are recorded in AI's evidence; warning review retains provider Qt private
+API notices, optional Vulkan absence and source-only QML fixture image diagnostics. Application
+build/static logs contain no compiler/CMake warnings; production startup checks pass.
+Final documentation-only REUSE checks pass for 508/508 files.
+
+Current CI lookup at the exact published SHA (one corrected full-SHA lookup after the initial
+short-SHA filter returned no matches; no completion polling):
+
+| Workflow | Revision | Status | Conclusion | Run |
+|---|---|---|---|---|
+| CI | `dab860496323d321709a675141d553958bddf968` | in_progress | Empty (pending) | [38595038940](https://github.com/lebedenko/holonight-ai/actions/runs/38595038940) |
+| Licensing | `dab860496323d321709a675141d553958bddf968` | in_progress | Empty (pending) | [38595038661](https://github.com/lebedenko/holonight-ai/actions/runs/38595038661) |
+
+These pending runs are not claimed as passing verification. Pinning does not wait for CI.
+EDM-017 is Done; the initiative remains Accepted. Package Manager, Greeter, Daemon and Hyprlock
+remain Planned, and ecosystem/manual integration remains EDM-022. No host installation, application
+restart, live model-service calls, Debian qualification or desktop automation was performed.
+This umbrella checkpoint changes only the AI gitlink and this ledger and remains local.
+Unrelated untracked initiative/packaging artifacts are preserved.
