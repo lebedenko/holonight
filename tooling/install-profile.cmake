@@ -278,6 +278,10 @@ pkg_check_modules(External_3_holonightd REQUIRED libsystemd)
 # holonightd: pkgconf
 # holonightd: git
 # holonightd: python
+# holonightd: task
+# holonightd: clang-format
+# holonightd: clang
+# holonightd: reuse
 # xdg-desktop-portal-holonight: qt
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2 DBus Concurrent)
 # xdg-desktop-portal-holonight: wayland

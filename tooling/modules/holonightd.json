@@ -82,9 +82,41 @@
         "GTest::gtest",
         "GTest::gtest_main"
       ]
+    },
+    {
+      "id": "task",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang-format",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "reuse",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "gcovr",
+      "scope": [
+        "tool"
+      ],
+      "feature": "ENABLE_COVERAGE"
     }
   ],
   "external_features": {
-    "BUILD_SYSTEMD": true
+    "BUILD_SYSTEMD": true,
+    "ENABLE_COVERAGE": false
   }
 }
