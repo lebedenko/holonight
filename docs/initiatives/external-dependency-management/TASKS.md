@@ -20,7 +20,7 @@
 | EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Done | `99b0eea555837932073b488d2a1ae9f66bb037ea` | Audit baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation baseline `926de7ccff8146235a014c52a8da890dcc3b0919`; 2026-10-14: bundle 2.0.0, ordered Config/Qt/Search/Files Core/Quick preparation and qualified offline CI adopted; CTest 2/2 (49 main passes + staged real activation), Release five-file staging, canonical format/strict tidy across 9 units, QML and REUSE pass; 15 dependency + 11 launcher + 32 canonical fixtures pass; separate cleanup `61d4ddf`; published to canonical origin/main and pinned locally; latest CI Build and checks queued (pending), run 38476779407; full evidence in local SDD |
 | EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Done | `dab860496323d321709a675141d553958bddf968` | 2026-10-14: bundle 2.0.0, installed Qt/GTest/GMock and explicit Config/Qt preparation adopted; four qualified offline lanes pass, CTest 714/714, both style QML subsets 59/59, composer scales 1 and 1.25, build/installed startup, Release staging, strict tidy across 127 units, QML/REUSE and 27 focused regressions pass; separate compatibility fix `549ab34`; published to canonical origin/main and pinned locally; CI and Licensing in_progress, conclusion empty (pending), runs 38595038940 and 38595038661 at this revision; local SDD/evidence and publication handoff below |
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Done | `e8d85a94f2161907f276cdfa2533b17bbad18317` | 2026-10-14: bundle 2.0.0, installed dependencies and explicit qualified offline preparation/CI verified; 481/481 CTest, both style subsets 13/13, eight startup selectors, Release/tests-OFF staging, 105-unit strict tidy/QML/policy checks pass; 12 launcher + 17 real-CMake + 32 canonical + 68 installer regressions and final 25 affected fixture cases pass; separate compatibility commit `e35e217`; published to canonical origin/main and pinned locally; CI queued (38623856527), Licensing in_progress (38623856846), both pending at this revision; full evidence in local SDD and handoffs below |
-| EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Done | `35c8f078ccad853a82bf2159855ba045544fdb12` | Audit baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation baseline `31e8f8ece6d4bb4e90d11433a253150726535916`; coordinator checkpoint `ab22e74`. 2026-10-14: bundle 2.0.0, ordered Config/Qt preparation and qualified offline lanes pass; eight CTest registrations, four Sway caret style/scale cases, eight startup selectors, Release/tests-OFF staging, 15-unit strict tidy/QML/REUSE pass; 12 launcher + 16 real-CMake + 32 canonical + 68 installer regressions pass. Existing Hyprland-parser skip retained for EDM-022; local SDD/evidence reviewed. Local commit only, unpublished; authoritative gitlink unchanged; no exact-revision hosted CI queried before publication. |
+| EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Done | `35c8f078ccad853a82bf2159855ba045544fdb12` | Audit baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation baseline `31e8f8ece6d4bb4e90d11433a253150726535916`; coordinator checkpoint `ab22e74`. 2026-10-14: bundle 2.0.0, ordered Config/Qt preparation and qualified offline lanes pass; eight CTest registrations, four Sway caret style/scale cases, eight startup selectors, Release/tests-OFF staging, 15-unit strict tidy/QML/REUSE pass; 12 launcher + 16 real-CMake + 32 canonical + 68 installer regressions pass. Existing Hyprland-parser skip retained for EDM-022; local SDD/evidence reviewed. Published to canonical origin/main and pinned locally on 2026-10-15; exact-revision CI and Licensing both in_progress, conclusion empty (pending), runs 38639926360 and 38639926377. No polling; full local evidence remains valid. |
 | EDM-020 | holonightd | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `c6a9f9e1a353322bf7a3430cdab8392890348ccb`; implementation awaits handoff |
 | EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `def9618fca833535275e8a8aa9a0e577acda8377`; implementation awaits handoff |
 | EDM-023 | umbrella | Debian release environment qualification | EDM-002 | packaging/ci/README.md | Superseded | — | Deferred for pre-release Arch priorities; mappings retained without qualified support |
@@ -1176,3 +1176,29 @@ This is a local verified handoff, not a published integration state. Publication
 remain separately authorized steps; the Greeter gitlink stays at `31e8f8ece6d4bb4e90d11433a253150726535916`.
 After authorized publication, query exact-revision CI once without polling. The initiative
 remains Accepted; Daemon, Hyprlock and final integration remain Planned.
+
+### EDM-019 publication and pin — 2026-10-15
+
+Published `holonight-greeter` commit `35c8f078ccad853a82bf2159855ba045544fdb12`
+(`build(deps): adopt qualified offline greeter preparation`) in one push to canonical
+`origin/main`. `git ls-remote origin refs/heads/main` confirms that exact revision;
+the repository working tree is clean and aligned with `origin/main`.
+
+Queried exact-revision hosted runs once with `gh run list --repo lebedenko/holonight-greeter
+--commit 35c8f078ccad853a82bf2159855ba045544fdb12 --limit 10 --json databaseId,headSha,name,status,conclusion,url`.
+The snapshot returned:
+
+| Workflow | Revision | Status | Conclusion | Run |
+| --- | --- | --- | --- | --- |
+| CI | `35c8f078ccad853a82bf2159855ba045544fdb12` | in_progress | Empty (pending) | [38639926360](https://github.com/lebedenko/holonight-greeter/actions/runs/38639926360) |
+| Licensing | `35c8f078ccad853a82bf2159855ba045544fdb12` | in_progress | Empty (pending) | [38639926377](https://github.com/lebedenko/holonight-greeter/actions/runs/38639926377) |
+
+Updated the authoritative Greeter gitlink from `31e8f8ece6d4bb4e90d11433a253150726535916`
+to the published revision as authorized. No CI completion wait or polling occurred;
+pending runs are not claimed as passing. Previously recorded local application acceptance,
+regressions, installed startup/payload, strict static/QML and REUSE evidence remains valid.
+Publication changes no implementation and requires no repeated application build.
+
+EDM-019 remains Done and the initiative remains Accepted. Daemon, Hyprlock and final
+integration remain Planned. This umbrella checkpoint changes only the Greeter gitlink and
+this ledger and remains local. Unrelated untracked artifacts are preserved.
