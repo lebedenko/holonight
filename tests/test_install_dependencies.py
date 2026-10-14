@@ -63,7 +63,7 @@ source_text="$(cat "$2/CMakeLists.txt")"
 [[ "$source_text" = *'REQUIRED libexif)'* ]] || exit 97
 [[ "$source_text" = *'find_package(tomlplusplus 3.4 CONFIG REQUIRED)'* ]] || exit 97
 [[ "$source_text" = *'find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)'* ]] || exit 97
-[[ "$source_text" = *'find_package(QMarkdown 1.0...<2.0 CONFIG REQUIRED)'* ]] || exit 97
+[[ "$source_text" = *'find_package(QMarkdown 1.1 CONFIG REQUIRED)'* ]] || exit 97
 [[ "$source_text" = *'QMarkdown.qmltypes'* ]] || exit 97
 [[ "$source_text" != *'find_package(GTest'* ]] || exit 97
 if [[ -n "${CMAKE_FAILURE:-}" ]]; then
