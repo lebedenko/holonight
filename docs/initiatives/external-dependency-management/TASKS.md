@@ -741,3 +741,7 @@ Settings stays Planned, and the initiative stays Accepted. Implementation eviden
 Canonical follow-up: preserve Shell's existing explicit tidy compiler-database selection, scoped coverage validation,
 single invocation per source and owned-header filter in bundle 2.0.0 before adoption. Existing Shell tidy
 regressions cover the retained contract; this corrects a synchronization regression without changing application behavior.
+
+Canonical template follow-up: retain Shell's already accepted Clang 23 trailing-comma policy for empty
+argument braces when synchronizing the Qt tidy template. Other tidy checks remain strict; this preserves
+the existing workaround instead of reversing it during dependency adoption.
