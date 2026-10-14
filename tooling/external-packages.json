@@ -787,6 +787,42 @@
           "qtbase5-dev"
         ]
       }
+    },
+    "appstream": {
+      "discovery": "tool",
+      "package": "appstreamcli",
+      "packages": {
+        "arch": [
+          "appstream"
+        ],
+        "debian": [
+          "appstream"
+        ]
+      }
+    },
+    "desktop-file-utils": {
+      "discovery": "tool",
+      "package": "desktop-file-validate",
+      "packages": {
+        "arch": [
+          "desktop-file-utils"
+        ],
+        "debian": [
+          "desktop-file-utils"
+        ]
+      }
+    },
+    "clang-format": {
+      "discovery": "tool",
+      "package": "clang-format",
+      "packages": {
+        "arch": [
+          "clang"
+        ],
+        "debian": [
+          "clang-format"
+        ]
+      }
     }
   }
 }

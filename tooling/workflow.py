@@ -392,7 +392,7 @@ def qt_tool(name, preset='test'):
             qt_dir = match[1]
     if qt_dir:
         qt_prefix = Path(qt_dir).resolve().parents[2]
-        for directory in [qt_prefix / 'bin', qt_prefix / 'lib/qt6/bin', qt_prefix / 'libexec']:
+        for directory in [qt_prefix / 'lib/qt6/bin', qt_prefix / 'bin', qt_prefix / 'libexec']:
             if (directory / name).is_file() and os.access(directory / name, os.X_OK):
                 return str(directory / name)
     raise RuntimeError(f'Cannot resolve {name} from configured Qt. Configure build/{preset} or set {name.upper()}.')

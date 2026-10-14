@@ -245,6 +245,11 @@ pkg_check_modules(External_4_holonight_viewer REQUIRED wayland-scanner)
 # holonight-viewer: python
 # holonight-viewer: fonts
 # holonight-viewer: mime
+# holonight-viewer: task
+# holonight-viewer: clang
+# holonight-viewer: clang-format
+# holonight-viewer: reuse
+# holonight-viewer: imageformats
 # holonightd: sqlite
 find_package(SQLite3 REQUIRED)
 # holonightd: json

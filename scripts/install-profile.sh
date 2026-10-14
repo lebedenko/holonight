@@ -2,9 +2,11 @@
 readonly HOLONIGHT_INSTALL_PACKAGES=(
   base-devel
   cage
+  clang
   cmake
   git
   glib2
+  go-task
   greetd
   hicolor-icon-theme
   hyprlock
@@ -29,6 +31,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   qt6-declarative
   qt6-imageformats
   qt6-svg
+  reuse
   shared-mime-info
   sqlite
   syntax-highlighting

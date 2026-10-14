@@ -161,6 +161,60 @@
       "scope": [
         "runtime"
       ]
+    },
+    {
+      "id": "webp",
+      "scope": [
+        "test"
+      ]
+    },
+    {
+      "id": "gio",
+      "scope": [
+        "test"
+      ]
+    },
+    {
+      "id": "appstream",
+      "scope": [
+        "test"
+      ]
+    },
+    {
+      "id": "desktop-file-utils",
+      "scope": [
+        "test"
+      ]
+    },
+    {
+      "id": "task",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "clang-format",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "reuse",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "imageformats",
+      "scope": [
+        "runtime"
+      ]
     }
   ],
   "external_features": {}
