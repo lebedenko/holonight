@@ -186,7 +186,8 @@
         "test"
       ],
       "components": [
-        "Test"
+        "Test",
+        "QuickTest"
       ]
     },
     {
