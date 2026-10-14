@@ -835,6 +835,30 @@
           "gcovr"
         ]
       }
+    },
+    "ripgrep": {
+      "discovery": "tool",
+      "package": "rg",
+      "packages": {
+        "arch": [
+          "ripgrep"
+        ],
+        "debian": [
+          "ripgrep"
+        ]
+      }
+    },
+    "ldd": {
+      "discovery": "tool",
+      "package": "ldd",
+      "packages": {
+        "arch": [
+          "glibc"
+        ],
+        "debian": [
+          "libc-bin"
+        ]
+      }
     }
   }
 }

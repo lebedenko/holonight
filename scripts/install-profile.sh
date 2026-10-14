@@ -32,6 +32,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   qt6-imageformats
   qt6-svg
   reuse
+  ripgrep
   shared-mime-info
   sqlite
   syntax-highlighting

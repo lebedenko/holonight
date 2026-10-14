@@ -132,6 +132,11 @@ find_package(ICU REQUIRED COMPONENTS uc)
 # holonight-pkg-manager: python
 # holonight-pkg-manager: fonts
 # holonight-pkg-manager: mime
+# holonight-pkg-manager: task
+# holonight-pkg-manager: clang-format
+# holonight-pkg-manager: clang
+# holonight-pkg-manager: reuse
+# holonight-pkg-manager: ripgrep
 # holonight-qt: qt
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickControls2 QuickShapes Svg)
 # holonight-qt: qt

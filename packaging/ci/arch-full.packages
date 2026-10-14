@@ -12,6 +12,7 @@ gcovr
 gdk-pixbuf2
 git
 glib2
+glibc
 go-task
 greetd
 gtest

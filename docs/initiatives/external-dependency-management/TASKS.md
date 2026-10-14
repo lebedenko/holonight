@@ -19,7 +19,7 @@
 | EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38457731671; complete evidence and retained limitations in local SDD |
 | EDM-016 | xdg-desktop-portal-holonight | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-015, EDM-011, EDM-006 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Done | `99b0eea555837932073b488d2a1ae9f66bb037ea` | Audit baseline `7f09d6bcef64086bf3c7eb8c4eee05017a6f2dae`; implementation baseline `926de7ccff8146235a014c52a8da890dcc3b0919`; 2026-10-14: bundle 2.0.0, ordered Config/Qt/Search/Files Core/Quick preparation and qualified offline CI adopted; CTest 2/2 (49 main passes + staged real activation), Release five-file staging, canonical format/strict tidy across 9 units, QML and REUSE pass; 15 dependency + 11 launcher + 32 canonical fixtures pass; separate cleanup `61d4ddf`; published to canonical origin/main and pinned locally; latest CI Build and checks queued (pending), run 38476779407; full evidence in local SDD |
 | EDM-017 | holonight-ai | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Done | `dab860496323d321709a675141d553958bddf968` | 2026-10-14: bundle 2.0.0, installed Qt/GTest/GMock and explicit Config/Qt preparation adopted; four qualified offline lanes pass, CTest 714/714, both style QML subsets 59/59, composer scales 1 and 1.25, build/installed startup, Release staging, strict tidy across 127 units, QML/REUSE and 27 focused regressions pass; separate compatibility fix `549ab34`; published to canonical origin/main and pinned locally; CI and Licensing in_progress, conclusion empty (pending), runs 38595038940 and 38595038661 at this revision; local SDD/evidence and publication handoff below |
-| EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`; implementation awaits handoff |
+| EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Implementation baseline `8042ed3890fc3bf226dc7d4c991459cd5c5599a2`; exact handoff below |
 | EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation awaits handoff |
 | EDM-020 | holonightd | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `c6a9f9e1a353322bf7a3430cdab8392890348ccb`; implementation awaits handoff |
 | EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `def9618fca833535275e8a8aa9a0e577acda8377`; implementation awaits handoff |
@@ -1055,3 +1055,30 @@ remain Planned, and ecosystem/manual integration remains EDM-022. No host instal
 restart, live model-service calls, Debian qualification or desktop automation was performed.
 This umbrella checkpoint changes only the AI gitlink and this ledger and remains local.
 Unrelated untracked initiative/packaging artifacts are preserved.
+
+## Planning handoff: EDM-018 Package Manager — Ready, 2026-10-14
+
+Assign only holonight-pkg-manager, EDM-018, at clean canonical origin/main
+`8042ed3890fc3bf226dc7d4c991459cd5c5599a2`; retain audit baseline `879bea1f4b71a2ddf185f45fc2d3e153edc46ac5`.
+Planning baseline is umbrella `37887fbd6dc182b39b9413b88e42fa94cd4a308b`. Canonical remote checks confirm
+Package Manager and Config `0ccd25f323662f50a47bb048be636160f2b7c135`, then Qt
+`7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`. EDM-002, EDM-024, EDM-004 and EDM-006 are Done.
+Use bundle 2.0.0, qualified full Arch digest `sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40`
+and pinned REUSE. Keep Controls and Wayland ON; provider tests/demo/gallery OFF. Canonical declarations now
+include Task, format/tidy, REUSE, ripgrep, private-bus/ldd helpers and coverage-only gcovr; package-manager
+transitives remain separate. No qualified image change is needed: these packages are already in the accepted image.
+
+Detailed implementation and evidence belong in the [local SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md).
+Adopt explicit task deps, installed Qt >=6.11/GTest >=1.14 with GMock, exact private Qt, and separate internal/external
+prefixes; remove FetchContent. Preserve libalpm and ICU discovery, C++23, all presets, coverage and static checks.
+Replace acceptance-time downloads with explicit preparation, then offline build-test/release/static/licensing lanes.
+Retire obsolete project-image publication. Preserve all CTest, fixture-only file:// sync, private-bus service,
+libalpm-free checks, layering/import policies, compiled Holonight/Fusion controls and view acceptance, all four
+build/installed startup selectors and installed path isolation. Add clean Release/tests-OFF staging and verify
+activation paths. No package transactions, host install, pointer/focus automation or Debian qualification.
+
+Run focused launcher/discovery/cache regressions, then clean acceptance once; review complete logs and record
+identities, source/artifact hashes, options, warnings and limitations locally. Separate broad compatibility cleanup
+from adoption. Finish with a clean local Conventional Commit and coordinator handoff; publication and pinning remain
+separate authorized steps. Other unfinished packages and EDM-022 remain Planned; the initiative remains Accepted.
+This checkpoint changes only coordination/declarations/generated profiles; it claims no application verification.
