@@ -13,7 +13,7 @@
 | EDM-009 | holonight-images | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Done | `ae827d78db9cc21f9537c27f50f49baf879324da` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; 3/3 CTest registrations, 36 provider cases, release/external-prefix consumers, optional Clang fuzz builds, format/strict tidy across 10 units, REUSE and 19 launcher/dependency regressions pass locally; cleanup/adoption commits separate; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38385319992; full evidence in local SPEC |
 | EDM-010 | holonight-thumbnails | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Done | `c9ae0ad9a64e8ce28ee669b5463ef1bec74bc16d` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG and qualified offline four-lane CI adopted; both CTest registrations, all 11 cache cases, Release/external-prefix consumer, format/strict tidy across 3 units, REUSE and 19 launcher/dependency regressions pass locally; separate cleanup/adoption commits published together to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38398351495; full evidence in local SPEC and handoff below |
 | EDM-011 | holonight-search | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Done | `5e71fd7c6494084b4fcc1b5b7a8df9bb2e690bdc` | 2026-10-13: bundle 2.0.0, installed GTest CONFIG, explicit preparation and qualified five-lane offline CI adopted; all six provider tests, Debug/Release installed consumers, full two-million-record benchmark, Release staging, format/strict tidy across four units and REUSE pass locally; 20 module + 32 canonical tooling regressions pass; separate cleanup/adoption commits published together to canonical origin/main and pinned locally; latest CI Build and checks attempt 1 in_progress, no conclusion, run 38409565751 at this revision; full evidence in local SPEC and handoff below |
-| EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Ready | — | Canonical implementation baseline `27567a918aae67ad43dba0e813b3f40ed14e539b`; accepted local handoff below |
+| EDM-012 | holonight-shell | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Done | `5d02583a59ed1bf9bff494c667ad6896d5fdce6e` | 2026-10-14: local bundle 2.0.0 and qualified offline Arch adoption verified; baseline `27567a918aae67ad43dba0e813b3f40ed14e539b`; clean Debug 1,157 CTest registrations with zero failures, Controls/runtime, standalone config package, Release staging, strict format/tidy across 244 owned units plus consumer, QML/architecture/REUSE and focused regressions pass; separate cleanup `19b1640`; unpublished local handoff below |
 | EDM-013 | holonight-settings | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-005, EDM-004, EDM-006, EDM-012 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `6ec7a402ebc319f9a925fdf97d8e0382e0c1ef42`; implementation awaits handoff |
 | EDM-014 | holonight-viewer | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006, EDM-009, EDM-010 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Baseline `2b696a328ec109bd11fe6e1b67e37ea727c8bff5`; implementation awaits handoff |
 | EDM-015 | holonight-files | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-005, EDM-006, EDM-009, EDM-010, EDM-011 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Done | `7de2d9961a0feea28e41f80c4e834542faf1fefa` | 2026-10-13: bundle 2.0.0, component-scoped installed dependencies and explicit qualified offline CI adopted; Core 2/2, Quick 4/4, full CTest 25/25 in both locales, mandatory namespace 16+3 without skips, strict tidy across 121 units, QML/REUSE/install and 13 runtime fixtures pass; separate cleanup d94aa52; published to canonical origin/main and pinned locally; latest CI Build and checks in_progress (pending), run 38457731671; complete evidence and retained limitations in local SDD |
@@ -745,3 +745,35 @@ regressions cover the retained contract; this corrects a synchronization regress
 Canonical template follow-up: retain Shell's already accepted Clang 23 trailing-comma policy for empty
 argument braces when synchronizing the Qt tidy template. Other tidy checks remain strict; this preserves
 the existing workaround instead of reversing it during dependency adoption.
+
+## EDM-012 verified local Shell handoff — 2026-10-14
+
+Shell completed at local `main` commit `5d02583a59ed1bf9bff494c667ad6896d5fdce6e`
+(`build(deps): adopt qualified offline Arch acceptance`), following separate behavior-preserving
+metadata cleanup `19b16401d337903d99e2afa3dc782ce9023a2a6e`
+(`fix(qml): export complete model metadata`). Implementation baseline remains
+`27567a918aae67ad43dba0e813b3f40ed14e539b`; Ready checkpoint `8f6ff94`, with canonical
+corrections `d7c8104` and `a704462` recorded above. Shell is clean and its verified implementation
+hashes match the committed files.
+
+The final local command `JOBS=8 python3 scripts/ci/run.py` passed all four lanes in
+`build/ci/20261014T085921Z-205uwj2o`: clean Debug/runtime tests, Release staging, strict static
+checks and licensing. The 1,157 CTest registrations have zero failures; four duplicate standalone
+private-bus skips remain, with those same four cases passing in the dedicated disposable-bus suite.
+Controls acceptance passes 45 real frontend/style combinations plus three missing-module cases.
+Standalone configuration-library build/install/consumption succeeds with provider sources hidden;
+`HoloNightShellConfig::Config`, public headers and package layout are preserved. All 244 owned
+translation units and the separate package consumer pass strict tidy; format, QML lint/policy/types,
+architecture and REUSE pass. Focused checks: 12 launcher, 16 dependency, 2 tidy-context and 32 canonical
+fixtures pass. Complete logs were reviewed; only expected Qt private compatibility notices,
+negative-fixture diagnostics and existing suppressed external/NOLINT counts remain.
+
+Exact image/toolchain identities, provider revisions/options, log hashes and retained skips are in
+[Shell's local SDD](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) and
+[verification record](../../../holonight-shell/docs/sdd/external-dependency-management/VERIFICATION.json).
+Documentation closure passed REUSE, bundle/declaration/profile drift and whitespace checks.
+
+EDM-012 is Done locally. This checkpoint publishes nothing and changes no gitlinks. Settings remains
+Planned until Shell is published and pinned through a separately authorized handoff. The initiative
+remains Accepted; fresh user-operated desktop review belongs to final integration. Unrelated untracked
+initiative and packaging artifacts are preserved.
