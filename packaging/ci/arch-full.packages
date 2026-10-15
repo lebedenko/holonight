@@ -7,6 +7,7 @@ clang
 cmake
 dbus
 desktop-file-utils
+file
 fzf
 gcovr
 gdk-pixbuf2

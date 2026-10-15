@@ -52,21 +52,21 @@
       ]
     },
     {
-      "id": "gtest",
+      "id": "task",
       "scope": [
-        "test"
-      ],
-      "targets": [
-        "GTest::gtest"
+        "tool"
       ]
     },
     {
-      "id": "qt",
+      "id": "reuse",
+      "scope": [
+        "tool"
+      ]
+    },
+    {
+      "id": "file",
       "scope": [
         "test"
-      ],
-      "components": [
-        "Test"
       ]
     }
   ],

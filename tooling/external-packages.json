@@ -859,6 +859,18 @@
           "libc-bin"
         ]
       }
+    },
+    "file": {
+      "discovery": "tool",
+      "package": "file",
+      "packages": {
+        "arch": [
+          "file"
+        ],
+        "debian": [
+          "file"
+        ]
+      }
     }
   }
 }

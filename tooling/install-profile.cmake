@@ -107,6 +107,8 @@ find_package(tomlplusplus CONFIG REQUIRED)
 # holonight-hyprlock: pkgconf
 # holonight-hyprlock: git
 # holonight-hyprlock: python
+# holonight-hyprlock: task
+# holonight-hyprlock: reuse
 # holonight-icons: python
 find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)
 # holonight-icons: hicolor
