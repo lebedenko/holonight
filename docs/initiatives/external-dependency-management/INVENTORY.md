@@ -12,7 +12,7 @@ Unconstrained libraries remain unconstrained; brackets identify the feature cont
 | holonight-config | tomlplusplus; c++; cmake; ninja; pkg-config; git; python3 3.10 |  |  |
 | holonight-files | Qt6 6.11 (Core); Qt6 6.11 (Gui, Quick, Qml, QuickControls2, Svg) [BUILD_FILES_APP]; tomlplusplus 3.4 [BUILD_FILES_APP]; QMarkdown 1.0...<2.0 [BUILD_FILES_APP]; c++; cmake; ninja; pkg-config; git; python3 3.10 | fonts; mime | libexif; GTest 1.14; Qt6 6.11 (Test); Qt6 6.11 (OpenGL) |
 | holonight-greeter | Qt6 6.11 (Core, Gui, Quick, Qml, Network, DBus); LayerShellQt; tomlplusplus; c++; cmake; ninja; pkg-config; git; python3 3.10 | greetd; cage; fonts; mime | GTest 1.14; Qt6 6.11 (Test); Qt6 6.11 (QmlPrivate) |
-| holonight-hyprlock | c++; cmake; ninja; pkg-config; git; python3 3.10 | hyprlock | GTest 1.14; Qt6 6.11 (Test) |
+| holonight-hyprlock | c++; cmake; ninja; pkg-config; git; python3 3.10; task; reuse | hyprlock | file |
 | holonight-icons | Python3 3.10 (Interpreter) | hicolor | Qt6 6.11 (Core, Gui, Svg); gtk+-3.0; gtk4; python-render; xvfb-run; KF6IconThemes [VERIFY_KDE] |
 | holonight-images | Qt6 6.11 (Core, Gui, Svg); libexif; libwebp; c++; cmake; ninja; pkg-config; git; python3 3.10 | imageformats | GTest 1.14; Qt6 6.11 (Test) |
 | holonight-pkg-manager | Qt6 6.11 (Core, Gui, Quick, Qml, Network, Sql, DBus, Concurrent); libalpm; ICU (uc); c++; cmake; ninja; pkg-config; git; python3 3.10 | fonts; mime | GTest 1.14; Qt6 6.11 (Test); Qt6 6.11 (QmlPrivate) |

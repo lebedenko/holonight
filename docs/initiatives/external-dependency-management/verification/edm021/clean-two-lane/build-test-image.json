@@ -1,0 +1,11 @@
+[
+  {
+    "Id": "sha256:51bb1aed43c0ad4e9336ed49962862ec78293f4380fd05e73b954e88c6c479c7",
+    "RepoDigests": [
+      "ghcr.io/lebedenko/holonight-deps@sha256:37ca051c39d1688d6413c47d94b8c0f221152dac6981ec67d155f2c43ea17b40"
+    ],
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Created": "2026-10-12T16:07:53.649852927+03:00"
+  }
+]

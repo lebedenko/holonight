@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-15",
+  "preparation_commit": "33d1c95",
+  "implementation_commit": "206bdd73b5a3aa3de72b13cf0dbd020778dd982b",
+  "baseline": "a366a31eaf1b6836a84882a47fe74c34469f7be0",
+  "publication": "not authorized; not performed",
+  "pin": "unchanged",
+  "manual_nested_acceptance": "pending EDM-022",
+  "results": {
+    "canonical_tests": 32,
+    "launcher_tests": 5,
+    "dependency_tests": 2,
+    "ctest": 2,
+    "release_staging": "pass",
+    "build-test": "pass",
+    "licensing": "pass",
+    "final_host_reuse": "41/41 passed (outside sandbox after multiprocessing socket failure)",
+    "umbrella_reuse": "884/884 passed with --no-multiprocessing"
+  },
+  "correction": "Individual shell syntax checks and complete package configuration/install logs; reran affected build-test only",
+  "post_acceptance_source_changes": [
+    "docs/sdd/external-dependency-management/SPEC.md"
+  ]
+}
