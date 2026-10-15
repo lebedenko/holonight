@@ -7,6 +7,12 @@ Run `task check:integration` for installation/runtime changes. Container builds 
 fresh build/prefix directories, separate from `build/dev` and `build/release`.
 clangd reads `build/dev/compile_commands.json` directly.
 
+Umbrella builds, container builds and clang-tidy use all available CPUs by default.
+Set `JOBS=4 task build` or `JOBS=4 task check` to override the job count. Container
+acceptance detects CPUs inside Docker and logs the selected count. Native component
+builds use Ninja defaults; limit them with `CMAKE_BUILD_PARALLEL_LEVEL=4 task build`.
+Native ecosystem tests use private D-Bus sessions without host service activation.
+
 Routine changes need tests and a commit explanation; update user documentation when
 behavior changes. Substantial designs need one local SDD describing intent, decisions,
 interfaces and acceptance. Cross-project changes need one umbrella note linking local
