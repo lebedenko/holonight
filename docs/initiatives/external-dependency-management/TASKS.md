@@ -22,7 +22,7 @@
 | EDM-018 | holonight-pkg-manager | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Done | `e8d85a94f2161907f276cdfa2533b17bbad18317` | 2026-10-14: bundle 2.0.0, installed dependencies and explicit qualified offline preparation/CI verified; 481/481 CTest, both style subsets 13/13, eight startup selectors, Release/tests-OFF staging, 105-unit strict tidy/QML/policy checks pass; 12 launcher + 17 real-CMake + 32 canonical + 68 installer regressions and final 25 affected fixture cases pass; separate compatibility commit `e35e217`; published to canonical origin/main and pinned locally; CI queued (38623856527), Licensing in_progress (38623856846), both pending at this revision; full evidence in local SDD and handoffs below |
 | EDM-019 | holonight-greeter | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024, EDM-004, EDM-006 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Done | `35c8f078ccad853a82bf2159855ba045544fdb12` | Audit baseline `d99e0a17f95af977a42785957e9311597e38bab0`; implementation baseline `31e8f8ece6d4bb4e90d11433a253150726535916`; coordinator checkpoint `ab22e74`. 2026-10-14: bundle 2.0.0, ordered Config/Qt preparation and qualified offline lanes pass; eight CTest registrations, four Sway caret style/scale cases, eight startup selectors, Release/tests-OFF staging, 15-unit strict tidy/QML/REUSE pass; 12 launcher + 16 real-CMake + 32 canonical + 68 installer regressions pass. Existing Hyprland-parser skip retained for EDM-022; local SDD/evidence reviewed. Published to canonical origin/main and pinned locally on 2026-10-15; exact-revision CI and Licensing both in_progress, conclusion empty (pending), runs 38639926360 and 38639926377. No polling; full local evidence remains valid. |
 | EDM-020 | holonightd | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Done | `33abc5f10c5a4d826dd3a5dfc5301eb643a3cc26` | Audit baseline `c6a9f9e1a353322bf7a3430cdab8392890348ccb`; implementation baseline `569905495a8ec0089a62c86c1b39ca68953ae01e`; preparation `a776b40`. 2026-10-15: bundle 2.0.0 and installed JSON/TOML/GTest adopted; clean offline Debug systemd ON/OFF each 111/111 CTest, Release/tests-OFF staging/runtime, 40-unit coverage/static and REUSE pass; 5 launcher + 11 real-CMake/cache + 32 canonical + 68 installer fixtures pass. Final affected runs resolve OFF compiler warnings. Published to canonical origin/main and pinned locally on 2026-10-15; exact-revision CI and Licensing both in_progress, conclusion empty (pending), runs 38649017538 and 38649017564. No polling; full evidence linked below |
-| EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Done | `206bdd73b5a3aa3de72b13cf0dbd020778dd982b` (local) | 2026-10-15: bundle 2.0.0, offline build-test/licensing, 2/2 CTest, Release staging, 5 launcher + 2 dependency regressions; publication/pinning and nested visual acceptance deferred |
+| EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Done | `206bdd73b5a3aa3de72b13cf0dbd020778dd982b` | 2026-10-15: bundle 2.0.0, offline build-test/licensing, 2/2 CTest, Release staging, 5 launcher + 2 dependency regressions. Published to canonical origin/main and pinned; exact-revision build/package and licensing CI in_progress, conclusion empty (pending), runs 38701892750 and 38701892761. Nested visual acceptance remains deferred to EDM-022 |
 | EDM-023 | umbrella | Debian release environment qualification | EDM-002 | packaging/ci/README.md | Superseded | — | Deferred for pre-release Arch priorities; mappings retained without qualified support |
 | EDM-024 | umbrella | Qualify, manually publish and hand off current Arch environments | EDM-002, EDM-003 | packaging/ci/README.md | Done | `8f437c0` + publication checkpoint | Offline full qualification and daemon reuse passed; both registry digest pulls preserve qualified IDs; anonymous availability verified; see [VERIFICATION](VERIFICATION.md) |
 | EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024 | — | Planned | — | Automated and manual ecosystem acceptance pending; published Config and System Services adoption pins recorded in handoffs below |
@@ -1356,3 +1356,30 @@ and user-performed nested visual acceptance remains pending for EDM-022. The umb
 index retains gitlink `a366a31eaf1b6836a84882a47fe74c34469f7be0`; the local submodule
 checkout consequently appears modified until publication and pinning are authorized.
 Unrelated shared-file-selection initiative and qmarkdown artifacts are preserved.
+
+## EDM-021 publication and pin handoff (2026-10-15)
+
+Published the verified Hyprlock commit `206bdd73b5a3aa3de72b13cf0dbd020778dd982b`
+to canonical `git@github.com:lebedenko/holonight-hyprlock.git` main in one push.
+`git ls-remote origin refs/heads/main` confirmed that exact revision before pinning.
+Updated the authoritative umbrella gitlink from
+`a366a31eaf1b6836a84882a47fe74c34469f7be0` to the published revision as authorized.
+
+Queried exact-revision CI once after publication:
+
+| Workflow | Revision | Status | Conclusion | Run |
+| --- | --- | --- | --- | --- |
+| Build and package checks | `206bdd73b5a3aa3de72b13cf0dbd020778dd982b` | in_progress | Empty (pending) | [38701892750](https://github.com/lebedenko/holonight-hyprlock/actions/runs/38701892750) |
+| Licensing | `206bdd73b5a3aa3de72b13cf0dbd020778dd982b` | in_progress | Empty (pending) | [38701892761](https://github.com/lebedenko/holonight-hyprlock/actions/runs/38701892761) |
+
+No CI polling or completion wait occurred; pending runs are not claimed as passing.
+The earlier local SDD and evidence describe the pre-publication checkpoint; this
+handoff supersedes their publication/pinning-pending fields. Local acceptance remains
+valid at this unchanged implementation revision. Closure changes only the gitlink
+and this ledger; generated-profile and bundle-drift checks and whitespace validation
+passed. No additional application build was required.
+
+EDM-021 remains Done. The initiative remains Accepted, EDM-022 remains Planned,
+and manual nested visual acceptance remains pending. Unrelated umbrella artifacts
+are preserved. Canonical preparation and the local verification handoff are included
+with this pin checkpoint in the umbrella publication.
