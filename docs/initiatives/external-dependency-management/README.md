@@ -84,6 +84,10 @@ See [INVENTORY.md](INVENTORY.md) for direct requirements and [CMAKE-AUDIT.json](
 4. Viewer and Files; portal follows Files; AI, Package Manager and Greeter follow Qt/providers.
 5. Daemon and Hyprlock independent adoption; final umbrella integration at published exact revisions.
 
+Bundle convergence is tracked in EDM-025–EDM-042, with exact starting gitlinks and
+provider handoffs in the ledger. EDM-042 accounts for Hyprlock acquiring drift after
+the canonical header-coverage correction; the initial audit found 17 drifting copies.
+
 Only Ready work packages may be assigned. Preserve one repository and its exact recorded upstream baseline per
 implementation handoff. Repository-local commits do not alter umbrella pins or integration status.
 

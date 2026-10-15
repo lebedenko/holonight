@@ -29,6 +29,8 @@ and writes ignored root compile_commands.json. No builds run during refresh or d
 previous database. Compiler commands stay intact; clangd removes unsupported flags via .clangd and tidy makes a
 filtered copy of the same selected database under `.cache/tooling/clang`. Qt defaults and daemon defaults are explicit
 separate tidy templates; tests inherit their parent with macro/global naming exceptions.
+Tidy includes headers under apps, libs, integrations, tests, include, src, qml and wayland;
+vendor and generated build-tree headers remain excluded.
 
 QML editor defaults use build/test. Build it explicitly to generate qmldir and qmltypes before refresh. The portable
 root .qmlls.ini disables automatic CMake calls. Refresh writes resolved machine-specific settings under

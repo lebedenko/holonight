@@ -25,7 +25,25 @@
 | EDM-021 | holonight-hyprlock | Adopt installed dependencies, explicit preparation and qualified CI | EDM-002, EDM-024 | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Done | `206bdd73b5a3aa3de72b13cf0dbd020778dd982b` | 2026-10-15: bundle 2.0.0, offline build-test/licensing, 2/2 CTest, Release staging, 5 launcher + 2 dependency regressions. Published to canonical origin/main and pinned; exact-revision build/package and licensing CI in_progress, conclusion empty (pending), runs 38701892750 and 38701892761. Nested visual acceptance remains deferred to EDM-022 |
 | EDM-023 | umbrella | Debian release environment qualification | EDM-002 | packaging/ci/README.md | Superseded | — | Deferred for pre-release Arch priorities; mappings retained without qualified support |
 | EDM-024 | umbrella | Qualify, manually publish and hand off current Arch environments | EDM-002, EDM-003 | packaging/ci/README.md | Done | `8f437c0` + publication checkpoint | Offline full qualification and daemon reuse passed; both registry digest pulls preserve qualified IDs; anonymous availability verified; see [VERIFICATION](VERIFICATION.md) |
-| EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024 | — | Planned | — | Automated and manual ecosystem acceptance pending; published Config and System Services adoption pins recorded in handoffs below |
+| EDM-025 | holonight-config | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-config/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `0ccd25f323662f50a47bb048be636160f2b7c135`; awaiting canonical tooling publication |
+| EDM-026 | holonight-system-services | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-system-services/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `70614eb70329af7014853c2973e5624acf0b251e`; awaiting canonical tooling publication |
+| EDM-027 | holonight-qt | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025 | [SPEC](../../../holonight-qt/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `7c3ce074a8c2e02e4ee8cad8cd19eb8627aa4f68`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-028 | holonight-images | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-images/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `ae827d78db9cc21f9537c27f50f49baf879324da`; awaiting canonical tooling publication |
+| EDM-029 | holonight-thumbnails | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-thumbnails/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `c9ae0ad9a64e8ce28ee669b5463ef1bec74bc16d`; awaiting canonical tooling publication |
+| EDM-030 | holonight-search | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-search/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `5e71fd7c6494084b4fcc1b5b7a8df9bb2e690bdc`; awaiting canonical tooling publication |
+| EDM-031 | holonight-appearance-adapters | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-026, EDM-025, EDM-027 | [SPEC](../../../holonight-appearance-adapters/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `810a61dad372f5b9c1abfe9fd56a7b72ea81c28e`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-032 | holonight-icons | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-icons/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `b1ee3e7b9e804542e22c8eebd3946eb9c04138bb`; awaiting canonical tooling publication |
+| EDM-033 | holonight-shell | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-026, EDM-027 | [SPEC](../../../holonight-shell/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `5d02583a59ed1bf9bff494c667ad6896d5fdce6e`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-034 | holonight-settings | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-026, EDM-027, EDM-033 | [SPEC](../../../holonight-settings/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `efc27a753b3e9de37b76aacf56617002ec7a1bda`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-035 | holonight-viewer | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-027, EDM-028, EDM-029 | [SPEC](../../../holonight-viewer/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `90ca5b0f007e76aaf0caa12628ab079811c905f9`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-036 | holonight-files | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-026, EDM-027, EDM-028, EDM-029, EDM-030 | [SPEC](../../../holonight-files/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `7de2d9961a0feea28e41f80c4e834542faf1fefa`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-037 | xdg-desktop-portal-holonight | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-027, EDM-030, EDM-036 | [SPEC](../../../xdg-desktop-portal-holonight/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `99b0eea555837932073b488d2a1ae9f66bb037ea`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-038 | holonight-ai | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-027 | [SPEC](../../../holonight-ai/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `dab860496323d321709a675141d553958bddf968`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-039 | holonight-pkg-manager | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-027 | [SPEC](../../../holonight-pkg-manager/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `e8d85a94f2161907f276cdfa2533b17bbad18317`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-040 | holonight-greeter | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff, EDM-025, EDM-027 | [SPEC](../../../holonight-greeter/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `35c8f078ccad853a82bf2159855ba045544fdb12`; awaiting canonical tooling publication and accepted published provider handoffs |
+| EDM-041 | holonightd | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonightd/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `33abc5f10c5a4d826dd3a5dfc5301eb643a3cc26`; awaiting canonical tooling publication |
+| EDM-042 | holonight-hyprlock | Converge bundle 2.0.0, instantiated configuration and CI provider fixtures | Published canonical tooling handoff | [SPEC](../../../holonight-hyprlock/docs/sdd/external-dependency-management/SPEC.md) | Planned | — | Exact starting gitlink `206bdd73b5a3aa3de72b13cf0dbd020778dd982b`; awaiting canonical tooling publication |
+| EDM-022 | umbrella | Verify and integrate exact published revisions | EDM-004–EDM-021, EDM-024–EDM-042 | — | Planned | — | Automated and manual ecosystem acceptance pending; published Config and System Services adoption pins recorded in handoffs below |
 
 Allowed states: Planned, Ready, In Progress, Done, Blocked, Superseded. Done requires a local commit and passed
 local verification; it does not make this initiative Integrated. Provider handoffs must be available on canonical
@@ -1383,3 +1401,45 @@ EDM-021 remains Done. The initiative remains Accepted, EDM-022 remains Planned,
 and manual nested visual acceptance remains pending. Unrelated umbrella artifacts
 are preserved. Canonical preparation and the local verification handoff are included
 with this pin checkpoint in the umbrella publication.
+
+
+## Bundle convergence preparation — 2026-10-15
+
+Starting umbrella: `dfa140f5452a02b59e663e5770c4661cf0f24d89`. All adoption
+pins match clean local repositories. Initial read-only bundle audit reports drift
+in 17 repositories; Hyprlock initially matches. EDM-025–EDM-041 cover that drift.
+Canonical review found tidy's header filter excluded include/src/qml/wayland.
+The corrected filter includes all eight existing owned source layouts and escapes
+the repository path. Top-level vendor and build trees remain excluded. Bundle version and interfaces remain 2.0.0.
+EDM-042 additionally refreshes Hyprlock after the canonical correction so all 18
+standalone bundles can agree. No product API or dependency framework changes.
+
+Canonical regression coverage verifies selected Qt cache precedence over the
+Qt6_DIR environment, Qt6-specific tool precedence, executable checks, explicit
+space-containing overrides, refusal to use PATH and all eight existing owned
+header layouts. Existing Qt selection behavior passes without implementation
+changes. The header regression failed before correction, then passed.
+
+Packages remain Planned until the canonical correction is published. Promote
+foundational/independent packages to Ready only after that handoff; promote
+consumers only after every listed provider handoff is locally verified and
+published. For each package, read local AGENTS.md and extend its linked SDD before
+editing, preserve module declarations/options, advance CI pins and provider
+fixtures together, and run clean offline local acceptance before publication.
+Record exact-revision hosted CI once and update gitlinks only after separately
+authorized publication/pinning. No repository implementation or pins are changed
+by this preparation. Existing unrelated untracked artifacts remain untouched.
+
+EDM-022 stays Planned and the initiative stays Accepted. Final acceptance cannot
+start until all convergence packages are Done. Its required desktop checks remain
+user-performed in a disposable snapshotted Arch VM under Sway and Hyprland,
+including the deferred Greeter Hyprland parser check. No VM or manual result is
+claimed. Unrelated performance probes and Debian qualification remain deferred.
+
+Preparation verification: 35/35 canonical tooling tests, generated production
+profile check, 68/68 installer fixtures (202.104 seconds), real clang-tidy header
+diagnostic under a space/regex-containing path, and whitespace review pass.
+The real diagnostic probe also verifies src/../include lexical paths; the filter
+retains these paths rather than requiring canonicalized absolute filenames.
+Evidence staging is [EDM-022](verification/edm022/README.md). These results do not
+replace clean repository acceptance or real staged deployment.

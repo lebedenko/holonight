@@ -418,13 +418,15 @@ def tidy(config, scope):
     uncovered = sources - {Path(e['file']) for e in entries}
     if uncovered:
         raise RuntimeError('No compile command for: ' + ', '.join(str(p.relative_to(ROOT)) for p in sorted(uncovered)))
+    # Include public headers and the existing product/protocol source layouts.
+    header_filter = rf'^{re.escape(str(ROOT))}/(apps|libs|integrations|tests|include|src|qml|wayland)/.*\.(h|hpp|hh|hxx)$'
     # clang-tidy evaluates every compiler context for a file itself; invoke it once.
     for path in sorted(sources):
         is_test = 'tests' in path.relative_to(ROOT).parts
         tidy_config = ROOT / 'tests/.clang-tidy' if is_test and (ROOT / 'tests/.clang-tidy').exists() else ROOT / '.clang-tidy'
         run([os.environ.get('CLANG_TIDY', 'clang-tidy'), path, '-p', target,
              f'--config-file={tidy_config}',
-             rf'--header-filter=^{ROOT}/(apps|libs|integrations|tests)/.*\.(h|hpp)$'])
+             f'--header-filter={header_filter}'])
 
 
 def metadata(config, preset):

@@ -13,7 +13,7 @@ import workflow
 
 class ToolingTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix='tooling paths with spaces ')
+        self.temp = tempfile.TemporaryDirectory(prefix='tooling [paths] with spaces ')
         self.root = Path(self.temp.name)
         self.addCleanup(self.temp.cleanup)
         self.source = self.root / 'src/file.cpp'
@@ -125,6 +125,50 @@ class ToolingTests(unittest.TestCase):
                                  module == 'holonight-qt')
                 self.assertEqual('-DHOLONIGHT_QMLLINT_EXECUTABLE=/tools with spaces/qmllint' in args,
                                  module == 'holonight-qt')
+
+    def test_qt_tools_prefer_selected_qt_over_path_and_environment(self):
+        prefix = self.root / 'selected Qt'
+        qt_dir = prefix / 'lib/cmake/Qt6'
+        qt_dir.mkdir(parents=True)
+        cache = self.root / 'build/test/CMakeCache.txt'
+        cache.parent.mkdir(parents=True)
+        cache.write_text(f'Qt6_DIR:PATH={qt_dir}\n')
+        for relative in ('bin/qmllint', 'lib/qt6/bin/qmllint'):
+            tool = prefix / relative
+            tool.parent.mkdir(parents=True, exist_ok=True)
+            tool.write_text('#!/bin/sh\nexit 0\n')
+            tool.chmod(0o755)
+        with patch.object(workflow, 'ROOT', self.root), patch.dict(os.environ, {'Qt6_DIR': '/wrong/Qt6'}, clear=True):
+            self.assertEqual(workflow.qt_tool('qmllint'), str(prefix / 'lib/qt6/bin/qmllint'))
+            (prefix / 'lib/qt6/bin/qmllint').chmod(0o644)
+            self.assertEqual(workflow.qt_tool('qmllint'), str(prefix / 'bin/qmllint'))
+        with patch.object(workflow, 'ROOT', self.root), patch.dict(os.environ, {'QMLLINT': '/explicit tools/qmllint'}, clear=True):
+            self.assertEqual(workflow.qt_tool('qmllint'), '/explicit tools/qmllint')
+
+    def test_qt_tools_never_fall_back_to_path(self):
+        with patch.object(workflow, 'ROOT', self.root), patch.dict(os.environ, {'PATH': '/usr/bin'}, clear=True):
+            with self.assertRaisesRegex(RuntimeError, 'Cannot resolve'):
+                workflow.qt_tool('qmllint')
+
+    def test_tidy_includes_owned_headers_in_all_existing_layouts(self):
+        subprocess.run(['git', 'init', '-q', str(self.root)], check=True)
+        headers = []
+        for directory in ('apps', 'libs', 'integrations', 'tests', 'include', 'src', 'qml', 'wayland'):
+            header = self.root / directory / 'owned.hpp'
+            header.parent.mkdir(parents=True, exist_ok=True)
+            header.write_text('')
+            headers.append(header)
+        subprocess.run(['git', '-C', str(self.root), 'add', '.'], check=True)
+        build = self.database('build/test')
+        with patch.object(workflow, 'ROOT', self.root), patch.dict(os.environ, {'HOLONIGHT_TIDY_DATABASE': str(build / 'compile_commands.json')}), patch.object(workflow, 'run') as run:
+            workflow.tidy({}, 'all')
+        import re
+        header_filter = next(arg.split('=', 1)[1] for arg in run.call_args.args[0] if str(arg).startswith('--header-filter='))
+        for header in headers:
+            self.assertRegex(str(header), header_filter)
+        self.assertRegex(str(self.root / 'src/../include/owned.hpp'), header_filter)
+        self.assertIsNone(re.search(header_filter, str(self.root / 'vendor/foreign.hpp')))
+        self.assertIsNone(re.search(header_filter, str(self.root / 'build/generated.hpp')))
 
     def test_drift_check_read_only(self):
         from sync import FILES
