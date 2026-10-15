@@ -50,28 +50,6 @@ for package in "$@"; do
 done
 exit "$status"
 ''')
-        self.command("cmake", '''
-printf 'cmake %s\\n' "$*" >> "$LOG"
-[[ "$1" = -S && "$3" = -B && "$5" = -G && "$6" = Ninja && "$#" = 7 ]] || exit 98
-[[ "$7" = "-DPython3_EXECUTABLE=$PATH/python3" ]] || exit 98
-[[ "$2" = "$TMPDIR"/holonight-qt-check.* && "$4" = "$2/build" ]] || exit 98
-source_text="$(cat "$2/CMakeLists.txt")"
-[[ "$source_text" = *'WaylandClient)'* ]] || exit 97
-[[ "$source_text" = *'find_package(Qt6WaylandScannerTools 6.11 REQUIRED)'* ]] || exit 97
-[[ "$source_text" = *'find_package(Qt6 ${Qt6_VERSION} EXACT REQUIRED COMPONENTS'* ]] || exit 97
-[[ "$source_text" = *'REQUIRED libwebp)'* ]] || exit 97
-[[ "$source_text" = *'REQUIRED libexif)'* ]] || exit 97
-[[ "$source_text" = *'find_package(tomlplusplus 3.4 CONFIG REQUIRED)'* ]] || exit 97
-[[ "$source_text" = *'find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)'* ]] || exit 97
-[[ "$source_text" = *'find_package(QMarkdown 1.1 CONFIG REQUIRED)'* ]] || exit 97
-[[ "$source_text" = *'QMarkdown.qmltypes'* ]] || exit 97
-[[ "$source_text" != *'find_package(GTest'* ]] || exit 97
-if [[ -n "${CMAKE_FAILURE:-}" ]]; then
-  printf 'CMake Error: %s\\n' "$CMAKE_FAILURE" >&2
-  exit 1
-fi
-printf 'Configure succeeded\\n'
-''')
 
     def command(self, name, body):
         path = self.bin / name
@@ -93,23 +71,11 @@ printf 'Configure succeeded\\n'
     def test_merged_packaging_without_standalone_package(self):
         result = self.check(PACKAGING="merged")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Configure succeeded", result.stdout)
+        self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_standalone_packaging(self):
         result = self.check(PACKAGING="standalone")
         self.assertEqual(result.returncode, 0, result.stderr)
-
-    def test_missing_capabilities_and_configuration_failures(self):
-        for diagnostic in ("WaylandClient missing", "Qt6WaylandScannerTools missing",
-                           "Qt6 version 6.10 incompatible with requested 6.11", "GuiPrivate missing",
-                           "libwebp missing", "libexif missing", "configuration failed"):
-            with self.subTest(diagnostic=diagnostic):
-                self.log.write_text("")
-                result = self.check(CMAKE_FAILURE=diagnostic)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn("CMake Error: " + diagnostic, result.stderr)
-                self.assertIn("Qt >= 6.11", result.stderr)
-                self.assertNotIn("qt6-wayland", result.stderr)
 
     def test_unrelated_missing_package(self):
         result = self.check(MISSING_PACKAGE="libsecret")
@@ -139,24 +105,13 @@ printf 'Configure succeeded\\n'
                 self.assertIn("sudo pacman -S --needed " + package, result.stderr)
                 self.assertNotIn("cmake -S", self.log.read_text())
 
-    def test_files_requires_supported_tomlplusplus(self):
-        result = self.check(CMAKE_FAILURE="tomlplusplus 3.4 config unavailable")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("tomlplusplus 3.4 config unavailable", result.stderr)
-        self.assertIn("tomlplusplus >= 3.4 (Files)", result.stderr)
-
-    def test_icons_require_supported_python(self):
-        result = self.check(CMAKE_FAILURE="Python 3.9 incompatible with requested 3.10")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Python >= 3.10 (icons)", result.stderr)
-
     def test_optional_icon_themes_do_not_block_installation(self):
         for missing in ("papirus-icon-theme", "breeze-icons", "papirus-icon-theme breeze-icons"):
             with self.subTest(missing=missing):
                 self.log.write_text("")
                 result = self.check(MISSING_PACKAGE=missing)
                 self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertIn("Configure succeeded", result.stdout)
+                self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_icons_require_hicolor_fallback(self):
         result = self.check(MISSING_PACKAGE="hicolor-icon-theme")

@@ -1,22 +1,6 @@
 #!/usr/bin/env bash
 # Sourceable, read-only dependency checks shared by the installer and fixtures.
 
-check_qt_wayland_capabilities() (
-  # A subshell keeps the cleanup trap local to this probe, including failures.
-  local probe_dir
-  probe_dir="$(mktemp -d "${TMPDIR:-/tmp}/holonight-qt-check.XXXXXXXX")" || return 1
-  trap 'rm -rf -- "$probe_dir"' EXIT
-  trap 'exit 130' INT
-  trap 'exit 143' TERM
-  local helper_dir
-  helper_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-  cp "$helper_dir/../tooling/install-profile.cmake" "$probe_dir/CMakeLists.txt"
-  if ! cmake -S "$probe_dir" -B "$probe_dir/build" -G Ninja "-DPython3_EXECUTABLE=$(command -v python3)"; then
-    printf 'error: Qt >= 6.11 with WaylandClient, Qt6WaylandScannerTools, matching Qt private modules, Python >= 3.10 (icons), tomlplusplus >= 3.4 (Files), installed shared QMarkdown 1.x with QML metadata, and the full installation profile is required; see CMake diagnostics above for the unavailable capability or configuration failure.\n' >&2
-    return 1
-  fi
-)
-
 check_install_dependencies() {
   local missing_commands=() command_name
   for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent mktemp rm cat dirname python3 wayland-scanner; do
@@ -64,5 +48,7 @@ check_install_dependencies() {
     "$compiler" -std=c++23 -x c++ -fsyntax-only - >/dev/null 2>&1 ||
     { printf 'error: the default C++ compiler does not provide the required C++23 support\n' >&2; return 1; }
 
-  check_qt_wayland_capabilities
+  # Each component checks required versions and capabilities during CMake staging.
+  # Deployment begins only after every configure/build/install has succeeded.
+  return 0
 }

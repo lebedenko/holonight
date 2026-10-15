@@ -5,16 +5,8 @@ ARG ARCH_SNAPSHOT=2026/09/30
 RUN printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "$ARCH_SNAPSHOT" > /etc/pacman.d/mirrorlist \
     && pacman -Syyuu --noconfirm
 
-FROM base AS daemon
-COPY packaging/ci/arch-daemon.packages /tmp/requirements
-RUN pacman -S --needed --noconfirm $(cat /tmp/requirements) \
-    && pacman -Q > /usr/share/holonight-ci-packages.txt \
-    && pacman -Scc --noconfirm
-RUN ln -s /usr/bin/go-task /usr/local/bin/task
-WORKDIR /work
-
 FROM base AS full-base
-COPY packaging/ci/arch-full.packages /tmp/requirements
+COPY packaging/ci/arch.packages /tmp/requirements
 RUN pacman -S --needed --noconfirm $(cat /tmp/requirements) \
     && pacman -Q > /usr/share/holonight-ci-packages.txt \
     && pacman -Scc --noconfirm
@@ -31,7 +23,7 @@ WORKDIR /work/qmarkdown-package
 ENV CMAKE_BUILD_PARALLEL_LEVEL=2
 RUN makepkg --noconfirm
 
-FROM full-base AS full
+FROM full-base AS development
 COPY --from=qmarkdown-package /work/qmarkdown-package/qmarkdown-[0-9]*.pkg.tar.zst /tmp/
 RUN pacman -U --noconfirm /tmp/qmarkdown-[0-9]*.pkg.tar.zst \
     && pacman -Q > /usr/share/holonight-ci-packages.txt

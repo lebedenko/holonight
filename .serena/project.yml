@@ -22,8 +22,7 @@ fixed_tools: []
 default_modes: null
 added_modes: null
 initial_prompt: This umbrella supports cross-component work. Read component AGENTS.md.
-  Use python3 tooling/compilation.py to explicitly refresh compile commands. Each
-  component owns an independent Serena project.
+  Each component uses build/dev/compile_commands.json and owns an independent project.
 symbol_info_budget: null
 read_only_memory_patterns: []
 ignored_memory_patterns: []

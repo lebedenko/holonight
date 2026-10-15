@@ -32,12 +32,21 @@ Clone published components with:
 git clone --recurse-submodules <umbrella-url>
 ```
 
-For a change confined to one component, work directly in that repository. For a cross-project change, start at this
-root, create an initiative under [`docs/initiatives/`](docs/initiatives/), and follow [`AGENTS.md`](AGENTS.md). The
-initiative README is the stable contract; its `TASKS.md` is the restartable cross-repository ledger. Detailed
-requirements and implementation tasks belong in local repository SDDs.
+For a component change, work in that repository. Cross-project changes use one umbrella
+note defining shared contracts, dependency order and integration checks. Follow
+[CONTRIBUTING.md](CONTRIBUTING.md); historical SDDs remain reference material.
 
-The workflow in [`AGENTS.md`](AGENTS.md) and the initiative templates is the operative contract.
+Use `task build` and `task test` in a component for native CMake/CTest iteration,
+`task format` for the pinned formatter, and `task check` before committing.
+`task check:integration` adds Release staging and runtime checks. Each repository stores
+the same immutable development image reference and uses the same launcher in GitHub.
+See [the shared image](packaging/ci/README.md) and component `DEVELOPMENT.md` files.
+
+For joint development, `task build` at the umbrella builds the current siblings into
+`build/integration/prefix`; `task test` also runs their tests. `task check:integration`
+uses exact umbrella gitlinks in a fresh container. During an uncommitted cross-project
+change, explicitly use `task check:integration -- --siblings .` to test current checkouts.
+Publish providers before consumers that pin them, then update umbrella pins once per milestone.
 
 ## Installing from source
 
@@ -51,10 +60,10 @@ task install
 
 Install shared QMarkdown 1.x separately before running the installer. The pinned Arch recipe is in
 [packaging/qmarkdown](packaging/qmarkdown/README.md). The installer checks its library, CMake exports and QML
-metadata before building; QMarkdown files remain owned by the package manager and survive umbrella uninstall.
-Dependency acquisition is an explicit operation. `task deps` prepares supplied local sources; configuration and
-normal builds consume installed prerequisites. See [the dependency initiative](docs/initiatives/external-dependency-management/README.md)
-for rollout and qualification status.
+metadata during component configuration; QMarkdown files remain owned by the package
+manager and survive umbrella uninstall. Native builds consume installed dependencies,
+using `CMAKE_PREFIX_PATH` for additional prefixes. Container acceptance automatically
+obtains pinned provider sources; configure and build never download packages.
 
 The installer supports Arch Linux and Arch-derived distributions. It checks the pinned submodules, compiler, build
 tools, system packages, and Greeter account without installing packages. Builds run without privilege and every

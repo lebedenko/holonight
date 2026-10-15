@@ -1,7 +1,0 @@
-**
-!packaging/
-!packaging/ci/
-!packaging/ci/Dockerfile.qmarkdown
-!packaging/ci/Dockerfile.qmarkdown.dockerignore
-!packaging/qmarkdown/
-!packaging/qmarkdown/PKGBUILD

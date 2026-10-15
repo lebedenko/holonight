@@ -1,94 +1,78 @@
-version: "3"
-
+version: '3'
 vars:
   SUBMODULES:
     sh: git submodule foreach --quiet 'printf "%s " "$name"'
-
 tasks:
-  merge-compile-commands:
-    desc: Refresh the local Serena compilation database from existing builds
-    dir: '{{.ROOT_DIR}}'
-    preconditions:
-      - sh: test -f tooling/compilation.py
-        msg: Tracked tooling bundle is required.
-    cmds:
-      - python3 tooling/compilation.py
-
   icons:build:
     desc: Build both icon variants and the template bundle
     dir: holonight-icons
-    cmds: [task build]
-
+    cmds:
+    - task build
   icons:validate:
     desc: Build and validate canonical icons and both generated themes
     dir: holonight-icons
-    cmds: [task validate]
-
+    cmds:
+    - task validate
   icons:test:
     desc: Run icons regression and packaging tests
     dir: holonight-icons
-    cmds: [task test]
-
+    cmds:
+    - task test
   icons:verify:
     desc: Verify icons against the umbrella Qt renderer, with previews and licensing
-    dir: holonight-icons
     cmds:
-      - env HOLONIGHT_QT_SOURCE='{{.ROOT_DIR}}/holonight-qt' task verify
-      - python3 '{{.ROOT_DIR}}/tests/check_staged_icons.py'
-
+    - task -d holonight-icons check -- --siblings '{{.ROOT_DIR}}'
+    - python3 '{{.ROOT_DIR}}/tests/check_staged_icons.py'
   icons:preview:
     desc: Generate icon family previews using the umbrella Qt renderer
     dir: holonight-icons
     cmds:
-      - env HOLONIGHT_QT_SOURCE='{{.ROOT_DIR}}/holonight-qt' task preview:icons
-
+    - env HOLONIGHT_QT_SOURCE='{{.ROOT_DIR}}/holonight-qt' task preview:icons
   license-check:
     desc: Validate REUSE metadata in the umbrella and initialized submodules
     cmds:
-      - reuse lint
-      - for: { var: SUBMODULES }
-        task: license-check:repository
-        vars: { REPOSITORY: '{{.ITEM}}' }
-
+    - reuse lint
+    - for:
+        var: SUBMODULES
+      task: license-check:repository
+      vars:
+        REPOSITORY: '{{.ITEM}}'
   license-check:repository:
     internal: true
     dir: '{{.REPOSITORY}}'
     cmds:
-      - reuse lint
-
+    - reuse lint
   test:installer:
     desc: Check dependencies and icon/application installation in disposable roots
     cmds:
-      - python3 -m unittest discover -s tests -p 'test_install*.py' -v
-
+    - python3 -m unittest discover -s tests -p 'test_install*.py' -v
   install:
     desc: Build and install the pinned HoloNight ecosystem from source
     cmds:
-      - scripts/install.sh {{.CLI_ARGS}}
-
+    - scripts/install.sh {{.CLI_ARGS}}
   uninstall:
     desc: Remove an umbrella-managed source installation
     cmds:
-      - scripts/uninstall.sh {{.CLI_ARGS}}
-
-  tooling:sync:
-    desc: Explicitly copy the canonical bundle into all modules
-    cmds: [python3 tooling/sync.py]
-
-  tooling:drift:
-    desc: Check bundle drift without writing
-    cmds: [python3 tooling/sync.py --check]
-
-  tooling:refresh:
-    desc: Refresh the umbrella compilation database
-    cmds: [python3 tooling/compilation.py]
-
-  deps:validate:
-    desc: Validate canonical external declarations and generated production requirements
+    - scripts/uninstall.sh {{.CLI_ARGS}}
+  build:
+    desc: Build current sibling checkouts into a native integration prefix
     cmds:
-      - python3 tooling/generate-install-profile.py --check
-      - python3 -m unittest discover -s tooling -p 'test_*.py' -v
-
-  deps:profile:
-    desc: Regenerate the production installation dependency profile explicitly
-    cmds: [python3 tooling/generate-install-profile.py]
+    - python3 scripts/build-ecosystem.py {{.CLI_ARGS}}
+  test:
+    desc: Build and test current siblings against a native integration prefix
+    cmds:
+    - python3 scripts/build-ecosystem.py --tests {{.CLI_ARGS}}
+  check:
+    desc: Installer and licensing acceptance in the shared image
+    cmds:
+    - python3 scripts/ci/container.py check {{.CLI_ARGS}}
+  check:integration:
+    desc: Build and test umbrella gitlinks together in the shared image
+    cmds:
+    - python3 scripts/ci/container.py integration {{.CLI_ARGS}}
+  format:
+    desc: Format component sources with the pinned container formatter
+    cmds:
+    - for:
+        var: SUBMODULES
+      cmd: task -d {{.ITEM}} format

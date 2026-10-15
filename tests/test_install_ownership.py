@@ -168,6 +168,21 @@ class FilesOwnership(ViewerOwnership):
     executable = "hn-files"
     app_id = "org.holonight.Files"
 
+    def test_missing_cmake_dependency_prevents_deployment(self):
+        source = self.root / self.module
+        source.mkdir()
+        source.joinpath("CMakeLists.txt").write_text(
+            "cmake_minimum_required(VERSION 3.25)\nproject(MissingDependency NONE)\n"
+            "find_package(HoloNightMissingFixtureDependency CONFIG REQUIRED)\n")
+        existing = self.target / "keep.txt"
+        existing.write_text("existing installation")
+        self.make_manifest()
+        result = self.run_functions(f"configure_and_stage {self.module}; collision_check; copy_stage")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("HoloNightMissingFixtureDependency", result.stderr)
+        self.assertEqual(existing.read_text(), "existing installation")
+        self.assertEqual(list(self.target.iterdir()), [existing])
+
     def test_configure_exposes_system_qmarkdown_without_system_provider_prefix(self):
         cmake = self.commands / "cmake"
         arguments = self.root / "cmake-arguments"
@@ -176,7 +191,7 @@ class FilesOwnership(ViewerOwnership):
         result = self.run_functions(f"configure_and_stage {self.module}")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         args = arguments.read_text().splitlines()
-        self.assertIn(f"-DCMAKE_PREFIX_PATH={self.stage}/usr;/usr/lib/cmake/QMarkdown", args)
+        self.assertIn(f"-DCMAKE_PREFIX_PATH={self.stage}/usr", args)
         self.assertIn(f"-DQML_IMPORT_PATH={self.stage}/usr/lib/qt6/qml", args)
 
 

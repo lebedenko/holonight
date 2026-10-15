@@ -72,15 +72,9 @@ preflight() {
 configure_and_stage() {
   local module="$1" build_dir="$BUILD_ROOT/build/$1" stage="$BUILD_ROOT/stage"
   local prefix_path="$stage/usr"
-  local cmake_prefix_path="$prefix_path"
-  # The pinned Files tooling treats QMarkdown as an explicit-prefix provider.
-  # Expose only its package directory, keeping HoloNight providers in staging.
-  if [[ "$module" = holonight-files ]]; then
-    cmake_prefix_path+=";/usr/lib/cmake/QMarkdown"
-  fi
   local args=(-S "$REPO_ROOT/$module" -B "$build_dir" -G Ninja
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
-    -DCMAKE_PREFIX_PATH="$cmake_prefix_path" -DBUILD_TESTS=OFF -DBUILD_TESTING=OFF
+    -DCMAKE_PREFIX_PATH="$prefix_path" -DBUILD_TESTS=OFF -DBUILD_TESTING=OFF
     -DENABLE_COVERAGE=OFF)
 
   case "$module" in

@@ -19,15 +19,6 @@ class QMarkdownPreflight(unittest.TestCase):
         self.assertIn('sudo pacman -S --needed qmarkdown', result.stderr)
         self.assertNotIn('cmake -S', self.fixture.log.read_text())
 
-    def test_shared_library_and_metadata_failures_are_actionable(self):
-        for diagnostic in ('Files requires installed shared QMarkdown 1.x',
-                           'Installed QMarkdown is missing QML metadata: QMarkdown.qmltypes'):
-            self.fixture.log.write_text('')
-            result = self.fixture.check(CMAKE_FAILURE=diagnostic)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn(diagnostic, result.stderr)
-            self.assertIn('installed shared QMarkdown', result.stderr)
-
 
 class QMarkdownOwnership(unittest.TestCase):
     def setUp(self):

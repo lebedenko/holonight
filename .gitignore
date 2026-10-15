@@ -17,3 +17,9 @@ CLAUDE.md
 /build/
 
 /tooling/__pycache__/
+
+# Repository working rules are maintained alongside the contribution guide.
+!AGENTS.md
+
+# Generated Python bytecode.
+__pycache__/
