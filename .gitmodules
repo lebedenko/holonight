@@ -52,3 +52,6 @@
 [submodule "xdg-desktop-portal-holonight"]
 	path = xdg-desktop-portal-holonight
 	url = git@github.com:lebedenko/xdg-desktop-portal-holonight.git
+[submodule "holonight-file-browser"]
+	path = holonight-file-browser
+	url = git@github.com:lebedenko/holonight-file-browser.git

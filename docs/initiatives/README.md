@@ -12,12 +12,13 @@ An initiative has two umbrella-owned files:
 Do not duplicate local implementation checklists here. Component repositories own their specifications, designs,
 tests, and commits.
 
+- [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) — Implemented, published and pinned; manual native acceptance pending.
+
 ## Deferred backlog
 
 | Initiative | Status | Priority | Scheduling |
 |---|---|---|---|
 | [GTK Visual Fidelity](gtk-visual-fidelity/README.md) | Draft | Low | Deferred until explicitly prioritized |
-| [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) | Draft | Deferred | Deferred until External Dependency Management is Integrated and the user explicitly prioritizes it |
 
 - [Files refactoring and onboarding](files-holonight-alignment/README.md) — Accepted; Files published and pinned; final integration review pending.
 

@@ -31,6 +31,7 @@ def snapshot(source, target, pinned_submodules=False):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(original, destination, follow_symlinks=False)
     submodules = []
+    pending = []
     if (source / '.gitmodules').exists():
         links = subprocess.check_output(['git', '-C', str(source), 'ls-tree', 'HEAD'], text=True)
         for line in links.splitlines():
@@ -50,9 +51,18 @@ def snapshot(source, target, pinned_submodules=False):
                 run('git', '-C', child, 'add', '-A', '--force')
             else:
                 snapshot(source / name, target / name)
+    if (source / '.gitmodules').exists():
+        declared = subprocess.check_output(['git', 'config', '--file', str(source / '.gitmodules'),
+                                           '--get-regexp', r'^submodule\..*\.path$'], text=True)
+        known = {name for name, _ in submodules}
+        pending = [line.split(None, 1)[1] for line in declared.splitlines() if line.split(None, 1)[1] not in known]
+        if pending and pinned_submodules:
+            raise RuntimeError('Unpublished local components require --siblings: ' + ', '.join(pending))
+        for name in pending:
+            snapshot(source / name, target / name)
     # A local index supports source inventories and REUSE without mounting host .git.
     run('git', 'init', '-q', target)
-    run('git', '-C', target, 'add', '-A', '--force', '--', '.', *(f':(exclude){name}' for name, _ in submodules))
+    run('git', '-C', target, 'add', '-A', '--force', '--', '.', *(f':(exclude){name}' for name in [*(name for name, _ in submodules), *pending]))
     for name, revision in submodules:
         run('git', '-C', target, 'update-index', '--add', '--cacheinfo', f'160000,{revision},{name}')
 

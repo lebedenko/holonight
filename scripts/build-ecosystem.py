@@ -58,7 +58,10 @@ def main():
             f'-DBUILD_TESTS={test}', f'-DBUILD_TESTING={test}', *options, env=env)
         run('cmake', '--build', build, '--parallel', (os.environ.get('JOBS') or subprocess.check_output(['nproc'], text=True).strip()), env=env)
         if args.tests:
-            run_tests(source, build, env)
+            # Prefer this component's freshly built libraries over its previous
+            # installation when reusing a development prefix.
+            test_env = dict(env, LD_LIBRARY_PATH=f'{build}:{prefix / "lib"}')
+            run_tests(source, build, test_env)
         install_env = dict(env, DESTDIR=str(build / 'stage')) if name == 'holonight-hyprlock' else env
         run('cmake', '--install', build, env=install_env)
 

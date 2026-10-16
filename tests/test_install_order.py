@@ -45,5 +45,5 @@ class InstallOrder(unittest.TestCase):
         script = INSTALLER.read_text()
         order = re.search(r"^readonly MODULES=\(([^)]*)\)$", script, re.MULTILINE).group(1).split()
         backend = order.index("xdg-desktop-portal-holonight")
-        for provider in ("holonight-qt", "holonight-search", "holonight-files"):
+        for provider in ("holonight-qt", "holonight-search", "holonight-file-browser"):
             self.assertLess(order.index(provider), backend)

@@ -4,7 +4,7 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 readonly STATE_REL="var/lib/holonight/source-install"
-readonly MODULES=(holonight-config holonight-system-services holonight-qt holonight-appearance-adapters holonight-icons holonight-images holonight-thumbnails holonight-search holonight-shell holonight-settings holonight-viewer holonight-files xdg-desktop-portal-holonight holonight-ai holonight-pkg-manager holonight-greeter holonightd holonight-hyprlock)
+readonly MODULES=(holonight-config holonight-system-services holonight-qt holonight-appearance-adapters holonight-icons holonight-images holonight-thumbnails holonight-search holonight-file-browser holonight-shell holonight-settings holonight-viewer holonight-files xdg-desktop-portal-holonight holonight-ai holonight-pkg-manager holonight-greeter holonightd holonight-hyprlock)
 
 TARGET_ROOT="/"
 ASSUME_YES=0
@@ -82,7 +82,7 @@ configure_and_stage() {
       args+=( -DBUILD_GTK_PROBES=OFF -DHOLONIGHT_QT_DIR="$prefix_path" -DHOLONIGHT_CONFIG_DIR="$prefix_path" ) ;;
     holonight-qt)
       args+=( -DBUILD_DEMO=OFF -DBUILD_CONTROLS_GALLERY=OFF -DBUILD_QT5_PROBES=OFF ) ;;
-    holonight-viewer|holonight-files|xdg-desktop-portal-holonight)
+    holonight-file-browser|holonight-viewer|holonight-files|xdg-desktop-portal-holonight)
       args+=( -DQML_IMPORT_PATH="$prefix_path/lib/qt6/qml" ) ;;
     holonight-ai)
       args+=( -DHOLONIGHT_QML_IMPORT_PATH="$prefix_path/lib/qt6/qml" ) ;;
@@ -128,6 +128,9 @@ make_manifest() {
     owner_module=umbrella
     for module in "${MODULES[@]}"; do
       if [[ -f "$BUILD_ROOT/module-paths/$module" ]] && grep -Fqx "$relative" "$BUILD_ROOT/module-paths/$module"; then
+        if [[ "$type" != d && "$owner_module" != umbrella ]]; then
+          die "multiple components install $relative: $owner_module and $module"
+        fi
         owner_module="$module"
       fi
     done
@@ -141,7 +144,13 @@ make_manifest() {
 record_module_paths() {
   local module="$1" before="$2" after="$3"
   mkdir -p "$BUILD_ROOT/module-paths"
-  comm -13 "$before" "$after" > "$BUILD_ROOT/module-paths/$module"
+  if [[ -f "$BUILD_ROOT/build/$module/install_manifest.txt" ]]; then
+    # CMake lists every installed file, including an overwritten staging path. A
+    # before/after inventory alone would hide duplicate component ownership.
+    sort -u "$BUILD_ROOT/build/$module/install_manifest.txt" > "$BUILD_ROOT/module-paths/$module"
+  else
+    comm -13 "$before" "$after" > "$BUILD_ROOT/module-paths/$module"
+  fi
 }
 
 collision_check() {
