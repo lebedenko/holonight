@@ -12,7 +12,7 @@ An initiative has two umbrella-owned files:
 Do not duplicate local implementation checklists here. Component repositories own their specifications, designs,
 tests, and commits.
 
-- [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) — Implemented, published and pinned; manual native acceptance pending.
+- [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) — Implemented, published and pinned; requested native toolkit walkthroughs accepted.
 
 ## Deferred backlog
 

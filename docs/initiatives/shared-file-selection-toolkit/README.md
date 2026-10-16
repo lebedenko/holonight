@@ -1,7 +1,8 @@
 # Shared File Selection Toolkit
 
-Status: implemented, published and pinned; Files accepted natively; Portal and Viewer
-walkthroughs pending. The recursive traversal performance repair is published and pinned.
+Status: implemented, published and pinned; requested native toolkit walkthroughs accepted.
+The recursive traversal performance repair is published and pinned. Hosted publication
+checks are tracked in the delivery record; broader portal parenting/modality remains separate.
 The previous External Dependency Management deferral is replaced by the current
 installed CMake package workflow.
 
@@ -34,4 +35,4 @@ Files editing/finder/devices/previews, portal Open/Save/multiple selection and V
 grid/thumbnails/playback. Publication must place providers before consumers.
 
 See the [delivery and verification record](TASKS.md) for completed checks and the
-remaining manual acceptance.
+native acceptance and publication check status.

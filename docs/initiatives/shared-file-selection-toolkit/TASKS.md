@@ -43,9 +43,9 @@ search snapshots, selected previews and cached thumbnails; root-directory snapsh
 identity; refresh failure; cancellation and shutdown. Incremental ecosystem testing
 prefers freshly built component libraries over a previous installation in the same prefix.
 
-Remaining user-operated checks: Files editing, finder, devices and previews; portal
-Open/Save/multiple selection; Viewer grid, thumbnails and playback. Use host builds
-with the development prefix's `lib/qt6/qml` and `lib` in `QML_IMPORT_PATH` and
+User-operated toolkit checks for Files editing, finder, devices and previews, portal
+Open/Save/multiple selection, and Viewer grid/thumbnails/playback are accepted below.
+Use host builds with the development prefix's `lib/qt6/qml` and `lib` in `QML_IMPORT_PATH` and
 `LD_LIBRARY_PATH`. Container binaries remain acceptance artifacts.
 
 ## Native closure walkthrough — 2026-10-16
@@ -82,12 +82,12 @@ GIF and an existing Save destination. Native launches use the development prefix
 | Files | Navigation/selection; create/rename/copy/move/delete; image/text/Markdown previews | Passed by user report on 2026-10-16 |
 | Files | Recursive finder | Exercised; ranking deferred to Shared Search, local traversal repair accepted natively below |
 | Files | Available storage device browsing and recovery after removal | Passed by user report: all other Files checks passed |
-| Portal | Single Open, multiple selection, folder selection, Save; navigation/filtering/keyboard/cancel; returned paths and overwrite confirmation | Pending |
-| Viewer | Ordered browsing, thumbnail grid navigation/selection, animation play/pause, Open/cancel document behavior | Pending |
+| Portal | Single Open, multiple selection, folder selection, Save; navigation/filtering/keyboard/cancel; returned paths and overwrite confirmation | Passed by user report; Save returns a destination without creating a file; parenting/modality excluded |
+| Viewer | Ordered browsing, thumbnail grid navigation/selection, animation play/pause, Open/cancel document behavior | Passed by user report on 2026-10-16 |
 
-Portal and Viewer confirmation is pending. Keep the initiative awaiting manual acceptance;
-unavailable scenarios do not count as passes. The separate FileChooser portal
-initiative's broader acceptance remains unchanged.
+All toolkit scenarios in this table are accepted by user report. Unavailable
+scenarios do not count as passes. The separate FileChooser portal initiative's
+broader acceptance, including native parenting/modality, remains unchanged.
 
 ### Finder triage after native feedback
 
@@ -169,9 +169,9 @@ results, and reuse on reopening are accepted for that walkthrough. Cache state,
 startup delay and selected root were not specified; this confirmation does not
 measure startup/cache latency or replace the traversal benchmark above. Prior Files
 passes remain accepted; ranking stays deferred to Shared Search. Toolkit closure
-still requires the Portal and Viewer walkthroughs. Publication and pinning were
-subsequently authorized by the user and are recorded below. System package and
-desktop service changes remain outside this work.
+then still required the Portal and Viewer walkthroughs, now accepted below.
+Publication and pinning were subsequently authorized by the user and are recorded
+below. System package and desktop service changes remain outside this work.
 
 ### Traversal fix publication and pinning — 2026-10-16
 
@@ -189,4 +189,38 @@ The umbrella pins these four published revisions. Existing component acceptance,
 installed-provider regressions, benchmark and full sibling integration evidence
 above apply to the published source; consumer changes only update manifest pins.
 Hosted publication acceptance is monitored separately. Native Files acceptance
-remains recorded above; Portal and Viewer walkthroughs remain pending.
+remains recorded above; Portal and Viewer acceptance is recorded below.
+
+### Portal native walkthrough — 2026-10-16
+
+The user reported all chooser checks passed, with uncertainty that Save did not
+create a file. This is the intended manual probe behavior: it submits a SaveFile
+request and observes the returned destination; the calling application would write
+the file. No write is performed by the probe, so this is not a Save failure.
+
+The stock native test host showed its parent window without presenting a chooser
+during the parent-export path. A disposable host probe under ignored walkthrough
+output uses the same host-built backend/presenter and private D-Bus sessions, without
+parent export, and starts in the fixture directory. Open, multiple selection,
+folder selection and Save were exercised; the user separately confirmed **“passed”**
+for this standalone walkthrough. This accepts the toolkit chooser
+walkthrough; native parenting/modality are not accepted by this run and remain
+part of the separate portal initiative's broader acceptance. No product source
+or desktop service was changed for this workaround.
+
+### Viewer native acceptance and publication checks — 2026-10-16
+
+The user confirmed **“passed”** for the rebuilt host Viewer: ordered browsing
+through 01/02/03, thumbnail-grid navigation/selection, GIF animation play/pause,
+and Open/cancel preserving the current document. All requested toolkit native
+walkthroughs are accepted. The separate portal initiative retains its broader
+parenting/modality acceptance; finder ranking remains deferred to Shared Search.
+
+Provider [publication CI](https://github.com/lebedenko/holonight-file-browser/actions/runs/38898194805),
+[Files pin CI](https://github.com/lebedenko/holonight-files/actions/runs/38903990297), and
+[Portal pin CI](https://github.com/lebedenko/xdg-desktop-portal-holonight/actions/runs/38903991769)
+passed. At native acceptance recording, the
+[Viewer pin run](https://github.com/lebedenko/holonight-viewer/actions/runs/38903996543) and
+[umbrella pin run](https://github.com/lebedenko/holonight/actions/runs/38906119050)
+were still in progress. Full local component and umbrella sibling acceptance
+passed as recorded above; no hosted success is claimed for a pending run.
