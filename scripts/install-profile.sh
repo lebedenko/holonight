@@ -4,6 +4,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   cage
   clang
   cmake
+  desktop-file-utils
   git
   glib2
   go-task

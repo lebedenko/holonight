@@ -94,7 +94,16 @@ An existing `~/.config/hypr/hyprlock.conf` takes precedence. Installation does n
 configuration, install system packages, or enable services. Unmanaged system Hyprlock configuration
 receives the same collision protection and explicit migration backups as other installed files.
 
-The installer does not rewrite existing settings or change application defaults. A user-local theme
+After deployment and desktop database refresh, a real installation by a non-root user
+extends an existing Viewer selection to newly supported image formats. JPEG, PNG, GIF
+and WebP must all explicitly select Viewer in user MIME preferences. Supported formats
+come from the installed desktop entry; explicit per-format defaults and removed Viewer
+associations are preserved, including desktop-specific and legacy user preferences.
+Fresh installations, mixed viewer choices, check-only runs and alternate roots leave
+preferences unchanged. Direct root installation reports that it skips this extension.
+User preferences remain outside payload ownership and survive uninstall.
+
+The installer otherwise preserves existing settings. A user-local theme
 can shadow the system theme; the icons repository's `task install:local` manages user-local copies
 separately. The installed recoloring command targets an existing user-local theme only, even when
 run from the system bundle. See the [icons documentation](holonight-icons/README.md).

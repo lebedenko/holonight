@@ -284,12 +284,23 @@ refresh_system() {
   if [[ "$TARGET_ROOT" = "/" ]]; then
     as_root ldconfig
     as_root systemctl daemon-reload
-    command -v update-desktop-database >/dev/null && as_root update-desktop-database /usr/share/applications || true
-    command -v kbuildsycoca6 >/dev/null && as_root env XDG_MENU_PREFIX=arch- kbuildsycoca6 --noincremental || true
+    as_root update-desktop-database /usr/share/applications || die "desktop database refresh failed"
+    if command -v kbuildsycoca6 >/dev/null; then
+      as_root env XDG_MENU_PREFIX=arch- kbuildsycoca6 --noincremental || die "KDE desktop cache refresh failed"
+    fi
     as_root systemd-tmpfiles --create holonight-greeter.conf
   else
     systemd-tmpfiles --root="$TARGET_ROOT" --create holonight-greeter.conf ||
       note "Greeter tmpfiles could not be materialized in the alternate root; its definition is installed"
+  fi
+}
+
+extend_viewer_defaults() {
+  [[ "$TARGET_ROOT" = / && "$CHECK_ONLY" = 0 ]] || return 0
+  if ((EUID == 0)); then
+    note "Skipping Viewer preference extension for direct root installation"
+  else
+    python3 "$SCRIPT_DIR/extend-viewer-defaults.py" /usr/share/applications/org.holonight.Viewer.desktop
   fi
 }
 
@@ -317,4 +328,5 @@ fi
 
 copy_stage
 refresh_system
+extend_viewer_defaults
 note "Installed HoloNight; ownership manifest: $TARGET_ROOT/$STATE_REL/manifest.tsv"

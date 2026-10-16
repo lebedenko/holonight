@@ -8,7 +8,7 @@ import unittest
 
 
 HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
-COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner".split()
+COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner update-desktop-database".split()
 PROFILE = HELPER.parent / 'install-profile.sh'
 PACKAGES = [line.strip() for line in PROFILE.read_text().splitlines()[2:-1]]
 

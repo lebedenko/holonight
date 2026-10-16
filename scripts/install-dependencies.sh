@@ -3,7 +3,7 @@
 
 check_install_dependencies() {
   local missing_commands=() command_name
-  for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent mktemp rm cat dirname python3 wayland-scanner; do
+  for command_name in git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent mktemp rm cat dirname python3 wayland-scanner update-desktop-database; do
     command -v "$command_name" >/dev/null 2>&1 || missing_commands+=("$command_name")
   done
 
