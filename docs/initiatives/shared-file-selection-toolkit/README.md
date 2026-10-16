@@ -1,6 +1,7 @@
 # Shared File Selection Toolkit
 
-Status: implemented, published and pinned; manual native acceptance pending.
+Status: implemented, published and pinned; Files accepted natively; Portal and Viewer
+walkthroughs pending. The recursive traversal performance repair is published and pinned.
 The previous External Dependency Management deferral is replaced by the current
 installed CMake package workflow.
 
