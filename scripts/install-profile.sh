@@ -41,6 +41,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   tomlplusplus
   ttf-dejavu
   udisks2
+  uwsm
   wayland
   wayland-protocols
 )

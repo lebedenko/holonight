@@ -68,6 +68,11 @@ exit "$status"
         self.assertTrue(all(line.startswith(("pacman -T ", "cmake -S ")) for line in commands), commands)
         return result
 
+    def test_managed_profile_requires_uwsm(self):
+        result = self.check(MISSING_PACKAGE="uwsm")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sudo pacman -S --needed uwsm", result.stderr)
+
     def test_merged_packaging_without_standalone_package(self):
         result = self.check(PACKAGING="merged")
         self.assertEqual(result.returncode, 0, result.stderr)

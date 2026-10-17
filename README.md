@@ -152,3 +152,7 @@ task test:installer   # disposable-root packaging, upgrades, ownership and remov
 Rendering tasks explicitly use the sibling umbrella-pinned `holonight-qt` renderer, overriding an
 external `HOLONIGHT_QT_SOURCE`. They need CMake, C++17 and Qt Core/Gui/Svg development packages;
 full verification also requires REUSE. Builds and tests require no live installation or UI automation.
+
+Managed HoloNight login entries require UWSM and the selected compositor. See the
+[session coordination note](docs/initiatives/managed-wayland-sessions.md) for portal
+package recommendations, migration and isolated login acceptance.
