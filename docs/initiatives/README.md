@@ -14,6 +14,8 @@ tests, and commits.
 
 - [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) — Implemented, published and pinned; requested native toolkit walkthroughs accepted.
 
+- [Shared File UI Controls](shared-file-ui-controls/README.md) — Implemented, published and pinned; native functional acceptance passed, with visual fine-tuning deferred to the participating repositories.
+
 ## Deferred backlog
 
 | Initiative | Status | Priority | Scheduling |

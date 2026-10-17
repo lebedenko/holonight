@@ -3,16 +3,17 @@
 Status: Implementation and installed-package ecosystem acceptance complete.
 User-operated native functional acceptance passed; visual fine-tuning is deferred.
 Each repository owns its local SDD and focused verification.
-No publication, system deployment or umbrella pin changes are authorized or claimed.
+Publication and umbrella pin updates were authorized on 2026-10-17.
+System deployment remains outside this work.
 
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
-| UI-001 | `holonight-qt` | Five `Holonight.Controls` types from the contract, existing selection foundations/tokens, controls-gallery examples, usage documentation and installed public-type coverage | — | [Design](../../../holonight-qt/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | fac3411 (feature e4c528e) | See evidence below |
-| UI-002 | `holonight-file-browser` | Shared detailed-list header/rows with gutter/editing extension points, path-to-breadcrumb adapter and reusable file-preview composition as needed; preserve installed and Core-only boundaries | UI-001 | [Design](../../../holonight-file-browser/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | c816696 | See evidence below |
-| UI-003 | `holonight-files` | Adopt breadcrumbs, detailed list, preview framing, metadata and labeled hints; preserve Vim modes, line numbers, editing, history, preview transitions and Quick Look | UI-001, UI-002 | [Design](../../../holonight-files/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | 585cc51 | See evidence below |
-| UI-004 | `holonight-viewer` | Adopt thumbnails, image-information preview frame, compatible metadata and labeled hints; preserve no-upscaling, caches, rendering, playback and footer hint priorities | UI-001 | [Design](../../../holonight-viewer/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | ed83955 | See evidence below |
-| UI-005 | `xdg-desktop-portal-holonight` | Editable breadcrumb location, detailed columns and newly included selected-entry preview/metadata; existing search/header/action-bar/sidebar/feedback adoption; preserve selection, native paths, filters, choices, cancellation and save validation | UI-001, UI-002 | [Design](../../../xdg-desktop-portal-holonight/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | 84669a3 | See evidence below |
-| UI-006 | `holonight-settings` | Wallpaper thumbnail/preview adoption plus existing navigation/settings-row/form/action/empty/loading controls; preserve favorites, folders, pending selection, display assignment and configuration conflicts | UI-001 | [Design](../../../holonight-settings/docs/sdd/shared-file-ui-controls/README.md) | Locally verified | 826af8f | See evidence below |
+| UI-001 | `holonight-qt` | Five `Holonight.Controls` types from the contract, existing selection foundations/tokens, controls-gallery examples, usage documentation and installed public-type coverage | — | [Design](../../../holonight-qt/docs/sdd/shared-file-ui-controls/README.md) | Published | fac3411 | See evidence below |
+| UI-002 | `holonight-file-browser` | Shared detailed-list header/rows with gutter/editing extension points, path-to-breadcrumb adapter and reusable file-preview composition as needed; preserve installed and Core-only boundaries | UI-001 | [Design](../../../holonight-file-browser/docs/sdd/shared-file-ui-controls/README.md) | Published | 6009e59 | See evidence below |
+| UI-003 | `holonight-files` | Adopt breadcrumbs, detailed list, preview framing, metadata and labeled hints; preserve Vim modes, line numbers, editing, history, preview transitions and Quick Look | UI-001, UI-002 | [Design](../../../holonight-files/docs/sdd/shared-file-ui-controls/README.md) | Published | d414c9a | See evidence below |
+| UI-004 | `holonight-viewer` | Adopt thumbnails, image-information preview frame, compatible metadata and labeled hints; preserve no-upscaling, caches, rendering, playback and footer hint priorities | UI-001 | [Design](../../../holonight-viewer/docs/sdd/shared-file-ui-controls/README.md) | Published | d37c7d8 | See evidence below |
+| UI-005 | `xdg-desktop-portal-holonight` | Editable breadcrumb location, detailed columns and newly included selected-entry preview/metadata; existing search/header/action-bar/sidebar/feedback adoption; preserve selection, native paths, filters, choices, cancellation and save validation | UI-001, UI-002 | [Design](../../../xdg-desktop-portal-holonight/docs/sdd/shared-file-ui-controls/README.md) | Published | 42cc522 | See evidence below |
+| UI-006 | `holonight-settings` | Wallpaper thumbnail/preview adoption plus existing navigation/settings-row/form/action/empty/loading controls; preserve favorites, folders, pending selection, display assignment and configuration conflicts | UI-001 | [Design](../../../holonight-settings/docs/sdd/shared-file-ui-controls/README.md) | Published | 2790fe9 | See evidence below |
 | UI-007 | Umbrella | Verify compatible installed providers and consumers, application regressions, ecosystem interaction and installer protections; coordinate separately authorized publication and pin updates | UI-001, UI-002, UI-003, UI-004, UI-005, UI-006 | This initiative | Verified with recorded native host exception | This ledger | See evidence below |
 
 ## Work package acceptance
@@ -23,7 +24,7 @@ No publication, system deployment or umbrella pin changes are authorized or clai
 - [x] UI-004: Local SDD delivered; Viewer adoption and preserved application behavior verified.
 - [x] UI-005: Local SDD delivered; Portal adoption, preview failures/stale results and preserved protocol/selection/validation behavior verified.
 - [x] UI-006: Local SDD delivered; Settings adoption and preserved wallpaper/configuration behavior verified.
-- [x] UI-007: Authorized implementation and ecosystem acceptance complete; integration evidence and the unrelated native host exception recorded. Publication and pins remain separately authorized.
+- [x] UI-007: Authorized implementation and ecosystem acceptance complete; integration evidence and the unrelated native host exception recorded. Publication and pins are recorded below.
 
 Dependencies describe interface and acceptance order. Local development may overlap
 through staged installed packages under [CONTRIBUTING.md](../../../CONTRIBUTING.md).
@@ -35,7 +36,7 @@ it does not imply publication or ecosystem integration. Record commands, results
 dates and compatible revisions when work is performed. Native acceptance requires
 host-built binaries and user-operated interaction. Publication and pin updates
 require separate authorization, with providers published before dependent consumers.
-No publication, deployment or umbrella pin update is claimed by this ledger.
+Publication and compatible umbrella pins are recorded below; no system deployment is claimed.
 
 ## Executed automated evidence — 2026-10-17
 
@@ -95,7 +96,7 @@ acceptance only. The requested acceptance checklist covered:
 The user reported that functional behavior works well and explicitly requested that
 visual refinements be handled separately in the corresponding repositories. Native
 functional acceptance is recorded as passed; visual fine-tuning is deferred by that
-request. Publication, system deployment and pin updates remain separately authorized.
+request. Publication and pin updates were subsequently authorized; system deployment remains separate.
 
 The first native ecosystem run passed 1,159 Shell checks but exposed that Shell’s
 host isolation also hid the explicit `/tmp` provider prefix. Shell commit `0872b97`
@@ -107,8 +108,8 @@ final native reruns and the host-only exception are recorded below.
 
 The existing checkout modes are retained: Qt, Settings and Shell use detached
 checkouts; File Browser, Files, Viewer and Portal remain on `main`. Implementation
-working trees are clean after the local commits. Umbrella gitlinks are deliberately
-not staged; updating the pinned revisions requires separate authorization.
+working trees are clean after the local commits. The subsequently authorized
+umbrella gitlink updates use the published revisions below.
 
 ## Final ecosystem acceptance — 2026-10-17
 
@@ -144,3 +145,29 @@ Logs and the full compatible revision map are preserved in the ignored
 `shared-ui-umbrella-integration.log`, native sequence/rerun logs and `revisions.json`.
 The compatible participant revisions are the local commits in the table above;
 Shell's supporting isolation correction is `0872b97`.
+
+## Publication and pins — 2026-10-17
+
+The user authorized publication and pin updates. All participant commits were pushed
+by fast-forward to `origin/main`, publishing Qt first, then File Browser and Shell,
+then Files, Viewer, Settings and Portal. Standalone acceptance manifests now pin the
+published shared providers. These follow-up commits change provider revisions only;
+the implementation accepted above remains unchanged. The initiative index and
+umbrella gitlinks are updated together. Visual fine-tuning remains deferred and no
+system deployment was performed.
+
+| Repository | Published and pinned revision |
+|---|---|
+| `holonight-qt` | `fac34119cc2e2356a3437b5f709bb052ac04f9a8` |
+| `holonight-file-browser` | `6009e59cdf8d685ee818d92564ce64ea0f838896` |
+| `holonight-files` | `d414c9a98b2e3635b27945934c26c685931ae5cf` |
+| `holonight-viewer` | `d37c7d89988a14424d674c5c9f0d1a6777b1a48a` |
+| `xdg-desktop-portal-holonight` | `42cc52252acb7af82e1cba6c6fc763f42573f8de` |
+| `holonight-settings` | `2790fe9f694f272f033f2ed21dc4edabedcdee94` |
+| `holonight-shell` | `21c73bca14b0df11bdf896f781ab8f9c8d232ee9` |
+
+Publication verification: all seven remote `main` tips match the table, and every
+participating standalone manifest points to the corresponding published provider.
+The four umbrella acceptance snapshot tests passed; `git diff --check` passed.
+Full component/ecosystem acceptance above remains applicable to the unchanged source;
+publication follow-ups modify only provider manifests and coordination metadata.

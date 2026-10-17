@@ -1,6 +1,6 @@
 # Shared File UI Controls
 
-Status: Implementation and ecosystem acceptance complete; visual fine-tuning deferred
+Status: Implemented, published and pinned; visual fine-tuning deferred
 
 ## Goal
 
@@ -104,7 +104,8 @@ consumer development may proceed together using staged installed packages and
 `CMAKE_PREFIX_PATH`, without source-tree provider includes. This workflow takes
 precedence over older initiatives’ publish-before-development wording. Publication
 places providers before dependent consumer commits; publication and umbrella pin
-updates require separate authorization. None is authorized or claimed here.
+updates require separate authorization. The user subsequently authorized both;
+publication and pins are recorded in the ledger. System deployment remains separate.
 
 ## Acceptance criteria
 
@@ -121,7 +122,7 @@ publication and pin updates remain separate; unchecked criteria are not completi
 - [x] Component checks and clean umbrella container integration passed in dependency order against staged installed packages. Native verification and one unrelated host-only policy exception are recorded in the ledger.
 - [x] Installer staging, ownership, collision rejection and conservative uninstall protections remain intact.
 - [x] User-operated native functional checks passed using host-built binaries against host dependencies. The user explicitly deferred visual fine-tuning to separate repository work; container binaries serve acceptance only.
-- [ ] After separate authorization, providers precede dependent consumer publication and coherent umbrella pins identify compatible verified revisions.
+- [x] Following explicit authorization, providers preceded dependent consumer publication and coherent umbrella pins identify the compatible verified revisions recorded in the ledger.
 
 Executed builds, installed-package checks and outstanding acceptance are recorded
 in the [coordination ledger](TASKS.md).
