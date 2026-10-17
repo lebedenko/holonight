@@ -57,27 +57,35 @@ class NativeIsolation(unittest.TestCase):
             prefix.mkdir()
             sentinel = prefix / 'installed-file'
             sentinel.write_text('preserved')
+            external_prefix = Path(tmp) / 'external providers'
+            external_prefix.mkdir()
+            external_sentinel = external_prefix / 'installed-file'
+            external_sentinel.write_text('preserved')
             probe = build / 'probe.py'
             probe.write_text('import errno\nfrom pathlib import Path\n'
                              f'Path({str(build / "test-result")!r}).write_text("passed")\n'
-                             'try:\n'
-                             f'    Path({str(sentinel)!r}).write_text("changed")\n'
-                             'except OSError as error:\n'
-                             '    assert error.errno == errno.EROFS, error\n'
-                             'else:\n'
-                             '    raise AssertionError("sibling prefix was writable")\n')
+                             f'for filename in {[str(sentinel), str(external_sentinel)]!r}:\n'
+                             '    assert Path(filename).read_text() == "preserved"\n'
+                             '    try:\n'
+                             '        Path(filename).write_text("changed")\n'
+                             '    except OSError as error:\n'
+                             '        assert error.errno == errno.EROFS, error\n'
+                             '    else:\n'
+                             '        raise AssertionError("installed prefix was writable")\n')
             # CTest discovery, like GoogleTest PRE_TEST discovery, writes before running tests.
             (build / 'CTestTestfile.cmake').write_text(
                 f'file(WRITE "{build}/discovery.json" "{{}}")\n'
                 f'add_test(write-results "/usr/bin/python3" "{probe}")\n')
             result = subprocess.run(['python3', str(runner), '--hide-host', '--build-dir', str(build),
                                      'ctest', '--test-dir', str(build), '--output-on-failure',
-                                     '--no-tests=error'], text=True, capture_output=True)
+                                     '--no-tests=error'], text=True, capture_output=True,
+                                    env=dict(os.environ, CMAKE_PREFIX_PATH=str(external_prefix)))
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual((build / 'discovery.json').read_text(), '{}')
             self.assertEqual((build / 'test-result').read_text(), 'passed')
             self.assertTrue((build / 'Testing/Temporary/LastTest.log').is_file())
             self.assertEqual(sentinel.read_text(), 'preserved')
+            self.assertEqual(external_sentinel.read_text(), 'preserved')
 
 
 if __name__ == '__main__':
