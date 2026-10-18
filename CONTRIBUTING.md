@@ -1,10 +1,15 @@
 # Contributing
 
+Keep verification proportional to the change. Start with focused regressions and checks for directly affected paths. Broaden verification only to address a concrete remaining risk, and reuse valid results when the tested inputs have not changed. Documentation-only changes need review and whitespace checks, without builds or automated suites.
+
 Use `task build` and `task test` for incremental native CMake/CTest work. Native builds
 consume installed packages; use `CMAKE_PREFIX_PATH` for an explicit development prefix.
 Use `task format` for the pinned formatter and `task check` for container acceptance.
-Run `task check:integration` for installation/runtime changes. Container builds use
-fresh build/prefix directories, separate from `build/dev` and `build/release`.
+Full component and ecosystem acceptance are CI/release gates. Run them locally when
+affected packaging, dependency contracts, shared interfaces, or evidence of wider
+failures justify the scope; use `task check:integration` for relevant installation/runtime
+acceptance. Container builds use fresh build/prefix directories, separate from
+`build/dev` and `build/release`.
 clangd reads `build/dev/compile_commands.json` directly.
 
 Umbrella builds, container builds and clang-tidy use all available CPUs by default.
@@ -13,7 +18,7 @@ acceptance detects CPUs inside Docker and logs the selected count. Native compon
 builds use Ninja defaults; limit them with `CMAKE_BUILD_PARALLEL_LEVEL=4 task build`.
 Native ecosystem tests use private D-Bus sessions without host service activation.
 
-Routine changes need tests and a commit explanation; update user documentation when
+Routine changes need verification appropriate to the change and a commit explanation; update user documentation when
 behavior changes. Substantial designs need one local SDD describing intent, decisions,
 interfaces and acceptance. Cross-project changes need one umbrella note linking local
 designs and stating contracts, dependency order and integration checks. Historical SDDs
