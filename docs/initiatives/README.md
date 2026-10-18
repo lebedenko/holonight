@@ -20,6 +20,7 @@ tests, and commits.
 
 | Initiative | Status | Priority | Scheduling |
 |---|---|---|---|
+| [Reproducible VM Acceptance](reproducible-vm-acceptance/README.md) | Draft | Unscheduled | Implementation deferred to a later session |
 | [GTK Visual Fidelity](gtk-visual-fidelity/README.md) | Draft | Low | Deferred until explicitly prioritized |
 
 - [Files refactoring and onboarding](files-holonight-alignment/README.md) — Accepted; Files published and pinned; final integration review pending.
