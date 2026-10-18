@@ -42,6 +42,8 @@ tests, and commits.
 
 - [Decoration-independent Viewer](decoration-independent-viewer/README.md) — Accepted; replaces the abandoned decoration-aware Viewer and external window title presentation initiatives. Local verification and native integration are recorded in its ledger.
 
+- [Unified HoloNight portal backend](unified-portal-backend/README.md) — Draft; coordinated FileChooser and Settings migration to one standalone backend identity; work packages Planned.
+
 - [FileChooser portal](filechooser-portal/README.md) — Accepted; Files provider published and pinned. Standalone backend has a locally verified implementation checkpoint; reported native chooser issues await individual fixes. Backend publication, Shell routing and ecosystem acceptance remain pending.
 
 - [Installation completeness](installation-completeness/README.md) — Accepted; launchers published and menu visibility confirmed; Hyprlock installer coverage locally verified; final ecosystem integration pending.

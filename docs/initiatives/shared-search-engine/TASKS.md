@@ -1,5 +1,20 @@
 # Shared HoloNight search engine — Coordination Ledger
 
+## Native feedback — 2026-10-16
+
+The user explicitly deferred finder ranking quality to this initiative. In the
+Shared File Selection Toolkit walkthrough, a Home query for `finder-match` showed
+unrelated long source paths ahead of the expected fixture filenames. Reproduce
+with a completed index and add representative relevance cases before changing
+ranking; do not infer final ranking from partial scan results.
+
+Background Home warmup remains implemented and its focused lifecycle tests pass.
+The toolkit triage separately confirmed slower extracted traversal; that regression
+belongs to toolkit closure rather than being deferred here. See the
+[measurements and scope decision](../shared-file-selection-toolkit/TASKS.md#finder-triage-after-native-feedback).
+Broader end-to-end indexing performance work remains appropriate here after the
+extraction regression is resolved.
+
 | ID | Repository | Deliverable | Depends on | Local SDD | State | Commit | Verification |
 |---|---|---|---|---|---|---|---|
 | S-001 | `holonight-search` | Installed search engine and performance evidence | — | [SDD](../../../holonight-search/docs/sdd/shared-search-engine/README.md) | Done | `d12e441` | 2026-09-30: Release CTest (6 tests), installed consumer, REUSE, two-million-path benchmark passed; canonical `main` verified at this revision. Latest CI query returned no runs. |
