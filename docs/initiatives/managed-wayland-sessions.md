@@ -15,5 +15,9 @@ Run shell session/installation tests, umbrella installer tests, and both reposit
 VM or dedicated test user. Container binaries are acceptance-only.
 
 `auto` now requires UWSM. Apply on next login; do not migrate personal configuration,
-restart the active desktop, or globally enable services during login. Native
-compositor configuration remains available through explicit `direct` mode.
+restart the active desktop, or globally enable services during login. Managed
+Hyprland automatically loads `$XDG_CONFIG_HOME/hypr/hyprland.lua` (defaulting to
+`~/.config`), then the optional HoloNight override and readiness callback. Shipped
+monitor/keybinding defaults apply only when that native entrypoint is absent.
+Sway and labwc retain their managed defaults; explicit `direct` mode uses native
+configuration for all compositors.
