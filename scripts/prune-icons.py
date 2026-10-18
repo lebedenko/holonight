@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove unchanged obsolete icons; print retained ownership rows on stdout."""
+"""Remove unchanged obsolete icons and retired portal activation files; print retained ownership rows on stdout."""
 import argparse
 import hashlib
 from pathlib import Path, PurePosixPath
@@ -8,6 +8,11 @@ import sys
 
 PAYLOADS = ('/usr/share/icons/HoloNight', '/usr/share/icons/HoloNight-Dark',
             '/usr/share/holonight-icons')
+
+PORTAL_LEGACY = {
+    '/usr/share/xdg-desktop-portal/portals/holonight-filechooser.portal',
+    '/usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.holonight_filechooser.service',
+}
 
 
 def read_manifest(path):
@@ -26,8 +31,10 @@ def read_manifest(path):
 def prune(root, old_manifest, new_manifest):
     current = {row[5] for row in read_manifest(new_manifest)}
     obsolete = [row for row in read_manifest(old_manifest)
-                if row[0] == 'holonight-icons' and row[5] not in current
-                and any(row[5] == base or row[5].startswith(base + '/') for base in PAYLOADS)]
+                if row[5] not in current and (
+                    (row[0] == 'holonight-icons'
+                     and any(row[5] == base or row[5].startswith(base + '/') for base in PAYLOADS))
+                    or (row[0] == 'xdg-desktop-portal-holonight' and row[5] in PORTAL_LEGACY))]
     retained = []
     for row in sorted(obsolete, key=lambda row: row[5], reverse=True):
         _, _, kind, _, expected, relative = row
@@ -54,7 +61,7 @@ def prune(root, old_manifest, new_manifest):
                 path.unlink()
                 continue
         retained.append(row)
-        print(f'preserved modified or nonempty obsolete icon path: {path}', file=sys.stderr)
+        print(f'preserved modified or nonempty obsolete payload path: {path}', file=sys.stderr)
     return retained
 
 

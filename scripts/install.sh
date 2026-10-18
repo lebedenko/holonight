@@ -141,6 +141,24 @@ make_manifest() {
   done < <(find "$stage" -mindepth 1 -print0 | sort -z)
 }
 
+validate_portal_payload() {
+  local descriptor=/usr/share/xdg-desktop-portal/portals/holonight.portal
+  local service=/usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.holonight.service
+  local executable=/usr/libexec/xdg-desktop-portal-holonight
+  local relative
+  for relative in "$descriptor" "$service" "$executable"; do
+    awk -F '\t' -v path="$relative" '$1 == "xdg-desktop-portal-holonight" && $3 == "f" && $6 == path { found=1 } END { exit !found }' \
+      "$BUILD_ROOT/manifest.tsv" || die "incompatible portal components: unified backend must own $relative"
+  done
+  grep -Fxq 'DBusName=org.freedesktop.impl.portal.desktop.holonight' "$BUILD_ROOT/stage$descriptor" || die "incorrect portal identity"
+  grep -Fxq 'Interfaces=org.freedesktop.impl.portal.FileChooser;org.freedesktop.impl.portal.Settings;' "$BUILD_ROOT/stage$descriptor" || die "incomplete unified portal interfaces"
+  grep -Fxq 'Name=org.freedesktop.impl.portal.desktop.holonight' "$BUILD_ROOT/stage$service" || die "incorrect portal activation identity"
+  for relative in /usr/share/xdg-desktop-portal/portals/holonight-filechooser.portal \
+      /usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.holonight_filechooser.service; do
+    [[ ! -e "$BUILD_ROOT/stage$relative" ]] || die "incompatible legacy portal payload: $relative"
+  done
+}
+
 record_module_paths() {
   local module="$1" before="$2" after="$3"
   mkdir -p "$BUILD_ROOT/module-paths"
@@ -179,7 +197,18 @@ collision_check() {
     fi
     [[ ! -e "$destination" && ! -L "$destination" ]] && continue
     if [[ -f "$old_manifest" ]] && awk -F '\t' -v path="$relative" '$6 == path { found=1 } END { exit !found }' "$old_manifest"; then
+      if [[ "$relative" = /usr/share/xdg-desktop-portal/portals/holonight.portal ]]; then
+        local previous_owner previous_type previous_hash
+        IFS=$'\t' read -r previous_owner previous_type previous_hash < <(
+          awk -F '\t' -v path="$relative" '$6 == path { print $1 "\t" $3 "\t" $5 }' "$old_manifest")
+        [[ "$previous_owner" = holonight-shell || "$previous_owner" = xdg-desktop-portal-holonight ]] || die "unexpected portal descriptor owner: $previous_owner"
+        [[ "$previous_type" = f && -f "$destination" && ! -L "$destination" && "$(hash_path "$destination")" = "$previous_hash" ]] ||
+          die "modified portal descriptor collision: $destination; preserve or resolve it manually before upgrading"
+      fi
       continue
+    fi
+    if [[ "$relative" = /usr/share/xdg-desktop-portal/portals/holonight.portal ]]; then
+      die "unmanaged portal descriptor collision: $destination; resolve it manually before upgrading"
     fi
     # Older umbrella releases generated untracked caches. Preserve those files
     # rather than adopting them as owned. Theme changes invalidate their timestamps.
@@ -262,8 +291,8 @@ copy_stage() {
         if [[ "$TARGET_ROOT" = "/" && EUID -ne 0 ]]; then sudo ln -sfn -- "$target" "$destination"; else ln -sfn -- "$target" "$destination"; fi ;;
     esac
   done < "$manifest"
-  # Retain original hashes for modified obsolete icons so a later uninstall
-  # preserves them too. The helper only removes proven unchanged icons payloads.
+  # Retain original hashes for modified obsolete icons and retired portal files
+  # so future upgrades and uninstall preserve them too. Cleanup is allowlisted.
   local old_manifest="$TARGET_ROOT/$STATE_REL/manifest.tsv"
   if [[ -f "$old_manifest" ]]; then
     as_root python3 "$SCRIPT_DIR/prune-icons.py" --root "$TARGET_ROOT" \
@@ -318,6 +347,7 @@ for module in "${MODULES[@]}"; do
   record_module_paths "$module" "$before" "$after"
 done
 make_manifest
+validate_portal_payload
 collision_check
 
 if ((ASSUME_YES == 0)); then

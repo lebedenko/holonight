@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check staged FileChooser activation and cancellation through an isolated real broker."""
+"""Check staged unified Settings and FileChooser activation and cancellation through an isolated real broker."""
 
 import argparse
 import os
@@ -13,7 +13,7 @@ import time
 from xml.sax.saxutils import escape
 
 
-BACKEND = "org.freedesktop.impl.portal.desktop.holonight_filechooser"
+BACKEND = "org.freedesktop.impl.portal.desktop.holonight"
 DESKTOP = "org.freedesktop.portal.Desktop"
 PATH = "/org/freedesktop/portal/desktop"
 
@@ -50,6 +50,52 @@ def session(root):
             wait_for(lambda: call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
                                   "NameHasOwner", GLib.Variant("(s)", (DESKTOP,))).unpack()[0],
                      "Real broker did not acquire its bus name")
+            settings_interface = "org.freedesktop.portal.Settings"
+            appearance_ns = "org.freedesktop.appearance"
+
+            def read_scheme():
+                return call(DESKTOP, PATH, settings_interface, "Read",
+                            GLib.Variant("(ss)", (appearance_ns, "color-scheme"))).unpack()[0]
+
+            def replace_appearance(contents):
+                path = Path(os.environ["HOLONIGHT_APPEARANCE_FILE"])
+                temporary = path.with_suffix(".new")
+                temporary.write_text(contents)
+                temporary.replace(path)
+
+            changes = []
+            subscription = bus.signal_subscribe(DESKTOP, settings_interface, "SettingChanged", PATH, None,
+                                                Gio.DBusSignalFlags.NONE,
+                                                lambda *args: changes.append(args[5].unpack()))
+
+            def drain_for(seconds):
+                deadline = time.monotonic() + seconds
+                while time.monotonic() < deadline:
+                    while GLib.MainContext.default().iteration(False):
+                        pass
+                    time.sleep(0.01)
+
+            assert read_scheme() == 1, "Settings startup default did not reach broker"
+            pid = call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+                       "GetConnectionUnixProcessID", GLib.Variant("(s)", (BACKEND,))).unpack()[0]
+            assert Path(f"/proc/{pid}/exe").resolve() == Path(os.environ["PORTAL_CHECK_EXECUTABLE"])
+            dark = Path(os.environ["PORTAL_CHECK_APPEARANCE_FIXTURE"]).read_text()
+            light = dark.replace("holonight-dark", "holonight-day").replace("blue", "violet")
+            replace_appearance(light)
+            wait_for(lambda: read_scheme() == 2, "Settings watcher did not publish light mode")
+            drain_for(0.4)
+            assert any(change[1] == "color-scheme" for change in changes), "Broker omitted SettingChanged"
+            changes.clear()
+            replace_appearance(light.replace("ui_size = 14", "ui_size = 15"))
+            drain_for(0.4)
+            assert changes == [], "Unchanged projection emitted notifications"
+            replace_appearance("invalid = [")
+            drain_for(0.4)
+            assert read_scheme() == 2 and changes == [], "Invalid appearance replaced valid Settings"
+            replace_appearance(dark)
+            wait_for(lambda: read_scheme() == 1, "Settings watcher did not recover")
+            bus.signal_unsubscribe(subscription)
+            print("Settings: shell-independent activation, Read, watcher signals, retention and recovery PASS", flush=True)
             for index, (method, extra) in enumerate((
                     ("OpenFile", {}),
                     ("OpenFile", {"directory": GLib.Variant("b", True)}),
@@ -63,6 +109,8 @@ def session(root):
                 wait_for(lambda: backend_request_exists(handle), f"{method} did not reach the staged backend")
                 call(DESKTOP, handle, "org.freedesktop.portal.Request", "Close")
                 wait_for(lambda: not backend_request_exists(handle), f"{method} cancellation left a backend request")
+                assert call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+                            "GetConnectionUnixProcessID", GLib.Variant("(s)", (BACKEND,))).unpack()[0] == pid, "Interfaces used different processes"
                 print(f"{method} case {index}: staged backend activation, dispatch and cancellation PASS", flush=True)
         finally:
             try:
@@ -95,7 +143,7 @@ def main():
         stage = root / "stage"
         subprocess.run(["cmake", "--install", str(args.backend_build.resolve())],
                        env={**os.environ, "DESTDIR": str(stage)}, check=True, capture_output=True)
-        service = next(stage.rglob("org.freedesktop.impl.portal.desktop.holonight_filechooser.service"))
+        service = next(stage.rglob("org.freedesktop.impl.portal.desktop.holonight.service"))
         executable = stage / shlex.split(next(line[5:] for line in service.read_text().splitlines()
                                              if line.startswith("Exec=")))[0].lstrip("/")
         if not executable.is_file():
@@ -105,9 +153,11 @@ def main():
         env = {**os.environ, "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
                "QML_IMPORT_PATH": args.imports, "LD_LIBRARY_PATH": args.libraries, "XDG_CURRENT_DESKTOP": "HoloNight",
                "QT_QPA_PLATFORMTHEME": "", "PORTAL_CHECK_EXECUTABLE": str(executable),
+               "HOLONIGHT_APPEARANCE_FILE": str(root / "appearance.toml"),
+               "PORTAL_CHECK_APPEARANCE_FIXTURE": str(Path(__file__).resolve().parents[1] / "xdg-desktop-portal-holonight/tests/appearance.toml"),
                "GSETTINGS_SCHEMA_DIR": "/usr/share/glib-2.0/schemas",
                "DBUS_SYSTEM_BUS_ADDRESS": f"unix:path={root}/no-system-bus",
-               "XDG_DESKTOP_PORTAL_DIR": str(next(stage.rglob("holonight-filechooser.portal")).parent)}
+               "XDG_DESKTOP_PORTAL_DIR": str(next(stage.rglob("holonight.portal")).parent)}
         for name in ("HOME", "XDG_CONFIG_HOME", "XDG_CONFIG_DIRS", "XDG_DATA_HOME", "XDG_DATA_DIRS",
                      "XDG_CACHE_HOME", "XDG_RUNTIME_DIR", "XDG_STATE_HOME"):
             path = root / name

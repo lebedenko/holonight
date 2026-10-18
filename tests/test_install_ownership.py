@@ -243,11 +243,147 @@ class HyprlockOwnership(ViewerOwnership):
 class FileChooserOwnership(ViewerOwnership):
     module = "xdg-desktop-portal-holonight"
     executable = "xdg-desktop-portal-holonight"
-    app_id = "org.freedesktop.impl.portal.desktop.holonight_filechooser"
+    app_id = "org.freedesktop.impl.portal.desktop.holonight"
     binary_dir = "libexec"
     entry_dir = "share/dbus-1/services"
     entry_suffix = ".service"
-    auxiliary_path = "/usr/share/xdg-desktop-portal/portals/holonight-filechooser.portal"
+    auxiliary_path = "/usr/share/xdg-desktop-portal/portals/holonight.portal"
+
+
+class UnifiedPortalUpgrade(FileChooserOwnership):
+    descriptor = "/usr/share/xdg-desktop-portal/portals/holonight.portal"
+    legacy = (
+        "/usr/share/xdg-desktop-portal/portals/holonight-filechooser.portal",
+        "/usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.holonight_filechooser.service",
+    )
+
+    def upgrade_fixture(self):
+        self.make_manifest()
+        rows = []
+        for relative in (self.descriptor, *self.legacy):
+            data = b"previous payload"
+            path = self.target / relative.lstrip("/")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            owner = "holonight-shell" if relative == self.descriptor else self.module
+            rows.append([owner, FIXTURE_REVISION, "f", "644", hashlib.sha256(data).hexdigest(), relative])
+        state = self.target / "var/lib/holonight/source-install"
+        state.mkdir(parents=True)
+        (state / "manifest.tsv").write_text("".join("\t".join(row) + "\n" for row in rows))
+        return rows
+
+    def test_transfer_cleanup_and_repeat_upgrade(self):
+        self.upgrade_fixture()
+        for _ in range(2):
+            self.make_manifest()
+            result = self.run_functions("collision_check; copy_stage")
+            self.assertEqual(result.returncode, 0, result.stderr)
+        manifest = (self.target / "var/lib/holonight/source-install/manifest.tsv").read_text()
+        self.assertIn(self.module + "\t", manifest)
+        self.assertNotIn("holonight-shell\t", manifest)
+        for relative in self.legacy:
+            self.assertFalse((self.target / relative.lstrip("/")).exists())
+
+    def test_modified_descriptor_rejects_before_any_writes(self):
+        self.upgrade_fixture()
+        descriptor = self.target / self.descriptor.lstrip("/")
+        descriptor.write_bytes(b"modified")
+        result = self.run_functions("collision_check; copy_stage")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("modified portal descriptor collision", result.stderr)
+        self.assertEqual(descriptor.read_bytes(), b"modified")
+        self.assertFalse((self.target / "usr/libexec").exists())
+        self.assertTrue((self.target / self.legacy[0].lstrip("/")).exists())
+
+    def test_unmanaged_descriptor_cannot_be_adopted(self):
+        self.make_manifest()
+        descriptor = self.target / self.descriptor.lstrip("/")
+        descriptor.parent.mkdir(parents=True)
+        descriptor.write_bytes(b"unmanaged")
+        result = self.run_functions("ADOPT_EXISTING=1; collision_check; copy_stage")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unmanaged portal descriptor collision", result.stderr)
+        self.assertEqual(descriptor.read_bytes(), b"unmanaged")
+        self.assertFalse((self.target / "usr/libexec").exists())
+
+    def test_modified_obsolete_files_retain_original_hashes_and_survive_uninstall(self):
+        original = self.upgrade_fixture()
+        for relative in self.legacy:
+            (self.target / relative.lstrip("/")).write_bytes(b"modified legacy")
+        for _ in range(2):
+            self.make_manifest()
+            result = self.run_functions("collision_check; copy_stage")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("preserved modified", result.stderr)
+        manifest = (self.target / "var/lib/holonight/source-install/manifest.tsv").read_text()
+        for row in original[1:]:
+            self.assertIn("\t".join(row), manifest)
+        result = subprocess.run(["bash", str(ROOT / "scripts/uninstall.sh"), "--yes", "--root", str(self.target)],
+                                text=True, capture_output=True, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for relative in self.legacy:
+            self.assertEqual((self.target / relative.lstrip("/")).read_bytes(), b"modified legacy")
+
+    def test_unmanaged_obsolete_file_is_preserved(self):
+        self.upgrade_fixture()
+        state = self.target / "var/lib/holonight/source-install/manifest.tsv"
+        state.write_text("\n".join(line for line in state.read_text().splitlines() if self.legacy[0] not in line) + "\n")
+        result = self.run_functions("collision_check; copy_stage")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.target / self.legacy[0].lstrip("/")).read_bytes(), b"previous payload")
+
+    def test_symlinked_legacy_parent_is_never_followed(self):
+        original = self.upgrade_fixture()
+        service = self.target / self.legacy[1].lstrip("/")
+        external = self.root / "external-services"
+        service.parent.rename(external)
+        service.parent.symlink_to(external, target_is_directory=True)
+        result = self.run_functions("collision_check; copy_stage")
+        # New activation shares the parent, so full collision checking rejects before writes.
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("file or symlink", result.stderr)
+        # Exercise obsolete-only cleanup, as in a later upgrade without new files under that parent.
+        result = self.run_functions('python3 "$SCRIPT_DIR/prune-icons.py" --root "$TARGET_ROOT" --old-manifest "$TARGET_ROOT/var/lib/holonight/source-install/manifest.tsv" --new-manifest "$BUILD_ROOT/manifest.tsv"')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("symlinked parent", result.stderr)
+        self.assertIn("\t".join(original[2]), result.stdout)
+        self.assertEqual((external / service.name).read_bytes(), b"previous payload")
+
+    def test_incompatible_payloads_rejected(self):
+        self.make_manifest()
+        result = self.run_functions("validate_portal_payload")
+        self.assertNotEqual(result.returncode, 0)
+        # Fixture has intentionally invalid descriptor contents.
+        self.assertIn("incorrect portal identity", result.stderr)
+        manifest = self.build / "manifest.tsv"
+        manifest.write_text("\n".join(line for line in manifest.read_text().splitlines() if self.descriptor not in line) + "\n")
+        result = self.run_functions("validate_portal_payload")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unified backend must own", result.stderr)
+
+    def test_unified_payload_contract_and_retired_payload_rejection(self):
+        self.make_manifest()
+        (self.stage / self.descriptor.lstrip("/")).write_text(
+            "[portal]\nDBusName=org.freedesktop.impl.portal.desktop.holonight\n"
+            "Interfaces=org.freedesktop.impl.portal.FileChooser;org.freedesktop.impl.portal.Settings;\n")
+        service = self.stage / "usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.holonight.service"
+        service.write_text("[D-BUS Service]\nName=org.freedesktop.impl.portal.desktop.holonight\n"
+                           "Exec=/usr/libexec/xdg-desktop-portal-holonight\n")
+        self.make_manifest()
+        result = self.run_functions("validate_portal_payload")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        legacy = self.stage / self.legacy[0].lstrip("/")
+        legacy.write_bytes(b"retired descriptor")
+        result = self.run_functions("validate_portal_payload")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("incompatible legacy portal payload", result.stderr)
+
+    def test_duplicate_descriptor_owners_rejected(self):
+        for module in ("holonight-shell", self.module):
+            (self.build / "module-paths" / module).write_text(self.descriptor + "\n")
+        result = self.run_functions("make_manifest")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("multiple components install", result.stderr)
 
 
 if __name__ == "__main__":
