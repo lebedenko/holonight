@@ -36,6 +36,11 @@ For a component change, work in that repository. Cross-project changes use one u
 note defining shared contracts, dependency order and integration checks. Follow
 [CONTRIBUTING.md](CONTRIBUTING.md); historical SDDs remain reference material.
 
+The proposed [desktop session override convention](docs/conventions/desktop-session-overrides.md)
+defines application-local configuration layering. Its
+[Viewer header preferences draft](holonight-viewer/docs/sdd/session-header-preferences/README.md)
+is a proposed application; neither proposal is implemented by these documents.
+
 Use `task build` and `task test` in a component for native CMake/CTest iteration,
 `task format` for the pinned formatter, and `task check` before committing.
 `task check:integration` adds Release staging and runtime checks. Each repository stores
