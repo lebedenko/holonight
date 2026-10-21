@@ -5,6 +5,11 @@ The current digest is the existing full Arch environment, dated 2026/09/30, incl
 Clang 22, Qt 6.11, REUSE, testing tools and the separately packaged QMarkdown provider.
 Native builds can use newer installed tools; container acceptance defines the gate.
 
+The umbrella checks image pins for every component declared in `.gitmodules`.
+Unregistered local checkouts are outside this check and may use other build tools.
+In this Arch snapshot, `qt6-base` also supplies Qt Wayland client libraries, private
+development files and scanner tools; a separate `qt6-wayland` package is not needed.
+
 Build the next image from the umbrella root:
 
 ```sh

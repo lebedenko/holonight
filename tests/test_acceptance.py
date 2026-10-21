@@ -87,9 +87,16 @@ class Acceptance(unittest.TestCase):
     def test_standalone_repositories_use_the_same_immutable_image(self):
         expected = (ROOT / 'scripts/ci/image.txt').read_text().strip()
         self.assertRegex(expected, r'@sha256:[0-9a-f]{64}$')
-        for taskfile in ROOT.glob('*/Taskfile.yml'):
-            with self.subTest(repository=taskfile.parent.name):
-                self.assertEqual((taskfile.parent / 'scripts/ci/image.txt').read_text().strip(), expected)
+        # Only declared components belong to umbrella acceptance. Other local
+        # checkouts may have a Taskfile without adopting this CI environment.
+        declared = subprocess.check_output(
+            ['git', 'config', '--file', str(ROOT / '.gitmodules'),
+             '--get-regexp', r'^submodule\..*\.path$'], text=True)
+        repositories = [line.split(None, 1)[1] for line in declared.splitlines()]
+        self.assertTrue(repositories)
+        for repository in repositories:
+            with self.subTest(repository=repository):
+                self.assertEqual((ROOT / repository / 'scripts/ci/image.txt').read_text().strip(), expected)
 
 
 if __name__ == '__main__':
