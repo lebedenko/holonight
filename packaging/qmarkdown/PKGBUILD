@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=qmarkdown
-pkgver=1.1.0
+pkgver=1.18.0
 pkgrel=1
 pkgdesc='Shared Qt Quick Markdown renderer with installed CMake and QML metadata'
 arch=('x86_64')
@@ -8,9 +8,9 @@ url='https://github.com/lebedenko/qmarkdown'
 license=('MIT')
 # Use the upstream Release configuration; Arch's default LTO warns in the pinned cmark bundle.
 options=('!lto')
-depends=('qt6-base' 'qt6-declarative')
+depends=('qt6-base' 'qt6-declarative' 'syntax-highlighting')
 makedepends=('cmake' 'ninja' 'git')
-_commit=b71740c7e0f26b0709f5e929a79e8d01dba56071
+_commit=b22d5196fa5ee94ce6f36dada45bc61c9fa6106d
 source=("git+https://github.com/lebedenko/qmarkdown.git#commit=$_commit")
 sha256sums=('SKIP') # Git source identity is the full commit above.
 
@@ -18,7 +18,8 @@ build() {
   cmake -S qmarkdown -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF \
-    -DQMARKDOWN_BUILD_EXAMPLES=OFF -DQMARKDOWN_BUILD_BENCHMARKS=OFF
+    -DQMARKDOWN_BUILD_EXAMPLES=OFF -DQMARKDOWN_BUILD_BENCHMARKS=OFF \
+    -DQMARKDOWN_WITH_KSYNTAXHIGHLIGHTING=ON
   cmake --build build
 }
 

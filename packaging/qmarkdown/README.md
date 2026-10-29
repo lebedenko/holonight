@@ -1,21 +1,18 @@
 # QMarkdown system package
 
-The Arch recipe pins the accepted QMarkdown revision
-`595ca4fea32155766c2eafb3b670995d2ea75a2f` (1.0.0). Build it explicitly with `makepkg`, then install the resulting
-package with `pacman -U`. Source acquisition belongs to this package preparation operation. HoloNight CMake,
-Task configuration/build commands and the umbrella installer never acquire it.
+The Arch recipe pins QMarkdown 1.18.0 release commit
+`b22d5196fa5ee94ce6f36dada45bc61c9fa6106d` and enables
+`QMARKDOWN_WITH_KSYNTAXHIGHLIGHTING=ON`. The package owns its library, QML plugin,
+metadata, bundled parser notices, and CMake exports. Native consumers and the
+umbrella installer require the installed package and never acquire or deploy it.
 
-Build against the same installed Qt/toolchain used by Files. The package owns the shared `libQMarkdown.so.1`,
-QML plugin, public/private QML metadata, CMake exports and QMarkdown/cmark license notices. The umbrella installer
-requires the installed package and never adds those paths to its ownership manifest.
+Build explicitly with `makepkg` and install with `pacman -U`, using the same Qt
+and toolchain as consumers. The recipe disables optional Arch LTO to use upstream
+Release compilation. QMarkdown's syntax-highlighting backend is a package dependency.
 
-For development, set `HOLONIGHT_EXTERNAL_PREFIX` to an explicit installed prefix. `QMARKDOWN_SOURCE` remains an
-explicit local preparation override in the Files adoption work package. Neither override deploys unmanaged runtime
-libraries through the umbrella system installer.
+A separate installed prefix can be selected using `CMAKE_PREFIX_PATH`. Installed
+launches using a custom prefix need its QML root in `QML_IMPORT_PATH` and its shared
+libraries on the platform library search path.
 
-The recipe is source-pinned; package build and Files startup qualification must be recorded before deployment.
-
-The recipe disables Arch's optional LTO to match the upstream Release build configuration. GCC 16 LTO emitted a
-string-buffer warning in the pinned cmark bundle during package qualification. Standard Release compilation and
-installed QML rendering are checked separately; no warning-suppression flags are added. Upstream install rules
-include both the QMarkdown license and the cmark license/provenance notices.
+See [chat migration contract](../../docs/initiatives/qmarkdown-chat-migration.md)
+for shared-image publication order and integration requirements.
