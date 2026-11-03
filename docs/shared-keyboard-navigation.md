@@ -4,7 +4,7 @@ The configuration contract lives in [holonight-config](../holonight-config/docs/
 The interaction provider design lives in [holonight-qt](../holonight-qt/docs/navigation.md).
 Files, the standalone portal chooser and Bluetooth retain application action policy.
 Neither the input reader nor navigation requires Shell. Launcher, network and audio
-adoption, modal text editing, Settings UI and remapping are outside this milestone.
+adoption, modal text editing and remapping are outside this milestone.
 
 Build/install Config into an isolated native prefix, then Qt, then the browsing provider
 and consumers against installed packages. Do not embed provider source in consumers.
@@ -21,3 +21,15 @@ Consumer designs: [Files](../holonight-files/docs/sdd/shared-navigation.md),
 [browsing provider](../holonight-file-browser/docs/sdd/shared-navigation.md),
 [chooser](../xdg-desktop-portal-holonight/docs/sdd/shared-navigation.md), and
 [Bluetooth](../holonight-shell/docs/sdd/shared-navigation.md).
+
+## Shared Settings preference
+
+Config owns `[input].navigation` in `holonight/config.toml`; Shell owns its existing
+sections. Settings composes the two schemas into one document edit session, so a
+single save patches both kinds of edits with the same revision/conflict handling.
+Appearance remains separate. Qt consumers use the Config decoder independently of
+Shell and retain their semantic navigation API. See the [input contract](../holonight-config/docs/input.md)
+and [Settings design](../holonight-settings/docs/sdd/shared-navigation.md).
+
+The prior input.toml contract is replaced before release; manual migration is
+documented and no legacy file is removed. Provider order remains Config, Qt, consumers.
