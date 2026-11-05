@@ -10,8 +10,17 @@ and linear Display-P3 PNGs in RGB/RGBA at 8/16 bits. Malformed-profile assumed-s
 fallback is now accepted with explicit diagnostic uncertainty; it is no longer a
 blocker. No incorrect valid-profile conversion was observed in these fixtures.
 Other profile families, containers, CICP and HDR remain unproven. Glycin worker-error
-propagation remains a source-level concern; a local report draft was not submitted. Full orientation, animation, acquisition,
-deployment and cache/session measurement gates remain failed or unproven; see the
+propagation remains a source-level concern; a local report draft was not submitted.
+The focused orientation/GIF reassessment passes 165 checks: all EXIF orientations
+in both TIFF byte orders under Apply/Ignore, stored/display geometry, native pixels,
+shrinking/no-upscale bounds, session/restart policy, known GIF frames/delays/end and
+supplemental intrinsic loop declarations. Glycin requires the additional private
+bounded C++ GIF block parser inside the outer sandbox; this is not a native Glycin
+fact. Qt's separate native loop count fails to recognize ANIMEXTS1.0 declarations;
+the supplemental scanner passes both recognized identifiers. Truncation, conflicts
+and traversal budgets produce explicit unavailable facts independently of decoding.
+Disposal, playback scheduling, long-run retention, active-decoder cancellation,
+acquisition, deployment and cache/session measurement remain unproven; see the
 dated classification and native Release results in the local design. The older C API
 results remain historical evidence, not proof of Rust API limitations.
 No provider/consumer API, dependency declaration, installer rule or submodule pin changes
@@ -27,6 +36,7 @@ it is source evidence, not runtime isolation acceptance.
 | --- | --- | --- |
 | images | `src/image.cpp`: caller devices, Qt inspection/read and libwebp fallback | 2–3 |
 | images | `src/metadata.cpp`: JPEG/PNG/WebP/TIFF scans and libexif facts | 4 |
+| images (experiment only) | `experiments/comparison/gif-facts.h`: bounded supplemental intrinsic GIF loop scan inside the isolated helper; no decompression | 5, fixture evidence only |
 | images | `src/svg.cpp`: XML validation, embedded raster `QImageReader`, QtSvg inspection/rendering | 6 |
 | thumbnails | `src/cache.cpp`: replaceable freedesktop PNG pixels/text via `loadFromData`; PNG writes | 4 |
 | file-browser | `src/preview/preview_service.cpp`, `thumbnail_service.cpp`, `thumbnail_decoder.cpp`: opened regular-file previews, generations and memory/disk caching | 2–4 |
