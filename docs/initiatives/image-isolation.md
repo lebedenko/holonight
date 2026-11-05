@@ -1,0 +1,73 @@
+# Image isolation feasibility
+
+The first milestone has a standalone [Glycin experiment](../../holonight-images/experiments/glycin/README.md)
+and a local [compatibility decision](../../holonight-images/docs/sdd/glycin-feasibility/DESIGN.md).
+The [2026-11-06 Rust/Qt comparison](../../holonight-images/experiments/comparison/README.md)
+now demonstrates raw Rust EXIF extraction and captured linked-SVG resources with both
+candidates. **Neither qualifies for migration.** The focused color reassessment passes all
+96 comparisons against an analytical reference, including valid sRGB, linear sRGB
+and linear Display-P3 PNGs in RGB/RGBA at 8/16 bits. Malformed-profile assumed-sRGB
+fallback is now accepted with explicit diagnostic uncertainty; it is no longer a
+blocker. No incorrect valid-profile conversion was observed in these fixtures.
+Other profile families, containers, CICP and HDR remain unproven. Glycin worker-error
+propagation remains a source-level concern; a local report draft was not submitted. Full orientation, animation, acquisition,
+deployment and cache/session measurement gates remain failed or unproven; see the
+dated classification and native Release results in the local design. The older C API
+results remain historical evidence, not proof of Rust API limitations.
+No provider/consumer API, dependency declaration, installer rule or submodule pin changes
+are included. All paths below still use the previous backend.
+
+## Entry-point inventory and ownership
+
+The numbered milestones follow the recommended eight-stage order. Paths are relative
+to the named repository. This inventory groups entry points by parser and provenance;
+it is source evidence, not runtime isolation acceptance.
+
+| Owner | Encoded input and entry points | Milestone |
+| --- | --- | --- |
+| images | `src/image.cpp`: caller devices, Qt inspection/read and libwebp fallback | 2–3 |
+| images | `src/metadata.cpp`: JPEG/PNG/WebP/TIFF scans and libexif facts | 4 |
+| images | `src/svg.cpp`: XML validation, embedded raster `QImageReader`, QtSvg inspection/rendering | 6 |
+| thumbnails | `src/cache.cpp`: replaceable freedesktop PNG pixels/text via `loadFromData`; PNG writes | 4 |
+| file-browser | `src/preview/preview_service.cpp`, `thumbnail_service.cpp`, `thumbnail_decoder.cpp`: opened regular-file previews, generations and memory/disk caching | 2–4 |
+| file-browser | `src/preview/svg_helper.cpp`: checked SVG bytes followed by local-path Qt renderer | 6 |
+| Viewer | `apps/viewer/images/image_decoder.cpp`, `image_loader.cpp`, `decoded_image_cache.cpp`: provider first frame, workers, prefetch and raw decoded image cache | 3–4 |
+| Viewer | `apps/viewer/images/frame_source.cpp`, `frame_streamer.cpp`, `animation_controller.cpp`: separate QFile/Qt GIF parser and playback | 5 |
+| Viewer | `apps/viewer/image_document.cpp`, `image_canvas.cpp`, `clipboard_controller.cpp`: SVG validation, persistent renderer, local links, vector zoom and clipboard render | 6 |
+| Settings | `apps/settings/src/WallpaperModel.cpp`, `WallpaperController.cpp`: discovery, header checks, validation, preview cache | 7 |
+| Settings | `apps/settings/qml/WallpaperWindow.qml`: preview and selected-image file rereads | 7 |
+| Shell | `apps/shell/qml/Background/Background.qml`: wallpaper file decoding and crossfade | 7 |
+| Shell | `libs/holonight-services/src/mpris/MprisArtworkCache.cpp`: local/data/network acquisition, Qt decode, PNG publication and cache reread | 7 |
+| Shell | `apps/shell/qml/Widgets/MprisArtwork.qml`, `MprisWidgetSurface.qml`: final artwork/cache URLs and additional artwork presentation | 7 |
+| qt | `src/icons/hniconengine.cpp`, `hniconimageprovider.cpp`, `iconrenderer.cpp`: raster and SVG icons, semantic SVG rewriting | 7–8; bundled bytes trusted, external assets require provenance qualification |
+| file-browser / Files | `src/icon_image_provider.cpp`, Files listing/places/inspection QML: external theme names through icon provider; qrc fallbacks | 7–8; external theme assets are not automatically trusted |
+| Greeter | `qml/Background.qml`, `Main.qml`, `LoginPanel.qml`: configured background and account avatar file URLs | 7–8; additional desktop consumers, not migrated here |
+
+Raw decoded QImages from provider/memory caches, QPixmap construction from validated
+images, compositor textures and tray pixmap arrays are not encoded-file decoders.
+Their dimensions, lengths and lifetime still need validation. Bundled qrc icons,
+logos/backgrounds and fallback art can retain Qt rendering where provenance is fixed.
+`QIcon::fromTheme` in application startup and services delegates to the external-theme
+row rather than establishing trust. Hyprlock's external renderer/configuration is a
+deployment boundary, not an in-process provider entry point.
+
+## Contracts and later integration
+
+Keep Qt public types, caller-owned open devices, application scheduling/generations and
+dependency direction `thumbnails → images`. Before choosing production interfaces,
+extend the demonstrated isolated typed metadata and immutable fixture-capsule mechanisms
+to production QIODevice/resource acquisition with stable identities. Fixture capsules
+do not establish safe acquisition of arbitrary resource trees. Prove broader color
+conversion coverage and error propagation, complete animation semantics and actual-decoder cancellation;
+retain the demonstrated process-tree memory ceiling and fail-closed runtime discovery.
+
+Order later work as source limits → installed raster provider/runtime prerequisites →
+metadata and cache isolation → GIF playback → SVG → desktop display → removal/audit.
+Publish providers before dependent consumers only when publication is authorized.
+Retain installed-package tests and installation staging, ownership, collision and
+conservative uninstall protections. The experiment changes none of those surfaces.
+
+Future integration must test installed consumers, missing/overridden loaders,
+namespace denial, SVG races, external cache PNGs, GIF disposal/loop/restart, final QML
+pixel delivery and trusted artwork. Full inventory closure requires a runtime trace
+of each route; the source scan alone cannot establish complete isolation.
