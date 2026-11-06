@@ -29,7 +29,7 @@ cgroup-anonymous growth gates after warmup; all worker scopes close empty or rem
 The local design records fixture-specific classifications, medians and unique ignored
 Release evidence. These checks do not prove leak freedom or memory independent of
 animation length. Playback scheduling, strict streaming bounds, active-decoder
-cancellation, acquisition, deployment and production cache/session policy remain
+cancellation, linked-resource acquisition, deployment and production cache/session policy remain
 unproven. The older C API
 results remain historical evidence, not proof of Rust API limitations.
 No provider/consumer API, dependency declaration, installer rule or submodule pin changes
@@ -101,3 +101,75 @@ outputs. Qt source supports decoder attribution; Glycin layer attribution and a
 persistent-end API contract violation remain unproven. Both remain experimental;
 local report drafts are unsubmitted. Existing retention/performance evidence and
 umbrella pins are preserved.
+
+The bounded single-source milestone now passes private C++ caller-device tests and
+16/16 focused capture checks. `Comparison::capture` receives an open readable seekable
+`QIODevice&`, seeks to zero, enforces a positive explicit limit up to 256 MiB against
+actual reads (64 KiB chunks plus a one-byte overflow probe), and returns owned bytes.
+Failures expose no partial payload; cancellation is cooperative around device operations.
+Caller ownership/open state remain intact and final position is unspecified. Zero reads
+mean EOF; changes observed during capture are included without claiming an atomic snapshot.
+Both isolated candidates inspect and decode captured PNG, oriented JPEG and self-contained
+SVG after original replacement/removal with matching fixture pixels; all scopes close.
+The [local design](../../holonight-images/docs/sdd/glycin-feasibility/DESIGN.md) records
+unique ignored evidence and provider/installed-consumer verification. Historical Python
+evidence remains intact. Linked SVG resource acquisition, filesystem identity checks,
+blocking-read interruption, active-decoder cancellation and production migration remain
+deferred. This does not resolve the preserved GIF failures or select a backend.
+
+The next private milestone adds explicit isolated-request cancellation via a caller-set
+`threading.Event`. The serialized request thread discards cancelled replies, makes the
+worker terminal and raises `RequestCancelled` only after verified scope cleanup and
+launcher reaping. All terminal cleanup uses one five-second monotonic budget from
+cancellation observation: scope TERM, at most one second of grace, then scope KILL as
+needed. Hierarchical `cgroup.events populated=0` or cgroup removal supplies proof;
+missing proof/manager support or deadline exhaustion produces a distinct cleanup error.
+There is no PID-sampling fallback, automatic retry or worker restart. Close on a cancelled
+worker only releases descriptors/artifacts and retains stderr.
+
+The focused runner controls cancellation phases with bounded barriers and diagnostic
+acknowledgements, including partial records, races and a TERM-resistant descendant that
+requires scope KILL. The Qt/Glycin matrix repeats dispatch and final-delivery cancellation
+three times in fresh cold/loaded workers using a PNG captured by the C++ probe; each case
+requires exact fresh-worker recovery pixels and cleanup of both scopes. Dispatch proves
+an outstanding request, not execution inside a codec instruction. Cooperative decoder
+interruption remains unproven; both candidates remain experimental. The local design and
+comparison README document the contract and unique ignored cancellation evidence. This
+milestone preserves production contracts, pins, existing GIF failures and all previously
+deferred acquisition/identity/deployment decisions.
+
+Recorded cancellation evidence passes 35/35 checks with all 59 original/recovery scopes
+verified and maximum successful cleanup 1.019 seconds. Capture checks pass 16/16,
+protocol fault checks 5/5 and provider/installed-consumer CTest 3/3. Existing color,
+geometry, animation, retention and performance evidence is reused. Full ecosystem and
+container acceptance were not repeated for this private non-installed change.
+
+
+The private linked-SVG milestone adds descriptor-pinned bounded acquisition, documented in
+the [comparison README](../../holonight-images/experiments/comparison/README.md) and
+[local design](../../holonight-images/docs/sdd/glycin-feasibility/DESIGN.md). Caller-owned base
+and main descriptors stay pinned across byte capture and isolated manifest discovery. The
+parent validates the manifest without XML/image parsing; Linux openat2 beneath/no-symlink/
+no-mount-crossing resolution accepts only regular referenced files. Before/after descriptor
+identity/size/nanosecond timestamps and final name revalidation reject observed changes
+without retry or partial publication. Plain relative raster references, embedded raster and
+valid document-local fragments are the bounded subset. Count/path/control/aggregate limits
+and staging collisions are enforced independently. Original trees are never enumerated or
+mounted; both candidates revalidate sealed captured byte maps inside isolation.
+
+This is observed-change detection and immutable captured-input evidence, not an atomic
+filesystem snapshot or cooperative blocking-read/codec interruption. The unique ignored
+linked-* reports require independent pixels after original replacement/removal, three fresh
+positive workers per candidate, discovery/render traces and hierarchical scope cleanup.
+Historical fixtures and existing color/geometry/GIF/retention/performance evidence remain
+available. Production APIs, consumers, dependencies, lockfiles, installer protections and
+umbrella pins are preserved; neither experimental backend is selected.
+
+
+Recorded linked acquisition evidence passes 36/36 with 81 verified scope cleanups and
+42 exact expected renders; focused checks pass 3/3 including injected syscall unavailability.
+Standalone capture/acquisition CTest passes 2/2. Existing capture (16/16), cancellation
+(35/35), protocol (5/5), historical capsule (16/16) and provider/installed-consumer (3/3)
+regressions pass. The local README records unique ignored report paths and matching
+worker hashes; changed-source formatting, Python compilation and whitespace checks pass.
+Full ecosystem/container acceptance was not repeated for this private non-installed change.
