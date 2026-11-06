@@ -19,9 +19,18 @@ bounded C++ GIF block parser inside the outer sandbox; this is not a native Glyc
 fact. Qt's separate native loop count fails to recognize ANIMEXTS1.0 declarations;
 the supplemental scanner passes both recognized identifiers. Truncation, conflicts
 and traversal budgets produce explicit unavailable facts independently of decoding.
-Disposal, playback scheduling, long-run retention, active-decoder cancellation,
-acquisition, deployment and cache/session measurement remain unproven; see the
-dated classification and native Release results in the local design. The older C API
+The independent GIF disposal reassessment passes all eight small fixture cases for
+direct and isolated Qt. Glycin fails opaque-background disposal 2, mixed pixels and
+stable repeated exhaustion; disposal 1/3, transparency and local-palette pixels pass
+those small fixtures. The larger retention traversal has pixel failures in all three
+controls, so small-fixture success does not establish general compositing correctness.
+All six bounded retention workloads complete and pass the unchanged 32 MiB RSS and
+cgroup-anonymous growth gates after warmup; all worker scopes close empty or removed.
+The local design records fixture-specific classifications, medians and unique ignored
+Release evidence. These checks do not prove leak freedom or memory independent of
+animation length. Playback scheduling, strict streaming bounds, active-decoder
+cancellation, acquisition, deployment and production cache/session policy remain
+unproven. The older C API
 results remain historical evidence, not proof of Rust API limitations.
 No provider/consumer API, dependency declaration, installer rule or submodule pin changes
 are included. All paths below still use the previous backend.
@@ -81,3 +90,14 @@ Future integration must test installed consumers, missing/overridden loaders,
 namespace denial, SVG races, external cache PNGs, GIF disposal/loop/restart, final QML
 pixel delivery and trusted artwork. Full inventory closure requires a runtime trace
 of each route; the source scan alone cannot establish complete isolation.
+
+Independent GIF triage now separates oracle validity, wrapper equivalence, pixels
+and exhaustion in the [provider design](../../holonight-images/docs/sdd/glycin-feasibility/DESIGN.md).
+Fixture/reference self-checks pass. Raw public APIs reproduce Qt local-palette
+disposal-2 and Glycin opaque-background disposal-2 failures; three-frame reductions
+and 3×2 controls are confirmed in three fresh workers. Glycin also returns frames
+after end for absent/finite/infinite declarations. Wrappers agree on exercised frame
+outputs. Qt source supports decoder attribution; Glycin layer attribution and a
+persistent-end API contract violation remain unproven. Both remain experimental;
+local report drafts are unsubmitted. Existing retention/performance evidence and
+umbrella pins are preserved.
