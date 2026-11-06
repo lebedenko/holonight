@@ -231,3 +231,15 @@ Final checks pass: native acquisition CTest **2/2**, pinned formatting of new C+
 fixtures, changed-C++ format checks, Python compilation and whitespace checks in both
 repositories. The native socket fixture requires execution outside the agent sandbox;
 its successful outside-sandbox run is the qualifying CTest result.
+
+
+The private [GIF attribution audit](../../holonight-images/experiments/comparison/GIF-UPSTREAM-REPORT-DRAFT.md)
+now retains 79 declared version-2 scenarios and all 144 runtime cleanup proofs, while
+preserving 33 failed candidate findings. Exact Glycin loader sources and a direct
+image 0.25.10 probe locate its disposal-2 background policy in the composited-frame API;
+persistent exhaustion remains an application requirement without an established upstream
+promise. Attribution is **blocked** because Qt tag archive checksums do not match the
+matching distribution recipes. The report remains failed; neither candidate qualifies.
+Unchanged GIF acceptance separately reports 16 passes and 8 failures. Existing runtime,
+codec, retention and performance evidence is reused. Production APIs, dependencies,
+installers and umbrella pins are unchanged, and no upstream report was submitted.
