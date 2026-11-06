@@ -173,3 +173,61 @@ Standalone capture/acquisition CTest passes 2/2. Existing capture (16/16), cance
 regressions pass. The local README records unique ignored report paths and matching
 worker hashes; changed-source formatting, Python compilation and whitespace checks pass.
 Full ecosystem/container acceptance was not repeated for this private non-installed change.
+
+## Verified experimental runtime bundles
+
+The private comparison now requires explicit host-native runtime preparation before
+isolated launch. See the [comparison README](../../holonight-images/experiments/comparison/README.md)
+for commands and the manifest contract.
+Preparation discovers dependencies once, stages copied workers/plugins/loaders,
+executables and MIME data, and publishes only a verified new directory. Every
+isolated worker validates exact inventory, entry identity/role, modes and SHA-256
+hashes before scope creation; launch never discovers or falls back to host codecs.
+Only bundle runtime files and private captured capsules enter the sandbox. Absolute
+host launch/manager tools receive a minimal environment. Glycin retains explicit
+nested Bwrap selection, the request deadline stays 15 seconds, and scope memory/swap
+limits and the five-second hierarchical terminal cleanup contract remain in force.
+
+The bundle and manifest are trusted local artifacts: hashes detect changed/missing
+contents, not upstream authenticity or concurrent trusted-file mutation. Private
+runtime acceptance retains unique ignored evidence with hostile-environment checks,
+three fresh independent PNG and acquired linked-SVG trials per candidate, traces,
+pixels, limits and cleanup proof. No backend is selected, GIF failures are unchanged,
+cooperative codec interruption remains unproven, and historical timings do not
+measure this launcher. Production APIs, installed consumers, dependencies, installer
+protections and umbrella pins are unchanged.
+
+
+## Private runtime evidence version 2
+
+The [comparison contract and reproduction command](../../holonight-images/experiments/comparison/README.md)
+and [local design](../../holonight-images/docs/sdd/glycin-feasibility/DESIGN.md) supersede
+historical version-1 runtime acceptance. Fresh reports independently require exact
+scenario/artifact/scope coverage, nested child-report integrity, real native activation
+controls and their deliberately broken counterparts, poisoned isolated discovery,
+twelve candidate trials, structured syscall findings and exact launch-failure stages.
+Child coverage remains cancellation 35, capture 16, linked acquisition 36, protocol 5
+and capsules 16. Created scopes retain observed limits and hierarchical cleanup,
+including constructor and recovery workers. Missing prerequisites or uncertain proof
+leave failed evidence and a nonzero exit. Existing codec/retention/performance evidence
+is reused; production interfaces, dependencies, lockfiles, installers, umbrella pins,
+backend selection, GIF behavior and deployment remain unchanged. Local hashes provide
+integrity relative to recorded files, not upstream authenticity or writer exclusion.
+
+
+Fresh version-2 verification on **2026-11-06** passes **53** helper tests normally and
+under `python -O`, **52** parent scenarios and all **35/16/36/5/16** child scenarios.
+Independent reopening verifies **4,450 artifacts** and cleanup for all **224 created
+scopes** (maximum **1.016 s**). Provider `task test` passes **3/3**, including its
+installed-package consumer. The qualifying local report is
+`holonight-images/build/comparison/runtime-v2-acceptance-final/report.json`; separate
+validation is in `holonight-images/build/comparison/runtime-v2-independent-validation.json`.
+Previous failed reports remain failed. Tracing uses recorded exit scheduling to avoid
+thread-exit decoding races and rejects every unresolved syscall; these results do not
+provide new performance measurements. No broad container or ecosystem acceptance was
+needed for these private, non-installed fixtures and reporting changes.
+
+Final checks pass: native acquisition CTest **2/2**, pinned formatting of new C++
+fixtures, changed-C++ format checks, Python compilation and whitespace checks in both
+repositories. The native socket fixture requires execution outside the agent sandbox;
+its successful outside-sandbox run is the qualifying CTest result.
