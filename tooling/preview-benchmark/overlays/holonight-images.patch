@@ -1,0 +1,190 @@
+--- a/src/isolated/client.cpp
++++ b/src/isolated/client.cpp
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "../device.h"
+ #include "capture.h"
++#include "preview_evidence.h"
+ #include "runtime.h"
+ 
++#include <QBuffer>
+ #include <QElapsedTimer>
+ 
+ namespace HolonightImages {
+@@ -10,6 +12,12 @@
+ template <typename T, typename Select>
+ IsolatedResult<T> run(const QString& runtime, QIODevice& source, const Isolation::Request& request,
+                       const std::atomic_bool& cancelled, Select select) {
++  PreviewEvidence::Context operationContext(PreviewEvidence::operation, QString::number(++PreviewEvidence::sequence));
++  PreviewEvidence::Phase operationPhase("provider_call");
++  PreviewEvidence::event("provider_begin",
++                         {{"kind", request.operation == Isolation::Operation::Inspect
++                                       ? "source_inspection"
++                                       : (qobject_cast<QBuffer*>(&source) ? "cached_png_decode" : "source_decode")}});
+   QElapsedTimer clock;
+   clock.start();
+   IsolatedResult<T> result;
+@@ -35,7 +43,11 @@
+       request.options.orientation != OrientationPolicy::Ignore) {
+     return local(Outcome::Unsupported);
+   }
++  PreviewEvidence::Phase capturePhase("capture");
+   auto captured = Isolation::capture(source, limits.inputBytes, cancelled);
++  capturePhase.end();
++  PreviewEvidence::event("capture_result",
++                         {{"bytes", double(captured.bytes.size())}, {"outcome", int(captured.outcome)}});
+   if (captured.outcome == Isolation::CaptureOutcome::Cancelled) {
+     result.runtime = RuntimeStatus::Cancelled;
+     return result;
+@@ -51,6 +63,10 @@
+     wireRequest.options.bound = {};
+   }
+   auto transport = Isolation::dispatch(runtime, wireRequest, captured.bytes, cancelled);
++  PreviewEvidence::event(
++      "provider_result",
++      {{"runtime", int(transport.status)}, {"cancelled", cancelled.load()}, {"diagnostic", transport.diagnostic}});
++  if (transport.status == RuntimeStatus::CleanupFailure) PreviewEvidence::cleanupFailed = true;
+   result.runtime = transport.status;
+   result.diagnostic = transport.diagnostic;
+   result.elapsedMilliseconds = clock.elapsed();
+--- a/src/isolated/helper.cpp
++++ b/src/isolated/helper.cpp
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
++#include "preview_evidence.h"
+ #include "protocol.h"
+ #include "runtime.h"
+ 
+@@ -70,6 +71,7 @@
+     QBuffer device(&bytes);
+     device.open(QIODevice::ReadOnly);
+     const std::atomic_bool cancelled{false};
++    PreviewEvidence::Phase providerPhase("helper_provider_execution");
+     Reply reply;
+     // Sniff and reject formats outside this milestone before invoking the provider.
+     const auto format = canonicalFormat(QImageReader::imageFormat(&device));
+@@ -87,9 +89,13 @@
+     } else {
+       reply.decoded = HolonightImages::decode(device, request.options, cancelled);
+     }
++    providerPhase.end();
++    PreviewEvidence::Phase serializationPhase("helper_reply_serialization");
+     QByteArray pixels;
+     auto control = replyControl(reply, request.operation, pixels);
+     auto header = frame(control);
++    serializationPhase.end();
++    PreviewEvidence::buffer.flush();
+     if (output.write(header) != header.size() || output.write(pixels) != pixels.size() || !output.flush()) {
+       return 73;
+     }
+--- a/src/isolated/runtime.cpp
++++ b/src/isolated/runtime.cpp
+@@ -2,6 +2,7 @@
+ #include "runtime.h"
+ 
+ #include "cleanup.h"
++#include "preview_evidence.h"
+ 
+ #include <QCryptographicHash>
+ #include <QDeadlineTimer>
+@@ -185,9 +186,17 @@
+   QString group;
+   QString unit;
+   bool launched = false;
++  QByteArray helperTelemetry;
++  bool helperTruncated = false;
++  auto drainTelemetry = [&] {
++    const auto bytes = process.readAllStandardError();
++    helperTruncated = helperTruncated || helperTelemetry.size() + bytes.size() > 65536;
++    helperTelemetry += bytes.left(qMax<qsizetype>(0, 65536 - helperTelemetry.size()));
++  };
+   try {
+     QStringList binds;
+     try {
++      PreviewEvidence::Phase validationPhase("runtime_validation");
+       binds = validate(runtime);
+     } catch (const std::exception& e) {
+       throw Failure{.status = RuntimeStatus::Unavailable, .message = QString::fromUtf8(e.what())};
+@@ -249,14 +258,16 @@
+         {.flags = QProcess::UnixProcessFlag::CloseFileDescriptors | QProcess::UnixProcessFlag::CreateNewSession,
+          .lowestFileDescriptorToClose = 3});
+     process.setProcessEnvironment(environment());
+-    process.setStandardErrorFile(QProcess::nullDevice());
++    PreviewEvidence::Phase launcherPhase("launcher_readiness");
+     process.start("/usr/bin/systemd-run", command);
+     if (!process.waitForStarted(1000)) {
+       throw Failure{.status = RuntimeStatus::Unavailable, .message = "launcher failed to start"};
+     }
+     launched = true;
++    PreviewEvidence::event("helper_launch");
+     QDeadlineTimer deadline(15000);
+     auto check = [&] {
++      drainTelemetry();
+       if (cancelled.load()) {
+         throw Failure{.status = RuntimeStatus::Cancelled, .message = "cancelled"};
+       }
+@@ -318,7 +329,10 @@
+     } catch (const ProtocolError&) {
+       throw Failure{.status = RuntimeStatus::Unavailable, .message = "sandbox helper failed before readiness"};
+     }
++    launcherPhase.end();
++    PreviewEvidence::event("scope", {{"group", group}, {"unit", unit}});
+     result.startup = elapsed.elapsed();
++    PreviewEvidence::Phase transferPhase("request_transfer");
+     QByteArray outgoing = frame(requestControl(request, input.size()));
+     outgoing += input;
+     qint64 sent = 0;
+@@ -337,6 +351,8 @@
+         throw ProtocolError("helper exited during request");
+       }
+     }
++    transferPhase.end();
++    PreviewEvidence::Phase responsePhase("response_receipt_validation");
+     const auto length = qFromBigEndian<quint32>(receive(4).constData());
+     if ((length == 0U) || length > controlCeiling) {
+       throw ProtocolError("response control limit");
+@@ -346,7 +362,13 @@
+     const auto pixels = receive(bytes);
+     auto reply = parseReply(control, pixels, request);
+     check();  // Sample the final peak while the helper is still waiting for acknowledgement.
++    responsePhase.end();
++    PreviewEvidence::event("pre_ack_resources",
++                           {{"group", group},
++                            {"cpu_stat", QString::fromUtf8(fileBytes(group + "/cpu.stat"))},
++                            {"memory_peak", QString::fromUtf8(fileBytes(group + "/memory.peak"))}});
+     result.operation = elapsed.elapsed() - result.startup;
++    PreviewEvidence::Phase acknowledgementPhase("acknowledgement_exit");
+     if (process.write("A", 1) != 1) {
+       throw ProtocolError("helper acknowledgement failed");
+     }
+@@ -362,6 +384,7 @@
+       throw ProtocolError("helper failed or trailing response");
+     }
+     check();
++    acknowledgementPhase.end();
+     result.reply = std::move(reply);
+     result.status = RuntimeStatus::Success;
+   } catch (const Failure& e) {
+@@ -371,12 +394,22 @@
+     result.status = RuntimeStatus::ProtocolFailure;
+     result.diagnostic = QString::fromUtf8(e.what());
+   }
++  drainTelemetry();
++  PreviewEvidence::event("helper_telemetry",
++                         {{"stderr", QString::fromUtf8(helperTelemetry)}, {"truncated", helperTruncated}});
+   const auto original = result.status;
+   const auto message = result.diagnostic;
+   std::optional<CleanupReport> report;
+   if (launched) {
+     NativeCleanup operations(process);
++    PreviewEvidence::Phase cleanupPhase("cleanup");
+     report = cleanup(operations, unit, group);
++    cleanupPhase.end();
++    PreviewEvidence::event("cleanup_result", {{"verified", report->verified},
++                                              {"proof", report->proof},
++                                              {"group", report->group},
++                                              {"stage", report->stage},
++                                              {"observation", int(report->observation)}});
+   }
+   finishCleanup(result, original, message, report ? &*report : nullptr, cancelled.load());
+   result.elapsed = elapsed.elapsed();

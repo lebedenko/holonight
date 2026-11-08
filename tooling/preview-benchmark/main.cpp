@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+#include PREVIEW_DIAGNOSTIC_HEADER
+#endif
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QFile>
@@ -101,6 +104,12 @@ int main(int argc, char** argv) {
         service = make();
       }
     }
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+    if (PreviewEvidence::cleanupFailed.load()) {
+      samples.append(QJsonObject{{"incomplete", true}, {"cleanup_failure", true}, {"setup_success", setupOk}});
+      break;
+    }
+#endif
     QElapsedTimer clock;
     double first = -1;
     double final = -1;
@@ -125,6 +134,10 @@ int main(int argc, char** argv) {
     QString error;
     bool success = false;
     if (scenario == "grid-decode") {
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+      PreviewEvidence::Context context(PreviewEvidence::consumer, "grid-decode-" + QString::number(index));
+      PreviewEvidence::event("consumer_dispatch");
+#endif
       const std::atomic_bool cancelled{false};
 #ifdef ISOLATED
       const auto decoded = decodeThumbnail({.path = path, .box_pixels = 128}, cancelled, {runtime});
@@ -171,8 +184,22 @@ int main(int argc, char** argv) {
                                {"harness_timeout", service->busy()},
                                {"superseded_selections", scenario == "burst" ? 20 : 0}});
     service->clear();
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+    PreviewEvidence::event("sample_completed", {{"index", index}, {"scenario", scenario}});
+    if (PreviewEvidence::cleanupFailed.load()) break;
+#endif
   }
   service.reset();
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+  QThread::sleep(1);
+  QFile status("/proc/self/status");
+  const bool statusAvailable = status.open(QIODevice::ReadOnly);
+  PreviewEvidence::event(
+      "post_drain_settled",
+      {{"parent_status", statusAvailable ? QString::fromUtf8(status.readAll()) : QString{}}, {"settling_ms", 1000}});
+  PreviewEvidence::settledScopes();
+  PreviewEvidence::buffer.flush();
+#endif
   rusage parent{};
   rusage children{};
   getrusage(RUSAGE_SELF, &parent);
@@ -190,5 +217,9 @@ int main(int argc, char** argv) {
     return 5;
   }
   const auto bytes = QJsonDocument(result).toJson();
-  return output.write(bytes) == bytes.size() ? 0 : 6;
+  if (output.write(bytes) != bytes.size() || !output.flush()) return 6;
+#ifdef PREVIEW_DIAGNOSTIC_HEADER
+  if (PreviewEvidence::cleanupFailed.load()) return 20;
+#endif
+  return 0;
 }

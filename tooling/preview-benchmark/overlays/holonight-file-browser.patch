@@ -1,0 +1,98 @@
+--- a/src/preview/preview_service.cpp
++++ b/src/preview/preview_service.cpp
+@@ -1,3 +1,5 @@
++#include "preview_evidence.h"
++
+ #include <QDir>
+ #include <QFile>
+ #include <QFileInfo>
+@@ -193,6 +195,7 @@
+                           PreviewWorkerCache& cache, const std::function<void(const PreviewResult&)>& publish,
+                           const std::function<void()>& beforeFullDecode, const ThumbnailService::StageCallback& stage,
+                           const ImageRuntimeOptions& options, const std::function<void()>& memoryCheckpoint) {
++  PreviewEvidence::event("memory_cache_lookup");
+   if (const auto candidate = cache.rasterCandidate(identity, requestedSize)) {
+     if (memoryCheckpoint) {
+       memoryCheckpoint();
+@@ -202,6 +205,7 @@
+     }
+     if (unchangedSource(file, identity)) {
+       result.image = cache.lookup(identity, candidate->image.size());
++      PreviewEvidence::event("memory_cache_hit");
+       result.source_pixel_size = candidate->raster->source_size;
+       result.document_size = result.source_pixel_size;
+       result.raster_outcome = HolonightImages::Outcome::Success;
+@@ -243,8 +247,11 @@
+                         : std::nullopt;
+   result.image = cache.lookup(identity, needed);
+   if (result.image.isNull() && tier) {
++    PreviewEvidence::Phase diskPhase("disk_cache_lookup");
+     const auto cached = ThumbnailService::lookup(file, path, identity, *tier, needed, *cancel, stage,
+                                                  ThumbnailService::ImageKind::Raster, nativePath, options);
++    diskPhase.end();
++    PreviewEvidence::event("disk_cache_result", {{"hit", cached.has_value() && !cached->image.isNull()}});
+     if (cached) {
+       result.image = cached->image;
+       result.raster_outcome = cached->outcome;
+@@ -744,11 +751,28 @@
+   const auto beforeFull = before_full_decode_for_test_;
+   const auto memoryCheckpoint = memory_lookup_for_test_;
+   const auto options = runtime_options_;
++  const auto evidenceId = QString::number(++PreviewEvidence::sequence);
++  {
++    PreviewEvidence::Context context(PreviewEvidence::consumer, evidenceId);
++    PreviewEvidence::event("consumer_dispatch", {{"generation", double(generation)}, {"path", path}});
++  }
+   QMetaObject::invokeMethod(
+       worker_,
+-      [this, path, nativePath, generation, cancel, size, beforeDispatch, beforeFull, stage, options, memoryCheckpoint] {
+-        const auto publish = [this](const PreviewResult& result) {
+-          QMetaObject::invokeMethod(this, [this, result] { applyResult(result); }, Qt::QueuedConnection);
++      [this, path, nativePath, generation, cancel, size, beforeDispatch, beforeFull, stage, options, memoryCheckpoint,
++       evidenceId] {
++        PreviewEvidence::Context context(PreviewEvidence::consumer, evidenceId);
++        PreviewEvidence::Phase workerPhase("worker_execution");
++        PreviewEvidence::event("worker_entry");
++        const auto publish = [this, evidenceId](const PreviewResult& result) {
++          PreviewEvidence::event("result_publication",
++                                 {{"generation", double(result.generation)}, {"final", result.final}});
++          QMetaObject::invokeMethod(
++              this,
++              [this, result, evidenceId] {
++                PreviewEvidence::Context context(PreviewEvidence::consumer, evidenceId);
++                applyResult(result);
++              },
++              Qt::QueuedConnection);
+         };
+         if (!cancel->load() && beforeDispatch) {
+           beforeDispatch();
+@@ -766,7 +790,7 @@
+             this,
+             [this] {
+               active_job_ = false;
+-              startJob();
++              if (!PreviewEvidence::cleanupFailed.load()) startJob();
+             },
+             Qt::QueuedConnection);
+       },
+@@ -774,6 +798,9 @@
+ }
+ 
+ void PreviewService::applyResult(const PreviewResult& result) {
++  PreviewEvidence::event("delivery_attempt", {{"generation", double(result.generation)},
++                                              {"current_generation", double(generation_)},
++                                              {"final", result.final}});
+   if (result.runtime == HolonightImages::RuntimeStatus::Cancelled ||
+       (result.runtime == HolonightImages::RuntimeStatus::Success &&
+        result.raster_outcome == HolonightImages::Outcome::Cancelled)) {
+@@ -818,6 +845,10 @@
+     }
+     dispatchText();
+   }
++  PreviewEvidence::event("consumer_delivery", {{"generation", double(result.generation)},
++                                               {"final", result.final},
++                                               {"has_image", !display_image_.isNull()},
++                                               {"runtime", int(result.runtime)}});
+   notifyChanged();
+   if (result.final && mime_type_.startsWith(QStringLiteral("image/")) && !display_image_.isNull()) {
+     resize_debounce_timer_.start(kResizeDebounceMs);

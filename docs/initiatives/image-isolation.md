@@ -462,3 +462,88 @@ invocation is explicitly excluded as invalid preparation evidence. All original
 A/B artifacts, invalid upgrade rows and both historical failures remain intact.
 No cause or historical fix is claimed. Remaining measurements and session/worker
 optimization remain deferred; no deployment, publication or pin updates occurred.
+
+## Experiment 0 missing evidence (2026-11-09)
+
+**Instrumentation implemented; measurements remain incomplete after cleanup
+recurrences.** The [benchmark tooling](../../tooling/preview-benchmark/README.md#experiment-0-attribution-and-scheduler-evidence-2026-11-09)
+adds fresh installed PreviewQuick controls and diagnostic-only source overlays.
+The [Images notes](../../holonight-images/docs/sdd/isolated-raster/DESIGN.md#experiment-0-attribution-2026-11-09)
+and [File Browser notes](../../holonight-file-browser/docs/sdd/isolated-raster/DESIGN.md#experiment-0-scheduler-control-2026-11-09)
+state their contracts. No production implementation, worker default, public API,
+wire protocol, deadline, UI message, cache policy or revision pin changed.
+
+Evidence is retained under:
+
+- `build/preview-scheduler-gemqcx9e/scheduler-run-q_6ddudo`: **418 exploratory** batches,
+  stopped on B's oriented-JPEG cancellation batch. A has 70 batches per workload;
+  B has 70 cold, 70 warm and 68 cancellation batches. There is one failed batch.
+  These batches repeated one fixture each and rotated fixtures between batches,
+  so **all are excluded from the requested mixed-fixture control**. The final
+  harness cycles all four fixtures within every batch and passes in-process smoke
+  checks. No corrected B measurement was started after the recurrence; the
+  requested 600 mixed-fixture batches remain outstanding.
+- `build/preview-diagnostic-1t39b7cm/diagnostic-run-011eht42`: **216/280** service
+  samples and **544** correlated provider calls (272 source inspections, 242
+  source decodes, 30 cached-PNG decodes). One operation returned cleanup failure;
+  64 planned samples remain missing.
+- `build/preview-diagnostic-1t39b7cm/resource-run-a5m00p3u`: **84/84** samples,
+  **220/220** successful provider operations, and **5,115** resource observations.
+
+Both affected runs stopped without retry or an additional manager cleanup.
+The scheduler failure was the fourth surviving request: 12 cancelled-before-start,
+four started, three delivered, all 16 responses finished, and zero pending work.
+Frozen B reports only that hierarchical cleanup or launcher reaping was unverified.
+The D recurrence preserves the full structured diagnostic: the operation succeeded,
+launcher state was NotRunning, hierarchical proof returned **unreadable**, elapsed
+cleanup was zero milliseconds, and no manager commands were issued. This localizes
+the failed observation; it does not establish its cause or explain either historical
+failure. Subsequent settled absence is not substituted for failed cleanup proof.
+The original A/B matrix, invalid upgrade evidence and both historical failures are
+unchanged. D uses Images `a772a67` with unchanged consumer revisions and is neither
+replacement B nor an optimization candidate.
+
+Diagnostic attribution has no missing helper timing records, telemetry overflow or
+truncation in the captured operations. Median parent phases across the 544 calls
+are runtime validation **49.58 ms**, launcher/readiness **32.78 ms**, capture
+**0.014 ms**, response receipt/validation **2.33 ms**, acknowledgement/exit
+**1.19 ms**, and cleanup **4.05 ms**. Helper provider execution has median
+**1.98 ms** and serialization **0.048 ms**. These are nested distributions over
+mixed operations, not additive end-to-end estimates or codec-only timings.
+The median unexplained parent interval is **0.222 ms**; the full report keeps
+missing worker intervals for the synchronous grid case explicit.
+
+Both exploratory scheduler baselines deliver warm batches with zero decoder starts. In the
+captured cancellation batches, A records 838 before-start cancellations and two
+after decoder entry; B records 816 before-start and none after entry. Controlled
+barrier tests independently cover both cases. Image validation checks non-null
+returned pixels and bounds; synthetic barrier tests check exact pixels. Scheduler
+latencies remain exploratory: some preparation/static-analysis work overlapped
+this pass, the run is incomplete, and no rendered QML frames were measured.
+
+Resource evidence records all 220 pre-ack CPU and memory readings. Individual
+scope memory.peak reaches **45,629,440 bytes**; the sampled concurrent scope peak
+is **39,145,472 bytes**, and sampled parent RSS reaches **60,801,024 bytes**.
+These independent maxima must not be added. The maximum simultaneously sampled
+RSS-plus-scope value is **95,617,024 bytes**, with the accounting/shared-page
+caveat in the README. Parent RSS has eight unavailable observations, scope
+sampling has eight incomplete discovery observations, and the composite has 16
+missing observations. The largest observed sampling interval is **11.30 ms**.
+All 28 resource-pass one-second snapshots observe zero tracked scope processes;
+parent memory snapshots remain in the report. None of this proves leak freedom.
+
+**Recommendation:** investigate the newly preserved cleanup observation before
+selecting an optimization or filling the stopped runs. Once that gate is resolved,
+runtime-generation reuse is the best-supported next experiment to evaluate:
+repeated runtime validation dominates these diagnostic operations. This is a
+conditional experiment recommendation, not an implementation decision or a
+retain/reject result. Session reuse and prestarted workers remain out of scope.
+
+Verification: deterministic evidence tests, scheduler barrier checks against A/B/D,
+provider capture/protocol/cleanup tests, native Release provider/runtime and
+installed/relocated checks (**9/9**), focused File Browser isolation (**5/5**), and
+existing Files/chooser offscreen acceptance pass. C++ analyzer checks pass using
+a copied command database with the unsupported GCC-only flag removed; source
+formatting, Python compilation and whitespace checks pass. Formatting-only patch
+normalization reuses these semantic checks. No unrelated container gates were
+rerun. No deployment, publication, pin update or optimization was performed.

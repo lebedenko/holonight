@@ -97,5 +97,97 @@ class EvidenceAccounting(unittest.TestCase):
         self.assertNotEqual(measure.png(3, 2), measure.png(3, 2, True))
 
 
+accounting = module('preview-evidence-accounting')
+
+
+class DiagnosticAccounting(unittest.TestCase):
+    def test_missing_and_truncated_records_are_not_zero_durations(self):
+        report = accounting.account('HN_DIAG {"event":"provider_begin","pid":7,"operation":"1"}\nHN_DIAG {')
+        self.assertEqual(len(report['diagnostics']['malformed']), 1)
+        self.assertTrue(report['diagnostics']['missing_flush'])
+        operation = report['operations'][0]
+        self.assertIsNone(operation['parent_unexplained_ns'])
+        self.assertTrue(operation['phases']['capture']['missing'])
+        self.assertTrue(operation['helper_telemetry_missing'])
+
+    def test_nested_phases_use_interval_union_and_keep_helper_separate(self):
+        import json
+        rows = [dict(event='provider_call', begin_ns='10', end_ns='110'),
+                dict(event='capture', begin_ns='20', end_ns='50'),
+                dict(event='runtime_validation', begin_ns='30', end_ns='60'),
+                dict(event='helper_telemetry', stderr='HN_DIAG {"event":"helper_provider_execution",'
+                     '"begin_ns":"100000","end_ns":"900000"}', truncated=False)]
+        report = accounting.account('\n'.join('HN_DIAG ' + json.dumps(dict(r, pid=7, operation='1', consumer='c'))
+                                               for r in rows))
+        self.assertEqual(report['operations'][0]['parent_unexplained_ns'], 60)
+        self.assertEqual(report['operations'][0]['consumers'], ['c'])
+        self.assertEqual(len(report['operations'][0]['helper_timelines']), 1)
+
+    def test_same_operation_id_in_different_processes_does_not_merge(self):
+        report = accounting.account('HN_DIAG {"event":"provider_begin","pid":1,"operation":"1"}\n'
+                                    'HN_DIAG {"event":"provider_begin","pid":2,"operation":"1"}')
+        self.assertEqual(len(report['operations']), 2)
+
+    def test_failed_exit_preserves_partial_rows_and_cleanup_stop(self):
+        import json
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'attempts.jsonl'
+            result = accounting.preserve_attempt(output, 0, '{"sample":{"cleanup_failure":true}}\n{', '', 20)
+            self.assertTrue(result['cleanup_failure'])
+            self.assertTrue(result['incomplete'])
+            self.assertEqual(len(result['samples']), 1)
+            self.assertEqual(json.loads(output.read_text()), result)
+
+    def test_runner_stops_after_cleanup_failure_without_next_invocation(self):
+        import json
+        import subprocess
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'provenance.json').write_text('{}')
+            fixtures = root / 'fixtures'
+            fixtures.mkdir()
+            for name in ('160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg'):
+                (fixtures / name).write_bytes(b'fixture')
+            binary = root / 'A/harness/preview-grid-control'
+            binary.parent.mkdir(parents=True)
+            binary.write_text('#!/usr/bin/env python3\nimport sys\nfrom pathlib import Path\n'
+                              'Path(sys.argv[5]).write_text(\'{"sample":{"cleanup_failure":true}}\\n\')\n'
+                              'raise SystemExit(20)\n')
+            binary.chmod(0o755)
+            completed = subprocess.run(['python3', str(ROOT / 'scripts/run-preview-evidence.py'),
+                                        str(root), str(fixtures), '--kind', 'scheduler'],
+                                       capture_output=True, text=True)
+            self.assertEqual(completed.returncode, 20, completed.stderr)
+            output = next(root.glob('scheduler-run-*'))
+            provenance = json.loads((output / 'provenance.json').read_text())
+            self.assertEqual(len(provenance['commands']), 1)
+            self.assertEqual(provenance['completed_invocations'], 1)
+            self.assertEqual(len((output / 'attempts.jsonl').read_text().splitlines()), 1)
+
+    def test_overflow_and_silently_missing_records_remain_explicit(self):
+        rows, diagnostic = accounting.telemetry('HN_DIAG {"event":"capture"}\n'
+                                                'HN_DIAG {"event":"flush","records":2,"dropped":3}')
+        self.assertEqual(diagnostic['dropped'], 3)
+        self.assertEqual(diagnostic['record_count_mismatches'], [{'claimed': 2, 'observed': 1}])
+
+    def test_missing_proc_observation_does_not_become_zero_memory(self):
+        runner = module('run-preview-evidence')
+        with tempfile.TemporaryDirectory() as temporary:
+            observed = runner.observe(123, Path(temporary))
+        self.assertFalse(observed['discovery_complete'])
+        self.assertIsNone(observed['parent_rss_bytes'])
+        self.assertIsNone(observed['concurrent_scope_bytes'])
+
+    def test_homogeneous_batches_do_not_qualify_as_mixed_fixture_control(self):
+        reporter = module('report-preview-evidence')
+        names = ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg']
+        row = {'fixture_cycle': names,
+               'sample': {'operations': [{'source_fixture': name} for name in names * 4]}}
+        self.assertTrue(reporter.mixed_fixture_batch(row))
+        row['sample']['operations'][1]['source_fixture'] = names[0]
+        self.assertFalse(reporter.mixed_fixture_batch(row))
+        self.assertFalse(reporter.mixed_fixture_batch({'fixture': names[0], 'sample': {}}))
+
+
 if __name__ == '__main__':
     unittest.main()
