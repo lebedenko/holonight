@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(cleanup_diagnostic LANGUAGES CXX)
+find_package(HolonightImages REQUIRED CONFIG)
+find_package(Threads REQUIRED)
+add_executable(cleanup-diagnostic main.cpp)
+target_link_libraries(cleanup-diagnostic PRIVATE HolonightImages::Isolated Threads::Threads)
+target_compile_features(cleanup-diagnostic PRIVATE cxx_std_23)

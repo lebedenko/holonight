@@ -390,3 +390,34 @@ Logs are retained under umbrella `build/publish-isolation` and the component
 `build/acceptance` directories. Full consumer CI still needs its runtime-dependent
 legacy tests separated from the container-only execution environment and synthetic
 codec expectations adapted to the isolated boundary.
+
+## Cleanup diagnostic milestone (2026-11-08)
+
+**Diagnostics implemented; historical cause unresolved.** The
+[Images design](../../holonight-images/docs/sdd/isolated-raster/DESIGN.md#cleanup-attribution-milestone-2026-11-08)
+records private structured cleanup reports and failure-only versioned JSON through
+the existing diagnostic string. Reports preserve the original operation failure,
+manager start/exit/timeout/output evidence, failed stage, scope identity,
+hierarchical observation/proof and launcher state. Unknown observations never
+supply proof; streams and serialized reports are bounded. Public APIs, statuses,
+wire protocol, UI messages, cancellation precedence and deadlines remain intact.
+
+A deterministic regression exposed permissive parsing of contradictory population
+records; the parser now rejects those records and distinguishes observation errors
+from confirmed removal. This robustness correction is not attributed to either
+historical failure. Native Release provider/runtime and installed/relocated checks
+pass **9/9**, deterministic cleanup/capture/protocol checks pass **3/3**, focused
+File Browser isolation passes **5/5**, and existing native Files/chooser offscreen
+acceptance passes against fresh diagnostic packages.
+
+The separate [installed-provider probe](../../tooling/cleanup-diagnostic/README.md)
+completed **1,000 preview-shaped cycles / 3,000 successful operations** in
+**291.613 seconds**, rotating all four frozen fixtures through inspection, source
+decoding and cached-PNG decoding. No cleanup failure recurred. Complete operation
+records are in `build/cleanup-diagnostic-20261108/native-probe.jsonl`; provider
+builds and regression evidence are in
+`holonight-images/build/cleanup-diagnostic-20261108`. An initial relative-runtime
+invocation is explicitly excluded as invalid preparation evidence. All original
+A/B artifacts, invalid upgrade rows and both historical failures remain intact.
+No cause or historical fix is claimed. Remaining measurements and session/worker
+optimization remain deferred; no deployment, publication or pin updates occurred.
