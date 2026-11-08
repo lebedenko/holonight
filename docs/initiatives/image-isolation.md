@@ -243,3 +243,150 @@ matching distribution recipes. The report remains failed; neither candidate qual
 Unchanged GIF acceptance separately reports 16 passes and 8 failures. Existing runtime,
 codec, retention and performance evidence is reused. Production APIs, dependencies,
 installers and umbrella pins are unchanged, and no upstream report was submitted.
+
+## Opt-in production raster capability
+
+The [isolated raster design](../../holonight-images/docs/sdd/isolated-raster/DESIGN.md)
+adds a separate `HolonightImages::Isolated` target, synchronous caller-owned client,
+C++ helper/launcher and explicitly prepared host-native runtime bundle. Its scope
+is inspection, structured metadata and first-frame PNG/JPEG/BMP/TIFF/WebP/GIF.
+Raw pixels retain precision, alpha, palette and named/untagged color; other valid
+profiles are explicitly unsupported. Existing provider APIs and all application
+consumers remain unchanged. This limited capability does not qualify animation,
+SVG or a full backend migration; the GIF failures and blocked attribution audit
+remain open. Umbrella pins and installation ownership/collision/conservative
+uninstall policies are unchanged. No deployment or publication is authorized here.
+
+Provider and relocated installed-consumer verification must qualify the new transport
+and installed runtime independently of the experiment. Relevant integration covers
+runtime faults, cancellation/descendant cleanup and actual staged artifact ownership.
+Future consumer migration remains a separate milestone after these provider gates.
+
+Fresh native Release verification passes **8/8** provider/runtime CTest entries,
+including the relocated installed consumer. Actual staged runtime ownership,
+collision rejection and conservative uninstall pass. The local design records
+122 decode comparisons and fresh startup/transfer/scope-memory measurements.
+Focused pinned-container compilation, package staging and changed-source checks
+are used alongside native runtime evidence. Full integration remains stopped by
+pre-existing formatting violations in two unchanged experimental files; no full
+ecosystem rerun, application migration, deployment or publication is included.
+
+## Default File Browser raster milestone
+
+The [File Browser consumer design](../../holonight-file-browser/docs/sdd/isolated-raster/DESIGN.md)
+records default isolated source inspection, metadata and first-frame decoding,
+including all cached PNG reads and SVG-derived thumbnails. Thumbnails exposes an
+optional Isolated target while retaining the legacy API for Viewer. The accepted
+limits remain six qualified first-frame formats, 256 MiB encoded input and named
+or untagged color; unsupported profiles have no in-process fallback.
+
+Normal umbrella staging now builds Images with isolation, explicitly prepares its
+host-native bundle, verifies it at install, and installs it before isolated
+Thumbnails and File Browser. Preflight requires bubblewrap, systemd tools and the
+existing Qt imageformats package. Ordinary manifests, collision rejection and
+conservative uninstall remain authoritative. Images exports a prefix-relative
+runtime directory for explicit staged/relocated consumers; deployment defaults
+never contain DESTDIR. Runtime artifact ownership tests remain applicable.
+
+The Images integration gate now passes, superseding the formatting-blocked status
+above. The two experimental edits are formatting-only; additional fuzz-harness
+lint corrections were needed to finish that gate. Native cache/preview and
+installed QML pixel-delivery checks pass. Current-sibling File Browser container
+acceptance exposes unrelated live-appearance failures, recorded in the local SDD.
+No provider pins, Viewer migration, deployment or publication are included.
+
+
+## Isolated preview application acceptance follow-up
+
+The [File Browser SDD](../../holonight-file-browser/docs/sdd/isolated-raster/DESIGN.md#application-acceptance-follow-up-2026-11-08)
+records the completed automated follow-up and exact reproduction/manual commands.
+The full current-sibling File Browser gate now passes (12 main tests, 2 Core-only
+checks, static analysis, formatting, QML and REUSE). Its appearance failures were
+fixture defects: environment-provided prefixes were omitted from plugin discovery,
+and live updates could precede deferred watcher initialization. Assertions were
+preserved and fixed waits replaced with bounded rendered readiness checks.
+
+Files and portal composition accept explicit runtime values while production entry
+points retain installation defaults. Non-installed acceptance hosts exercise actual
+application QML: Files pane, Quick Look and grid, and chooser dock/drawer. The chooser
+uses explicit private non-activating bus connections while Images retains the real
+user-session settings. No portal grid thumbnails or production environment discovery
+were introduced.
+
+Staged and relocated host-native presentation matrices pass, including cold decoding,
+disk/memory reuse, SVG-derived PNG cache reads, selection/resizing, source/cache
+cancellation without cache commits, shutdown/late replies and timeout/unavailable
+presentation. The old prefix is absent during relocated checks; installed Preview and
+PreviewQuick consumers also pass. Focused Files regressions pass 107/107, portal
+lifecycle/presentation regressions pass, and portal staged activation/Settings/demo
+checks pass 3/3. Existing Images, Thumbnails and real ownership evidence is reused;
+codec behavior, cleanup contracts, worker counts and deadlines are unchanged.
+
+**Manual native observations are recorded.** The user reports that executable checks
+passed; close-during-load could not be performed because the fixtures loaded too
+quickly, so that native interaction remains unverified (automated pending-work
+shutdown coverage passes). Optional unavailable-runtime manual checks were not
+separately confirmed. Rapid selection briefly showed a loading indicator even for
+small fixtures, consistent with the previously measured isolation latency increase;
+this milestone does not optimize it. Prepared launch commands are
+`bash build/isolated-preview-manual.sh files` and
+`bash build/isolated-preview-manual.sh portal` from this umbrella. The SDD provides the
+checklist and limitations. Evidence is ignored under `build/isolated-acceptance-*`;
+no native pointer/focus interaction was automated. No commits, publication, deployment,
+Viewer migration or revision-pin update is included.
+
+## Fast live-service preview revisits
+
+The [File Browser cache-validity contract](../../holonight-file-browser/docs/sdd/isolated-raster/DESIGN.md#fast-in-memory-raster-revisits-2026-11-08)
+now reuses successful oriented dimensions and EXIF alongside decoded pixels before
+isolated inspection. Each request still opens and verifies the source descriptor;
+identity includes device/inode/size and nanosecond modification/change times and is
+rechecked before accepting a hit. A mismatch invalidates the memory candidate and
+refreshes the disk-fallback identity. This detects observed changes, not an atomic
+filesystem snapshot. The two-entry/64 MiB cache remains service-local.
+
+Adequate previously validated memory entries remain usable when the runtime becomes
+unavailable or invalid. Misses, resolution upgrades and fresh services still require
+the verified runtime. Cold/disk isolation, SVG validation, grid caches, loading
+indicators, deadlines and provider boundaries are unchanged. The linked SDD records
+correctness, latency evidence and manual native revisit commands; raw evidence stays
+under ignored `build/warm-preview`. Images, Thumbnails and ownership evidence is
+reused because their tested inputs are unchanged. No deployment, publication, commits
+or revision-pin updates are included.
+
+For 100 measured revisits at each size, final median/p95 improved from **87.84/105.75
+ms to 2.15/2.28 ms** for 160×80 PNGs and from **83.30/99.10 ms to 2.15/2.19 ms** for
+1600×1200 PNGs. Both targets pass; separate launch evidence shows zero added helpers
+for the 200 warm hits. Native provider tests pass 32/32, Files focused regressions
+107/107, and Files/chooser offscreen acceptance passes. Current-sibling integration
+passes 12 main and 2 Core-only tests plus quality gates; the final identity-refresh
+edge case has subsequent focused native/package and source checks. The user confirmed that manual native
+warm revisits passed and authorized publication and revision-pin updates.
+
+## Publication and pinning (2026-11-08)
+
+After the user confirmed the manual warm-revisit checks passed, the milestone was
+committed and published in provider order. Consumer provider manifests now name the
+exact published sibling revisions used for acceptance, and the umbrella pins those
+commits. Files and chooser provider staging explicitly prepares the isolated Images
+bundle and enables isolated Thumbnails, matching File Browser's staging workflow.
+The umbrella also preserves the independently published greeter pin through a merge.
+No native deployment was performed.
+
+The native provider/package, Files focused, Files/chooser rendered acceptance and
+warm latency evidence above remains applicable. Installer dependency checks pass
+14/14; staging-order checks pass with the real ownership test's prior evidence
+reused. Full consumer container acceptance was additionally attempted before
+publication. The chooser gate passes 58 individual tests plus activation, Settings
+and demo CTest entries, but fails `previewFollowsCursorAndCancellation`: its default
+private-bus/container invocation cannot verify isolated helper cleanup/launcher
+reaping. The three explicit native-only scenarios remain skipped in that invocation.
+Files passes 19/22 CTest entries; `files-smoke`, `files-native-preview-observer`
+and `files-unknown-dimensions` fail. These suites still assume runtime decoding
+in the container or an application-local synthetic image plugin, which the isolated
+helper does not load. Both full consumer gates remain failed, not replacements for
+the qualifying native acceptance.
+Logs are retained under umbrella `build/publish-isolation` and the component
+`build/acceptance` directories. Full consumer CI still needs its runtime-dependent
+legacy tests separated from the container-only execution environment and synthetic
+codec expectations adapted to the isolated boundary.
