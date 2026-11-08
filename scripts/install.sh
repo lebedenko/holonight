@@ -78,6 +78,10 @@ configure_and_stage() {
     -DENABLE_COVERAGE=OFF)
 
   case "$module" in
+    holonight-images)
+      args+=( -DHOLONIGHT_IMAGES_ISOLATED=ON ) ;;
+    holonight-thumbnails)
+      args+=( -DHOLONIGHT_THUMBNAILS_ISOLATED=ON ) ;;
     holonight-appearance-adapters)
       args+=( -DBUILD_GTK_PROBES=OFF -DHOLONIGHT_QT_DIR="$prefix_path" -DHOLONIGHT_CONFIG_DIR="$prefix_path" ) ;;
     holonight-qt)
@@ -92,6 +96,17 @@ configure_and_stage() {
   cmake "${args[@]}"
   note "Building $module"
   cmake --build "$build_dir" --parallel
+  if [[ "$module" = holonight-images ]]; then
+    # A fresh bundle is prepared from this host build, never a container artifact.
+    local runtime_parent
+    runtime_parent="$(mktemp -d "$build_dir/runtime-XXXXXXXX")"
+    python3 "$REPO_ROOT/holonight-images/scripts/prepare-isolated-runtime.py" \
+      --helper "$build_dir/holonight-images-helper" --plugins /usr/lib/qt6/plugins \
+      --output "$runtime_parent/bundle"
+    cmake -S "$REPO_ROOT/$module" -B "$build_dir" \
+      -DHOLONIGHT_IMAGES_RUNTIME_BUNDLE="$runtime_parent/bundle"
+  fi
+  # Images' install rules verify the prepared inventory and helper before copying.
   DESTDIR="$stage" cmake --install "$build_dir"
 }
 

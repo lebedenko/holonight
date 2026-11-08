@@ -8,7 +8,7 @@ import unittest
 
 
 HELPER = Path(__file__).resolve().parents[1] / "scripts/install-dependencies.sh"
-COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner update-desktop-database".split()
+COMMANDS = "git cmake ninja pkg-config sha256sum find sort awk install cp readlink getent pacman c++ python3 wayland-scanner update-desktop-database bwrap systemd-run systemctl".split()
 PROFILE = HELPER.parent / 'install-profile.sh'
 PACKAGES = [line.strip() for line in PROFILE.read_text().splitlines()[2:-1]]
 
@@ -102,7 +102,7 @@ exit "$status"
         self.assertNotIn("cmake -S", self.log.read_text())
 
     def test_missing_viewer_dependencies(self):
-        for package in ("libwebp", "libexif", "qt6-imageformats", "python"):
+        for package in ("libwebp", "libexif", "qt6-imageformats", "python", "bubblewrap", "systemd"):
             with self.subTest(package=package):
                 self.log.write_text("")
                 result = self.check(MISSING_PACKAGE=package)
@@ -122,6 +122,16 @@ exit "$status"
         result = self.check(MISSING_PACKAGE="hicolor-icon-theme")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("sudo pacman -S --needed hicolor-icon-theme", result.stderr)
+
+    def test_missing_isolation_launcher(self):
+        for command in ("bwrap", "systemd-run", "systemctl"):
+            with self.subTest(command=command):
+                path = self.bin / command
+                path.unlink()
+                result = self.check()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Missing required commands: " + command, result.stderr)
+                self.command(command, "exit 98\n")
 
     def test_unrelated_missing_command(self):
         (self.bin / "git").unlink()
