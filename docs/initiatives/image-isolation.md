@@ -391,6 +391,47 @@ Logs are retained under umbrella `build/publish-isolation` and the component
 legacy tests separated from the container-only execution environment and synthetic
 codec expectations adapted to the isolated boundary.
 
+## Preview overhead measurement groundwork (incomplete)
+
+The [baseline tooling](../../tooling/preview-benchmark/README.md) freezes historical
+sources, binaries, package prefixes, samples and build metadata before building
+new host-native Release packages. The full archived pre-isolation File Browser
+tree matches `caec685` (A); B fixes File Browser `2f86c9b`, Images `c1f6da5` and
+Thumbnails `9462bac`. Historical Debug and unspecified-configuration numbers are
+excluded from the new comparison. The evidence root is ignored
+`build/preview-experiments-ak2cd2cp`; earlier failed preparation attempts remain
+in separate uniquely named directories.
+
+**This is not completion of the three optimization experiments.** Session reuse,
+runtime-generation reuse and bounded prestarted workers remain unimplemented.
+No optimization has been retained, no ready-worker target is claimed, and provider
+interfaces, presentation, deadlines, deployment and revision pins are unchanged.
+Experiment 0 still needs phase attribution, helper/validation/capture counters,
+cleanup/resource sampling and an actual grid-scheduler control. The current
+`grid-decode` case measures only its synchronous decoder.
+
+The first measurement run retains an invalid upgrade case: the original harness
+accepted idle pane state before the resize debounce dispatched an upgrade. Its
+`INVALID-UPGRADE.txt` explicitly excludes those rows. The corrected harness waits
+for requested-resolution pixels and records delivered/required dimensions; fresh
+harness binaries and affected-case runs must remain separate from that evidence.
+The reviewed comparison combines 4,800 unaffected original samples with 800
+corrected upgrade samples, giving 100 attempts for each fixture/case/baseline.
+Its table and raw-input hashes are under
+`build/preview-experiments-ak2cd2cp/reviewed-comparison`. Both cleanup-verification
+failures remain: one grid-decode request and one corrected upgrade setup. Neither
+failure has an established cause. Native execution inside the
+agent sandbox separately failed cleanup verification, while the approved native
+smoke check succeeded. These results do not replace protocol, mutation, rendered
+Files/chooser, relocation or worker-lifecycle acceptance.
+
+All six evidence-tool tests pass, both harness revisions compile against the
+installed A/B Release packages, and changed-source formatting, Python compilation
+and whitespace checks pass. Independent reopening verifies the four historical
+archive hashes and all four benchmark binary hashes. Provider code is unchanged;
+its security/regression suites and application acceptance have not been rerun for
+this tooling-only groundwork. The comparison remains incomplete as specified above.
+
 ## Cleanup diagnostic milestone (2026-11-08)
 
 **Diagnostics implemented; historical cause unresolved.** The
