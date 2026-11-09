@@ -1283,3 +1283,63 @@ builds and prepared bundles, overlay review, syntax/formatting/whitespace checks
 and a reproduced post-run audit. Production contracts, installation, historical
 verdicts and closed optimization directions remain unchanged. No decoding result,
 exact availability timestamp, savings estimate or removable wait is inferred.
+
+## Consumer acceptance lanes and local publication gate
+
+Files and chooser register portable CTest selections and explicit required host
+selections (`task test:isolated`). Checked-in inventories cover every enumerated
+case exactly once and reject stale names. Presentation-only cases stay portable;
+isolated inspection, source/cache decoding, cancellation and cleanup run on the
+host. Opt-in performance/native-interaction cases retain their existing controls;
+they are not substitutes for required runtime acceptance. No production API,
+codec allowlist, runtime discovery, installer protection or UI behavior changes.
+
+Prepare Files' synthetic runtime with its `scripts/prepare-test-runtime.py`, using
+the host helper and a fresh ignored output directory. Only this non-installed
+bundle substitutes the private TIFF codec. The portable subprocess trap and host
+known-size positive control are required evidence; worker failure is never a
+successful unknown-dimension rejection.
+
+The local publication gate uses explicit executable and evidence paths:
+
+```sh
+python3 scripts/check-isolated-previews.py \
+  --prefix "$PREFIX" \
+  --runtime "$PREFIX/libexec/holonight-images/runtime" \
+  --test-runtime "$PWD/holonight-files/build/unknown-size-runtime" \
+  --files "$PWD/holonight-files/build/dev/tests/files-native-preview-lab" \
+  --files-tests "$PWD/holonight-files/build/dev/tests/files-smoke" \
+  --unknown-tests "$PWD/holonight-files/build/dev/tests/files-unknown-dimensions" \
+  --portal "$PWD/xdg-desktop-portal-holonight/build/dev/tests/portal-tests" \
+  --provider "$PROVIDER_BUILD/tests/isolated-package-test/build/isolated-consumer" \
+  --fixtures "$PROVIDER_BUILD/tests/fixtures" \
+  --output "$PWD/build/isolated-consumer-evidence"
+```
+
+Use a disposable host-native staged prefix, never `/usr` or `/usr/local`.
+Build the installed-provider probe and both consumers against that same prefix.
+Use fresh build directories or explicitly update cached `HolonightImages_DIR`,
+`HolonightThumbnails_DIR` and `HolonightFileBrowser_DIR`: changing
+`CMAKE_PREFIX_PATH` alone does not replace previously cached package locations.
+The output must be new and outside the prefix. The gate runs existing installed
+provider acceptance, consumer host selections, passive Files observation and
+rendered application checks. It copies the prefix for relocation, temporarily
+renames the original so it is unavailable, and restores it in a `finally` block.
+Each invocation gets separate configuration/cache/data/state directories.
+Commands, results and logs are retained; `complete.json` appears only after both
+phases succeed. Missing user manager, namespaces, cgroup support, invalid runtime,
+failed/skipped required tests and incomplete execution fail the gate. Images
+continues to use the real session manager; only the chooser gets the private,
+non-activating bus. Existing provider cleanup checks remain authoritative.
+
+Run offline runner checks before integration:
+
+```sh
+python3 scripts/check-isolated-previews-test.py
+python3 holonight-files/scripts/check-test-lane.py
+python3 xdg-desktop-portal-holonight/scripts/check-test-lane.py
+```
+
+Run both consumer container gates with the current sibling providers when testing
+unpublished coordinated changes (`task check -- --siblings "$UMBRELLA"`). Hosted
+runner provisioning, deployment, publication and pin updates are outside this gate.
