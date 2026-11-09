@@ -1254,3 +1254,32 @@ reproducible offline outputs are in Images `build/launcher-readiness-review-2026
 Verification covered retained-data consistency, reproduced gate ratios, input
 hashes, script syntax, source inspection and whitespace. Closed optimization
 directions and the generation-reuse no-go remain unchanged.
+
+### Focused experiment design draft (2026-11-09)
+
+The [Images scope-discovery plan](../../holonight-images/docs/sdd/launcher-readiness-profile/DESIGN.md#focused-scope-discovery-experiment-plan-2026-11-09)
+proposes a parent-only, inspection-only experiment bounding membership visibility
+versus parent discovery using existing reads. Read semantics and monotonic scope
+membership must first pass a feasibility review. Control and observed variants
+share parent boundaries; additional query/wait timestamps are overhead-gated for
+both discovery and outer readiness. The proposed cap is 150 calls with no retry.
+This draft authorizes no implementation, native execution or production change;
+previous evidence and closed optimization directions remain unchanged.
+
+### Focused scope-discovery execution outcome (2026-11-09)
+
+**No qualified scope-discovery attribution.** The subsequently authorized
+[Images parent-only experiment](../../holonight-images/docs/sdd/launcher-readiness-profile/DESIGN.md#focused-scope-discovery-execution-outcome-2026-11-09)
+completed all 150 calls (12 qualification, 18 excluded warm-ups, 120 measured
+inspections). Conditional host-source feasibility, qualification, cleanup,
+completeness and integrity passed. Outer-readiness gates failed for block 0's
+median ratio (1.113138) and block 1's p95 ratio (1.183387), above 1.10; passing pooled
+and discovery gates cannot override them. There was no retry or recovery.
+Descriptive uncertainty width: pooled median 5.146505 ms, p95 5.291018 ms, maximum
+5.616598 ms, with zero censored calls among 60 measured observed calls. Evidence
+and complete statistics remain in Images `build/scope-discovery-9zyg2nw0`.
+Verification included the existing 17 and new 13 focused tests, native Release
+builds and prepared bundles, overlay review, syntax/formatting/whitespace checks
+and a reproduced post-run audit. Production contracts, installation, historical
+verdicts and closed optimization directions remain unchanged. No decoding result,
+exact availability timestamp, savings estimate or removable wait is inferred.
