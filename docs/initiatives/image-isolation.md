@@ -1017,3 +1017,36 @@ patch target paths, citations, document agreement and whitespace checks in both
 repositories. No builds, frozen-runtime execution/modification, installation,
 trust changes, alternative backend/storage investigation, commits, publication or
 pin updates were performed. The cached sources and `holonight-grub/` were untouched.
+
+## Bounded hash correctness review (2026-11-09)
+
+**Bounded correctness agreement established.** The private
+[Images experiment and evidence](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#bounded-hash-correctness-review-2026-11-09)
+compared the installed Qt device overload with the same reviewed 65,536-byte
+loop. Installed QtCore still matches the reconciled `6.12.0-3` SHA-256/build ID;
+no repeated provenance investigation was needed.
+
+All 98 device pairs agreed: 14 ordinary buffered QFile sizes (including NULs and
+boundary cases), two device guards, 72 buffered/unbuffered seekable-device fault
+cases and ten actual borrowed-descriptor QFile error cases. Controlled negative
+reads with end true completed with the prefix digest in both variants; they did
+not match the full input. Real descriptor invalidation before hashing or after
+controlled byte offsets produced read errors, end false and failure in both.
+Read request/return counts remain diagnostics, not equality requirements.
+
+Both host-native validators, built from one Images HEAD archive, matched expected
+verdicts for all ten existing valid/manifest/content/mode/symlink cases. Only the
+candidate archive received the guarded device-call replacement. The 61-entry
+preserved B2 inventory matched before copying and after testing; each variant and
+case had a fresh disposable copy. Frozen payloads were never executed. All 231
+command children were reaped with no timeout, failure or retry. Four focused
+runner tests and whitespace checks passed; evidence remains in ignored Images
+`build/hash-correctness-h3eyasci/` with hashes in the local design.
+
+This is finite agreement, not universal error equivalence or concurrent-mutation
+protection. A separate bounded performance experiment may be considered; no
+benchmark was run and worthwhile savings remain unestablished. Production
+validation, APIs and installation are unchanged, production integration is not
+authorized, and generation reuse remains **no-go**. Historical measurements and
+provenance findings above remain intact. No deployment, installation, commit,
+publication or pin update occurred; Grub was untouched.
