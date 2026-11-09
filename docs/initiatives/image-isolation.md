@@ -833,13 +833,44 @@ workers remain outside this iteration.
 ## Runtime-generation reuse design decision (2026-11-09)
 
 The [Images design](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md)
-records a **no-go for a reuse prototype under the current contracts**. Full
-per-operation validation remains the reference. Immutable snapshots are a
-conditional direction: both the unsandboxed launcher gate and every sandbox bind
-must consume the exact validated immutable generation, and upgrade/revocation
-semantics must explicitly preserve or replace current source-mutation rejection.
-Current path-based launch and file-by-file installation establish neither guarantee.
-The note specifies consumer-owned leases, lifecycle/failure rules, bounded resources,
-future acceptance cases and validation-work break-even calculations from completed
-`preview-iteration-m9uucbpj`; it claims no end-to-end speedup. This step changes only
-documentation and leaves production interfaces, installer behavior and pins intact.
+records the approved **explicit-refresh contract**: a ready immutable generation
+remains usable after source edits, removal or replacement until explicit refresh.
+Refresh blocks new leases; existing leases may finish. Failed refresh leaves new
+acquisitions unavailable without stale fallback; a later explicit refresh can recover.
+Production retains full per-operation validation.
+
+The private host-native sealed-memfd experiment is **no-go at the storage gate**.
+Images `build/runtime-memfd-feasibility-eYAKqdW8/` preserves sources, commands,
+hashes, host details and structured results. Using a disposable copy of the frozen
+B2 helper, content seals blocked writes, truncation and shared writable mappings.
+Even with `F_SEAL_EXEC`, a separate same-user process could chmod the captured
+helper from `0755` to `0777` through the owner's proc descriptor. Exact validated
+mode metadata therefore remained mutable. Frozen source inventories were unchanged;
+all six probe children were reaped and parent descriptor counts returned to baseline.
+
+The required stop gate prevented runtime launches and further owner implementation.
+Gate/sandbox identity, full sealed-generation validation, refresh/lifetime behavior,
+hierarchical cleanup and generation resource bounds remain unqualified. This is
+not a content-seal bypass or a speedup result. The local design records the precise
+failure and outstanding prerequisites. No production interfaces, installer behavior,
+deployment, frozen packages or pins changed.
+
+The [metadata contract review](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#metadata-contract-review-2026-11-09)
+recommends **retaining exact mode immutability and the no-go**. Source validation
+metadata, generation identity records and live backing metadata are distinct.
+Mutable read/write bits do not undo content seals, but that does not qualify
+special bits, ownership, security attributes or loader behavior. Same-user access
+through owner proc descriptors remains in scope. Making the owner non-dumpable
+would also deny ordinary launch descendants that need those paths; protection
+requires a proven legitimate transport, not just attacker denial. The local
+review maps invariants to evidence and uncertainty using Linux v7.0 sources and
+primary documentation; matching the recorded Arch 7.2.14 host remains a prerequisite.
+
+The bounded next experiment requires a different mechanism to pass static and
+metadata gates before transport, functional or lifecycle work. It must preserve
+exact modes and bind every consumer to validated objects while qualifying
+ownership/security policy. No narrower contract is approved or proposed by this
+review; any future narrowing requires explicit approval. Acquisition source modes,
+exact inventory, location-independent identity and approved explicit-refresh
+ordering stay unchanged. Verification was document/code/evidence review and
+whitespace checks only; successful probe checks were reused, not rerun.
