@@ -1343,3 +1343,23 @@ python3 xdg-desktop-portal-holonight/scripts/check-test-lane.py
 Run both consumer container gates with the current sibling providers when testing
 unpublished coordinated changes (`task check -- --siblings "$UMBRELLA"`). Hosted
 runner provisioning, deployment, publication and pin updates are outside this gate.
+
+## Viewer static raster consumer
+
+Viewer now routes raster metadata and first-frame decode through separate isolated
+operations on its existing worker. Its [local design](../../holonight-viewer/docs/sdd/isolated-static-raster/DESIGN.md)
+defines explicit runtime configuration, separate runtime/provider statuses, incomplete
+EXIF handling, cancellation and successful-cache-only behavior. The consumer makes no
+atomic-snapshot claim and has no in-process fallback. Its format policy is PNG, JPEG,
+BMP, TIFF, WebP and GIF, with named/untagged color spaces only; unsupported valid profiles
+are rejected. SVG remains available through its existing path.
+
+Viewer's portable/private-bus and required host lanes are distinct. Installed and
+relocated host-native probes pass explicit runtime paths to document and thumbnail
+composition and exercise rendered output with the original prefix unavailable. Final
+acceptance on 2026-11-09 passed 209 portable and 182 required host cases, CLI opening,
+24 container CTest checks, static/QML/package checks and both installed rendering
+phases; the Viewer SDD records the evidence. Container binaries are package
+acceptance only. GIF playback after frame zero and SVG still execute in-process: this
+is static-raster isolation, not complete Viewer isolation. Installer protections,
+provider APIs/protocols, publication and dependency pins are unchanged.
