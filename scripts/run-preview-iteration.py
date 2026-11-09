@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run corrected Experiment 0 passes sequentially; any failure gates all later passes."""
 import argparse
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -37,54 +38,138 @@ def lifecycle_report(path, planned=1000):
             errors.append(f'line {number}: {error}')
     attempted = {r['cycle'] for r in operations}
     failed = {r['cycle'] for r in operations if r['runtime'] != 0 or r['outcome'] != 0}
-    completed = 0
-    for cycle in attempted:
+    sequence = ('inspect', 'source-decode', 'cached-png-decode')
+    complete_cycles, partial_cycles = set(), set()
+    for cycle in sorted(attempted):
         names = [r['operation'] for r in operations if r['cycle'] == cycle]
-        if sorted(names) == sorted(('inspect', 'source-decode', 'cached-png-decode')) and cycle not in failed:
-            completed += 1
+        if names == list(sequence):
+            complete_cycles.add(cycle)
+        elif names == list(sequence[:len(names)]) and len(names) < 3:
+            partial_cycles.add(cycle)
+        else:
+            errors.append(f'invalid lifecycle operation sequence: {cycle}')
+    if [r['cycle'] for r in operations] != sorted(r['cycle'] for r in operations):
+        errors.append('out-of-order lifecycle cycles')
+    if attempted != set(range(len(attempted))):
+        errors.append('noncontiguous lifecycle cycles')
+    completed = len(complete_cycles)
+    successful = len(complete_cycles - failed)
     summary = summaries[0] if len(summaries) == 1 else None
     if summary is None or summary['operations'] != len(operations) or summary['cycles'] != completed:
         errors.append('missing or inconsistent lifecycle summary')
     capped = bool(summary and summary['elapsed_ms'] >= 600000 and completed < planned)
+    if partial_cycles and (not capped or partial_cycles != {max(attempted)}):
+        errors.append('partial cycle without terminal cap evidence')
     if completed < planned and not capped:
         errors.append('incomplete lifecycle without cap evidence')
     return {'denominators': {'planned': planned, 'attempted': len(attempted),
-            'completed': completed, 'failed': len(failed), 'excluded': 0,
+            'completed': completed, 'successful': successful, 'partial_cycles': len(partial_cycles),
+            'requested': planned, 'unreported_requested_slots': 0, 'failed': len(failed), 'excluded': 0,
             'unattempted': planned - len(attempted), 'missing': planned - completed,
             'missing_timed_observations': planned * 3 - len(operations),
             'failed_operations': sum(r['runtime'] != 0 or r['outcome'] != 0 for r in operations)},
+            'cleanup_failures': sum(r['runtime'] == 4 for r in operations),
             'cap_shortfall': planned - completed if capped else 0,
             'parse_errors': errors, 'failed': bool(failed or errors)}
 
 
-def audit_package(package, baselines):
+def manifest_exception(path, expected, observed, original_prefix, acceptance_prefix):
+    raw = path.read_bytes()
+    old = str(acceptance_prefix).rstrip('/').encode() + b'/'
+    new = str(original_prefix).rstrip('/').encode() + b'/'
+    lines = raw.splitlines(keepends=True)
+    normalized = b''.join(new + line[len(old):] for line in lines if line.startswith(old))
+    metadata = {'sha256': hashlib.sha256(normalized).hexdigest(),
+                'bytes': len(normalized), 'mode': observed.get('mode')}
+    verified = bool(lines) and all(line.startswith(old) for line in lines) and metadata == expected
+    return {'original': expected, 'observed': observed, 'original_prefix': str(original_prefix),
+            'acceptance_prefix': str(acceptance_prefix), 'normalized': metadata, 'verified': verified}
+
+
+def audit_package(package, baselines, acceptance_prefix=None, findings=None):
     records = {}
+    failures = []
     provenance = json.loads((package / 'provenance.json').read_text())
     for label in provenance['variants']:
         base = package / label
         expected = json.loads((base / 'inventory.json').read_text())
         actual = baselines.inventory(base)
         mismatches = [name for name, value in expected.items() if actual.get(name) != value]
+        exceptions = {}
+        name = 'build/holonight-images/install_manifest.txt'
+        if acceptance_prefix is not None and label == 'B2' and name in mismatches:
+            proof = manifest_exception(base / name, expected[name], actual.get(name, {}),
+                                       base / 'prefix', acceptance_prefix)
+            exceptions[name] = proof
+            if proof['verified']:
+                mismatches.remove(name)
         extras = set(actual) - set(expected) - {'inventory.json'}
         unexpected = extras - {'harness/Testing/Temporary/CTestCostData.txt',
                                'harness/Testing/Temporary/LastTest.log'}
         if mismatches or unexpected:
-            raise ValueError(f'{label} inventory mismatch: ' + json.dumps(
+            failures.append(f'{label} inventory mismatch: ' + json.dumps(
                 {name: {'expected': expected[name], 'actual': actual.get(name)} for name in mismatches})
                 + f', extra: {sorted(unexpected)}')
         for manifest in (base / 'prefix').rglob('manifest.json'):
             for row in json.loads(manifest.read_text())['files']:
                 if baselines.digest(manifest.parent / row['path']) != row['sha256']:
-                    raise ValueError(f'runtime manifest mismatch: {row["path"]}')
+                    failures.append(f'runtime manifest mismatch: {row["path"]}')
         records[label] = {'inventory_sha256': baselines.digest(base / 'inventory.json'),
-                          'files_verified': len(expected), 'acceptance_logs': sorted(extras)}
+                          'files_verified': len(expected) - len(mismatches), 'acceptance_logs': sorted(extras),
+                          'metadata_exceptions': exceptions,
+                          'provenance_sha256': baselines.digest(package / 'provenance.json'),
+                          'executables': {str(p.relative_to(base)): baselines.digest(p)
+                                          for p in (base / 'harness').glob('preview-*') if p.is_file()}}
+    if findings is not None:
+        findings.extend(failures)
+    elif failures:
+        raise ValueError('; '.join(failures))
     return records
+
+
+def import_child(path, planned, ledger, kind, entry):
+    try:
+        child = json.loads(path.read_text())
+        entry['report'] = child
+        counts = child['denominators']
+        required = ('planned', 'requested', 'attempted', 'completed', 'failed', 'excluded',
+                    'unattempted', 'unreported_requested_slots', 'missing_timed_observations')
+        if any(type(counts.get(key)) is not int or counts[key] < 0 for key in required):
+            raise ValueError('invalid child denominators')
+        if (counts['planned'] != planned or counts['requested'] + counts['unattempted'] != planned or
+                counts['attempted'] + counts['unreported_requested_slots'] != counts['requested'] or
+                counts['completed'] > counts['attempted']):
+            raise ValueError('inconsistent child denominators')
+        ledger[kind] = counts
+        return bool(child.get('stopped') or child['incomplete_invocations'] or counts['failed'] or
+                    counts['excluded'] or counts['completed'] != planned or
+                    counts['missing_timed_observations'] or child.get('cleanup_failures') or child.get('telemetry_errors'))
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        entry['report_error'] = str(error)
+        # A failed report must not erase observed attempts or requested slots.
+        # Reconstruct from retained child evidence, but keep the pass failed.
+        if (path.parent / 'provenance.json').exists():
+            try:
+                spec = importlib.util.spec_from_file_location('reporter', ROOT / 'scripts/report-preview-evidence.py')
+                reporter = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(reporter)
+                recovered = reporter.summarize(path.parent)
+                counts = recovered['denominators']
+                if (counts['planned'] != planned or counts['requested'] > planned or
+                        counts['attempted'] > counts['requested']):
+                    raise ValueError('invalid recovered child denominators')
+                ledger[kind] = counts
+                entry['recovered_report'] = recovered
+            except (OSError, ValueError, KeyError, TypeError) as recovery_error:
+                entry['recovery_error'] = str(recovery_error)
+        return True
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('scheduler', 'diagnostic', 'fixtures', 'probe'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--acceptance-install-prefix', type=Path)
     args = parser.parse_args()
     args.scheduler, args.diagnostic, args.fixtures, args.probe = (
         p.resolve() for p in (args.scheduler, args.diagnostic, args.fixtures, args.probe))
@@ -95,10 +180,12 @@ def main():
     report = {'passes': [], 'stopped': None, 'planned': planned,
               'unattempted': dict(planned),
               'denominators': {name: {'planned': count, 'attempted': 0, 'completed': 0,
-                  'failed': 0, 'excluded': 0, 'unattempted': count,
+                  'failed': 0, 'excluded': 0, 'requested': 0,
+                  'unreported_requested_slots': 0, 'unattempted': count,
                   'missing_timed_observations': 3000 if name == 'lifecycle_cycles' else count}
                   for name, count in planned.items()}}
     audit = {}
+    findings = []
     def save():
         (output / 'summary.json').write_text(json.dumps(report, indent=2) + '\n')
     try:
@@ -109,7 +196,7 @@ def main():
                 not b2['corrected_cleanup'] or not d2['corrected_cleanup'] or b2['diagnostic'] or
                 not d2['diagnostic'] or b2['source_delta'] != d2['source_delta'] or
                 scheduler['revisions']['B2'] != diagnostic['revisions']['D2']):
-            raise ValueError('B2/D2 correction provenance mismatch')
+            findings.append('B2/D2 correction provenance mismatch')
         spec = importlib.util.spec_from_file_location('runner', ROOT / 'scripts/run-preview-evidence.py')
         runner = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(runner)
@@ -117,8 +204,18 @@ def main():
         baselines = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(baselines)
         audit['probe_sha256'] = baselines.digest(args.probe)
+        if args.acceptance_install_prefix is not None:
+            args.acceptance_install_prefix = args.acceptance_install_prefix.resolve()
+            for package, expected_hash in (
+                    (args.scheduler, '5badbae16503e5738bff35a3c0cbd229960feca4e8be9660e3ce36062a25b280'),
+                    (args.diagnostic, '62335285bce760c48b55d57449313a4bc9ebf341fd14c983d621e31821635ba8')):
+                if baselines.digest(package / 'provenance.json') != expected_hash:
+                    findings.append('frozen correction provenance identity mismatch: ' + str(package))
         for package in (args.scheduler, args.diagnostic):
-            audit[str(package)] = audit_package(package, baselines)
+            try:
+                audit[str(package)] = audit_package(package, baselines, args.acceptance_install_prefix, findings)
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                findings.append(str(package) + ': ' + str(error))
         frozen = json.loads((args.fixtures.parent / 'provenance.json').read_text())
         expected_fixtures = frozen['fixtures']
         if set(expected_fixtures) != {'160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg'}:
@@ -126,9 +223,33 @@ def main():
         for name, expected in expected_fixtures.items():
             path = args.fixtures / Path(name).name
             if baselines.digest(path) != expected:
-                raise ValueError(f'fixture mismatch: {path}')
+                findings.append(f'fixture mismatch: {path}')
+        if args.acceptance_install_prefix is not None:
+            expected_probe = '30f9db400e358974f05a676fc5b0345838541855e4f9b13983688714afe39af6'
+            audit['probe_expected_sha256'] = expected_probe
+            if audit['probe_sha256'] != expected_probe:
+                findings.append('recorded lifecycle probe identity mismatch')
+            ninja = (args.probe.parent / 'build.ninja').read_text()
+            audit['probe_linked_images'] = {}
+            for name in ('libholonight_images.a', 'libholonight_images_isolated.a'):
+                linked = args.acceptance_install_prefix / 'lib' / name
+                frozen_library = args.scheduler / 'B2/prefix/lib' / name
+                audit['probe_linked_images'][name] = {
+                    'linked': str(linked), 'sha256': baselines.digest(linked),
+                    'b2_sha256': baselines.digest(frozen_library)}
+                if str(linked) not in ninja or baselines.digest(linked) != baselines.digest(frozen_library):
+                    findings.append('probe linked Images mismatch: ' + name)
+        audit['findings'] = findings
+        audit['fixtures'] = expected_fixtures
+        audit['tools'] = {}
+        for tool in ('run-preview-evidence.py', 'report-preview-evidence.py', 'preview-evidence-accounting.py'):
+            source = ROOT / 'scripts' / tool
+            (output / tool).write_bytes(source.read_bytes())
+            audit['tools'][tool] = baselines.digest(source)
         (output / 'audit.json').write_text(json.dumps(audit, indent=2) + '\n')
         workloads = {}
+        if findings:
+            raise ValueError('; '.join(findings))
         for label in ('A', 'B2'):
             binary = args.scheduler / label / 'harness/preview-grid-control'
             workloads[label] = json.loads(subprocess.check_output([str(binary), '--describe-workload'], text=True))
@@ -153,7 +274,7 @@ def main():
                               str(output / 'lifecycle.jsonl'), *map(str, fixtures)])]
     for kind, package in (('diagnostic', args.diagnostic), ('resource', args.diagnostic), ('scheduler', args.scheduler)):
         commands.append((kind, ['python3', str(ROOT / 'scripts/run-preview-evidence.py'), str(package),
-                                str(args.fixtures), '--kind', kind]))
+                                str(args.fixtures), '--kind', kind, '--output-directory', str(output / kind)]))
     for kind, command in commands:
         entry = {'kind': kind, 'command': command}
         report['passes'].append(entry)
@@ -171,6 +292,11 @@ def main():
             report['denominators']['lifecycle_cycles'] = lifecycle['denominators']
             if lifecycle['failed'] and code == 0:
                 code = 1
+            entry['effective_exit'] = code
+        else:
+            if import_child(output / kind / 'summary.json', planned[kind],
+                            report['denominators'], kind, entry):
+                code = code or 1
             entry['effective_exit'] = code
         save()
         print(kind, code, flush=True)

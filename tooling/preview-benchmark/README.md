@@ -2,9 +2,9 @@
 
 This tooling establishes fixed Release baselines for the preview-overhead work.
 It does **not** implement or qualify session reuse, runtime-generation reuse, or
-prestarted workers. Experiment 0 remains incomplete until phase attribution,
-helper/capture counters, cleanup sampling, and the actual grid scheduling control
-are added. No candidate retain/reject decision can be made from this harness alone.
+prestarted workers. The corrected Experiment 0 matrix is complete in
+`build/preview-iteration-m9uucbpj`; earlier incomplete runs remain historical.
+No candidate retain/reject decision can be made from this harness alone.
 
 ## Reproduction
 
@@ -293,3 +293,57 @@ must be resolved before native measurement; no performance or cleanup conclusion
 is available, and runtime-generation reuse remains deferred. Historical evidence,
 failures and exclusions are preserved. See the umbrella image-isolation note's
 "Fresh corrected Experiment 0 preparation" section for hashes and denominators.
+
+## Verified metadata exception and completed corrected matrix (2026-11-09)
+
+`build/preview-iteration-m9uucbpj` completed 1,000 lifecycle cycles (3,000
+operations, 281.751 seconds), 280 D2 attribution samples, 84 separate D2 resource
+samples and 600 A/B2 scheduler batches sequentially. Requested, observed attempted
+and completed counts equal planned counts. Failed, excluded, unattempted,
+unreported requested and missing timed counts are all zero. Cleanup verification
+passed. No builds, tests or static analysis overlapped measurement.
+
+The existing package roots and rebuilt probe were reused without rebuilding:
+
+```sh
+python3 scripts/run-preview-iteration.py \
+  --scheduler build/preview-scheduler-f2c1ty8f \
+  --diagnostic build/preview-diagnostic-ymcm3gs7 \
+  --fixtures build/preview-experiments-ak2cd2cp/measure-fivw3ih0/fixtures \
+  --probe build/cleanup-race-verification/probe/cleanup-diagnostic \
+  --acceptance-install-prefix /home/andrii/Projects/pet/holonight/build/cleanup-race-verification/acceptance-prefix
+```
+
+The optional exception checks only B2's Images install manifest. Complete prefixes
+are normalized in memory; the resulting hash, size and original mode must equal
+the frozen inventory. This reproduced SHA-256
+`42f04300fb75b3bf77a6fe41a21460811491cdd63095bc98ce367c9606e0f325`
+and 9,701 bytes at mode 0644. The observed manifest and frozen inventory stay
+unchanged. Omitting the option preserves strict mismatch rejection. The selected
+exception also pins the existing correction provenance and recorded probe identity;
+it does not authorize a different package generation. The probe's linked Images
+libraries matched B2.
+
+Child passes accept `--output-directory PATH` for a new, nonexisting directory;
+without it their previous unique-directory behavior remains. Iteration children
+live beneath the new iteration. Partial reports are imported before checking exit
+status and required outcomes; report failures retain the ledger and gate later
+passes. A client cleanup failure stops native measurement without retry or extra
+manager cleanup. A valid lifecycle cap between operations retains an explicit
+partial cycle and never counts missing operations as successful.
+
+Both scheduler descriptions, warm setups and timed fixture batches passed identity
+checks. Each baseline/workload has 100 batches; warm timed decoder starts were
+zero for both baselines. A/B2 median cold delivery was 118.892/1,303.886 ms,
+warm 0.209/0.218 ms, and cancellation 51.057/361.447 ms. D2 attribution observed
+696 successful provider operations with complete helper timelines. Resource
+sampling requested 10 ms and observed 8.984–11.534 ms; 2 parent RSS, 6 scope-total
+and 8 combined reads were unavailable and remain explicit. Independent memory
+maxima and parent/helper timelines remain separate.
+
+See the [completed umbrella evidence note](../../docs/initiatives/image-isolation.md#corrected-experiment-0-completed-2026-11-09)
+for artifact hashes, full denominators, distributions, reused acceptance and
+remaining limitations. Earlier preparation stops and exclusions are unchanged.
+The final tooling suite passes 30 tests, compilation and whitespace checks.
+Runtime-generation reuse merits a separately designed next experiment; no reuse,
+prestarted workers or production performance changes were implemented.

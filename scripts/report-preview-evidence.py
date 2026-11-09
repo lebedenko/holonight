@@ -24,6 +24,17 @@ def mixed_fixture_batch(row):
             and [r.get('source_fixture') for r in operations] == names * 4)
 
 
+def valid_scheduler_batch(row, workload):
+    if not mixed_fixture_batch(row) or 'sample' not in row:
+        return False
+    if workload == 'warm':
+        setup = dict(row)
+        setup.pop('sample', None)
+        return (mixed_fixture_batch(setup) and row.get('setup', {}).get('success', False)
+                and row['sample'].get('started') == 0)
+    return True
+
+
 def summarize(root):
     provenance = json.loads((root / 'provenance.json').read_text())
     attempts = [json.loads(line) for line in (root / 'attempts.jsonl').read_text().splitlines()] if (root / 'attempts.jsonl').exists() else []
@@ -92,6 +103,8 @@ def summarize(root):
         resources.append({'file': file.name, 'ticks': len(rows),
                           **{key: distribution([row.get(key) for row in rows], len(rows)) for key in
                              ('parent_rss_bytes', 'concurrent_scope_bytes', 'concurrent_parent_plus_scope_bytes')},
+                          'observed_intervals_ms': [(b['monotonic_ns'] - a['monotonic_ns'])/1e6
+                                                    for a, b in zip(rows, rows[1:])],
                           'maximum_observed_interval_ms': max(((b['monotonic_ns'] - a['monotonic_ns'])/1e6
                                                                for a, b in zip(rows, rows[1:])), default=None)})
     grid = {}
@@ -114,7 +127,8 @@ def summarize(root):
                 grid.setdefault(label + '-' + workload, {'attempts': 0, 'missing_attempts': 100})
     expected = 600 if provenance['kind'] == 'scheduler' else (280 if provenance['kind'] == 'diagnostic' else 84)
     failed = sum(not r.get('sample', r).get('success', False) or
-                 (bool(r.get('setup')) and not r['setup'].get('success', False)) for r in samples)
+                 (bool(r.get('setup')) and not r['setup'].get('success', False)) or
+                 not r.get('setup_success', True) or r.get('harness_timeout', False) for r in samples)
     exclusion = json.loads((root / 'EXCLUSION.json').read_text()) if (root / 'EXCLUSION.json').exists() else None
     excluded = len(samples) if exclusion else (sum(not mixed_fixture_batch(r) for r in samples) if grid else 0)
     completed = sum(bool(r.get('sample')) for r in samples) if grid else len(samples)
@@ -123,9 +137,15 @@ def summarize(root):
     unreported = sum(a['incomplete'] and len(a['samples']) < int(provenance['commands'][a['attempt']][4]) for a in attempts)
     return {'variants': provenance.get('variants', ['A', 'B'] if grid else ['D']),
             'denominators': {'planned': expected, 'attempted': attempted, 'completed': completed,
-                             'failed': failed, 'excluded': excluded, 'missing': expected - len(samples),
+                             'failed': failed, 'excluded': excluded,
+                             'requested': requested, 'unattempted': expected - requested,
+                             'unreported_requested_slots': requested - attempted,
+                             'missing_timed_observations': expected - sum(
+                                 (r.get('sample', {}).get('wall_ms', -1) >= 0) if grid else
+                                 (r.get('first_ms', -1) >= 0 and r.get('final_ms', -1) >= 0) for r in samples), 'missing': expected - len(samples),
                              'missing_measurements': expected - completed, 'requested_sample_slots': requested, 'attempts_with_unreported_slots': unreported},
             'kind': provenance['kind'], 'qualifying_latency': False, 'stopped': provenance['stopped'],
+            'cleanup_failures': sum(a['cleanup_failure'] for a in attempts),
             'attempted_invocations': len(attempts), 'harness_exits': dict(Counter(str(a['harness_exit']) for a in attempts)),
             'incomplete_invocations': sum(a['incomplete'] for a in attempts),
             'exclusion': exclusion,

@@ -305,6 +305,24 @@ class DiagnosticAccounting(unittest.TestCase):
             self.assertEqual(report['gated_passes'], ['lifecycle', 'diagnostic', 'resource', 'scheduler'])
             self.assertIn('inventory mismatch', report['stopped'])
 
+            # Independent fixture and correction changes must gate before native work.
+            (root / 'scheduler/B2/harness/preview-grid-control').write_bytes(
+                (root / 'scheduler/A/harness/preview-grid-control').read_bytes())
+            (fixtures / '160x80.png').write_bytes(b'changed fixture')
+            result = subprocess.run(result.args, capture_output=True, text=True)
+            report = json.loads((Path(result.stdout.splitlines()[0]) / 'summary.json').read_text())
+            self.assertEqual(report['passes'], [])
+            self.assertIn('fixture mismatch', report['stopped'])
+            (fixtures / '160x80.png').write_bytes(b'fixture')
+            provenance_path = root / 'scheduler/provenance.json'
+            metadata = json.loads(provenance_path.read_text())
+            metadata['variants']['B2']['source_delta'] = {'changed': 'correction'}
+            provenance_path.write_text(json.dumps(metadata))
+            result = subprocess.run(result.args, capture_output=True, text=True)
+            report = json.loads((Path(result.stdout.splitlines()[0]) / 'summary.json').read_text())
+            self.assertEqual(report['passes'], [])
+            self.assertIn('correction provenance mismatch', report['stopped'])
+
 
     def test_lifecycle_partial_and_failures(self):
         import json
@@ -377,6 +395,117 @@ class DiagnosticAccounting(unittest.TestCase):
         row['sample']['operations'][1]['source_fixture'] = names[0]
         self.assertFalse(reporter.mixed_fixture_batch(row))
         self.assertFalse(reporter.mixed_fixture_batch({'fixture': names[0], 'sample': {}}))
+
+
+class CorrectedIterationGates(unittest.TestCase):
+    def test_manifest_exception_is_prefix_only_and_read_only(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            base = root / 'B2'
+            path = base / 'build/holonight-images/install_manifest.txt'
+            path.parent.mkdir(parents=True)
+            (root / 'provenance.json').write_text('{"variants":{"B2":{}}}')
+            original = str(base / 'prefix')
+            acceptance = root / 'acceptance'
+            frozen = (original + '/lib/a\n' + original + '/include/b\n').encode()
+            path.write_bytes(frozen)
+            inventory = baselines.inventory(base)
+            (base / 'inventory.json').write_text(json.dumps(inventory))
+            changed = frozen.replace(original.encode(), str(acceptance).encode())
+            path.write_bytes(changed)
+            with self.assertRaises(ValueError):
+                runner.audit_package(root, baselines)
+            proof = runner.audit_package(root, baselines, acceptance)['B2']['metadata_exceptions']
+            self.assertTrue(next(iter(proof.values()))['verified'])
+            self.assertEqual(path.read_bytes(), changed)
+            self.assertEqual(json.loads((base / 'inventory.json').read_text()), inventory)
+            for invalid in (changed + b'added\n', changed.splitlines(keepends=True)[0],
+                            b''.join(reversed(changed.splitlines(keepends=True))),
+                            changed.replace(b'/lib/a', b'/lib/c'),
+                            changed.replace(str(acceptance).encode(), str(acceptance).encode() + b'-other')):
+                path.write_bytes(invalid)
+                with self.assertRaises(ValueError):
+                    runner.audit_package(root, baselines, acceptance)
+            path.write_bytes(changed)
+            path.chmod(0o600)
+            with self.assertRaises(ValueError):
+                runner.audit_package(root, baselines, acceptance)
+
+    def test_cap_between_operations_preserves_partial_cycle(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'lifecycle'
+            rows = [dict(cycle=0, operation='inspect', runtime=0, outcome=0),
+                    dict(kind='summary', cycles=0, operations=1, elapsed_ms=600001)]
+            path.write_text(''.join(json.dumps(r) + '\n' for r in rows))
+            result = runner.lifecycle_report(path, 2)
+            self.assertFalse(result['failed'])
+            self.assertEqual(result['denominators']['partial_cycles'], 1)
+            self.assertEqual(result['denominators']['successful'], 0)
+            self.assertEqual(result['denominators']['missing_timed_observations'], 5)
+            rows[0]['operation'] = 'cached-png-decode'
+            path.write_text(''.join(json.dumps(r) + '\n' for r in rows))
+            self.assertTrue(runner.lifecycle_report(path, 2)['failed'])
+
+    def test_child_partial_and_missing_reports_gate_without_losing_ledger(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'summary.json'
+            counts = dict(planned=280, requested=10, attempted=3, completed=2, failed=1,
+                          excluded=0, unattempted=270, unreported_requested_slots=7,
+                          missing_timed_observations=278)
+            path.write_text(json.dumps(dict(denominators=counts, incomplete_invocations=1)))
+            ledger, entry = {}, {}
+            self.assertTrue(runner.import_child(path, 280, ledger, 'diagnostic', entry))
+            self.assertEqual(ledger['diagnostic'], counts)
+            for text in ('{', '{}', 'null'):
+                path.write_text(text)
+                self.assertTrue(runner.import_child(path, 280, ledger, 'diagnostic', {}))
+                self.assertEqual(ledger['diagnostic'], counts)
+            self.assertTrue(runner.import_child(path.parent / 'absent', 280, ledger, 'diagnostic', {}))
+
+    def test_missing_child_summary_recovers_requested_and_observed_slots(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            command = ['/D2/harness/preview-benchmark', 'runtime', 'fixture', 'first', '10', str(root / 'raw.json')]
+            (root / 'provenance.json').write_text(json.dumps(dict(kind='diagnostic', stopped='launch failed',
+                variants=['D2'], commands=[command])))
+            row = dict(success=False, setup_success=False, first_ms=-1, final_ms=-1)
+            accounting.preserve_attempt(root / 'attempts.jsonl', 0, json.dumps(row), '', 1, 10)
+            for malformed in (None, '{'):
+                path = root / 'summary.json'
+                if malformed is not None:
+                    path.write_text(malformed)
+                ledger, entry = {}, {}
+                self.assertTrue(runner.import_child(path, 280, ledger, 'diagnostic', entry))
+                counts = ledger['diagnostic']
+                self.assertEqual(counts['requested'], 10)
+                self.assertEqual(counts['attempted'], 1)
+                self.assertEqual(counts['failed'], 1)
+                self.assertEqual(counts['unattempted'], 270)
+                self.assertEqual(counts['unreported_requested_slots'], 9)
+                self.assertIn('report_error', entry)
+
+    def test_warm_setup_and_timed_identity_are_independent(self):
+        import copy
+        reporter = module('report-preview-evidence')
+        names = ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg']
+        batch = dict(success=True, started=0, operations=[dict(source_fixture=n) for n in names * 4])
+        row = dict(scheduler_threads=2, box_pixels=256, fixture_cycle=names,
+                   setup=copy.deepcopy(batch), sample=copy.deepcopy(batch))
+        self.assertTrue(reporter.valid_scheduler_batch(row, 'warm'))
+        for field in ('setup', 'sample'):
+            invalid = copy.deepcopy(row)
+            invalid[field]['operations'][0]['source_fixture'] = 'other.png'
+            self.assertFalse(reporter.valid_scheduler_batch(invalid, 'warm'))
+        row['sample']['started'] = 1
+        self.assertFalse(reporter.valid_scheduler_batch(row, 'warm'))
 
 
 if __name__ == '__main__':

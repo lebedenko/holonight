@@ -717,3 +717,129 @@ later passes while preserving valid partial observations. The ten-minute probe
 cap remains unchanged. **Completion remains gated on resolving the inventory
 identity discrepancy and then obtaining the entire corrected measurement matrix
 with successful cleanup verification.** Runtime-generation reuse remains deferred.
+
+## Corrected Experiment 0 completed (2026-11-09)
+
+The new native iteration `build/preview-iteration-m9uucbpj` passed lifecycle,
+D2 attribution, separately sampled D2 resources, and A/B2 scheduler control in that
+order. `summary.json`, `audit.json`, child directories and the independent
+`validation.json` retain the evidence. No builds, tests or static analysis ran
+concurrently with measurement. Earlier preparation stops, native failures,
+exclusions, reports, manifests and inventories remain historical and unchanged;
+in particular `preview-iteration-qyruwtid` remains a failed preparation audit.
+
+The explicitly selected `--acceptance-install-prefix` exception applies only to
+B2's `build/holonight-images/install_manifest.txt`. Every entry must start with the
+complete acceptance prefix plus `/`. Replacing that prefix in memory with
+`build/preview-scheduler-f2c1ty8f/B2/prefix` reproduced the frozen SHA-256
+`42f04300fb75b3bf77a6fe41a21460811491cdd63095bc98ce367c9606e0f325`
+and 9,701 bytes, from observed SHA-256
+`5c93d2e527707c3879ff5c140ae8216de920c24b5a1d42a97451e88c833f79c0`
+and 10,205 bytes. Mode remained 0644. The full absolute prefixes and proof are in
+`audit.json`. No manifest or inventory was rewritten. Without the option the
+mismatch still fails. Added, removed, reordered, changed or differently prefixed
+entries, mode changes and unrelated artifacts remain rejected. Only the two
+previously named CTest temporary logs are allowed as additional inventory entries.
+
+The audit verified 859 A, 871 B2 and 873 D2 recorded entries, installed runtime
+manifests, correction provenance and all four frozen fixture hashes. Identities:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Scheduler provenance | `5badbae16503e5738bff35a3c0cbd229960feca4e8be9660e3ce36062a25b280` |
+| Diagnostic provenance | `62335285bce760c48b55d57449313a4bc9ebf341fd14c983d621e31821635ba8` |
+| A inventory | `dbfc4f74bdb5aab1e60b766e52d59afe2a2ca2ba9edf34bff58125ba6b4bc8be` |
+| B2 inventory | `9d6a0ef8084555b4a31fa6972471b231e44bba4b283c584bb6203d1b00a34127` |
+| D2 inventory | `dfe77978474d043a86c76b197c7faa59dd886913eb4e7d50b074477641db2cf6` |
+| Lifecycle probe | `30f9db400e358974f05a676fc5b0345838541855e4f9b13983688714afe39af6` |
+| A scheduler executable | `e6df1cc698560e503a62d309ad74c5b63d22f3c6c9e87d88d12fb3f159ea3999` |
+| B2 scheduler executable | `204dc837099dbce2841f9f9daba0cc2155a1c1f27754f38374202fad32b6e6b1` |
+| D2 benchmark executable | `3c15a3ee7974f044d65e49d9f6eb6adac991477372589a1180a967a31a82fb85` |
+
+Both Images libraries in the probe's recorded link inputs match B2: core
+`2bda998d5efc77191dc92c692cc49ec5824c684b7151f52f80d15ac1c05dc0aa`,
+isolated client
+`a25db0128ac15fa0c4b8d8d414b3462766899221b87de7533e502d640508d7f8`.
+Source revisions, correction hashes, executable inventories, tool snapshots,
+workload descriptions and fixture hashes remain in package provenance and the
+new audit. Cleanup/provider, installed/relocated, scheduler-barrier and
+Files/chooser acceptance was reused unchanged; there was no rebuild or broad
+acceptance rerun.
+
+| Pass | Planned | Requested | Observed attempted | Completed | Failed | Excluded | Unattempted | Unreported requested | Missing timed observations |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Lifecycle cycles | 1,000 | 1,000 | 1,000 | 1,000 | 0 | 0 | 0 | 0 | 0 operations |
+| D2 attribution | 280 | 280 | 280 | 280 | 0 | 0 | 0 | 0 | 0 |
+| D2 resources | 84 | 84 | 84 | 84 | 0 | 0 | 0 | 0 | 0 |
+| A/B2 scheduler | 600 | 600 | 600 | 600 | 0 | 0 | 0 | 0 | 0 |
+
+Lifecycle completed all 3,000 operations in 281.751 seconds, with no failed or
+partial cycles and no cap shortfall. Attribution recorded 696 provider operations;
+resources recorded 220. All provider results reported runtime success, with no
+missing results, malformed/truncated telemetry, dropped records or missing helper
+timelines. Both passes recorded 28 post-drain scope snapshots, all with zero scopes
+and processes and no surviving tracked cgroup. Scheduler batches all drained;
+cleanup failures were zero throughout. These checks establish cleanup for this
+iteration, while one-second snapshots do not establish general leak freedom or
+resolve historical failure causes. No retries or additional manager cleanup ran.
+
+Each scheduler baseline/workload has 100 mixed batches: four copies of each
+fixture, two threads, 256-pixel boxes. Both warm setup and timed fixture identities
+were independently validated. Warm timed batches started zero decoders for A and
+B2. Baseline order alternated in ten-batch blocks.
+
+| Scheduler control | Median ms | p95 ms | Maximum ms |
+| --- | ---: | ---: | ---: |
+| A cold | 118.892 | 123.350 | 124.374 |
+| B2 cold | 1,303.886 | 1,362.580 | 1,451.102 |
+| A warm | 0.209 | 0.269 | 0.295 |
+| B2 warm | 0.218 | 0.377 | 0.521 |
+| A cancellation | 51.057 | 56.952 | 69.006 |
+| B2 cancellation | 361.447 | 395.292 | 411.972 |
+
+Attribution parent-phase medians were 47.111 ms runtime validation, 27.226 ms
+launcher readiness, 3.209 ms cleanup and 0.186 ms unexplained parent time. The
+independent helper execution median was 1.516 ms and reply serialization 0.041 ms.
+These are nested observations, not additive independent latency components.
+D2 instrumentation and resource sampling remain separate from scheduler controls
+and frozen original A/B latency; none qualifies a candidate optimization.
+
+Resource sampling requested 10 ms; actual intervals were 8.984–11.534 ms and all
+intervals remain in the child report. Parent RSS, concurrent scopes, and their
+concurrently sampled sum peaked independently at 60,829,696, 40,087,552, and
+90,849,280 bytes. Their unavailable-read counts were 2, 6 and 8 respectively;
+missing reads were never replaced with zero. Individual cgroup `memory.peak`
+maximum was 46,485,504 bytes in this pass and remains separate from concurrent
+sampled maxima. All 220 pre-ack CPU/memory reads were available. Transient peaks
+between samples remain unobserved; scheduler response delivery is not rendered
+QML frame latency.
+
+The measurement runner and child tools were snapshotted before execution.
+Focused verification passed 29 tests before native work, plus Python compilation
+and whitespace checks. A subsequent parent reporting-only fix recovers partial
+counts from retained child evidence when its summary is missing or malformed,
+while still gating later passes; the final suite passes 30 tests. It did not
+change or rerun measured operations or rewrite their reports. Preparation findings
+also accumulate through read-only correction and inventory checks before gating.
+
+**Corrected Experiment 0 is complete for the requested matrix and lifecycle.**
+Runtime-generation reuse is now a reasonable next experiment to design, given
+validation/readiness costs relative to helper execution, but any reuse must first
+define fail-closed runtime identity and invalidation rules and preserve cleanup,
+mutation and relocation contracts. No reuse implementation or performance change
+was made. Deployment, publication, commits, pins, session reuse and prestarted
+workers remain outside this iteration.
+
+## Runtime-generation reuse design decision (2026-11-09)
+
+The [Images design](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md)
+records a **no-go for a reuse prototype under the current contracts**. Full
+per-operation validation remains the reference. Immutable snapshots are a
+conditional direction: both the unsandboxed launcher gate and every sandbox bind
+must consume the exact validated immutable generation, and upgrade/revocation
+semantics must explicitly preserve or replace current source-mutation rejection.
+Current path-based launch and file-by-file installation establish neither guarantee.
+The note specifies consumer-owned leases, lifecycle/failure rules, bounded resources,
+future acceptance cases and validation-work break-even calculations from completed
+`preview-iteration-m9uucbpj`; it claims no end-to-end speedup. This step changes only
+documentation and leaves production interfaces, installer behavior and pins intact.

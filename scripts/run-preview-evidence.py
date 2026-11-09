@@ -105,13 +105,18 @@ def main():
     parser.add_argument('packages', type=Path)
     parser.add_argument('fixtures', type=Path)
     parser.add_argument('--kind', required=True, choices=('diagnostic', 'resource', 'scheduler'))
+    parser.add_argument('--output-directory', type=Path)
     args = parser.parse_args()
     packages, fixtures = args.packages.resolve(), args.fixtures.resolve()
     package_provenance = json.loads((packages / 'provenance.json').read_text())
     labels = variants(package_provenance, args.kind)
     inputs = [fixtures / name for name in ('160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg')]
     fixture_hashes = {str(p): baselines.digest(p) for p in inputs}
-    output = Path(tempfile.mkdtemp(prefix=args.kind + '-run-', dir=packages))
+    if args.output_directory is None:
+        output = Path(tempfile.mkdtemp(prefix=args.kind + '-run-', dir=packages))
+    else:
+        output = args.output_directory.resolve()
+        output.mkdir(parents=True, exist_ok=False)
     print(output, flush=True)
     repetitions = {'diagnostic': 10, 'resource': 3, 'scheduler': 100}[args.kind]
     provenance = {'kind': args.kind, 'qualifying_latency': False, 'fixtures': fixture_hashes,
@@ -152,8 +157,12 @@ def main():
                        scenario, str(count), str(target)]
             provenance['commands'].append(command)
             save()
-            code = run_process(command, target.with_suffix('.log'),
-                               target.with_suffix('.resources.jsonl') if args.kind == 'resource' else None)
+            try:
+                code = run_process(command, target.with_suffix('.log'),
+                                   target.with_suffix('.resources.jsonl') if args.kind == 'resource' else None)
+            except OSError as error:
+                provenance['launch_error'] = str(error)
+                code = 1
             raw = read(target) or ''
             if args.kind != 'scheduler' and raw:
                 # Preserve complete service samples even on a nonzero harness exit.
@@ -170,7 +179,14 @@ def main():
             if result['cleanup_failure']:
                 provenance['stopped'] = 'unexplained cleanup failure; no retry or manager cleanup'
                 return 20
-            if code or result['incomplete']:
+            rows = result['samples']
+            invalid = any(not r.get('sample', r).get('success', False) or
+                          not r.get('setup_success', True) or
+                          (bool(r.get('setup')) and not r['setup'].get('success', False)) for r in rows)
+            if args.kind == 'scheduler':
+                reporter = module('report-preview-evidence')
+                invalid = invalid or any(not reporter.valid_scheduler_batch(r, scenario) for r in rows)
+            if code or result['incomplete'] or invalid:
                 provenance['stopped'] = 'incomplete harness attempt'
                 return 1
     finally:
