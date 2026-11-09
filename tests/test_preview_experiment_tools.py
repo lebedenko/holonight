@@ -279,8 +279,14 @@ class DiagnosticAccounting(unittest.TestCase):
             probe = root / 'probe'
             probe.write_text('#!/usr/bin/env python3\nimport sys, json\nfrom pathlib import Path\n'
                 'Path(sys.argv[2]).write_text(json.dumps(dict(kind="diagnostic-only", cycle=0, '
-                'operation="inspect", runtime=4, outcome=-1)) + "\\n")\nraise SystemExit(1)\n')
+                'operation="inspect", runtime=4, outcome=-1)) + "\\n")\nraise SystemExit(0)\n')
             probe.chmod(0o755)
+            (root / 'provenance.json').write_text(json.dumps({'fixtures':
+                {p.name: baselines.digest(p) for p in fixtures.iterdir()}}))
+            for package, label in [('scheduler', 'B2'), ('diagnostic', 'D2')]:
+                base = root / package / label
+                base.mkdir(exist_ok=True)
+                (base / 'inventory.json').write_text(json.dumps(baselines.inventory(base)))
             result = subprocess.run(['python3', str(ROOT / 'scripts/run-preview-iteration.py'),
                 '--scheduler', str(root / 'scheduler'), '--diagnostic', str(root / 'diagnostic'),
                 '--fixtures', str(fixtures), '--probe', str(probe)], capture_output=True, text=True)
@@ -289,6 +295,61 @@ class DiagnosticAccounting(unittest.TestCase):
             self.assertEqual(report['gated_passes'], ['diagnostic', 'resource', 'scheduler'])
             self.assertEqual(len(report['passes']), 1)
             self.assertEqual(report['passes'][0]['denominators']['missing'], 1000)
+            (root / 'scheduler/B2/harness/preview-grid-control').write_bytes(b'changed')
+            result = subprocess.run(['python3', str(ROOT / 'scripts/run-preview-iteration.py'),
+                '--scheduler', str(root / 'scheduler'), '--diagnostic', str(root / 'diagnostic'),
+                '--fixtures', str(fixtures), '--probe', str(probe)], capture_output=True, text=True)
+            report = json.loads((Path(result.stdout.splitlines()[0]) / 'summary.json').read_text())
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(report['passes'], [])
+            self.assertEqual(report['gated_passes'], ['lifecycle', 'diagnostic', 'resource', 'scheduler'])
+            self.assertIn('inventory mismatch', report['stopped'])
+
+
+    def test_lifecycle_partial_and_failures(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'lifecycle.jsonl'
+            self.assertTrue(runner.lifecycle_report(path)['failed'])
+            rows = [dict(kind='diagnostic-only', cycle=0, operation=name, runtime=0, outcome=0)
+                    for name in ('inspect', 'source-decode', 'cached-png-decode')]
+            summary = dict(kind='summary', cycles=1, operations=3, elapsed_ms=10)
+            def check():
+                path.write_text(''.join(json.dumps(r) + '\n' for r in rows + [summary]))
+                return runner.lifecycle_report(path, planned=2)
+            self.assertTrue(check()['failed'])
+            summary['elapsed_ms'] = 600001
+            result = check()
+            self.assertFalse(result['failed'])
+            self.assertEqual(result['cap_shortfall'], 1)
+            self.assertEqual(result['denominators']['unattempted'], 1)
+            self.assertFalse(runner.lifecycle_report(path, planned=1)['failed'])
+            for runtime, outcome in ((0, 1), (4, -1), (6, -1)):
+                rows[0].update(runtime=runtime, outcome=outcome)
+                result = check()
+                self.assertTrue(result['failed'])
+                self.assertEqual(result['denominators']['failed'], 1)
+            path.write_text(json.dumps(rows[0]) + '\n{"kind":')
+            result = runner.lifecycle_report(path)
+            self.assertTrue(result['failed'])
+            self.assertEqual(result['denominators']['attempted'], 1)
+            self.assertEqual(result['denominators']['missing_timed_observations'], 2999)
+
+    def test_artifact_inventory_mismatch_rejected(self):
+        import json
+        runner = module('run-preview-iteration')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'B2').mkdir()
+            (root / 'provenance.json').write_text('{"variants":{"B2":{}}}')
+            binary = root / 'B2/binary'
+            binary.write_bytes(b'original')
+            (root / 'B2/inventory.json').write_text(json.dumps(baselines.inventory(root / 'B2')))
+            runner.audit_package(root, baselines)
+            binary.write_bytes(b'changed')
+            with self.assertRaisesRegex(ValueError, 'inventory mismatch'):
+                runner.audit_package(root, baselines)
 
     def test_overflow_and_silently_missing_records_remain_explicit(self):
         rows, diagnostic = accounting.telemetry('HN_DIAG {"event":"capture"}\n'

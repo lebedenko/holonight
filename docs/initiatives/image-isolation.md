@@ -664,3 +664,56 @@ all 600 qualifying A/B2 scheduler batches remain unmeasured this iteration.
 Corrected timing/resource gaps are therefore complete, rather than zero estimates.
 Runtime-generation reuse remains a conditional next experiment only after this
 cleanup/evidence gate passes. Session reuse and prestarted workers stay out of scope.
+
+## Fresh corrected Experiment 0 preparation (2026-11-09)
+
+The fresh iteration stopped during its artifact audit, before any measured launch.
+Evidence is preserved in umbrella `build/preview-iteration-qyruwtid/audit.json`
+and `summary.json`; the earlier preparation-only rejection of additional CTest
+logs remains in `build/preview-iteration-ec_m4h1w`. These are separate from all
+historical native runs, failures and exclusions.
+
+Requested artifacts remain scheduler `build/preview-scheduler-f2c1ty8f` (A/B2),
+diagnostic `build/preview-diagnostic-ymcm3gs7` (D2), the rebuilt
+`build/cleanup-race-verification/probe/cleanup-diagnostic`, and frozen fixtures in
+`build/preview-experiments-ak2cd2cp/measure-fivw3ih0/fixtures`. B2/D2 correction
+provenance agrees. The probe SHA-256 is
+`30f9db400e358974f05a676fc5b0345838541855e4f9b13983688714afe39af6`.
+
+B2's recorded `build/holonight-images/install_manifest.txt` differs from its
+frozen inventory: expected SHA-256
+`42f04300fb75b3bf77a6fe41a21460811491cdd63095bc98ce367c9606e0f325`
+(9,701 bytes), observed
+`5c93d2e527707c3879ff5c140ae8216de920c24b5a1d42a97451e88c833f79c0`
+(10,205 bytes). Its current entries use the acceptance prefix. This is an
+inventory mismatch, not evidence of a binary defect or a historical failure's
+cause. The required stop-on-mismatch rule prevents measurement or rebuilding.
+The audit does not certify the remaining preparation checks after that stop.
+Additional CTest temporary logs are recorded separately; changed recorded files
+are always rejected.
+
+| Pass | Planned | Attempted | Completed | Failed | Excluded | Unattempted | Missing timed observations |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Lifecycle cycles | 1,000 | 0 | 0 | 0 | 0 | 1,000 | 3,000 operations |
+| D2 attribution | 280 | 0 | 0 | 0 | 0 | 280 | 280 |
+| D2 resources | 84 | 0 | 0 | 0 | 0 | 84 | 84 |
+| A/B2 scheduler | 600 | 0 | 0 | 0 | 0 | 600 | 600 |
+
+There is no cap shortfall, runtime cleanup result, telemetry, helper timing,
+resource read or sampling interval from this iteration. All native passes are
+unattempted; none is inferred successful. Existing cleanup, provider,
+installed/relocated, scheduler-barrier and Files/chooser acceptance remains reused
+as previously recorded. Focused Python tooling verification passes 25 tests,
+including zero-exit lifecycle failures, valid cap shortfalls, missing/truncated
+output, partial denominators and artifact mismatch preventing launch. Python
+compilation and whitespace checks pass. No production code, public API,
+optimization, package rebuild, deployment, publication or pin update was made.
+
+The runner now audits recorded package inventories and runtime manifests before
+workload preflight, compares frozen fixture hashes, and preserves an explicit
+preparation failure ledger. Lifecycle output is inspected regardless of exit
+status; failed runtime/provider records and malformed or missing output gate
+later passes while preserving valid partial observations. The ten-minute probe
+cap remains unchanged. **Completion remains gated on resolving the inventory
+identity discrepancy and then obtaining the entire corrected measurement matrix
+with successful cleanup verification.** Runtime-generation reuse remains deferred.
