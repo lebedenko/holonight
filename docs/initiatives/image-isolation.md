@@ -1363,3 +1363,20 @@ phases; the Viewer SDD records the evidence. Container binaries are package
 acceptance only. GIF playback after frame zero and SVG still execute in-process: this
 is static-raster isolation, not complete Viewer isolation. Installer protections,
 provider APIs/protocols, publication and dependency pins are unchanged.
+
+## Registered repository publication (2026-11-10)
+
+With publication and pinning authorized, all 19 registered component repositories
+were checked against their configured remote `main` branches. Thirteen branches
+advanced, including the Images, File Browser, Files, Viewer and portal work recorded
+above. Twelve consumer manifests now pin the published provider revisions in dependency
+order; all 42 provider entries agree with the coordinated component heads. The umbrella
+gitlinks record those heads. Package Manager and Greeter were fast-forwarded to their
+already-published remote tips before their pin updates. The unregistered Grub repository
+remains untouched, as explicitly requested.
+
+Existing implementation acceptance evidence was reused. Pin updates preserve manifest
+ordering and build options and were checked for valid full hashes, remote reachability,
+clean component worktrees and dependency consistency. Images' recorded full integration
+entry-point limitation from experimental formatting remains; this publication does not
+claim that unrelated gate was repaired. No deployment or image publication was performed.
