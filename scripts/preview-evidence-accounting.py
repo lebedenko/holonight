@@ -15,6 +15,13 @@ def telemetry(text):
             row = json.loads(line[8:])
             if not isinstance(row, dict) or not isinstance(row.get('event'), str):
                 raise ValueError('not a telemetry record')
+            for key in ('pid', 'operation', 'consumer'):
+                if key in row and not isinstance(row[key], (str, int)):
+                    raise ValueError('invalid telemetry identity: ' + key)
+            if row['event'] == 'flush' and any(type(row.get(k)) is not int or row[k] < 0 for k in ('records', 'dropped')):
+                raise ValueError('invalid flush counts')
+            if row['event'] == 'helper_telemetry' and not isinstance(row.get('stderr'), str):
+                raise ValueError('invalid helper stderr')
             records.append(row)
         except (ValueError, TypeError) as error:
             errors.append({'line': number, 'error': str(error)})
@@ -78,7 +85,7 @@ def account(text):
         operations.append({'pid': pid, 'operation': identifier,
                            'consumers': sorted({r.get('consumer', '') for r in records}),
                            'phases': phases, 'parent_unexplained_ns': unexplained,
-                           'helper_timelines': helpers, 'helper_telemetry_missing': not helpers,
+                           'helper_timelines': helpers, 'helper_telemetry_missing': not any(h['records'] for h in helpers),
                            'results': [r for r in records if r['event'] == 'provider_result']})
     consumers = []
     consumer_groups = {}
@@ -111,19 +118,23 @@ def account(text):
             'records': rows}
 
 
-def preserve_attempt(output, attempt, raw_text, log_text, returncode):
+def preserve_attempt(output, attempt, raw_text, log_text, returncode, expected_samples=None):
     """Flush an attempt even when the harness died or left a truncated final row."""
     samples, errors = [], []
     for number, line in enumerate(raw_text.splitlines(), 1):
         try:
-            samples.append(json.loads(line))
+            row = json.loads(line)
+            if not isinstance(row, dict) or any(k in row and not isinstance(row[k], dict) for k in ('sample', 'setup')):
+                raise ValueError('invalid sample shape')
+            samples.append(row)
         except ValueError as error:
             errors.append({'line': number, 'error': str(error)})
     diagnostics = account(log_text)
     cleanup_failure = returncode == 20 or diagnostics['cleanup_failures'] > 0 or any(
         r.get('sample', {}).get('cleanup_failure') or r.get('setup', {}).get('cleanup_failure') for r in samples)
     result = {'attempt': attempt, 'harness_exit': returncode, 'samples': samples,
-              'incomplete': bool(errors) or not samples or returncode != 0,
+              'incomplete': bool(errors) or not samples or returncode != 0 or (expected_samples is not None and len(samples) != expected_samples),
+              'expected_samples': expected_samples,
               'parse_errors': errors, 'diagnostics': diagnostics, 'cleanup_failure': cleanup_failure}
     with output.open('a') as stream:
         stream.write(json.dumps(result) + '\n')

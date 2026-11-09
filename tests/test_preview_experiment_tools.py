@@ -100,6 +100,30 @@ class EvidenceAccounting(unittest.TestCase):
 accounting = module('preview-evidence-accounting')
 
 
+class FrozenPatchApplication(unittest.TestCase):
+    def test_git_diff_patch_changes_nested_archive(self):
+        import subprocess
+        prepare = module('prepare-preview-evidence')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            source = root / 'build/archive'
+            (source / 'src').mkdir(parents=True)
+            target = source / 'src/example.cpp'
+            target.write_text('before\n')
+            overlays = root / 'overlays'
+            overlays.mkdir()
+            (overlays / 'example.patch').write_text(
+                'diff --git a/src/example.cpp b/src/example.cpp\n'
+                '--- a/src/example.cpp\n+++ b/src/example.cpp\n'
+                '@@ -1 +1 @@\n-before\n+after\n')
+            (overlays / 'telemetry.h').write_text('// test\n')
+            prepare.OVERLAYS = overlays
+            prepare.apply_overlay(source, 'example')
+            self.assertEqual(target.read_text(), 'after\n')
+            self.assertFalse((root / 'src/example.cpp').exists())
+
+
 class DiagnosticAccounting(unittest.TestCase):
     def test_missing_and_truncated_records_are_not_zero_durations(self):
         report = accounting.account('HN_DIAG {"event":"provider_begin","pid":7,"operation":"1"}\nHN_DIAG {')
@@ -150,10 +174,16 @@ class DiagnosticAccounting(unittest.TestCase):
                 (fixtures / name).write_bytes(b'fixture')
             binary = root / 'A/harness/preview-grid-control'
             binary.parent.mkdir(parents=True)
-            binary.write_text('#!/usr/bin/env python3\nimport sys\nfrom pathlib import Path\n'
+            binary.write_text('#!/usr/bin/env python3\nimport sys, json\nfrom pathlib import Path\n'
+                              'if sys.argv[1] == "--describe-workload":\n'
+                              ' print(json.dumps({"fixtures": ["160x80.png", "1600x1200.png", "3200x2400.png", "oriented.jpg"] * 4, "scheduler_threads": 2, "box_pixels": 256})); sys.exit(0)\n'
                               'Path(sys.argv[5]).write_text(\'{"sample":{"cleanup_failure":true}}\\n\')\n'
                               'raise SystemExit(20)\n')
             binary.chmod(0o755)
+            other = root / 'B/harness/preview-grid-control'
+            other.parent.mkdir(parents=True)
+            other.write_bytes(binary.read_bytes())
+            other.chmod(0o755)
             completed = subprocess.run(['python3', str(ROOT / 'scripts/run-preview-evidence.py'),
                                         str(root), str(fixtures), '--kind', 'scheduler'],
                                        capture_output=True, text=True)
@@ -163,6 +193,102 @@ class DiagnosticAccounting(unittest.TestCase):
             self.assertEqual(len(provenance['commands']), 1)
             self.assertEqual(provenance['completed_invocations'], 1)
             self.assertEqual(len((output / 'attempts.jsonl').read_text().splitlines()), 1)
+
+    def test_malformed_shapes_are_retained_as_errors(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = accounting.preserve_attempt(Path(temporary) / 'attempts', 0,
+                '[]\nnull\n3\n{"sample":null}\n{"setup":[]}\n{"success":true}', '', 0, 10)
+        self.assertEqual(len(result['samples']), 1)
+        self.assertEqual(len(result['parse_errors']), 5)
+        self.assertTrue(result['incomplete'])
+
+    def test_malformed_telemetry_cannot_crash_accounting(self):
+        report = accounting.account('HN_DIAG {"event":"flush","records":[],"dropped":"x"}\n'
+            'HN_DIAG {"event":"provider_call","operation":[]}\n'
+            'HN_DIAG {"event":"helper_telemetry","operation":"1","stderr":null}')
+        self.assertEqual(len(report['diagnostics']['malformed']), 3)
+
+    def test_empty_helper_record_is_missing(self):
+        report = accounting.account('HN_DIAG {"event":"helper_telemetry","operation":"1","stderr":""}')
+        self.assertTrue(report['operations'][0]['helper_telemetry_missing'])
+
+    def test_workload_preflight_rejects_homogeneous_and_wrong_settings(self):
+        runner = module('run-preview-evidence')
+        value = dict(fixtures=['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg'] * 4,
+                     scheduler_threads=2, box_pixels=256)
+        self.assertTrue(runner.validate_workload(value))
+        for key, invalid in [('fixtures', ['160x80.png'] * 16), ('scheduler_threads', 4), ('box_pixels', 128)]:
+            self.assertFalse(runner.validate_workload(dict(value, **{key: invalid})))
+
+    def test_variant_metadata_and_historical_fallback(self):
+        runner = module('run-preview-evidence')
+        self.assertEqual(runner.variants({}, 'scheduler'), ['A', 'B'])
+        self.assertEqual(runner.variants({'variants': {'D2': {'role': 'diagnostic'}}}, 'resource'), ['D2'])
+        with self.assertRaises(ValueError):
+            runner.variants({'variants': {'D2': {'role': 'diagnostic'}}}, 'scheduler')
+
+    def test_setup_failure_keeps_attempt_and_missing_measurement_separate(self):
+        import json
+        reporter = module('report-preview-evidence')
+        names = ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg']
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'provenance.json').write_text(json.dumps(dict(kind='scheduler', stopped='cleanup failure',
+                variants=['A', 'B2'], commands=[['/B2/harness/grid', 'runtime', 'fixtures', 'warm', '1', str(root / 'raw.json')]])))
+            row = dict(fixture_cycle=names, scheduler_threads=2, box_pixels=256,
+                       setup=dict(success=False, cleanup_failure=True,
+                                  operations=[dict(source_fixture=n) for n in names * 4]))
+            accounting.preserve_attempt(root / 'attempts.jsonl', 0, json.dumps(row), '', 20, 1)
+            report = reporter.summarize(root)
+            self.assertEqual(report['denominators']['attempted'], 1)
+            self.assertEqual(report['denominators']['completed'], 0)
+            self.assertEqual(report['denominators']['failed'], 1)
+            self.assertEqual(report['denominators']['excluded'], 0)
+            self.assertEqual(report['denominators']['missing'], 599)
+            self.assertEqual(report['denominators']['missing_measurements'], 600)
+            (root / 'EXCLUSION.json').write_text('{"reason":"wrong variant"}')
+            self.assertEqual(reporter.summarize(root)['denominators']['excluded'], 1)
+
+    def test_unverified_correction_metadata_is_rejected(self):
+        runner = module('run-preview-evidence')
+        with self.assertRaisesRegex(ValueError, 'verified patch'):
+            runner.variants({'variants': {'B2': {'role': 'scheduler', 'corrected_cleanup': True}}}, 'scheduler')
+
+    def test_iteration_failure_gates_all_later_passes(self):
+        import json
+        import subprocess
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for label, role in [('B2', 'scheduler'), ('D2', 'diagnostic')]:
+                package = root / role
+                package.mkdir()
+                (package / 'provenance.json').write_text(json.dumps({
+                    'variants': {label: dict(corrected_cleanup=True, correction_verified=True, diagnostic=label == 'D2', source_delta={})},
+                    'revisions': {label: {}}}))
+            for label in ('A', 'B2'):
+                binary = root / 'scheduler' / label / 'harness/preview-grid-control'
+                binary.parent.mkdir(parents=True)
+                binary.write_text('#!/usr/bin/env python3\nimport json\nprint(json.dumps(dict('
+                    'fixtures=["160x80.png","1600x1200.png","3200x2400.png","oriented.jpg"]*4, '
+                    'scheduler_threads=2, box_pixels=256)))\n')
+                binary.chmod(0o755)
+            fixtures = root / 'fixtures'
+            fixtures.mkdir()
+            for name in ('160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg'):
+                (fixtures / name).write_bytes(b'fixture')
+            probe = root / 'probe'
+            probe.write_text('#!/usr/bin/env python3\nimport sys, json\nfrom pathlib import Path\n'
+                'Path(sys.argv[2]).write_text(json.dumps(dict(kind="diagnostic-only", cycle=0, '
+                'operation="inspect", runtime=4, outcome=-1)) + "\\n")\nraise SystemExit(1)\n')
+            probe.chmod(0o755)
+            result = subprocess.run(['python3', str(ROOT / 'scripts/run-preview-iteration.py'),
+                '--scheduler', str(root / 'scheduler'), '--diagnostic', str(root / 'diagnostic'),
+                '--fixtures', str(fixtures), '--probe', str(probe)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stderr)
+            report = json.loads((Path(result.stdout.splitlines()[0]) / 'summary.json').read_text())
+            self.assertEqual(report['gated_passes'], ['diagnostic', 'resource', 'scheduler'])
+            self.assertEqual(len(report['passes']), 1)
+            self.assertEqual(report['passes'][0]['denominators']['missing'], 1000)
 
     def test_overflow_and_silently_missing_records_remain_explicit(self):
         rows, diagnostic = accounting.telemetry('HN_DIAG {"event":"capture"}\n'
@@ -181,9 +307,12 @@ class DiagnosticAccounting(unittest.TestCase):
     def test_homogeneous_batches_do_not_qualify_as_mixed_fixture_control(self):
         reporter = module('report-preview-evidence')
         names = ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg']
-        row = {'fixture_cycle': names,
+        row = {'fixture_cycle': names, 'scheduler_threads': 2, 'box_pixels': 256,
                'sample': {'operations': [{'source_fixture': name} for name in names * 4]}}
         self.assertTrue(reporter.mixed_fixture_batch(row))
+        setup_only = dict(row, setup=row['sample'])
+        del setup_only['sample']
+        self.assertTrue(reporter.mixed_fixture_batch(setup_only))
         row['sample']['operations'][1]['source_fixture'] = names[0]
         self.assertFalse(reporter.mixed_fixture_batch(row))
         self.assertFalse(reporter.mixed_fixture_batch({'fixture': names[0], 'sample': {}}))

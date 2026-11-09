@@ -80,6 +80,26 @@ def run_process(command, log, resource_file=None):
         return process.wait()
 
 
+def variants(provenance, kind):
+    metadata = provenance.get('variants', {})
+    if metadata:
+        for value in metadata.values():
+            if value.get('corrected_cleanup') and not value.get('correction_verified'):
+                raise ValueError('corrected package lacks verified patch application')
+        labels = [name for name, value in metadata.items()
+                  if value['role'] == ('scheduler' if kind == 'scheduler' else 'diagnostic')]
+        if len(labels) != (2 if kind == 'scheduler' else 1):
+            raise ValueError('package variants do not match requested pass')
+        return labels
+    return ['A', 'B'] if kind == 'scheduler' else ['D']
+
+
+def validate_workload(value):
+    return (isinstance(value, dict) and value.get('fixtures') ==
+            ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg'] * 4
+            and value.get('scheduler_threads') == 2 and value.get('box_pixels') == 256)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('packages', type=Path)
@@ -87,6 +107,8 @@ def main():
     parser.add_argument('--kind', required=True, choices=('diagnostic', 'resource', 'scheduler'))
     args = parser.parse_args()
     packages, fixtures = args.packages.resolve(), args.fixtures.resolve()
+    package_provenance = json.loads((packages / 'provenance.json').read_text())
+    labels = variants(package_provenance, args.kind)
     inputs = [fixtures / name for name in ('160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg')]
     fixture_hashes = {str(p): baselines.digest(p) for p in inputs}
     output = Path(tempfile.mkdtemp(prefix=args.kind + '-run-', dir=packages))
@@ -95,21 +117,30 @@ def main():
     provenance = {'kind': args.kind, 'qualifying_latency': False, 'fixtures': fixture_hashes,
                   'repetitions': repetitions, 'resource_interval_ms': 10 if args.kind == 'resource' else None,
                   'package_provenance_sha256': baselines.digest(packages / 'provenance.json'),
-                  'commands': [], 'binaries': {}, 'stopped': None}
+                  'commands': [], 'binaries': {}, 'stopped': None,
+                  'variants': labels, 'variant_metadata': package_provenance.get('variants', {}),
+                  'planned_samples': 600 if args.kind == 'scheduler' else 28 * repetitions}
     for source in (Path(__file__), ROOT / 'scripts/preview-evidence-accounting.py'):
         (output / source.name).write_bytes(source.read_bytes())
     def save():
         (output / 'provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
+    if args.kind == 'scheduler':
+        for label in labels:
+            binary = packages / label / 'harness/preview-grid-control'
+            described = json.loads(subprocess.check_output([str(binary), '--describe-workload'], text=True))
+            if not validate_workload(described):
+                raise ValueError('non-mixed or incorrectly configured scheduler workload')
+        provenance['workload_validated'] = True
     attempt = 0
     if args.kind == 'scheduler':
         # 100 attempts/workload/baseline; every batch cycles all four fixtures four times.
         schedule = ((label, workload, fixtures, 1)
                     for block in range(10)
-                    for label in (('A', 'B') if block % 2 == 0 else ('B', 'A'))
+                    for label in (labels if block % 2 == 0 else reversed(labels))
                     for workload in ('cold', 'warm', 'cancel')
                     for index in range(block * 10, block * 10 + 10))
     else:
-        schedule = (('D', scenario, fixture, repetitions)
+        schedule = ((labels[0], scenario, fixture, repetitions)
                     for fixture in inputs for scenario in measure.SCENARIOS)
     try:
         for label, scenario, fixture, count in schedule:
@@ -131,7 +162,7 @@ def main():
                 except (ValueError, KeyError, TypeError):
                     pass
             result = accounting.preserve_attempt(output / 'attempts.jsonl', attempt, raw,
-                                                  read(target.with_suffix('.log')) or '', code)
+                                                  read(target.with_suffix('.log')) or '', code, count)
             result['expected_samples'] = count
             (target.with_suffix('.accounting.json')).write_text(json.dumps(result, indent=2) + '\n')
             print(f'{attempt}: {label} {scenario} {fixture.name}: exit {code}', flush=True)
@@ -145,6 +176,7 @@ def main():
     finally:
         provenance['completed_invocations'] = attempt
         save()
+        subprocess.run(['python3', str(ROOT / 'scripts/report-preview-evidence.py'), str(output)], check=True)
     return 0
 
 

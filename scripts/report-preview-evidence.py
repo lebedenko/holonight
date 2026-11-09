@@ -18,14 +18,15 @@ def distribution(values, expected):
 
 def mixed_fixture_batch(row):
     names = ['160x80.png', '1600x1200.png', '3200x2400.png', 'oriented.jpg']
-    operations = row.get('sample', {}).get('operations', [])
-    return (row.get('fixture_cycle') == names and len(operations) == 16
+    operations = row.get('sample', row.get('setup', {})).get('operations', [])
+    return (row.get('scheduler_threads') == 2 and row.get('box_pixels') == 256
+            and row.get('fixture_cycle') == names and len(operations) == 16
             and [r.get('source_fixture') for r in operations] == names * 4)
 
 
 def summarize(root):
     provenance = json.loads((root / 'provenance.json').read_text())
-    attempts = [json.loads(line) for line in (root / 'attempts.jsonl').read_text().splitlines()]
+    attempts = [json.loads(line) for line in (root / 'attempts.jsonl').read_text().splitlines()] if (root / 'attempts.jsonl').exists() else []
     spec = importlib.util.spec_from_file_location('accounting', Path(__file__).with_name('preview-evidence-accounting.py'))
     accounting = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(accounting)
@@ -40,7 +41,7 @@ def summarize(root):
     operation_results = []
     resources = []
     settled = []
-    helper_phases = defaultdict(list)
+    helper_phases = defaultdict(list, {'helper_provider_execution': [], 'helper_reply_serialization': []})
     missing_helper = 0
     operation_count = 0
     pre_ack = []
@@ -107,15 +108,27 @@ def summarize(root):
                       'missing_counts': {key: sum(key not in row for row in timed) for key in
                                          ('issued', 'started', 'cancelled_before_start', 'cancelled_after_start', 'delivered')},
                       'undrained': sum(not row.get('drained', False) for row in timed)}
-    for label in ('A', 'B'):
+    for label in provenance.get('variants', ['A', 'B']):
         for workload in ('cold', 'warm', 'cancel'):
             if provenance['kind'] == 'scheduler':
                 grid.setdefault(label + '-' + workload, {'attempts': 0, 'missing_attempts': 100})
     expected = 600 if provenance['kind'] == 'scheduler' else (280 if provenance['kind'] == 'diagnostic' else 84)
-    return {'kind': provenance['kind'], 'qualifying_latency': False, 'stopped': provenance['stopped'],
+    failed = sum(not r.get('sample', r).get('success', False) or
+                 (bool(r.get('setup')) and not r['setup'].get('success', False)) for r in samples)
+    exclusion = json.loads((root / 'EXCLUSION.json').read_text()) if (root / 'EXCLUSION.json').exists() else None
+    excluded = len(samples) if exclusion else (sum(not mixed_fixture_batch(r) for r in samples) if grid else 0)
+    completed = sum(bool(r.get('sample')) for r in samples) if grid else len(samples)
+    requested = sum(int(c[4]) for c in provenance['commands'])
+    attempted = len(samples)
+    unreported = sum(a['incomplete'] and len(a['samples']) < int(provenance['commands'][a['attempt']][4]) for a in attempts)
+    return {'variants': provenance.get('variants', ['A', 'B'] if grid else ['D']),
+            'denominators': {'planned': expected, 'attempted': attempted, 'completed': completed,
+                             'failed': failed, 'excluded': excluded, 'missing': expected - len(samples),
+                             'missing_measurements': expected - completed, 'requested_sample_slots': requested, 'attempts_with_unreported_slots': unreported},
+            'kind': provenance['kind'], 'qualifying_latency': False, 'stopped': provenance['stopped'],
             'attempted_invocations': len(attempts), 'harness_exits': dict(Counter(str(a['harness_exit']) for a in attempts)),
             'incomplete_invocations': sum(a['incomplete'] for a in attempts),
-            'exclusion': json.loads((root / 'EXCLUSION.json').read_text()) if (root / 'EXCLUSION.json').exists() else None,
+            'exclusion': exclusion,
             'sample_observations': len(samples), 'missing_samples': expected - len(samples),
             'service_failures': sum(not r.get('success', False) for r in samples) if not grid else None,
             'service_setup_failures': sum(not r.get('setup_success', False) for r in samples) if not grid else None,
@@ -149,6 +162,8 @@ def main():
     report = summarize(args.run)
     (args.run / 'summary.json').write_text(json.dumps(report, indent=2) + '\n')
     lines = ['# Diagnostic evidence (not qualifying A/B latency)', '',
+             f'Variants: {", ".join(report["variants"])}.',
+             f'Denominators: {json.dumps(report["denominators"], sort_keys=True)}.',
              f'Kind: {report["kind"]}; samples: {report["sample_observations"]}; missing: {report["missing_samples"]}.',
              f'Stop reason: {report["stopped"] or "none"}. Harness exits: {report["harness_exits"]}.', '',
              'Durations below are nested observations. Do not add parent and helper phases.', '',

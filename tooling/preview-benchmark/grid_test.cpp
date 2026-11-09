@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "decoder_gate.h"
+
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QFile>
@@ -80,6 +82,33 @@ int main(int argc, char** argv) {
   response.reset();
   lifetimeRelease.release();
   if (!waitFor([&] { return lifetime.pendingCount() == 0; }) || !running) return 4;
+  // One admitted decoder fails while a second is already running. Queued jobs
+  // must never enter decoding; the already-running job may finish cleanup.
+  DecoderGate gate;
+  QSemaphore gateEntered, gateRelease;
+  std::atomic_int admitted{0};
+  ThumbnailProvider stopping(
+      [&](const ThumbnailRequest&, const std::atomic_bool&) {
+        if (!gate.admit()) return ThumbnailResult{};
+        const int call = ++admitted;
+        gateEntered.release();
+        if (call == 1) {
+          gateRelease.acquire();
+          gate.complete(true);
+        } else {
+          while (!gate.failed()) QThread::yieldCurrentThread();
+          gate.complete(false);
+        }
+        return ThumbnailResult{};
+      },
+      2);
+  std::array<std::unique_ptr<QQuickImageResponse>, 16> stoppedResponses;
+  for (int i = 0; i < 16; ++i)
+    stoppedResponses[i].reset(stopping.requestImageResponse(ThumbnailProvider::idFor(paths[i], 256, 2), {}));
+  const bool bothAdmitted = gateEntered.tryAcquire(2, 5000);
+  gateRelease.release();
+  if (!waitFor([&] { return stopping.pendingCount() == 0; }) || !bothAdmitted || admitted != 2 || !gate.failed())
+    return 5;
   QCoreApplication::processEvents();
   return 0;
 }

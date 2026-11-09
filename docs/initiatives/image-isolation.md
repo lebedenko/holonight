@@ -547,3 +547,120 @@ a copied command database with the unsupported GCC-only flag removed; source
 formatting, Python compilation and whitespace checks pass. Formatting-only patch
 normalization reuses these semantic checks. No unrelated container gates were
 rerun. No deployment, publication, pin update or optimization was performed.
+
+## Cleanup observation correction and excluded iteration (2026-11-09)
+
+**The implementation and verification are complete; Experiment 0 evidence is not.**
+The scheduler requirement is now **frozen A versus corrected B2**, superseding
+the unfinished A/B scheduler requirement. Frozen A/B latency remains historical
+comparison evidence. Both historical failures, both previously recorded recurrences,
+and the excluded homogeneous scheduler run above remain unchanged. None is
+attributed to the reproduced race without direct evidence.
+
+The cleanup regression first failed on the prior implementation: an initially
+empty scope was observed empty again, the launcher was reaped, and a redundant
+final observation was unreadable. The implementation failed before observing the
+subsequent confirmed removal. The correction uses one final bounded observation
+loop, checking current hierarchical state and launcher state together, without
+latching an earlier empty observation. Private filesystem injection covers
+disappearance between lookup and open/read; only a fresh directory ENOENT after
+an events-file failure proves removal. Permission errors, persistent unreadability,
+malformed/contradictory population records, populated groups, deadline exhaustion
+and unreaped launchers remain failures. The existing diagnostic gains stage,
+syscall errno, fresh-directory-check outcome, the latest 32 observations, total
+count and explicit truncation. Cancellation/result suppression, TERM/KILL policy,
+runtime statuses, translated messages and the preview deadline are unchanged.
+See the [Images design](../../holonight-images/docs/sdd/isolated-raster/DESIGN.md#cleanup-observation-correction-2026-11-09)
+and [File Browser note](../../holonight-file-browser/docs/sdd/isolated-raster/DESIGN.md#corrected-experiment-0-control-2026-11-09).
+
+### Packaging defect discovered during measurement
+
+The initial preparation incorrectly used `git apply` inside an archive below the
+umbrella repository. Git silently skipped the `diff --git` cleanup correction
+paths and returned success. The declared B2/D2 delta was therefore **not applied**,
+although diagnostic overlays were present. This agent-produced packaging error
+invalidates those artifacts as corrected evidence. Source-hash inspection after
+the recurrence established this mismatch; a new deterministic nested-repository
+patch test reproduces it. Preparation now stops parent repository discovery,
+requires every declared patch target to change, and verifies corrected snapshot
+hashes against the intended source before building. Execution rejects corrected
+metadata without this verification. All snapshots, package inventories, logs,
+raw results and original reports remain preserved. Added `EXCLUSION.json` and
+`summary-audit.json` files explain the mismatch without rewriting original reports.
+
+`build/preview-iteration-8a6an044` ran all passes sequentially, after builds and
+checks, and stopped on the first native client-returned cleanup failure:
+
+| Pass on mislabeled artifacts | Planned | Attempted | Completed | Failed | Excluded from corrected evidence | Not attempted |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Lifecycle cycles | 1,000 | 1,000 | 1,000 | 0 | 1,000 | 0 |
+| D2-labeled attribution samples | 280 | 280 | 280 | 0 | 280 | 0 |
+| D2-labeled resource samples | 84 | 84 | 84 | 0 | 84 | 0 |
+| A/B2-labeled scheduler batches | 600 | 50 | 49 | 1 | 50 | 550 |
+
+The lifecycle pass had 3,000 operations and no cap shortfall. Attribution recorded
+696 provider operations with no missing provider results or helper timing records;
+these are observations of the prior implementation, not qualifying D2 results.
+The scheduler failure occurred at invocation 49 (the tenth B2-labeled warm batch),
+during setup. It preserved 16 finished setup responses and did not start the timed
+warm batch. Thus **551 timed batch observations are missing**, including failed
+setup; 550 batches were never attempted. Fixture identity/settings validate all
+50 attempted batches, including the failed mixed setup. The original report's
+one workload exclusion conflated missing timed output with invalid fixture identity;
+the audit separates them. All 50 are excluded from corrected comparison because
+of the packaging mismatch. A completed 10 cold, 10 warm and 10 cancel batches;
+the B2-labeled implementation completed 10 cold and nine timed warm batches. No
+B2-labeled cancellation batch ran.
+
+Evidence locations:
+
+- Lifecycle and iteration gate: `build/preview-iteration-8a6an044`.
+- Excluded attribution: `build/preview-diagnostic-h474ihmo/diagnostic-run-b8acf5fr`.
+- Excluded resources: `build/preview-diagnostic-h474ihmo/resource-run-sf_d78gr`.
+- Stopped/excluded scheduler: `build/preview-scheduler-8e1qu5ry/scheduler-run-medw8pyq`.
+
+The surviving failure diagnostic reports a successful operation, no manager
+commands, zero elapsed cleanup milliseconds, a reaped launcher and an unreadable
+hierarchical observation. It lacks the new observation fields, consistent with
+the frozen old source. This does not establish the syscall cause, nor prove or
+disprove the corrected implementation. No retry or additional manager cleanup
+was performed. The recurrence gates off further native **measurement** passes
+for this iteration, including after repairing packaging.
+
+### Corrected artifacts and verification
+
+Fresh, verified packages are `build/preview-scheduler-f2c1ty8f` (A/B2) and
+`build/preview-diagnostic-ymcm3gs7` (D2). B2 and D2 retain File Browser
+`2f86c9b20c1a628d149a391e357acb83e878556a` and Thumbnails
+`9462bacf7a7f7fdfb8f6eddb2edf1dac63ed75aa`; Images is based on
+`b7e881ff81efc6d75304e1381cb68ddf6fdb0770` plus the exact archived correction.
+A retains its original full revisions. Pre-build source inventories, patch hashes,
+overlay hashes, compile commands/flags, runtime manifests and executable hashes
+identify the inputs and outputs. Existing overlay contexts apply and validate
+against the corrected implementation. B2 has no timing probes.
+
+Verification is recorded under `build/cleanup-race-verification` and
+`holonight-images/build/cleanup-race-release`: 16 deterministic cleanup tests,
+provider capture/protocol regressions, native Release provider/installed/relocated
+and runtime checks (9/9 across focused invocations), and scheduler barriers against
+each final A/B2/D2 package. The nested-patch, malformed JSON, truncated telemetry,
+missing-helper, partial-run, mixed-workload and stop-gate tooling regressions pass.
+The initial sandboxed runtime verification was denied user-bus access before
+helper startup; the same installed/relocated and runtime checks passed with native
+access. A stale development bundle was rejected by installation before preparing
+a fresh native bundle. These verification setup failures are separate from the
+native measurement recurrence.
+
+Focused File Browser and offscreen Files/chooser acceptance were rebuilt against
+the corrected package after detecting the packaging error. Source formatting,
+Python compilation, whitespace and focused C++ static analysis are checked.
+The analyzer uses a copied compilation database without unsupported GCC flags;
+existing trailing-comma warnings on unchanged runtime lines are excluded. No
+unrelated container gate, deployment, publication, optimization or pin update was
+performed.
+
+**Remaining gate:** corrected lifecycle, D2 attribution/resource measurements and
+all 600 qualifying A/B2 scheduler batches remain unmeasured this iteration.
+Corrected timing/resource gaps are therefore complete, rather than zero estimates.
+Runtime-generation reuse remains a conditional next experiment only after this
+cleanup/evidence gate passes. Session reuse and prestarted workers stay out of scope.

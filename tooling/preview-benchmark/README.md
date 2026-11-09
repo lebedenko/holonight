@@ -216,3 +216,58 @@ python3 -m unittest discover -s tests -p test_preview_experiment_tools.py
 ctest --test-dir PACKAGE_ROOT/A/harness --output-on-failure
 ctest --test-dir PACKAGE_ROOT/B/harness --output-on-failure
 ```
+
+## Corrected cleanup iteration: A/B2 and D2
+
+The new scheduler requirement is **A/B2**, superseding the unfinished A/B
+scheduler requirement. Frozen A/B latency remains historical comparison evidence;
+no original artifacts, failures, recurrences, or homogeneous-batch exclusions are
+replaced. This iteration implements a cleanup correctness fix, not a performance
+optimization. Historical causes remain unresolved.
+
+`prepare-preview-evidence.py` defaults to explicit corrected variants. B2 uses
+frozen File Browser `2f86c9b` and Thumbnails `9462bac`, with Images `b7e881f` plus
+the archived exact cleanup correction. D2 uses the same correction with diagnostic
+source overlays. A keeps its original revisions. `--variants historical` remains
+available for preparation; existing A/B/D reports retain their labels. Each new
+package provenance records variant roles, full base revisions, exact delta hashes,
+source and harness inventories before building, overlay hashes, compiler commands,
+runtime manifests and executable hashes. The overlays apply cleanly against the
+corrected implementation; no cleanup instrumentation enters B2.
+
+Scheduler preflight asks each frozen harness for its workload description and
+rejects anything other than four copies of each fixture, two threads, and
+256-pixel boxes. Per-batch reports independently validate fixture identity and
+settings. The shared private admission gate is covered by a deterministic barrier
+test: a failure stops later decoder admission while already-admitted work drains.
+
+After **all** builds, checks, and application acceptance finish, run the installed
+probe and three passes sequentially:
+
+```sh
+python3 scripts/run-preview-iteration.py --scheduler SCHEDULER_ROOT \
+  --diagnostic DIAGNOSTIC_ROOT --fixtures FROZEN_FIXTURES --probe INSTALLED_PROBE
+```
+
+The iteration runner verifies B2/D2 correction provenance, records probe and fixture
+hashes, and runs lifecycle (1,000 cycles, ten-minute cap), D2 attribution (280
+samples), D2 resources (84 samples, separately sampled at 10 ms), then A/B2 mixed
+scheduler control (600 batches). Any failed pass gates all later passes; a cleanup
+failure is never retried or followed by additional manager cleanup. Every evidence
+pass writes a partial report on stopping. Lifecycle shortfalls remain explicit.
+Reports separate planned, observed attempted, completed, failed, excluded and
+missing samples; requested invocation slots and potentially unreported slots are
+separate, so a partial ten-sample invocation does not imply ten observed attempts.
+Malformed sample shapes, malformed/truncated telemetry, empty helper records and
+missing phases remain explicit. See the umbrella correction note for the actual
+verification and measurement results.
+
+Iteration result: **corrected measurements remain incomplete**. An initial packaging
+error silently skipped the cleanup patch while reporting success. The resulting
+mislabeled lifecycle (1,000 cycles), attribution (280 samples), resources (84
+samples) and scheduler (50 attempted batches, one failed warm setup) are preserved
+and excluded from corrected evidence. The scheduler cleanup recurrence stopped
+measurement without retry or extra manager cleanup. The packaging regression is
+fixed and tested; new verified A/B2 and D2 packages were built, but were not measured
+again in this iteration. See the [umbrella audit](../../docs/initiatives/image-isolation.md#cleanup-observation-correction-and-excluded-iteration-2026-11-09) for artifact paths,
+denominators, the preserved failure, verification and remaining gaps.

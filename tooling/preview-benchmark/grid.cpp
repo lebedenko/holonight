@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "decoder_gate.h"
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QElapsedTimer>
@@ -28,7 +30,7 @@ struct Observation {
 struct Batch {
   std::mutex mutex;
   std::array<Observation, batchSize> observations;
-  bool cleanupFailure = false;
+  DecoderGate gate;
 };
 bool pump(const std::function<bool()>& done) {
   QElapsedTimer clock;
@@ -43,6 +45,16 @@ bool pump(const std::function<bool()>& done) {
 int main(int argc, char** argv) {
   QCoreApplication app(argc, argv);
   const auto args = app.arguments();
+  const QStringList fixtureNames{"160x80.png", "1600x1200.png", "3200x2400.png", "oriented.jpg"};
+  if (args.size() == 2 && args[1] == "--describe-workload") {
+    QJsonArray copies;
+    for (int i = 0; i < batchSize; ++i) copies.append(fixtureNames[i % 4]);
+    QFile output;
+    if (!output.open(stdout, QIODevice::WriteOnly)) return 2;
+    output.write(QJsonDocument(QJsonObject{{"fixtures", copies}, {"scheduler_threads", 2}, {"box_pixels", 256}})
+                     .toJson(QJsonDocument::Compact));
+    return 0;
+  }
   if (args.size() != 6 || !QStringList{"cold", "warm", "cancel"}.contains(args[3])) return 2;
   bool ok = false;
   const int attempts = args[4].toInt(&ok);
@@ -53,7 +65,6 @@ int main(int argc, char** argv) {
   if (!directory.isValid()) return 2;
   qputenv("XDG_CACHE_HOME", directory.filePath("cache").toUtf8());
   const QDir fixtures(args[2]);
-  const QStringList fixtureNames{"160x80.png", "1600x1200.png", "3200x2400.png", "oriented.jpg"};
   for (int attempt = 0; attempt < attempts; ++attempt) {
     QStringList paths;
     for (int i = 0; i < batchSize; ++i) {
@@ -69,7 +80,7 @@ int main(int argc, char** argv) {
           const int i = int(paths.indexOf(request.path));
           {
             const std::lock_guard lock(state.mutex);
-            if (state.cleanupFailure) {
+            if (!state.gate.admit()) {
               return ThumbnailResult{.error = QStringLiteral("Stopped after cleanup failure")};
             }
             state.observations.at(i).started = true;
@@ -85,8 +96,7 @@ int main(int argc, char** argv) {
 #ifdef ISOLATED
             state.observations.at(i).runtime = int(result.runtime);
             state.observations.at(i).diagnostic = result.diagnostic;
-            state.cleanupFailure =
-                state.cleanupFailure || result.runtime == HolonightImages::RuntimeStatus::CleanupFailure;
+            state.gate.complete(result.runtime == HolonightImages::RuntimeStatus::CleanupFailure);
 #endif
           }
           return result;
@@ -153,9 +163,9 @@ int main(int argc, char** argv) {
                          {"drained", drained},
                          {"pending", provider.pendingCount()},
                          {"wall_ms", elapsed},
-                         {"cleanup_failure", state.cleanupFailure},
+                         {"cleanup_failure", state.gate.failed()},
                          {"operations", operations},
-                         {"success", drained && delivered == (cancel ? 4 : 16) && !state.cleanupFailure}};
+                         {"success", drained && delivered == (cancel ? 4 : 16) && !state.gate.failed()}};
     };
     QJsonObject setup;
     if (args[3] == "warm") {
@@ -178,7 +188,7 @@ int main(int argc, char** argv) {
       row["incomplete"] = true;
     const auto bytes = QJsonDocument(row).toJson(QJsonDocument::Compact) + '\n';
     if (output.write(bytes) != bytes.size() || !output.flush()) return 3;
-    if (state.cleanupFailure) return 20;
+    if (state.gate.failed()) return 20;
     if (row["incomplete"].toBool() || !row["sample"].toObject()["success"].toBool()) return 1;
   }
   return 0;
