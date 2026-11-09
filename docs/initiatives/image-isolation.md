@@ -914,3 +914,38 @@ or authorized. The memfd no-go, exact modes, inventory, location-independent
 identity and explicit-refresh contract are retained, without a privileged broker or broader parent security changes. This
 step used read-only inspection and whitespace checks only; no native experiments,
 builds, deployment, commits or pin changes were made.
+
+## Full runtime validation profile (2026-11-09)
+
+The [Images validation-only profile](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#full-per-operation-validation-profile-2026-11-09)
+completed one bounded host-native run. **Retain full per-operation validation
+unchanged; generation reuse remains no-go.** No worthwhile optimization preserving
+every check was established.
+
+Private baseline and instrumented Release builds used identical archived Images
+source and host dependencies. Only the private copy received instrumentation.
+The preserved 60-payload, 87,198,752-byte runtime matched its earlier inventory and
+was copied with modes intact. All ten valid/fault cases produced the expected
+matching results. Five warm-ups per variant preceded 100 measured validations per
+variant in alternating-order pairs, using persistent harnesses and one validation
+at a time. No runtime payload, decoder, scope or sandbox was launched.
+
+Baseline total median/p95 was **42.457/42.886 ms**; instrumented was
+**42.760/43.196 ms**, a **0.713% median increase**, below the 10% attribution gate.
+Combined reading/SHA-256 checking had a **40.894-ms median**, accounting for
+**95.610%** at the median of per-call total fractions. Reading and hashing cannot
+be separated from that interval. Median phase coverage was **99.973%**. All 200
+measured validations succeeded with no missing observations or failures; descriptor
+counts stayed at five, all four harnesses were reaped, and both runtime inventories
+remained unchanged. These are warm-cache, validation-only measurements on one host;
+they do not predict whole-preview savings or replace the historical 47.1106485-ms
+validation median. No new phase is subtracted from historical measurements.
+
+Evidence is in ignored Images `build/runtime-profile-nodkmzws/`, including archived
+source, overlay patches, provenance, binary hashes, raw observations, per-file
+bytes/timings, summary and verification. Seven focused accounting tests passed
+before measurement. Private overlay review and whitespace checks completed; the
+preview matrix and installed-package suite were not rerun because production and
+installation behavior are unchanged. The single recommendation is to keep the
+existing validator. No production optimization, public API, caching, freshness or
+security-policy change, deployment, publication, commit or pin update is included.
