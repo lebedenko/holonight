@@ -1050,3 +1050,39 @@ validation, APIs and installation are unchanged, production integration is not
 authorized, and generation reuse remains **no-go**. Historical measurements and
 provenance findings above remain intact. No deployment, installation, commit,
 publication or pin update occurred; Grub was untouched.
+
+## Bounded hash performance experiment (2026-11-09)
+
+**Worthwhile savings not demonstrated.** The
+[Images full-validation experiment](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#bounded-hash-performance-experiment-2026-11-09)
+completed three warm-cache blocks with 50 measured pairs each, after five excluded
+warm-up pairs per block. The fixed gates required median paired savings of at
+least 4 ms and 10%, and candidate p95 at most 105% of baseline p95, in every block
+and pooled. These are practical gates, not statistical significance claims.
+
+| Block | Baseline median / p95 ms | Candidate median / p95 ms | Median paired savings ms / % |
+| --- | ---: | ---: | ---: |
+| 1 | 41.851 / 42.804 | 40.685 / 41.247 | 1.158 / 2.758% |
+| 2 | 42.223 / 44.863 | 41.141 / 42.398 | 1.064 / 2.500% |
+| 3 | 42.380 / 44.169 | 41.482 / 42.630 | 1.027 / 2.480% |
+| Pooled | 42.101 / 43.932 | 41.071 / 42.345 | 1.114 / 2.654% |
+
+Every block missed both savings thresholds; all p95 gates passed. All ten
+validator cases agreed in both variants, and the unchanged 98-case device
+evidence was reused. Installed QtCore identity, candidate/source/overlay identity,
+frozen and disposable inventories, metadata, descriptors and child cleanup
+checks passed. All samples are retained, without retries or trimming.
+
+Evidence is in ignored Images `build/hash-performance-cyws85n4/`, with hashes,
+host context, qualification details and limits in the linked local design.
+Seven focused tooling tests passed before execution; post-run idle-watchdog
+hardening added an eighth passing test, recorded separately without repeating
+the measurement. Both repository whitespace checks passed. No full preview or
+installed-package suite, deployment, installation, commit, publication or pin
+update was performed. Grub was untouched.
+
+The conclusion is limited to this host, preserved B2 fixture and warm-cache
+full-validation workload. It implies neither whole-preview savings, universal
+error equivalence nor concurrent-mutation protection. Production integration
+remains a separate decision and is not justified by the agreed savings gate;
+generation reuse remains **no-go**. Historical findings above remain intact.
