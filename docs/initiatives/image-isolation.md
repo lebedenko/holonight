@@ -949,3 +949,35 @@ preview matrix and installed-package suite were not rerun because production and
 installation behavior are unchanged. The single recommendation is to keep the
 existing validator. No production optimization, public API, caching, freshness or
 security-policy change, deployment, publication, commit or pin update is included.
+
+## Qt SHA-256 path review (2026-11-09)
+
+The [bounded Images review](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#qt-sha-256-path-review-2026-11-09)
+ends with **stop with no qualified candidate**. Installed QtCore 6.12.0-3 binary
+inspection confirms a 1 KiB device-read loop and OpenSSL EVP initialization,
+updates and finalization. QFile/QIODevice buffering means this is not evidence
+of one syscall per KiB. CPU SHA-NI capability does not establish actual provider
+or assembly dispatch in the validator.
+
+Exactly one candidate was reviewed: a bounded 64 KiB streaming loop feeding the
+same Qt SHA-256 object, retaining every validation check. It plausibly reduces
+repeated read/update overhead, but the combined read/hash timing cannot estimate
+savings. Current Qt stops on zero or negative reads and returns `atEnd()`;
+unconditionally rejecting negative reads would change its acceptance policy.
+Larger requests also change buffering/error boundaries, whose equivalence remains
+unqualified. No stronger concurrent-mutation protection is claimed.
+
+Fresh primary Arch recipes confirm package versions and the recorded Qt source
+checksum, but the cached Qt tag archive still does not match that checksum.
+Exact distribution-source provenance remains unresolved; binary correspondence
+does not close that gap. Installed library paths, hashes/build IDs, source revision,
+patch review, commands, disassembly and findings are retained in ignored Images
+`build/qt-sha256-review-20261109/`. The local design records the semantic comparison,
+unchanged manifest/path/inventory/regular-file/exact-mode/size/required-entry/full
+SHA-256 checks, and correctness obligations should this candidate be reconsidered.
+
+Production validation and public APIs remain unchanged; generation reuse remains
+no-go. Historical measurements are preserved. This step used document/evidence
+review and whitespace checks in both repositories, with no tests, builds,
+benchmarks, frozen-runtime execution/modification, installation, deployment,
+commits or pin updates. No private experiment is qualified or executed.
