@@ -1086,3 +1086,68 @@ full-validation workload. It implies neither whole-preview savings, universal
 error equivalence nor concurrent-mutation protection. Production integration
 remains a separate decision and is not justified by the agreed savings gate;
 generation reuse remains **no-go**. Historical findings above remain intact.
+
+
+## Hash candidate closure and launcher-readiness review (2026-11-09)
+
+**Close the 64 KiB hash candidate without production integration.** The
+[Images evidence review](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#hash-candidate-closure-and-next-target-evidence-review-2026-11-09)
+checked preserved policy/observation/summary hashes and recomputed three complete
+blocks: 150 measured validations per variant, with 15 excluded warm-ups each.
+Pooled paired savings remain **1.114 ms / 2.654%**. Every block and pooled result
+misses both savings gates; all p95 gates pass. Retain the bounded 98-device-pair
+and ten-validator-case agreement, without claiming universal error equivalence.
+
+Corrected Experiment 0 tool/provenance/inventory/executable/fixture identities,
+D2 overlays and archived Images source matched the relevant recorded hashes.
+Independent validation, child reports, attempt intervals and cleanup records
+agree: 1,000 lifecycle cycles / 3,000 successful operations, 280 attribution
+cases / 696 operations, 84 resource cases / 220 operations, and 600 scheduler
+batches. Parent/helper medians and scheduler median/p95 were recomputed read-only;
+no frozen evidence was regenerated. Both D2 passes retain 28 settled zero-scope
+snapshots. The acceptance-prefix-only manifest exception remains historical.
+
+| Existing measurement | Median ms | Denominator / limitation |
+| --- | ---: | --- |
+| D2 validation | 47.111 | 696 operations, zero missing |
+| D2 readiness | 27.226 | Inspection 27.486 (348), source decode 27.103 (308), cached PNG decode 26.755 (40); zero missing |
+| D2 request / response receipt | 0.035 / 1.780 | 696 each; response includes helper work, not pure transfer |
+| D2 helper execution / serialization | 1.516 / 0.041 | 696 each, zero missing; nested within parent work |
+| D2 acknowledgement / cleanup | 0.882 / 3.209 | 696 each, zero missing |
+| A/B2 cold scheduler | 118.892 / 1,303.886 | 100 mixed batches each; warm medians 0.209 / 0.218 with zero decoder starts |
+| Validation-only baseline | 42.457 | 100 calls; separate warm-cache profile, not replacement D2 timing |
+
+The local review preserves per-operation-kind parent timings. Consumer phases
+have 460 observations and 40 missing among 500 jobs. Separate resource sampling
+has unavailable parent/scope/combined reads of 2/6/8; all 220 pre-ack reads are
+available. Scheduler has 100 batches per variant/workload and zero missing timed
+samples; cancellation medians remain 51.057 / 361.447 ms. These domains remain
+separate: no median addition or cross-experiment subtraction predicts speedups.
+
+Archived instrumentation starts readiness just before QProcess starts systemd-run
+and ends after the parent receives the sandbox helper's `R`. Current launch code
+preserves the sequence: process startup, scope discovery, actual memory/swap limit
+verification, gate release, bubblewrap setup, helper loading/initialization and
+readiness delivery. Validation and command construction precede this timer;
+request framing/transfer follows it. D2's `helper_launch` event marks QProcess
+startup; its `scope` event occurs after readiness. Neither times scope discovery
+or sandbox startup separately. Five-ms wait bounds do not prove polling dominance;
+systemd, bubblewrap, loading and observation delays are unresolved contributors.
+
+Retain full per-operation validation and the generation-reuse **no-go**. Do not
+reopen hash tuning, storage mechanisms, session reuse or prestarted workers.
+Verification was read-only evidence/source review, document consistency and both
+repository whitespace checks. No builds, benchmarks, payloads, test suites,
+experiment tooling, installation, deployment, commits, publication or pins changed;
+frozen evidence and Grub remain untouched.
+
+**Recommend a separate launcher-readiness profiling design.** Determine which
+internal intervals account for the approximately 27-ms interval, distinguishing
+execution from parent observation delay. Proposed boundaries are pre-start,
+QProcess-start completion, scope discovery, verified limits, gate write/consumption
+and pre-exec, sandbox-helper entry, readiness flush and parent receipt. Account for
+overlap, clock comparability, missing data and instrumentation overhead; do not
+attribute unresolved pre-entry time to the loader or sandbox without observations.
+Preserve full validation, fresh scopes/helpers, verified limits before release,
+sandbox security, protocol, cancellation/deadlines and hierarchical terminal cleanup.
+This recommends a design only; it does not authorize or implement the experiment.
