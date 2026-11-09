@@ -1151,3 +1151,51 @@ attribute unresolved pre-entry time to the loader or sandbox without observation
 Preserve full validation, fresh scopes/helpers, verified limits before release,
 sandbox security, protocol, cancellation/deadlines and hierarchical terminal cleanup.
 This recommends a design only; it does not authorize or implement the experiment.
+
+## Bounded launcher-readiness profiling design (2026-11-09)
+
+The [dedicated Images specification](../../holonight-images/docs/sdd/launcher-readiness-profile/DESIGN.md)
+defines a future private host-native Release experiment for source inspection,
+source decode and cached PNG decode separately. Three serial blocks contain
+three excluded warm-up pairs and 20 measured reference/detailed pairs per kind:
+**180 measured calls and 27 warm-ups per variant**. Both variants derive from
+one archived revision and use disposable, fully validated runtime bundles.
+
+Observation boundaries cover process start, scope discovery, verified limits,
+gate write/consumption/exec, helper entry, readiness flush and parent receipt.
+The design requires comparable monotonic clocks, bounded stderr capture through
+exec, actual wait observations and per-call overlap accounting. Bubblewrap and
+dynamic-loader work remain combined where the observations cannot separate them;
+flush completion and parent receipt need not occur in that order.
+
+Detailed/reference outer-readiness median and nearest-rank p95 ratios must each
+be at most **1.10**, per kind in every block and pooled by kind. These are practical
+instrumentation-overhead gates, not significance or optimization gates. Failed
+gates or incomplete evidence yield no qualified attribution; retain all samples
+without retries, trimming or budget expansion. Future focused tooling and runtime
+qualification must cover success, cancellation, timeout, failed readiness and
+bounded termination/reaping with hierarchical cleanup proof and partial evidence.
+
+Historical measurements and hash-candidate closure are preserved. Full validation,
+fresh helpers/scopes, verified limits before release and sandbox/protocol/lifecycle
+contracts remain required. Generation reuse remains **no-go**; hash tuning,
+storage mechanisms, session reuse and prestarted workers stay closed. Verification
+for this documentation change is current/archived source review, three-document
+consistency and whitespace checks only. No builds, tests, benchmarks, runtime
+payloads, production/API/dependency/installation changes, commits or publication;
+frozen evidence, Grub and pins remain untouched. The design is ready for separate
+implementation review and authorizes neither implementation nor execution.
+
+
+## Bounded launcher-readiness run outcome (2026-11-09)
+
+The authorized [Images private experiment](../../holonight-images/docs/sdd/launcher-readiness-profile/DESIGN.md#execution-results-2026-11-09)
+ended with **no qualified attribution**. Both host-native Release variants built,
+but qualification stopped on call six: a private fault-controller race cancelled
+before helper entry. Five cases passed; cleanup of the final case proved cgroup
+removal and launcher reaping after TERM/KILL in 1.021 seconds. Thirty qualification
+calls and all 414 measurement/warm-up slots remained unattempted; there are no
+qualified distributions or overhead ratios. The executed snapshot remains intact;
+a controller correction passed offline checks without a native retry. Production,
+installation, frozen evidence and pins are unchanged. Generation reuse remains
+**no-go** and all previously closed optimization directions stay closed.
