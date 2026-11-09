@@ -874,3 +874,43 @@ review; any future narrowing requires explicit approval. Acquisition source mode
 exact inventory, location-independent identity and approved explicit-refresh
 ordering stay unchanged. Verification was document/code/evidence review and
 whitespace checks only; successful probe checks were reused, not rerun.
+
+The [unprivileged static mechanism gate](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#unprivileged-storage-static-mechanism-gate-2026-11-09)
+qualified **neither candidate**. Private tmpfs read-only publication is reversible
+when the same-user namespace owner can regain mount authority; dropping builder
+capabilities is insufficient. A sealed image served through FUSE has read-only
+format properties, but daemon/connection isolation, security metadata policy,
+mount substitution, launch access and bounded lifetime remain unresolved. Neither
+mechanism establishes protection before unsandboxed gate execution.
+
+The review found kernel FUSE support and existing FUSE mounts; missing `/dev/fuse`
+in the sandbox's overlaid `/dev` does not prove host absence. SquashFUSE was not
+found in the visible binaries/package database. These are development-host
+observations. Portable qualification requires specific kernel/tool capabilities
+and policy, not exact distribution patch identity; investigate patches only for
+a concrete relevant semantic difference. Unavailable source is not a mechanism
+failure.
+
+The [bounded portable FUSE follow-up](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#portable-fuse-qualification-follow-up-2026-11-09)
+assesses one adapted SquashFUSE 0.6.1 construction: a sealed image, dedicated
+unprivileged daemon and parent-held leaf handles. **Retain no-go.** Daemon-local
+non-dumpability does not suffice in a user namespace owned by the same user;
+keeping the daemon in the original namespace instead leaves an unprotected
+startup interval unless a protected bootstrap is established. Parent-memory
+trust does not exclude attacks on this new daemon. Neither changing parent
+security nor assuming stronger host tracing policy is accepted here.
+
+Pinned leaves resist later mountpoint substitution, but do not authenticate FUSE
+replies. The design specifies required no-xattr/ACL/capability image policy,
+exact modes and mapped ownership, and distinguishes image metadata from effective
+LSM execution policy. Served immutability, pre-gate enforcement, parent-proc
+reopening through QProcess/systemd/gate/bubblewrap and bounded daemon lifetime
+remain unresolved. Direct user-namespace FUSE mounting is a source-established
+primitive; protected mounting/transfer, image tooling, resource caps and teardown
+require adaptation. Payload limits do not cover daemon/cache/queue overhead by
+themselves. These concrete blockers, rather than missing distribution patches,
+stop qualification. No construction is selected and no metadata probe is ready
+or authorized. The memfd no-go, exact modes, inventory, location-independent
+identity and explicit-refresh contract are retained, without a privileged broker or broader parent security changes. This
+step used read-only inspection and whitespace checks only; no native experiments,
+builds, deployment, commits or pin changes were made.
