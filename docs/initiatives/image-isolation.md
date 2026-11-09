@@ -952,6 +952,10 @@ security-policy change, deployment, publication, commit or pin update is include
 
 ## Qt SHA-256 path review (2026-11-09)
 
+Historical review: its source-checksum blocker is superseded by the
+[provenance reconciliation below](#qt-package-source-provenance-reconciliation-2026-11-09).
+The candidate remains unqualified.
+
 The [bounded Images review](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#qt-sha-256-path-review-2026-11-09)
 ends with **stop with no qualified candidate**. Installed QtCore 6.12.0-3 binary
 inspection confirms a 1 KiB device-read loop and OpenSSL EVP initialization,
@@ -981,3 +985,35 @@ no-go. Historical measurements are preserved. This step used document/evidence
 review and whitespace checks in both repositories, with no tests, builds,
 benchmarks, frozen-runtime execution/modification, installation, deployment,
 commits or pin updates. No private experiment is qualified or executed.
+
+## Qt package-source provenance reconciliation (2026-11-09)
+
+The [bounded Images investigation](../../holonight-images/docs/sdd/runtime-generation-reuse/DESIGN.md#qt-package-source-provenance-reconciliation-2026-11-09)
+ends with **provenance reconciled; no qualified candidate**. Makepkg's
+`download_git()` disables `export-subst` and `export-ignore` before its checksum
+command runs. Applying that documented sanitation only in a fresh primary Qt
+clone reproduces the recipe SHA-256
+`d97ef157dc50bdf0425337e9adede8135ab508a4ab2f1abae7e9cfc42c5f86db`.
+Without it, both fresh and cached clones produce the historical `f24f…6208` hash.
+The archive differences are 38 restored attribute/ignore files and an
+unsubstituted `.tag`; the seven reviewed hashing/I/O files are unchanged.
+
+The cached Qt package signature verifies with existing distribution trust, and
+its QtCore payload matches the installed library hash/build ID. The signed build
+metadata matches the fresh Arch recipe. Fresh Qt tag/commit/tree identities match
+the cache; the build-version makepkg script matches the installed script. The two
+recipe patches and three primary cherry-picks do not directly edit the reviewed
+files. Evidence, commands, hashes and source citations are retained in the local
+design and ignored Images `build/qt-provenance-20261109/`. This reconciles source
+provenance; it does not independently reproduce the installed binary or resolve
+OpenSSL provider/assembly attribution.
+
+Recommend a separate bounded correctness review of the same 64 KiB loop before
+qualification. No implementation, read/error tests or benchmark was performed.
+Production validation and public APIs remain unchanged; generation reuse remains
+no-go. Historical review and measurements are preserved. Verification covered
+package/source identity, exact checksum reproduction, archive contents/metadata,
+patch target paths, citations, document agreement and whitespace checks in both
+repositories. No builds, frozen-runtime execution/modification, installation,
+trust changes, alternative backend/storage investigation, commits, publication or
+pin updates were performed. The cached sources and `holonight-grub/` were untouched.
