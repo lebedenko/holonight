@@ -94,6 +94,12 @@ exit "$status"
         self.assertIn("sudo pacman -S --needed udisks2", result.stderr)
         self.assertNotIn("cmake -S", self.log.read_text())
 
+    def test_missing_appstream_qt(self):
+        result = self.check(MISSING_PACKAGE="appstream-qt")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sudo pacman -S --needed appstream-qt", result.stderr)
+        self.assertNotIn("cmake -S", self.log.read_text())
+
     def test_package_database_failure_stops_preflight(self):
         result = self.check(PACMAN_FAILURE="1")
         self.assertNotEqual(result.returncode, 0)

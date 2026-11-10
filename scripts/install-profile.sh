@@ -1,5 +1,6 @@
 # Maintained Arch packages for host source installation. CMake owns version requirements.
 readonly HOLONIGHT_INSTALL_PACKAGES=(
+  appstream-qt
   bubblewrap
   base-devel
   cage
