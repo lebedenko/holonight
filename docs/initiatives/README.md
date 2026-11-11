@@ -12,6 +12,8 @@ An initiative has two umbrella-owned files:
 Do not duplicate local implementation checklists here. Component repositories own their specifications, designs,
 tests, and commits.
 
+- [HoloNight Trash](trash/README.md) — Move to Trash on NFS, optional retention, and a Files Trash view.
+
 - [Shared File Selection Toolkit](shared-file-selection-toolkit/README.md) — Implemented, published and pinned; requested native toolkit walkthroughs accepted.
 
 - [Shared File UI Controls](shared-file-ui-controls/README.md) — Implemented, published and pinned; native functional acceptance passed, with visual fine-tuning deferred to the participating repositories.
