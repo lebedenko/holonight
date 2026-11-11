@@ -36,6 +36,7 @@ class ViewerOwnership(unittest.TestCase):
         scripts.mkdir()
         shutil.copy(ROOT / "scripts/install-dependencies.sh", scripts)
         shutil.copy(ROOT / "scripts/prune-icons.py", scripts)
+        shutil.copy(ROOT / "scripts/reconcile-images-runtime.py", scripts)
         # Load the production functions without running preflight/build/host installation.
         source = (ROOT / "scripts/install.sh").read_text()
         functions, separator, _ = source.partition('\npreflight\nnote "Preflight passed"')

@@ -21,7 +21,7 @@ class IconsInstallation(unittest.TestCase):
         self.target.mkdir()
         scripts = self.root / "scripts"
         scripts.mkdir()
-        for name in ("install-dependencies.sh", "prune-icons.py"):
+        for name in ("install-dependencies.sh", "prune-icons.py", "reconcile-images-runtime.py"):
             shutil.copy(ROOT / "scripts" / name, scripts)
         source, separator, _ = (ROOT / "scripts/install.sh").read_text().partition(
             '\npreflight\nnote "Preflight passed"')

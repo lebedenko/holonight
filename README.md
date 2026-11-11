@@ -119,6 +119,18 @@ retained managed paths keep their original ownership hashes for later uninstall.
 unmanaged legacy installation still trigger collision rejection. No blanket theme-directory removal
 is performed.
 
+Images upgrades reconcile `/usr/libexec/holonight-images/runtime` as a complete bundle.
+Obsolete regular files are removed only when the previous manifest assigns them to
+`holonight-images` and their type, mode and hash are unchanged. Recorded obsolete
+directories are removed only when empty after cleanup. Unowned leftovers (including
+files forgotten by older manifests), modified obsolete files, symlinks and incompatible
+path types block deployment, even with `--adopt-existing`. Move each reported conflict
+outside the runtime or resolve it manually before retrying; an untracked `libcrypto.so.3`
+must be manually quarantined, since its filename cannot establish ownership.
+The staged native helper verifies the deployed bundle before ownership records are
+replaced. A deployment failure preserves the previous ownership manifest, but does
+not roll back payloads already copied during an interrupted or failed installation.
+
 To migrate existing files from an unmanaged source installation, run
 `task install -- --adopt-existing`. The installer rejects package-owned files and
 backs up all files being adopted under `/var/backups/holonight-source-migration.*`

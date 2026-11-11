@@ -186,7 +186,14 @@ record_module_paths() {
   fi
 }
 
+reconcile_images_runtime() {
+  as_root python3 "$SCRIPT_DIR/reconcile-images-runtime.py" --root "$TARGET_ROOT" \
+    --old-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv" \
+    --new-manifest "$BUILD_ROOT/manifest.tsv" "$@"
+}
+
 collision_check() {
+  reconcile_images_runtime
   local manifest="$BUILD_ROOT/manifest.tsv" old_manifest="$TARGET_ROOT/$STATE_REL/manifest.tsv"
   local module revision type mode hash relative destination
   local collisions=0 parent
@@ -283,6 +290,8 @@ refresh_owned_icon_caches() {
 copy_stage() {
   local stage="$BUILD_ROOT/stage" manifest="$BUILD_ROOT/manifest.tsv"
   local module revision type mode hash relative source destination target
+  # Recheck the full runtime before changing any installed payload.
+  reconcile_images_runtime --prune
   # Complete every backup before replacing any payload. mktemp avoids reusing
   # a previous migration directory and cp -a preserves symlinks and metadata.
   if [[ -s "$BUILD_ROOT/adopted-paths" ]]; then
@@ -306,6 +315,11 @@ copy_stage() {
         if [[ "$TARGET_ROOT" = "/" && EUID -ne 0 ]]; then sudo ln -sfn -- "$target" "$destination"; else ln -sfn -- "$target" "$destination"; fi ;;
     esac
   done < "$manifest"
+  if [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
+    "$stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper" \
+      --verify-runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" ||
+      die "deployed Images runtime verification failed; previous ownership manifest preserved; resolve the runtime manually before retrying"
+  fi
   # Retain original hashes for modified obsolete icons and retired portal files
   # so future upgrades and uninstall preserve them too. Cleanup is allowlisted.
   local old_manifest="$TARGET_ROOT/$STATE_REL/manifest.tsv"
