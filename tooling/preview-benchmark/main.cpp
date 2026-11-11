@@ -11,15 +11,27 @@
 #include <QTemporaryDir>
 #include <QThread>
 
+#include <HolonightFileBrowser/preview/image_policy.h>
 #include <HolonightFileBrowser/preview/preview_service.h>
 #include <HolonightFileBrowser/preview/thumbnail_decoder.h>
+#include <atomic>
 #include <cstdio>
+#include <holonight_thumbnails/cache.h>
 #include <memory>
 #include <sys/resource.h>
 #include <sys/stat.h>
 
 namespace {
 using Consumer = PreviewService::PreviewConsumer;
+std::atomic_bool cleanupFailure{false};
+void messages(QtMsgType type, const QMessageLogContext& context, const QString& message) {
+  if (message.startsWith("Preview runtime failure 4")) {
+    cleanupFailure.store(true);
+  }
+  Q_UNUSED(type)
+  Q_UNUSED(context)
+  std::fprintf(stderr, "%s\n", qPrintable(message));
+}
 void target(PreviewService& service, const QString& path) {
   service.setTarget(path, false, 0, {}, S_IFREG | 0600, false, {}, {});
 }
@@ -49,6 +61,7 @@ double cpu(const rusage& usage) {
 // copies precede timing. No global cache flush, tracing, or resource polling.
 int main(int argc, char** argv) {
   QCoreApplication app(argc, argv);
+  qInstallMessageHandler(messages);
   if (argc != 6) {
     std::fprintf(stderr, "usage: preview-benchmark RUNTIME FIXTURE SCENARIO COUNT OUTPUT\n");
     return 2;
@@ -85,6 +98,23 @@ int main(int argc, char** argv) {
     }
     paths.append(path);
   }
+  QFile referenceSource(fixture);
+  if (!referenceSource.open(QIODevice::ReadOnly)) {
+    return 7;
+  }
+  const std::atomic_bool cancelled{false};
+  const auto inspection = HolonightImages::inspect(referenceSource, kPreviewImageLimits, cancelled);
+  const auto& sourceFacts = inspection.metadata.facts;
+  const auto referenceBound = scenario == "upgrade" ? QSize(1280, 960) : QSize(256, 256);
+  const auto requiredSize = ThumbnailService::requiredSize(inspection.orientedSize, referenceBound);
+  const auto tier = ThumbnailService::tierForSize(requiredSize);
+  const auto decodeBound = tier ? QSize(static_cast<int>(*tier), static_cast<int>(*tier)) : referenceBound;
+  const auto expected =
+      HolonightImages::decode(referenceSource, {.limits = kPreviewImageLimits, .bound = decodeBound}, cancelled);
+  if (inspection.outcome != HolonightImages::Outcome::Success ||
+      expected.outcome != HolonightImages::Outcome::Success) {
+    return 8;
+  }
   auto service = make();
   QJsonArray samples;
   for (int index = 0; index < count; ++index) {
@@ -101,8 +131,18 @@ int main(int argc, char** argv) {
         service->clear();
       }
       if (scenario == "disk") {
+        const auto cacheTier =
+            ThumbnailService::tierForSize(ThumbnailService::requiredSize(inspection.orientedSize, {256, 256}));
+        setupOk =
+            setupOk && cacheTier &&
+            QFileInfo::exists(HolonightThumbnails::cachePath(QUrl::fromLocalFile(path), static_cast<int>(*cacheTier)));
         service = make();
       }
+    }
+    if (cleanupFailure.load() || !setupOk) {
+      samples.append(
+          QJsonObject{{"incomplete", true}, {"cleanup_failure", cleanupFailure.load()}, {"setup_success", setupOk}});
+      break;
     }
 #ifdef PREVIEW_DIAGNOSTIC_HEADER
     if (PreviewEvidence::cleanupFailed.load()) {
@@ -115,7 +155,7 @@ int main(int argc, char** argv) {
     double final = -1;
     bool observing = false;
     const auto required =
-        scenario == "upgrade" ? ThumbnailService::requiredSize(service->sourcePixelSize(), {1280, 960}) : QSize{};
+        scenario == "upgrade" ? ThumbnailService::requiredSize(service->sourcePixelSize(), {1280, 960}) : requiredSize;
     auto connection = QObject::connect(service.get(), &PreviewService::changed, &app, [&] {
       if (!observing) {
         return;
@@ -171,7 +211,16 @@ int main(int argc, char** argv) {
     if (scenario == "upgrade" && success && final < 0) {
       first = final = wall;
     }
-    samples.append(QJsonObject{{"delivered_width", service->image().width()},
+    const bool correctPixels = scenario == "grid-decode" || service->image() == expected.image;
+    const bool correctMetadata =
+        scenario == "grid-decode" ||
+        (service->sourcePixelSize() == inspection.orientedSize && service->exifMake() == sourceFacts.make &&
+         service->exifModel() == sourceFacts.model && service->exifLensModel() == sourceFacts.lens);
+    success = success && correctPixels && correctMetadata;
+    samples.append(QJsonObject{{"correct_pixels", correctPixels},
+                               {"correct_metadata", correctMetadata},
+                               {"cleanup_failure", cleanupFailure.load()},
+                               {"delivered_width", service->image().width()},
                                {"delivered_height", service->image().height()},
                                {"required_width", required.width()},
                                {"required_height", required.height()},
@@ -184,6 +233,9 @@ int main(int argc, char** argv) {
                                {"harness_timeout", service->busy()},
                                {"superseded_selections", scenario == "burst" ? 20 : 0}});
     service->clear();
+    if (cleanupFailure.load() || !success) {
+      break;
+    }
 #ifdef PREVIEW_DIAGNOSTIC_HEADER
     PreviewEvidence::event("sample_completed", {{"index", index}, {"scenario", scenario}});
     if (PreviewEvidence::cleanupFailed.load()) break;
@@ -221,5 +273,5 @@ int main(int argc, char** argv) {
 #ifdef PREVIEW_DIAGNOSTIC_HEADER
   if (PreviewEvidence::cleanupFailed.load()) return 20;
 #endif
-  return 0;
+  return cleanupFailure.load() ? 20 : 0;
 }
