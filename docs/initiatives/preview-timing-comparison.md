@@ -545,3 +545,77 @@ The new offline adapter and six focused regressions passed. Historical tools wer
 reused only after their recorded hashes matched. No native builds, benchmarks,
 deployment, publication, pin changes or commits were performed. Earlier assessments
 remain unchanged.
+
+### Offline retained v3 delivery-gap audit (2026-11-12)
+
+The [delivery-gap assessment](../../build/preview-delivery-gaps-v3-analysis-20261112-05/ASSESSMENT.md)
+reconciles all 264 invocations, 2,424 observations and 1,344 traced service
+lifetimes with the completed startup analysis. The unchanged historical parser
+and lifecycle validation were reused after recorded tool identities matched.
+All observations and streams passed retained hashes; the frozen source files
+passed package inventories. The [input-integrity record](../../build/preview-delivery-gaps-v3-analysis-20261112-05/input-integrity.json)
+records 1,119 consumed input/tool hashes before and after, unchanged.
+
+The [source-path map](../../build/preview-delivery-gaps-v3-analysis-20261112-05/source-path-map.json)
+inspects A/B/C/D independently, retaining hashes, line ranges, branch conditions,
+thread handoffs and existing trace boundaries. Decode exchange includes response
+transport, parsing and checks. Successful one-shot transactions acknowledge and
+wait for helper exit and verified cleanup; reusable sessions validate a completion
+acknowledgement. After transaction return, conditional synchronous thumbnail
+storage precedes pixel enqueue. PNG/JPEG metadata formatting and conditional
+memory-cache insertion follow pixel enqueue and precede final-result publication.
+Queued callbacks apply results on the service thread and emit `changed`; the
+harness captures latency before its endpoint probes. Worker metadata work can
+overlap application of the pixel result. Source ordering establishes neither
+conditional branch execution nor elapsed cost in an individual observation.
+
+The [pooled and per-block summaries](../../build/preview-delivery-gaps-v3-analysis-20261112-05/summary.json)
+report presence, unavailable reasons and median/nearest-rank p95 for each endpoint.
+For measured large PNGs, decode-exchange-end-to-pixel delivery is:
+
+| Variant | Present | Median ms | p95 ms |
+|---|---:|---:|---:|
+| A | 100 | 26.092 | 68.929 |
+| B | 100 | 21.480 | 25.416 |
+| C | 100 | 18.632 | 22.181 |
+| D | 100 | 18.783 | 24.000 |
+
+A has a unique applicable cleanup boundary in every measured observation.
+B has two compatible demand cleanup spans, so cleanup-end intervals remain
+ambiguous rather than selecting the nearest span. C/D have no applicable demand
+cleanup before delivery, consistent with reusable completion; their cleanup-end
+intervals remain unavailable. These limitations do not invalidate the distinct,
+unambiguous decode-end intervals. The [per-observation intervals](../../build/preview-delivery-gaps-v3-analysis-20261112-05/intervals.json)
+retain clipped historical coverage unions, unnamed gaps, intervening spans and
+markers, and raw file/line references. Warm-ups, setup and post-delivery work do
+not enter measured summaries; U remains separately labeled harness-latency context.
+
+The [selected examples](../../build/preview-delivery-gaps-v3-analysis-20261112-05/selected-examples.json)
+preserve the previous five slowest harness observations per variant and endpoint,
+plus five observations nearest each cell's harness-latency median, with block/sample
+tie-breaking. These median-near examples are descriptive comparisons, not matched
+controls. The slowest A large-PNG pixel example (block 9, sample 0) has a 151.182 ms
+decode-end interval, 21.416 ms intersecting coverage and 129.766 ms unnamed elapsed
+time; its cleanup-end interval is 124.119 ms. The corresponding final-metadata
+intervals are 151.215 ms and 124.152 ms. The report links raw timelines for every
+selected tail and comparison. These gaps cannot be assigned to thumbnail storage,
+queue residence, CPU work or scheduling from retained evidence.
+
+The assessment ends with an ordered minimum probe specification: distinguish
+transaction completion/return and effective retirement from repeated retirement
+calls; record storage branch decisions and serialization/commit boundaries,
+metadata preparation and memory-cache insertion; then connect endpoint enqueue,
+callback entry, `applyResult`, signal emission and harness capture. Propagate
+publication, transaction, job and service-lifetime identities across thread
+handoffs while retaining actual executing pid/tid. No probes or optimizations
+were implemented. Inclusive durations remain non-additive; no overhead is
+subtracted or threshold introduced. The overhead report's host-activity limitation,
+C's failed qualification and D's failed pilot remain unchanged.
+
+Seven focused regressions passed. [Independent verification](../../build/preview-delivery-gaps-v3-analysis-20261112-05/independent-verification.json)
+checked all 3,030 available endpoint/boundary intervals including retained warm-ups,
+21,807 raw references, 1,054 assessment links, source ranges/hashes, exact historical
+tail selection and unchanged consumed hashes. Earlier development runs that blocked
+on ambiguous source-map anchors remain under ignored `build/`; the linked run is
+complete with no issues. No native builds, benchmarks, runtime instrumentation,
+deployment, publication, pin changes or commits were performed.
