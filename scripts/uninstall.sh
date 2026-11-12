@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly STATE_REL="var/lib/holonight/source-install"
 TARGET_ROOT="/"
 ASSUME_YES=0
@@ -40,10 +41,49 @@ hash_path() {
   else printf '%s' '-'; fi
 }
 
+images_operation_fd=""
+if [[ "$TARGET_ROOT" = / || -e "$TARGET_ROOT/usr/libexec/holonight-images/.images-install.lock" ]]; then
+  images_operation_lock="$(as_root python3 "$SCRIPT_DIR/manage-images-generations.py" operation-lock \
+    --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper /bin/false \
+    --ownership-manifest "$MANIFEST")"
+  exec {images_operation_fd}< "$images_operation_lock"
+  flock -x "$images_operation_fd"
+fi
+
+# Managed payloads are removed only under generation leases. Keep their ownership
+# records, including a busy or modified generation, out of generic removal loops.
+managed_images=0
+managed_images_removed=0
+managed_manifest=""
+if awk -F '\t' '$6 == "/usr/libexec/holonight-images/runtime/ownership.json" { found=1 } END { exit !found }' "$MANIFEST"; then
+  managed_images=1
+  helper=""
+  revision=managed
+  while IFS=$'\t' read -r module revision type mode expected relative; do
+    if [[ "$module" = holonight-images && "$type" = f && "$relative" = /usr/libexec/holonight-images/runtime/generations/*/usr/libexec/holonight-images-helper ]]; then
+      candidate="$TARGET_ROOT$relative"
+      if [[ -f "$candidate" && ! -L "$candidate" && "$(hash_path "$candidate")" = "$expected" ]]; then helper="$candidate"; break; fi
+    fi
+  done < "$MANIFEST"
+  if [[ -z "$helper" && -f "$TARGET_ROOT/usr/libexec/holonight-images/runtime/ownership.json" &&
+        "$(cat "$TARGET_ROOT/usr/libexec/holonight-images/runtime/ownership.json")" = "[]" ]]; then helper=/bin/false; fi
+  managed_manifest="$(mktemp)"
+  trap '[[ -z "$managed_manifest" ]] || rm -f -- "$managed_manifest"' EXIT
+  if [[ -n "$helper" ]] && as_root python3 "$SCRIPT_DIR/manage-images-generations.py" remove \
+      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper "$helper" \
+      --ownership-manifest "$MANIFEST" --revision "$revision" --emit-manifest > "$managed_manifest"; then
+    managed_images_removed=1
+  else
+    printf 'preserved managed Images runtime: modified, unowned, busy, or unverifiable; ownership records retained\n' >&2
+  fi
+fi
+
 mapfile -t entries < "$MANIFEST"
 preserved=0
 for ((index=${#entries[@]}-1; index>=0; index--)); do
   IFS=$'\t' read -r module revision type mode expected relative <<< "${entries[index]}"
+  if ((managed_images)) && [[ "$relative" = /usr/libexec/holonight-images/runtime || "$relative" = /usr/libexec/holonight-images/runtime/* || "$relative" = /usr/libexec/holonight-images/.images-install.lock ]]; then continue; fi
+  if [[ -n "$images_operation_fd" && "$relative" = /usr/libexec/holonight-images/.images-install.lock ]]; then continue; fi
   path="$TARGET_ROOT$relative"
   parent="${path%/*}"
   unsafe_parent=0
@@ -72,9 +112,23 @@ for ((index=${#entries[@]}-1; index>=0; index--)); do
   esac
 done
 
-as_root rm -f -- "$TARGET_ROOT/$STATE_REL/revisions" "$MANIFEST"
-as_root rmdir -- "$TARGET_ROOT/$STATE_REL" 2>/dev/null || true
-as_root rmdir -- "$TARGET_ROOT/var/lib/holonight" 2>/dev/null || true
+if ((managed_images)); then
+  if ((managed_images_removed)); then
+    as_root install -m 0644 "$managed_manifest" "$MANIFEST"
+    note "Retained managed Images lock and empty ownership bookkeeping for serialized future operations"
+  fi
+elif [[ -n "$images_operation_fd" ]]; then
+  managed_manifest="$(mktemp)"
+  trap '[[ -z "$managed_manifest" ]] || rm -f -- "$managed_manifest"' EXIT
+  printf 'holonight-images\tmanaged\tf\t644\t%s\t/usr/libexec/holonight-images/.images-install.lock\n' \
+    "$(hash_path "$images_operation_lock")" > "$managed_manifest"
+  as_root install -m 0644 "$managed_manifest" "$MANIFEST"
+  note "Retained source-install operation lock ownership for serialized future installation"
+else
+  as_root rm -f -- "$TARGET_ROOT/$STATE_REL/revisions" "$MANIFEST"
+  as_root rmdir -- "$TARGET_ROOT/$STATE_REL" 2>/dev/null || true
+  as_root rmdir -- "$TARGET_ROOT/var/lib/holonight" 2>/dev/null || true
+fi
 
 if [[ "$TARGET_ROOT" = "/" ]]; then
   as_root ldconfig

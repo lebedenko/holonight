@@ -10,6 +10,8 @@ TARGET_ROOT="/"
 ASSUME_YES=0
 CHECK_ONLY=0
 ADOPT_EXISTING=0
+PROTECTED_IMAGES=0
+MAINTENANCE_IMAGES=0
 BUILD_ROOT="$REPO_ROOT/.source-install"
 
 usage() {
@@ -19,6 +21,10 @@ Usage: scripts/install.sh [--check] [--yes] [--adopt-existing] [--root <staging-
   --check  Run distribution, checkout, toolchain, package, and account checks only.
   --yes    Do not prompt before copying the completed stage.
   --root   Install below an alternate root (for VM/image and integration testing).
+  --protected-images-runtime  Use managed generations under a protected alternate root.
+                             Enabled automatically for system installation.
+  --maintenance-migrate-images-runtime  Convert an owned legacy runtime; all image-consuming
+                                        applications must be stopped first.
   --adopt-existing  Back up and replace unowned files; reject package-owned files.
 EOF
 }
@@ -31,6 +37,8 @@ while (($#)); do
     --check) CHECK_ONLY=1 ;;
     --yes) ASSUME_YES=1 ;;
     --adopt-existing) ADOPT_EXISTING=1 ;;
+    --protected-images-runtime) PROTECTED_IMAGES=1 ;;
+    --maintenance-migrate-images-runtime) MAINTENANCE_IMAGES=1 ;;
     --root) shift; (($#)) || die "--root requires a path"; TARGET_ROOT="$1" ;;
     -h|--help) usage; exit 0 ;;
     *) die "unknown argument: $1" ;;
@@ -41,6 +49,7 @@ done
 [[ "$TARGET_ROOT" = /* ]] || die "--root must be an absolute path"
 TARGET_ROOT="${TARGET_ROOT%/}"
 [[ -n "$TARGET_ROOT" ]] || TARGET_ROOT="/"
+[[ "$TARGET_ROOT" != / ]] || PROTECTED_IMAGES=1
 
 # shellcheck source=install-dependencies.sh
 . "$SCRIPT_DIR/install-dependencies.sh"
@@ -186,7 +195,29 @@ record_module_paths() {
   fi
 }
 
+managed_images_runtime() {
+  local args=() revision
+  ((MAINTENANCE_IMAGES == 0)) || args+=(--maintenance-migrate)
+  revision="$(git -C "$REPO_ROOT/holonight-images" rev-parse HEAD)"
+  as_root python3 "$SCRIPT_DIR/manage-images-generations.py" install \
+    --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" \
+    --source "$BUILD_ROOT/stage/usr/libexec/holonight-images/runtime" \
+    --helper "$BUILD_ROOT/stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper" \
+    --ownership-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv" --revision "$revision" "${args[@]}" "$@"
+}
+
 reconcile_images_runtime() {
+  if ((PROTECTED_IMAGES)) && [[ -d "$BUILD_ROOT/stage/usr/libexec/holonight-images/runtime" ]]; then
+    local module revision type mode hash relative
+    while IFS=$'\t' read -r module revision type mode hash relative; do
+      case "$relative" in
+        /usr|/usr/libexec|/usr/libexec/holonight-images)
+          [[ "$type" = d ]] && (( (8#$mode & 0022) == 0 )) || die "staged runtime ancestor must remain protected: $relative" ;;
+      esac
+    done < "$BUILD_ROOT/manifest.tsv"
+    managed_images_runtime --check
+    return
+  fi
   as_root python3 "$SCRIPT_DIR/reconcile-images-runtime.py" --root "$TARGET_ROOT" \
     --old-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv" \
     --new-manifest "$BUILD_ROOT/manifest.tsv" "$@"
@@ -202,6 +233,7 @@ collision_check() {
   : > "$preserved_caches"
   : > "$adopted_paths"
   while IFS=$'\t' read -r module revision type mode hash relative; do
+    if ((PROTECTED_IMAGES)) && [[ "$relative" = /usr/libexec/holonight-images/runtime || "$relative" = /usr/libexec/holonight-images/runtime/* || "$relative" = /usr/libexec/holonight-images/.images-install.lock ]]; then continue; fi
     destination="$TARGET_ROOT$relative"
     parent="${destination%/*}"
     while [[ "$parent" != / && "$parent" != . ]]; do
@@ -290,8 +322,25 @@ refresh_owned_icon_caches() {
 copy_stage() {
   local stage="$BUILD_ROOT/stage" manifest="$BUILD_ROOT/manifest.tsv"
   local module revision type mode hash relative source destination target
+  # Serialize managed installation and removal through ownership publication.
+  local images_operation_fd images_operation_lock
+  if ((PROTECTED_IMAGES)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
+    images_operation_lock="$(as_root python3 "$SCRIPT_DIR/manage-images-generations.py" operation-lock \
+      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper /bin/false \
+      --ownership-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv")"
+    exec {images_operation_fd}< "$images_operation_lock"
+    flock -x "$images_operation_fd"
+  fi
   # Recheck the full runtime before changing any installed payload.
-  reconcile_images_runtime --prune
+  if ((PROTECTED_IMAGES)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
+    managed_images_runtime --emit-manifest > "$BUILD_ROOT/managed-images.tsv"
+    awk -F '\t' '$6 != "/usr/libexec/holonight-images/runtime" && index($6, "/usr/libexec/holonight-images/runtime/") != 1' \
+      "$manifest" > "$BUILD_ROOT/ordinary-manifest.tsv"
+    cat "$BUILD_ROOT/ordinary-manifest.tsv" "$BUILD_ROOT/managed-images.tsv" | sort -t $'\t' -k6,6 > "$BUILD_ROOT/next-manifest.tsv"
+    mv "$BUILD_ROOT/next-manifest.tsv" "$manifest"
+  else
+    reconcile_images_runtime --prune
+  fi
   # Complete every backup before replacing any payload. mktemp avoids reusing
   # a previous migration directory and cp -a preserves symlinks and metadata.
   if [[ -s "$BUILD_ROOT/adopted-paths" ]]; then
@@ -305,6 +354,7 @@ copy_stage() {
     note "Existing files backed up to $backup"
   fi
   while IFS=$'\t' read -r module revision type mode hash relative; do
+    if ((PROTECTED_IMAGES)) && [[ "$relative" = /usr/libexec/holonight-images/runtime || "$relative" = /usr/libexec/holonight-images/runtime/* || "$relative" = /usr/libexec/holonight-images/.images-install.lock ]]; then continue; fi
     source="$stage$relative"; destination="$TARGET_ROOT$relative"
     case "$type" in
       d) as_root install -d -m "$mode" "$destination" ;;
@@ -315,10 +365,15 @@ copy_stage() {
         if [[ "$TARGET_ROOT" = "/" && EUID -ne 0 ]]; then sudo ln -sfn -- "$target" "$destination"; else ln -sfn -- "$target" "$destination"; fi ;;
     esac
   done < "$manifest"
-  if [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
+  if ((PROTECTED_IMAGES == 0)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
     "$stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper" \
       --verify-runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" ||
       die "deployed Images runtime verification failed; previous ownership manifest preserved; resolve the runtime manually before retrying"
+  fi
+  if ((PROTECTED_IMAGES)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
+    as_root python3 "$SCRIPT_DIR/manage-images-generations.py" validate \
+      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" \
+      --helper "$stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper"
   fi
   # Retain original hashes for modified obsolete icons and retired portal files
   # so future upgrades and uninstall preserve them too. Cleanup is allowlisted.
@@ -336,6 +391,10 @@ copy_stage() {
   as_root install -m 0644 "$manifest" "$TARGET_ROOT/$STATE_REL/manifest.tsv"
   git -C "$REPO_ROOT" submodule status > "$BUILD_ROOT/revisions"
   as_root install -m 0644 "$BUILD_ROOT/revisions" "$TARGET_ROOT/$STATE_REL/revisions"
+  if [[ -n "${images_operation_fd:-}" ]]; then
+    flock -u "$images_operation_fd"
+    exec {images_operation_fd}<&-
+  fi
 }
 
 refresh_system() {
