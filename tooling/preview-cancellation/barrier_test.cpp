@@ -52,18 +52,46 @@ int main(int argc, char** argv) {
     auto other=std::async(std::launch::async,[]{return D::gate("other");});
     return !ok && D::failed && D::seen("barrier_timeout") && other.get()?0:3;
   }
-  bool observed=false;
+  const StandbyTrace::Context captured{41,42,43,44,45,"service_control"};
+  StandbyTrace::current=captured;
+  const auto owner_tid=qint64(syscall(SYS_gettid));
+  bool observed=false, restored=false;
   std::thread supervisor([&]{
-    std::unique_lock lock(D::mutex);
-    observed=D::changed.wait_for(lock,std::chrono::milliseconds(mode=="supervisor"?1000:20),[]{
-      for(const auto& row:D::records) if(row["event"]=="destructor_cancel") return true;
-      return false;
-    });
-    lock.unlock();
-    if(observed) D::release("active"); else D::releaseAll();
+    const StandbyTrace::Context prior{91,92,93,94,95,"prior"};
+    StandbyTrace::current=prior;
+    auto context=captured;
+    if(mode=="supervisor-missing") context.service=0;
+    observed=D::superviseDestruction(context,std::chrono::milliseconds(100));
+    const auto after=StandbyTrace::current;
+    restored=after.service==prior.service && after.observation==prior.observation &&
+        after.job==prior.job && after.worker==prior.worker && after.preparation==prior.preparation &&
+        std::string(after.role)==prior.role;
   });
-  // Stand-in destructor, on the owning thread; supervisor only observes and releases.
+  // Stand-in destructor stays on the owning thread.
   if(mode=="supervisor") D::probe("destructor_cancel",0,{{"cancelled",true}});
+  if(mode=="supervisor-foreign" || mode=="supervisor-observation" || mode=="supervisor-uncancelled") {
+    auto foreign=captured;
+    if(mode=="supervisor-foreign") ++foreign.service;
+    if(mode=="supervisor-observation") ++foreign.observation;
+    StandbyTrace::Bind bind(foreign);
+    D::probe("destructor_cancel",0,{{"cancelled",mode!="supervisor-uncancelled"}});
+  }
   const bool released=worker.get(); supervisor.join();
-  return released && !D::failed && observed==(mode=="supervisor")?0:4;
+  if(!released || !restored || observed!=(mode=="supervisor") || D::failed==observed) return 4;
+  if(!observed) {
+    auto other=std::async(std::launch::async,[]{return D::gate("other");});
+    return D::released_all && !D::seen("active_release") && other.get()?0:5;
+  }
+  QJsonObject cancellation, release, resumed;
+  for(const auto& row:D::records) {
+    if(row["event"]=="destructor_cancel") cancellation=row;
+    if(row["event"]=="active_release") release=row;
+    if(row["event"]=="active_resumed") resumed=row;
+  }
+  return release["service"].toInteger()==41 && release["observation"].toInteger()==42 &&
+      release["job"].toInteger()==43 && release["worker"].toInteger()==44 &&
+      release["preparation"].toInteger()==45 && release["role"]=="service_control" &&
+      release["tid"].toInteger()!=owner_tid &&
+      cancellation["order"].toInteger()<release["order"].toInteger() &&
+      release["order"].toInteger()<resumed["order"].toInteger()?0:6;
 }

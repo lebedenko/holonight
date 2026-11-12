@@ -362,3 +362,46 @@ See the [corrected-run assessment](../../build/preview-cancellation-tracing-8378
 [review](../../build/preview-cancellation-tracing-837893f4/review.json),
 [focused verification](../../build/preview-cancellation-tracing-837893f4/verification.json),
 and [final counts and integrity evidence](../../build/preview-cancellation-tracing-837893f4/final-validation-summary.json).
+
+## Supervisor-context C/D cancellation validation
+
+**Cancellation tracing validation passed.** The private diagnostic supervisor now
+binds a context captured by value on the service-owning thread immediately before
+thread creation. The shared harness/native-test helper matches cancelled destructor
+acknowledgement by service and observation, preserves the remaining captured fields,
+and records its actual thread ID. Missing context or acknowledgement fails and
+releases all gates. The production diagnostic deadline remains one second;
+destructor ownership, event processing, cleanup, the v3 header, metadata-success
+classification and strict ledger acceptance remain unchanged. No public API or
+production source was changed.
+
+Both fresh private C/D builds passed against host dependencies, sequentially with
+four compilation jobs and private installed prefixes. Nineteen focused Python
+regressions and nine helper-free native checks passed before provider builds,
+including context restoration, foreign service/observation rejection, uncancelled
+acknowledgement rejection, missing context, timeout and safe gate release.
+
+All 24 preregistered invocations passed in the fixed C-then-D scenario order:
+24 balanced service lifetimes, 30 cancelled/superseded requests and 18 successful
+recoveries. All six real destruction supervisor handoffs preserve service and
+observation, use a distinct thread, and order cancellation before release before
+active-worker resumption. Identity, lifecycle, cleanup and content checks passed;
+there were no timeouts, repairs, expectation changes, retries or replacement
+executions after the marker. The initial sudo authentication failure created no
+marker or invocation; execution proceeded with sudo -A.
+
+Ordinary-user ownership, private caches/fixtures, clean helper scopes, retained
+input/private-artifact integrity and staged-runtime payload integrity passed.
+All 48 preserved fixture copies match retained provenance. Both earlier blocked
+packages remain byte-for-byte unchanged. Historical analyzer, preparation and
+startup results were reused; holonight-icons and holonight-grub were excluded.
+This validates only the forced cancellation interleavings and makes no performance,
+overhead or qualification claim. No deployment, publication or commit follows.
+
+See the [final assessment](../../build/preview-cancellation-supervisor-20261112/FINAL-ASSESSMENT.md),
+[preregistration](../../build/preview-cancellation-supervisor-20261112/execution/preregistration.json),
+[runner assessment](../../build/preview-cancellation-supervisor-20261112/execution/assessment.json),
+[review](../../build/preview-cancellation-supervisor-20261112/review.json),
+[focused verification](../../build/preview-cancellation-supervisor-20261112/verification.json),
+[final counts and integrity](../../build/preview-cancellation-supervisor-20261112/final-validation-summary.json),
+and [blocked-package identities](../../build/preview-cancellation-supervisor-20261112/blocked-package-identities.json).

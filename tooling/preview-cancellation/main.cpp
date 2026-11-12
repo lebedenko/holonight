@@ -80,14 +80,9 @@ int main(int argc,char** argv) {
         target(*service,replacement);
         require(cancelled->load(),"superseded primary cancellation");
         require(waitFor([]{std::lock_guard lock(D::mutex); for(const auto& r:D::records) if(r["event"]=="pending" && r["job"].toInteger()!=qint64(D::primary)) return true; return false;}),"second request pending");
-        supervisor=std::thread([&]{
-          std::unique_lock lock(D::mutex);
-          supervisor_ok=D::changed.wait_for(lock,std::chrono::seconds(1),[]{
-            for(const auto& r:D::records) if(r["event"]=="destructor_cancel" && r["cancelled"].toBool()) return true;
-            return false;
-          });
-          lock.unlock();
-          if(supervisor_ok) D::release("active"); else D::releaseAll();
+        const auto supervisor_context=StandbyTrace::current;
+        supervisor=std::thread([&, supervisor_context]{
+          supervisor_ok=D::superviseDestruction(supervisor_context,std::chrono::seconds(1));
         });
         service.reset(); supervisor.join();
         require(supervisor_ok,"destructor supervisor acknowledgement");

@@ -59,6 +59,28 @@ inline void release(const std::string& name) {
 inline void releaseAll() {
   std::lock_guard lock(mutex); released_all=true; changed.notify_all();
 }
+// Called only by the diagnostic supervisor; never accesses a QObject.
+inline bool superviseDestruction(StandbyTrace::Context context, std::chrono::milliseconds timeout) {
+  StandbyTrace::Bind bind(context);
+  std::unique_lock lock(mutex);
+  const bool acknowledged = context.service && context.observation &&
+      changed.wait_for(lock, timeout, [&] {
+        for (const auto& row : records)
+          if (row["event"] == "destructor_cancel" && row["cancelled"].toBool() &&
+              row["service"].toInteger() == qint64(context.service) &&
+              row["observation"].toInteger() == qint64(context.observation)) return true;
+        return false;
+      });
+  if (acknowledged) {
+    released["active"] = true;
+    recordLocked("active_release", 0, {}, true);
+  } else {
+    failed = true;
+    released_all = true;
+    changed.notify_all();
+  }
+  return acknowledged;
+}
 inline bool gate(const std::string& name) {
   std::unique_lock lock(mutex);
   if (reached[name]) return true;

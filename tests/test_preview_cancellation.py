@@ -145,6 +145,18 @@ class LedgerTests(unittest.TestCase):
             with self.subTest(scenario=scenario):
                 self.assertEqual(Evidence(scenario).validate()['issues'], [])
 
+    def test_supervisor_release_identity_and_order(self):
+        for defect in ('zero_service', 'foreign_service', 'early_release'):
+            with self.subTest(defect=defect):
+                e = Evidence('destruction')
+                release = next(row for row in e.barriers if row['event'] == 'active_release')
+                if defect == 'early_release':
+                    release['ns'] = next(row['ns'] for row in e.ledger if row['event'] == 'destructor_cancel') - 1
+                else:
+                    release['service'] = 0 if defect == 'zero_service' else 999
+                self.reorder(e)
+                self.assertTrue(e.validate()['issues'])
+
     def test_missing_acknowledgements(self):
         for scenario, missing in [('preparation', 'preparation_cancel_set'), ('active', 'active_release'),
                                   ('cleanup', 'pending'), ('destruction', 'destructor_cancel')]:

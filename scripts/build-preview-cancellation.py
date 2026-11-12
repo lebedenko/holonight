@@ -43,11 +43,11 @@ def verify_without_helpers(package):
     run(['c++', '-std=c++23', '-fPIC', '-I' + str(package),
          str(package / 'C/harness-source/barrier_test.cpp'), '-o', str(package / 'barrier-test'),
          *flags, '-pthread'], 'barrier-build.log')
-    for mode in ('result-status', 'release', 'watchdog', 'supervisor', 'supervisor-timeout'):
+    for mode in ('result-status', 'release', 'watchdog', 'supervisor', 'supervisor-timeout', 'supervisor-foreign', 'supervisor-observation', 'supervisor-uncancelled', 'supervisor-missing'):
         run([str(package / 'barrier-test'), mode], 'test-' + mode + '.log', timeout=5)
     smoke.write(package / 'verification.json', {
         'passed': True, 'python': 'python-tests.log',
-        'native_without_helpers': ['result-status', 'release', 'watchdog', 'supervisor', 'supervisor-timeout']})
+        'native_without_helpers': ['result-status', 'release', 'watchdog', 'supervisor', 'supervisor-timeout', 'supervisor-foreign', 'supervisor-observation', 'supervisor-uncancelled', 'supervisor-missing']})
 
 
 def seal(package, manifest):
