@@ -162,3 +162,33 @@ the prepared runtime. A final privileged fixture also confirms that a writable
 source descriptor held before publication, including an ordinary-user proc-fd
 alias, cannot mutate the fresh protected inode and does not change source ownership.
 No deployment, publication, umbrella pin changes or low-end hardware claim is made.
+
+## Corrected-reference qualification
+
+The original failed comparison above remains unchanged. A separately frozen A-fixed
+comparison resolves its cancellation/cleanup race but **does not close qualification**.
+All 12,000 observations were collected with zero correctness, protocol, cleanup or
+missing-observation failures; large-PNG startup p95 fails both pixel and metadata gates.
+Metadata p95 increases from 127.835 ms to 142.340 ms: +14.505 ms / +11.35%, beyond the
+unchanged 10% allowance. All other numerical gates pass. No full-run retry or selective
+sample replacement was performed.
+
+A-fixed changes only cancellation ordering in the original transaction runtime. B/C
+frozen source and binary identities match; their existing integration and
+generation-lifecycle evidence remains applicable. Nine A-fixed
+provider/installed-package checks, native fault checks, deterministic cancellation
+boundaries and ten assessment regressions pass. Separate C diagnostics verify the
+two-helper cap, 6.836 MiB retained idle memory, idle expiry, generation storage bounds
+and complete shutdown. Separate A-fixed diagnostics pass with one helper, zero retained
+idle memory and complete shutdown. The original baseline race and its failures remain
+historical evidence; the corrected reference does not retroactively validate them.
+
+The [updated timing
+report](preview-timing-comparison.md#corrected-reference-comparison-qualification-failed)
+and [new assessment](../../build/preview-corrected-qjln5jn4/ASSESSMENT.md) identify
+original A and A-fixed separately, give absolute/percentage changes and link all raw
+evidence. They also document that the saved runner removed its transient runtime root
+before numerical assessment; frozen runtime inputs and raw observations remain, and the
+final tooling now preserves such fixtures with regression coverage. No deployment,
+publication, pin changes, further performance optimization, native interactive or
+low-end hardware qualification is included.

@@ -347,3 +347,37 @@ remaining limitations. Earlier preparation stops and exclusions are unchanged.
 The final tooling suite passes 30 tests, compilation and whitespace checks.
 Runtime-generation reuse merits a separately designed next experiment; no reuse,
 prestarted workers or production performance changes were implemented.
+
+## Responsive-preview corrected reference
+
+The responsive-preview A/B/C comparison uses a different baseline from the older
+experiments above: original A is the isolated transaction implementation. Its
+failed frozen comparison remains historical evidence. `transaction-cancellation.patch`
+creates A-fixed from that source with only a cancellation-order correction; it
+retains per-call validation, fresh helper execution, deadlines and cleanup budgets.
+It must never be applied to B/C or described as a successful original-A rerun.
+
+Build diagnostic cancellation checks outside the timed harness:
+
+```sh
+python3 scripts/check-preview-baseline-cancellation.py \
+  FROZEN_A_SOURCE/holonight-images FROZEN_A_PREFIX NEW_DIAGNOSTIC_DIRECTORY
+```
+
+Run `NEW_DIAGNOSTIC_DIRECTORY/build/baseline-cancellation PROTECTED_RUNTIME PHASE
+fixed MODE` as the ordinary user. PHASE is `before-launch`, `launched` or
+`discovered`; MODE is `normal` or `force-failure`. It injects cancellation at exact
+boundaries and records elapsed timing, scope identity, gate count and cleanup.
+`force-failure` invalidates the cleanup proof after real cleanup to verify that
+failure takes precedence over cancellation. Use `original` instead of `fixed` only
+for original-A diagnostics: failed assertions are recorded without preventing
+collection of the remaining diagnostic cases. Instrumented sources and binaries
+are separate from every latency binary.
+
+`measure-preview-reuse.py --reference A-fixed` requires a matching frozen patch
+inventory. Reports identify A-fixed explicitly, retain every raw observation and
+reject partial/invalid timing distributions. A smoke run intentionally exits
+nonzero because it cannot qualify; inspect its execution failures separately.
+Full runs also exit nonzero for numerical failures. Failed warm-ups invalidate
+qualification. Installation, lifecycle, resources and consumer evidence remain
+separate requirements. No corrected reference retroactively qualifies original A.

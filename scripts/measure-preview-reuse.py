@@ -49,9 +49,12 @@ def valid_observation(row):
                 for value in (first, final)) and 0 <= first <= final)
 
 
-def assess(records, scenarios, samples):
+def assess(records, scenarios, samples, execution_failures=(), reference='A'):
+    if reference not in ('A', 'A-fixed'):
+        raise ValueError('unknown reference')
     summary = {}
-    passed = samples == 100 and set(scenarios) == set(SCENARIOS)
+    passed = (samples == 100 and tuple(sorted(scenarios)) == tuple(sorted(SCENARIOS))
+              and not execution_failures)
     gates = []
     for fixture in FIXTURES:
         for scenario in scenarios:
@@ -60,10 +63,12 @@ def assess(records, scenarios, samples):
                 observations = records.get((label, fixture, scenario), [])
                 failures = sum(not valid_observation(row) for row in observations)
                 missing = samples - len(observations)
-                events = {event: distribution([row[event] for row in observations
-                                              if isinstance(row.get(event), (int, float)) and math.isfinite(row[event]) and row[event] >= 0])
+                qualified = not failures and missing == 0 and samples == 100 and not execution_failures
+                events = {event: distribution([row[event] for row in observations]) if qualified else None
                           for event in ('first_ms', 'final_ms')}
-                rows[label] = {**events, 'observations': len(observations), 'failures': failures, 'missing': missing}
+                rows[label] = {**events, 'observations': len(observations), 'failures': failures,
+                               'missing': max(0, missing), 'excess': max(0, -missing),
+                               'qualified': qualified}
                 passed &= not failures and not missing and all(events.values())
             key = fixture + '/' + scenario
             summary[key] = rows
@@ -87,15 +92,19 @@ def assess(records, scenarios, samples):
                 gates.append({'case': key, 'event': event, 'passed': target, 'reason': reason})
                 passed &= target
     return {'latency_targets_met': bool(passed), 'qualifying_sample_count': samples == 100,
-            'summary': summary, 'gates': gates,
+            'summary': summary, 'gates': gates, 'reference': reference,
+            'execution_failures': list(execution_failures),
             'overall_qualification': 'incomplete: installation, lifecycle, resource and consumer gates are separate'}
 
 
 def report(data):
+    reference = data.get('reference', 'A')
     lines = ['# Protected generation / reusable preview comparison', '',
-             'Native service delivery, milliseconds (median / p95). A: frozen transaction baseline; '
+             f'Native service delivery, milliseconds (median / p95). {reference}: ' +
+             ('original frozen transaction baseline; ' if reference == 'A' else
+              'transaction baseline with cancellation-order correction only; original A remains failed; ') +
              'B: protected one-shot with owner validation reuse; C: reusable sessions and scheduler.', '',
-             '| Fixture / scenario / event | A | B | C | B−A ms (%) median / p95 | C−A ms (%) median / p95 |',
+             f'| Fixture / scenario / event | {reference} | B | C | B−{reference} ms (%) median / p95 | C−{reference} ms (%) median / p95 |',
              '| --- | ---: | ---: | ---: | ---: | ---: |']
     for case, rows in data['summary'].items():
         for event in ('first_ms', 'final_ms'):
@@ -119,10 +128,15 @@ def report(data):
     return '\n'.join(lines)
 
 
+def assessment_exit_status(data):
+    return 0 if data['latency_targets_met'] and not data.get('failure') else 1
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('package', type=Path)
     parser.add_argument('fixtures', type=Path)
+    parser.add_argument('--reference', choices=('A', 'A-fixed'), default='A')
     parser.add_argument('--uid', type=int, default=int(os.environ.get('SUDO_UID', '-1')))
     parser.add_argument('--samples', type=int, default=100)
     parser.add_argument('--scenarios', nargs='+', choices=SCENARIOS, default=SCENARIOS)
@@ -132,15 +146,21 @@ def main():
     if args.samples != 1 and (args.samples <= 0 or args.samples % 10):
         parser.error('--samples must be 1 (smoke) or a positive multiple of ten')
     package, fixtures = args.package.resolve(), args.fixtures.resolve()
+    if args.reference == 'A-fixed':
+        frozen = json.loads((package / 'freeze.json').read_text())
+        if frozen.get('reference') != 'A-fixed' or digest(package / 'A-fixed.patch') != frozen['patch_sha256']:
+            parser.error('A-fixed requires a frozen corrected-reference inventory and matching patch')
     account = pwd.getpwuid(args.uid)
     output = Path(tempfile.mkdtemp(prefix='reuse-measurement-', dir=package))
     os.chown(output, args.uid, account.pw_gid)
     print(output, flush=True)
     runtime_root = Path(tempfile.mkdtemp(prefix='holonight-preview-measurement-', dir='/run'))
     runtime_root.chmod(0o755)
-    provenance = {'fixtures': {name: digest(fixtures / name) for name in FIXTURES},
+    provenance = {'reference': args.reference, 'original_comparison_unchanged': True,
+                  'fixtures': {name: digest(fixtures / name) for name in FIXTURES},
                   'binaries': {label: digest(package / label / 'reuse-harness/preview-benchmark') for label in LABELS},
                   'harness_inventory': digest(package / 'harness-inventory-final.json'),
+                  'reference_freeze': digest(package / 'freeze.json'),
                   'scenarios': args.scenarios, 'samples': args.samples, 'block_size': min(10, args.samples),
                   'warmups': 'one separate sample per fixture/scenario/variant',
                   'recycling': 'fresh harness process/service for every sample; variant blocks remain ten samples',
@@ -210,22 +230,27 @@ def main():
                 raise RuntimeError('binary changed during frozen measurement')
         if observation_failures:
             raise RuntimeError('; '.join(observation_failures))
-        for label in ('B', 'C'):
-            generations.run(SimpleNamespace(runtime=runtimes[label], helper=package / label /
-                'build/holonight-images/holonight-images-helper', command='remove', ownership_manifest=None,
-                maintenance_migrate=False))
-        shutil.rmtree(runtime_root)
+        numerical_failure = args.samples == 100 and not assess(
+            records, args.scenarios, args.samples, reference=args.reference)['latency_targets_met']
+        if not numerical_failure:
+            for label in ('B', 'C'):
+                generations.run(SimpleNamespace(runtime=runtimes[label], helper=package / label /
+                    'build/holonight-images/holonight-images-helper', command='remove', ownership_manifest=None,
+                    maintenance_migrate=False))
+            shutil.rmtree(runtime_root)
     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
         failure = str(error)
         print(failure, flush=True)
-    data = assess(records, args.scenarios, args.samples)
+    data = assess(records, args.scenarios, args.samples,
+                  observation_failures + ([failure] if failure else []), args.reference)
+    data['raw_observations'] = {'/'.join(key): rows for key, rows in records.items()}
     data['failure'] = failure
     data['preserved_runtime_root'] = str(runtime_root) if runtime_root.exists() else None
     data['latency_targets_met'] &= failure is None
     (output / 'summary.json').write_text(json.dumps(data, indent=2) + '\n')
     (output / 'comparison.md').write_text(report(data))
     print('Latency targets met:', data['latency_targets_met'], flush=True)
-    return 1 if failure else 0
+    return assessment_exit_status(data)
 
 
 if __name__ == '__main__':

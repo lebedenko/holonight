@@ -1,4 +1,54 @@
-# Preview timings: before isolation → before latest improvements → current
+# Preview timings and corrected-reference qualification
+
+## Corrected-reference comparison: qualification failed
+
+**The cancellation/cleanup race is resolved in A-fixed, but strict qualification remains failed.** The single preregistered comparison collected all 12,000 observations (4,000 per variant), plus separate warm-ups, without correctness, protocol, cleanup or missing-observation failures. Of 80 numerical gates, 78 pass. Large textured PNG startup fails the p95 regression gate for both pixels and final metadata.
+
+| Startup event, 3200×2400 PNG | A-fixed p95 | C p95 | Change | Allowed C p95 |
+| --- | ---: | ---: | ---: | ---: |
+| first_ms | 127.828 ms | 142.332 ms | +14.504 ms (+11.35%) | 140.611 ms |
+| final_ms | 127.835 ms | 142.340 ms | +14.505 ms (+11.35%) | 140.619 ms |
+
+The gate remains p95 regression ≤max(5 ms, 10%). No samples were replaced, no full comparison was rerun, and no allowance was changed. No further performance optimization is included.
+
+A-fixed contains only the cancellation-order correction to original A: after launch starts, discover scope ownership before honoring cancellation, then check cancellation with the trusted gate still closed. Per-call validation, fresh-helper execution, startup deadlines and cleanup budgets remain unchanged. B and C source inventories, benchmark binaries and helper binaries match their original frozen identities. Host dependencies remain GCC 16.2.1, Qt 6.12.0, libexif 0.6.26 and libwebp 1.6.0.
+
+Final metadata below is milliseconds, median / p95. **Original A** belongs to the earlier failed comparison; **A-fixed** is the corrected reference in the new run. Cross-run original-A/A-fixed shifts are descriptive, not a controlled measurement of the cancellation patch.
+
+| Fixture / scenario | Original A (failed comparison) | A-fixed | C, new run | C−A-fixed median / p95 |
+| --- | ---: | ---: | ---: | ---: |
+| 160x80.png/ready | 96.619 / 115.678 | 82.902 / 98.231 | 0.946 / 2.198 | -81.956 ms (-98.86%) / -96.033 ms (-97.76%) |
+| 160x80.png/disk | 99.301 / 120.906 | 85.041 / 104.376 | 1.560 / 2.520 | -83.480 ms (-98.17%) / -101.857 ms (-97.59%) |
+| 160x80.png/memory | 0.330 / 0.508 | 0.325 / 0.385 | 0.326 / 0.509 | +0.001 ms (+0.23%) / +0.124 ms (+32.21%) |
+| 160x80.png/startup | 99.878 / 116.096 | 89.426 / 108.541 | 85.857 / 102.588 | -3.569 ms (-3.99%) / -5.953 ms (-5.48%) |
+| 1600x1200.png/ready | 101.012 / 120.900 | 96.583 / 111.005 | 6.256 / 13.112 | -90.326 ms (-93.52%) / -97.893 ms (-88.19%) |
+| 1600x1200.png/disk | 95.496 / 115.016 | 88.380 / 104.348 | 1.855 / 2.892 | -86.526 ms (-97.90%) / -101.456 ms (-97.23%) |
+| 1600x1200.png/memory | 0.321 / 0.510 | 0.316 / 0.414 | 0.315 / 0.364 | -0.001 ms (-0.21%) / -0.050 ms (-12.14%) |
+| 1600x1200.png/startup | 100.039 / 122.442 | 101.773 / 116.616 | 99.810 / 112.788 | -1.962 ms (-1.93%) / -3.828 ms (-3.28%) |
+| 3200x2400.png/ready | 130.767 / 153.037 | 120.413 / 134.930 | 36.523 / 40.417 | -83.890 ms (-69.67%) / -94.514 ms (-70.05%) |
+| 3200x2400.png/disk | 96.532 / 119.613 | 81.663 / 95.940 | 3.681 / 5.118 | -77.981 ms (-95.49%) / -90.822 ms (-94.67%) |
+| 3200x2400.png/memory | 0.194 / 0.354 | 0.174 / 0.380 | 0.180 / 0.346 | +0.005 ms (+3.07%) / -0.034 ms (-8.91%) |
+| 3200x2400.png/startup | 127.800 / 148.996 | 116.040 / 127.835 | 119.518 / 142.340 | +3.478 ms (+3.00%) / +14.505 ms (+11.35%) |
+| oriented.jpg/ready | 93.689 / 115.271 | 84.455 / 106.271 | 0.971 / 2.085 | -83.484 ms (-98.85%) / -104.186 ms (-98.04%) |
+| oriented.jpg/disk | 98.135 / 122.370 | 86.816 / 105.624 | 1.742 / 2.489 | -85.074 ms (-97.99%) / -103.135 ms (-97.64%) |
+| oriented.jpg/memory | 0.181 / 0.348 | 0.179 / 0.345 | 0.179 / 0.338 | +0.000 ms (+0.18%) / -0.006 ms (-1.79%) |
+| oriented.jpg/startup | 95.834 / 109.713 | 87.058 / 104.739 | 91.035 / 109.068 | +3.977 ms (+4.57%) / +4.328 ms (+4.13%) |
+
+Lightweight ready previews and every disk-hit gate pass. The large textured ready decode remains separately reported; its disk hits are still gated. Memory, recycling, cancellation-depletion and every navigation regression gate pass.
+
+Separate C resource diagnostics pass: at most 2 helpers, 6.836 MiB retained idle scope memory (≤64 MiB), idle expiry without replacement, 14 observed workers across recycling, and complete shutdown. Its protected generation contains 61 files / 87,221,117 bytes. A-fixed’s separate lifecycle/resource diagnostic also passes: at most one helper, zero retained idle scope memory, bounded runtime storage and complete shutdown. Existing generation-bound and candidate integration evidence is reused after identity verification. Native interactive presentation and low-end hardware remain outside qualification.
+
+Ten assessment regressions and nine A-fixed provider/installed-package checks pass. Native runtime fault checks pass. Separate deterministic cancellation diagnostics reproduce original A’s empty-scope-identity cleanup failure and post-discovery gate write; A-fixed passes cancellation before launch, between launch and discovery, and immediately after discovery, with zero gate writes, exactly one cleanup after launch, and failure precedence for unverified cleanup.
+
+**Evidence retention:** the new run’s saved runner returned failure for the numerical gates, but removed its transient `/run` runtime root after successful execution and before numerical assessment. The frozen source/runtime inputs and every raw observation remain intact. The final tooling now assesses numerical gates before fixture removal; a regression verifies preservation and failing exit status without discarding valid numerical distributions. This tooling correction does not change or rerun the frozen experiment. Original failed fixtures and the original failed comparison remain unchanged.
+
+- [New frozen comparison, including every absolute and percentage change](../../build/preview-corrected-qjln5jn4/reuse-measurement-d0nbnsxc/comparison.md), [raw summary](../../build/preview-corrected-qjln5jn4/reuse-measurement-d0nbnsxc/summary.json), [provenance](../../build/preview-corrected-qjln5jn4/reuse-measurement-d0nbnsxc/provenance.json).
+- [Preregistered protocol](../../build/preview-corrected-qjln5jn4/PREREGISTRATION.md), [frozen source inventories and build environment](../../build/preview-corrected-qjln5jn4/freeze.json), [baseline patch audit](../../build/preview-corrected-qjln5jn4/baseline-diff-audit.json), [post-run identity checks](../../build/preview-corrected-qjln5jn4/post-run-identity-checks.json).
+- [Cancellation diagnostics](../../build/preview-corrected-qjln5jn4/cancellation-diagnostics-v3.jsonl), [native fault checks](../../build/preview-corrected-qjln5jn4/native-runtime-faults.log), [C resource diagnostics](../../build/preview-corrected-qjln5jn4/resources-C/summary.json), [A-fixed resource diagnostics](../../build/preview-corrected-qjln5jn4/resources-A-fixed/summary.json).
+
+No deployment, publication, umbrella pin changes or unrelated GRUB changes were made. **Neither original A nor the corrected-reference comparison is qualified.**
+
+## Original frozen comparison (failed)
 
 Date: 2026-11-12. All times are **milliseconds, median / p95**. These measure service pixel delivery and final source metadata, not a painted QML frame.
 

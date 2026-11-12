@@ -1,0 +1,19 @@
+--- a/src/isolated/runtime.cpp
++++ b/src/isolated/runtime.cpp
+@@ -183,7 +183,7 @@
+     launched = true;
+     QDeadlineTimer deadline(15000);
+     auto check = [&] {
+-      if (cancelled.load()) {
++      if (!group.isEmpty() && cancelled.load()) {
+         throw Failure{.status = RuntimeStatus::Cancelled, .message = "cancelled"};
+       }
+       if (process.bytesAvailable() > byteCeiling + controlCeiling + 4) {
+@@ -210,6 +210,7 @@
+         process.waitForFinished(5);
+       }
+     }
++    check();  // Own the scope before cancellation; keep the trusted input gate closed.
+     if (fileBytes(group + "/memory.max").trimmed() != QByteArray::number(scopeMemoryCeiling) ||
+         fileBytes(group + "/memory.swap.max").trimmed() != QByteArray::number(scopeSwapCeiling)) {
+       throw Failure{.status = RuntimeStatus::Unavailable, .message = "scope limits not enforced"};
