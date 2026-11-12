@@ -192,3 +192,22 @@ before numerical assessment; frozen runtime inputs and raw observations remain, 
 final tooling now preserves such fixtures with regression coverage. No deployment,
 publication, pin changes, further performance optimization, native interactive or
 low-end hardware qualification is included.
+
+## Initial standby contention follow-up
+
+The bounded diagnostic is **inconclusive and stopped before the pilot**. Four private
+instrumented variants distinguish A-fixed, B, unchanged C and initial-standby-deferral
+D. Traces show concurrent standby preparation in 400/400 unchanged-C startup jobs
+and 0/400 D jobs, but the wrapper-owned output directory prevented ordinary-user
+harnesses from saving timing JSON. All 1,600 measured observations are missing;
+all 176 invocation failures and trace logs remain intact. No latency improvement or
+startup gate pass is inferred from tracing.
+
+The run returned nonzero, preserved protected fixtures, verified unchanged input
+hashes and found no residual helper scopes. The ownership fix passes an ordinary-user
+write regression under the privileged wrapper. Seven new tooling regressions and
+30 existing experiment-tooling tests pass. No samples were replaced or rerun; no
+production correction, provider/consumer change, full qualification, deployment,
+publication, pin update or GRUB change followed. Both earlier comparisons remain
+failed. See the [timing report](preview-timing-comparison.md#initial-standby-contention-diagnostic-inconclusive)
+and [retained assessment](../../build/preview-standby-arb90t5w/ASSESSMENT.md).

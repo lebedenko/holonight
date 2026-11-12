@@ -1,5 +1,32 @@
 # Preview timings and corrected-reference qualification
 
+## Initial standby contention diagnostic: inconclusive
+
+The bounded follow-up stops before the startup pilot or a production correction.
+Private instrumented native Release builds distinguish A-fixed, B, unchanged C and
+D (C with initial standby deferral). Across 400 startup jobs each, unchanged C shows
+standby preparation overlapping demand inspect/decode exchanges in 400/400 traces;
+D shows 0/400. Exchange durations include transport overhead. This demonstrates
+overlap and its removal, but does not establish a startup latency improvement.
+
+The privileged runner created its observation directory without assigning ownership
+to the ordinary benchmark user. All 176 harness invocations exited 5 when saving
+JSON: **1,600 measured timing observations are missing**, plus separate warm-ups.
+Every trace and failure is retained. Numerical medians, p95, absolute/percentage
+improvements and startup gate results are unavailable. The run returned nonzero;
+binary/fixture identities remained unchanged and no residual helper scopes remained.
+Protected runtime fixtures are preserved. No samples were replaced or repeated.
+
+The runner ownership correction passes seven tooling regressions, including a
+privileged-wrapper/ordinary-user write test; 30 existing experiment-tooling tests
+also pass. No pilot, production change or qualification run followed this invalid
+diagnostic. Both previous failed comparisons remain unchanged and unqualified.
+
+See the [diagnostic assessment](../../build/preview-standby-arb90t5w/ASSESSMENT.md),
+[preregistered inputs](../../build/preview-standby-arb90t5w/preregistration.json),
+[all failures and correlated traces](../../build/preview-standby-arb90t5w/result.json)
+and [binary identities](../../build/preview-standby-arb90t5w/measurement-inputs.json).
+
 ## Corrected-reference comparison: qualification failed
 
 **The cancellation/cleanup race is resolved in A-fixed, but strict qualification remains failed.** The single preregistered comparison collected all 12,000 observations (4,000 per variant), plus separate warm-ups, without correctness, protocol, cleanup or missing-observation failures. Of 80 numerical gates, 78 pass. Large textured PNG startup fails the p95 regression gate for both pixels and final metadata.
