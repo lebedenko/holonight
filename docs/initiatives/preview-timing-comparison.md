@@ -1,5 +1,39 @@
 # Preview timings and corrected-reference qualification
 
+## Reviewed startup tracing readiness
+
+The [source-linked readiness assessment](../../build/preview-startup-tracing-v3-release-review/ASSESSMENT.md)
+concludes **ready for native build validation**. Fresh A/B/C/D
+[v3 private overlays](../../build/preview-startup-tracing-v3-release-review/README.md)
+remain **uncompiled**. The review repaired stale callback context, premature job
+allocation, preparation linkage and analyzer validation. D retains its frozen
+deferral. [Exact diffs, inventories and invocation](../../build/preview-startup-tracing-v3-release-review/manifest.json)
+are retained; previous preparations and assessments remain preserved.
+
+The final [offline analysis](../../build/preview-startup-audit-v9/ASSESSMENT.md)
+accounts for 1,600 diagnostic and 1,600 separate pilot observations, plus 16
+warm-ups per mode, with zero analysis failures. C/D overlap reproduces
+**400/400 and 0/400**. [Input hashes](../../build/preview-startup-audit-v9/input-manifest.json)
+remain unchanged. The attribution audit retains 14,743 service-control/shutdown
+spans and 1,232 setup spans separately. All 1,616 historical diagnostic
+observations still lack explicit lifecycle identities and exact startup/full
+construction boundaries; recovered associations depend on the frozen harness.
+These counts do not establish a complete startup critical path.
+
+V3 adds preparation identity and selected-worker linkage. Queued handoffs capture
+context at scheduling; synchronous publication, transaction and readiness
+callbacks inherit execution context. Startup origin, allocation plus complete
+construction, constructor body and completion are distinct boundaries. The
+analyzer validates identity claims, preserves partial accounting, clips phase
+unions to delivery windows and reports unresolved overlap as unavailable.
+Generation phases are absent by design only for A.
+
+All 21 focused Python tests pass. Native compilation, Qt callback behavior,
+logging effects and runtime interleavings remain unverified. **Qualification
+and D's failed pilot remain unchanged.** No build, benchmark, diagnostic run,
+production change, deployment or publication occurred. Native build validation
+requires a separate decision; readiness does not authorize diagnostic execution.
+
 ## Fresh bounded scheduling comparison: unsuccessful pilot
 
 A fresh preregistered diagnostic and one uninstrumented startup pilot completed
