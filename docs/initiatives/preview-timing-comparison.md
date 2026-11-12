@@ -405,3 +405,143 @@ See the [final assessment](../../build/preview-cancellation-supervisor-20261112/
 [focused verification](../../build/preview-cancellation-supervisor-20261112/verification.json),
 [final counts and integrity](../../build/preview-cancellation-supervisor-20261112/final-validation-summary.json),
 and [blocked-package identities](../../build/preview-cancellation-supervisor-20261112/blocked-package-identities.json).
+
+
+## Matched v3 startup tracing overhead
+
+**Measurement complete.** All 264 preregistered invocations completed: 2,400
+measured observations and 24 separate warm-ups. Nine focused synthetic tests passed
+before the eight fresh host builds, which ran sequentially A/U through D/T with
+four compilation jobs and separate installed prefixes. Installed-package linkage
+checks passed. Replaying the retained phase and v3 preparers against frozen
+untraced copies reproduced every reviewed traced source and harness after
+normalizing only package-local `trace.h` include paths. Both harness modes preserve
+private fixture/cache directories identically; setup, correctness checks, timer
+placement and delivery timestamps retain the same boundaries. A denotes A-fixed;
+U is untraced and T uses the full reviewed v3 instrumentation.
+
+All pixel, metadata, delivery-order, completion and cleanup checks passed. T had
+zero parser, identity, accounting or lifecycle issues, with 1,344 balanced service
+lifetimes including setup services; U emitted no TRACE records. Ordinary-user
+ownership, clean helper scopes, retained-input/private-artifact integrity and
+protected staged-payload integrity passed. All 21,504 preserved fixture copies
+match retained provenance. The successful startup/cancellation evidence and both
+blocked cancellation packages remain unchanged. No timeout, repair, expectation
+change, retry or replacement execution occurred after the marker.
+
+The table reports milliseconds and signed `T−U` differences; percentages are
+relative to U. Median and nearest-rank p95 use 100 measured samples per cell,
+excluding warm-ups. Exact values and all ten per-block comparisons are retained
+in the statistics artifact. A zero-baseline percentage would be unavailable.
+
+| Variant | Fixture | Event | U median ms | T median ms | T−U ms | T−U % | U p95 ms | T p95 ms | T−U ms | T−U % |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| A | 160x80.png | pixels | 94.583 | 91.296 | -3.287 | -3.475 | 147.838 | 125.751 | -22.086 | -14.939 |
+| A | 160x80.png | final metadata | 94.611 | 91.320 | -3.291 | -3.478 | 147.863 | 125.779 | -22.084 | -14.935 |
+| B | 160x80.png | pixels | 94.450 | 93.137 | -1.313 | -1.390 | 167.066 | 124.945 | -42.120 | -25.212 |
+| B | 160x80.png | final metadata | 94.460 | 93.159 | -1.301 | -1.378 | 167.082 | 125.166 | -41.916 | -25.087 |
+| C | 160x80.png | pixels | 89.777 | 88.223 | -1.554 | -1.731 | 124.020 | 110.694 | -13.326 | -10.745 |
+| C | 160x80.png | final metadata | 89.796 | 88.247 | -1.549 | -1.726 | 124.038 | 110.886 | -13.151 | -10.603 |
+| D | 160x80.png | pixels | 89.205 | 88.036 | -1.169 | -1.310 | 110.244 | 110.966 | +0.722 | +0.655 |
+| D | 160x80.png | final metadata | 89.219 | 88.069 | -1.151 | -1.290 | 110.274 | 111.005 | +0.731 | +0.663 |
+| A | 3200x2400.png | pixels | 141.323 | 137.757 | -3.566 | -2.523 | 247.893 | 370.144 | +122.251 | +49.316 |
+| A | 3200x2400.png | final metadata | 141.334 | 137.777 | -3.557 | -2.517 | 247.910 | 370.188 | +122.279 | +49.324 |
+| B | 3200x2400.png | pixels | 133.031 | 131.732 | -1.298 | -0.976 | 166.232 | 155.365 | -10.867 | -6.537 |
+| B | 3200x2400.png | final metadata | 133.050 | 131.751 | -1.299 | -0.976 | 166.241 | 155.391 | -10.850 | -6.527 |
+| C | 3200x2400.png | pixels | 128.344 | 125.847 | -2.497 | -1.945 | 153.211 | 155.204 | +1.993 | +1.301 |
+| C | 3200x2400.png | final metadata | 128.381 | 125.862 | -2.519 | -1.962 | 153.244 | 155.225 | +1.982 | +1.293 |
+| D | 3200x2400.png | pixels | 130.331 | 135.127 | +4.795 | +3.679 | 159.798 | 160.256 | +0.458 | +0.287 |
+| D | 3200x2400.png | final metadata | 130.345 | 135.224 | +4.879 | +3.743 | 159.925 | 160.274 | +0.349 | +0.218 |
+| A | oriented.jpg | pixels | 89.955 | 94.005 | +4.050 | +4.502 | 151.720 | 130.550 | -21.170 | -13.953 |
+| A | oriented.jpg | final metadata | 89.977 | 94.028 | +4.050 | +4.502 | 151.773 | 130.603 | -21.170 | -13.949 |
+| B | oriented.jpg | pixels | 89.295 | 87.451 | -1.844 | -2.065 | 124.937 | 121.265 | -3.672 | -2.939 |
+| B | oriented.jpg | final metadata | 89.367 | 87.473 | -1.894 | -2.119 | 124.952 | 121.289 | -3.664 | -2.932 |
+| C | oriented.jpg | pixels | 88.372 | 85.080 | -3.292 | -3.725 | 211.049 | 164.996 | -46.053 | -21.821 |
+| C | oriented.jpg | final metadata | 88.466 | 85.094 | -3.371 | -3.811 | 211.071 | 165.019 | -46.052 | -21.818 |
+| D | oriented.jpg | pixels | 89.206 | 84.403 | -4.803 | -5.385 | 144.162 | 99.664 | -44.498 | -30.866 |
+| D | oriented.jpg | final metadata | 89.218 | 84.424 | -4.794 | -5.373 | 144.186 | 99.676 | -44.511 | -30.870 |
+
+These are descriptive host measurements without a statistical-significance claim
+or numerical overhead budget. Negative differences are retained. The comparison
+covers full v3 bookkeeping and logging inside the existing measured startup
+window; pre-timer work and total lifecycle cost are outside it. A read-only
+historical integrity audit also ran during the small-PNG measured blocks, around
+invocations 59–70, as recorded in the execution-context evidence. No values are
+subtracted from trace phases, and these results do not provide a causal
+explanation of earlier performance failures. D remains the frozen deferral
+variant; its failed pilot and existing qualification are unchanged.
+
+The sandbox's final ownership audit saw protected root-owned paths as UID 65534.
+The unchanged read-only audit passed against the host filesystem view, confirming
+UID 0 and protected modes; its earlier sandbox result is preserved. This repeated
+no harness invocation. The initial sandboxed sudo failure occurred before provider
+builds or the execution marker. No production/public API change, deployment,
+publication, umbrella-pin update, automatic commit or follow-on experiment occurred.
+
+See the [complete report](../../build/preview-tracing-overhead-20261112/FINAL-ASSESSMENT.md),
+[exact statistics and per-block differences](../../build/preview-tracing-overhead-20261112/execution/statistics.json),
+[preregistration and all commands](../../build/preview-tracing-overhead-20261112/execution/preregistration.json),
+[runner assessment](../../build/preview-tracing-overhead-20261112/execution/assessment.json),
+[equivalence proof](../../build/preview-tracing-overhead-20261112/equivalence.json),
+[preparation and harness review](../../build/preview-tracing-overhead-20261112/preparation.json),
+[focused test output](../../build/preview-tracing-overhead-20261112/focused-tests.log),
+[build commands](../../build/preview-tracing-overhead-20261112/build-commands.json),
+[environment and dependencies](../../build/preview-tracing-overhead-20261112/environment.json),
+[pre-execution seal](../../build/preview-tracing-overhead-20261112/seal.json),
+[retained input and protected-runtime inventories](../../build/preview-tracing-overhead-20261112/retained-before.json),
+[final counts, ownership and fixture provenance](../../build/preview-tracing-overhead-20261112/final-validation-summary.json),
+[execution context and supplementary integrity verification](../../build/preview-tracing-overhead-20261112/supplementary-retained-verification.json),
+and [preserved sandbox ownership audit](../../build/preview-tracing-overhead-20261112/sandbox-final-validation-summary.json).
+
+### Offline retained v3 startup accounting (2026-11-12)
+
+The [standalone assessment](../../build/preview-startup-v3-analysis-20261112-02/ASSESSMENT.md)
+reparsed the retained overhead package without executing native workloads. All 264
+preregistered invocations reconciled: each mode has 1,200 measured observations
+and 12 warm-ups; T has 1,344 service lifetimes, including 132 setup services.
+Raw stderr line references, semantic accounting and lifecycle results agree with
+retained validation. Consumed evidence hashes and recorded tool identities passed;
+[before/after hashes](../../build/preview-startup-v3-analysis-20261112-02/input-integrity.json)
+are unchanged, with no [attribution or integrity issues](../../build/preview-startup-v3-analysis-20261112-02/attribution-issues.json).
+
+Pixel and metadata windows start at the explicit startup origin and end at their
+respective trace probes. These differ from harness timer latencies: origin precedes
+timer start and probes follow latency capture. The
+[pooled and block summaries](../../build/preview-startup-v3-analysis-20261112-02/phase-summary.json)
+retain phase presence and median/nearest-rank p95 durations, full construction and
+constructor-body boundaries, coverage unions, unnamed gaps and identity-linked
+standby overlap. Inclusive phase durations are not additive. Broad job, dispatch
+and lifecycle envelopes are excluded from coverage; missing phases remain
+unavailable and A's generation phases remain absent by design. U supplies latency
+context without trace identities or phase estimates. Warm-ups,
+[setup activity](../../build/preview-startup-v3-analysis-20261112-02/setup-activity.json),
+service-control work and post-delivery cleanup remain distinguishable in the
+[per-observation accounting](../../build/preview-startup-v3-analysis-20261112-02/accounting.json).
+
+All five selected A large-PNG tails for each endpoint came from block 9. The
+slowest pixel observation (sample 0) had a 510.112 ms origin-to-probe window,
+376.625 ms covered union and 133.487 ms unnamed elapsed time; its final-metadata
+window was 510.144 ms with 133.520 ms unnamed. Its helper preparation lasted
+215.702 ms and decode exchange including transport lasted 122.123 ms, while
+runtime validation was nested inside preparation. These inclusive intervals do
+not partition the delay. The slowest B/C/D pixel windows were respectively
+175.355/175.977/169.806 ms, with 20.767/23.054/19.299 ms unnamed. The
+[five tails per variant and endpoint](../../build/preview-startup-v3-analysis-20261112-02/tails.json)
+and assessment preserve origin-relative timelines, readiness/delivery markers,
+roles, gaps and raw line links.
+
+C had observed standby-preparation overlap with demand exchanges in all 300
+measured observations for each endpoint; D had none before either delivery.
+These counts describe this corpus, without requiring historical overlap counts
+to recur. Exchange intervals include transport. Neither these observations,
+phase quantiles nor T/U differences explain causality or CPU cost; gaps remain
+unexplained elapsed time. The
+[completed overhead report](../../build/preview-tracing-overhead-20261112/FINAL-ASSESSMENT.md)
+and its host-activity limitation still apply. No overhead was subtracted, no
+threshold introduced, and C's failed qualification and D's failed pilot remain
+unchanged. No follow-on experiment is prescribed.
+
+The new offline adapter and six focused regressions passed. Historical tools were
+reused only after their recorded hashes matched. No native builds, benchmarks,
+deployment, publication, pin changes or commits were performed. Earlier assessments
+remain unchanged.
