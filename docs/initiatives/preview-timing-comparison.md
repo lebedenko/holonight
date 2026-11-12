@@ -619,3 +619,57 @@ tail selection and unchanged consumed hashes. Earlier development runs that bloc
 on ambiguous source-map anchors remain under ignored `build/`; the linked run is
 complete with no issues. No native builds, benchmarks, runtime instrumentation,
 deployment, publication, pin changes or commits were performed.
+
+### Private delivery-path probe preparation (2026-11-13)
+
+**UNCOMPILED — no runtime validation or measurements.** The
+[private delivery preparation](../../build/preview-delivery-tracing-20261113-03/README.md)
+provides independent A/B/C/D source and harness overlays covering transaction
+wrapper return, one-shot acknowledgement/helper exit, reusable completion,
+retirement calls versus effective cleanup, conditional raster storage and nested
+PNG serialization/commit, metadata formatting/cache insertion, and publication
+handoffs through applyResult, changed emission and separate harness endpoints.
+The [supplemental v4 contract](delivery-tracing-v4.md) documents explicit unavailable
+identities, independent span/publication IDs, short-circuit condition recording,
+latency-capture ordering and the unmeasured overhead of timestamp capture itself.
+Original v3 TRACE records and their historical parser remain unchanged.
+
+The [manifest](../../build/preview-delivery-tracing-20261113-03/manifest.json)
+records successful historical evidence reconciliation, exact source inventories,
+recorded tool identities, unchanged before/after hashes and private output hashes.
+Per-variant review artifacts are
+[A diff](../../build/preview-delivery-tracing-20261113-03/A/overlay.diff),
+[B diff](../../build/preview-delivery-tracing-20261113-03/B/overlay.diff),
+[C diff](../../build/preview-delivery-tracing-20261113-03/C/overlay.diff), and
+[D diff](../../build/preview-delivery-tracing-20261113-03/D/overlay.diff), with
+[A probe map](../../build/preview-delivery-tracing-20261113-03/A/probe-to-source.json),
+[B probe map](../../build/preview-delivery-tracing-20261113-03/B/probe-to-source.json),
+[C probe map](../../build/preview-delivery-tracing-20261113-03/C/probe-to-source.json), and
+[D probe map](../../build/preview-delivery-tracing-20261113-03/D/probe-to-source.json).
+Each variant also retains its source-inventory.json. All anchors were checked on
+temporary copies before emitting the four prepared source trees.
+
+Sixteen [focused regressions](../../build/preview-delivery-tracing-tests-20261113.log)
+passed, including synthetic lifecycle, nested/overlapping interval, publication,
+rejection, endpoint, malformed-record and preparation-integrity cases. Full
+preparation passed with subprocess and shell execution disabled. Seven unchanged
+historical delivery-gap regressions also passed.
+[Independent static verification](../../build/preview-delivery-tracing-20261113-03/independent-verification.json)
+rechecked 2,671 consumed hashes and 297 probe references, recomputed every diff,
+reversed every recorded patch back to the frozen sources, and checked timer
+expressions, cancellation-load counts, queued connection types, unchanged v3 event
+implementation, separate diagnostic identity allocation and D's initial deferral.
+The [verification script](../../build/verify-preview-delivery-tracing.py) is retained
+with its hash in that record. An earlier blocked anchor-review attempt and a
+superseded prepared development output remain under ignored build/.
+
+The new offline analyzer reports transaction, storage, metadata and delivery spans
+separately, preserving inclusive durations and clipped unions. It distinguishes
+enqueue-call duration, enqueue-to-callback elapsed time and callback execution;
+missing evidence remains unavailable and incompatible evidence blocks assessment.
+Synthetic validation establishes accounting behavior only. No diagnostic workload
+was executed, no native sources were built, and no overhead or delivery-gap
+attribution is established. Previous assessments, the overhead host-activity
+limitation, C's failed qualification and D's failed pilot remain unchanged. Native
+validation and any fixed diagnostic experiment require a separately planned step.
+No deployment, publication, pin changes or commit were performed.
