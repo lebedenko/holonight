@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.25)
+project(preview_cancellation LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(HolonightFileBrowser REQUIRED CONFIG COMPONENTS Preview)
+add_executable(preview-cancellation main.cpp)
+target_link_libraries(preview-cancellation PRIVATE HolonightFileBrowser::Preview)
+target_compile_features(preview-cancellation PRIVATE cxx_std_23)

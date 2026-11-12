@@ -1,5 +1,19 @@
 # Preview timings and corrected-reference qualification
 
+## Native validation of reviewed v3 tracing overlays
+
+**Native build validation passed for A/B/C/D.** The unchanged overlays compiled,
+linked and privately installed against host dependencies; their installed-package
+harnesses built successfully. Runtime staging, permitted protocol detection and
+installation-time runtime verification passed. Static dependency, package-resolution,
+trace-symbol and integrity checks passed. See the
+[build assessment and retained evidence](../../build/preview-startup-native-validation-3wim1co2/ASSESSMENT.md).
+
+This establishes build readiness only. No harness, preview workload, benchmark or
+timing analysis ran. Qt callback behavior, runtime trace continuity, cancellation
+interleavings and instrumentation overhead remain unverified. Qualification and
+D's failed pilot remain unchanged. The source-readiness account below is historical.
+
 ## Reviewed startup tracing readiness
 
 The [source-linked readiness assessment](../../build/preview-startup-tracing-v3-release-review/ASSESSMENT.md)
@@ -240,3 +254,111 @@ The latest startup scenario starts timing **before service construction**. The o
 - [Latest full comparison](../../build/preview-reuse-dgi4528s/reuse-measurement-ml9f0eu3/comparison.md), [raw summary](../../build/preview-reuse-dgi4528s/reuse-measurement-ml9f0eu3/summary.json), [provenance](../../build/preview-reuse-dgi4528s/reuse-measurement-ml9f0eu3/provenance.json).
 - [Implementation, resource and verification assessment](../../build/preview-reuse-dgi4528s/ASSESSMENT.md).
 - [Current cross-project contract and assessment](immutable-runtime-standby.md).
+
+## Bounded v3 runtime tracing smoke
+
+**Corrected smoke run passed:** all 12 fixed startup invocations across A/B/C/D
+and the three fixtures passed, covering 36 observations and 48 service lifetimes
+including setup. There were zero parser, identity, accounting or lifecycle issues,
+no timeouts or residual helper scopes, and retained-input and staged-runtime
+payload integrity passed after execution. No retries or replacement observations
+were used. See the [fresh assessment](../../build/preview-startup-runtime-smoke-20261112-v3-02/assessment.json),
+[preregistration](../../build/preview-startup-runtime-smoke-20261112-v3-02/preregistration.json)
+and [per-invocation evidence](../../build/preview-startup-runtime-smoke-20261112-v3-02/observations/).
+
+The corrected runner uses a paired `service_destruction` end as completion of the
+destructor's cleanup path. The retained destructors wait for worker cleanup and
+do not require a call to the separate `shutdown()` method. Any `service_shutdown`
+records that are present must still pass pairing, identity, role and ordering
+checks. Twelve focused runner tests passed under the privileged wrapper, including
+ordinary-user output ownership and regressions for destructor-only completion,
+incomplete cleanup and attribution to another lifetime. No native sources,
+binaries or runtime bundles were rebuilt or modified. The earlier 21 Python
+results were reused after verifying their recorded inputs remained unchanged.
+Success is limited to these startup/shutdown executions; cancellation, overhead,
+performance and broader qualification remain unverified, and D's failed pilot is
+unchanged.
+
+The earlier blocked run is retained unchanged below.
+
+**Runtime tracing smoke validation blocked.** The fixed run stopped after its first
+invocation, A / `160x80.png` / `startup` / count 3. All three observations passed
+pixel/metadata validation and v3 trace association, with zero parser, identity or
+accounting issues. All four services (setup included) had balanced construction
+and destruction spans, but no `service_shutdown` records; the runner's explicit
+shutdown-completion requirement therefore failed for all four lifetimes. No later
+invocations, retries or replacement observations ran.
+
+The harness exited zero without timeout. Scope snapshots found no remaining
+helpers, and post-run checks confirmed retained-input and staged-runtime payload
+integrity. Runtime fixtures and partial evidence remain preserved. See the
+[assessment and first failing command](../../build/preview-startup-runtime-smoke-20261112-v3-01/assessment.json),
+[preregistration](../../build/preview-startup-runtime-smoke-20261112-v3-01/preregistration.json)
+and [trace accounting and lifecycle checks](../../build/preview-startup-runtime-smoke-20261112-v3-01/observations/A-160x80.png.accounting.json).
+The runner and focused synthetic tests add no production changes. The retained
+21 Python results remain applicable because their recorded inputs are unchanged.
+This result makes no performance, cancellation, overhead or qualification claim;
+D's failed pilot and existing qualification limits remain unchanged.
+
+## Bounded C/D cancellation tracing diagnostic
+
+**Cancellation tracing validation blocked.** The preregistered 24-invocation matrix
+stopped after C / preparation / repetition 1. The harness exited zero, acknowledged
+all required preparation barriers, verified cancelled preparation cleanup without
+readiness/gate opening, and confirmed correct replacement pixels, oriented dimensions
+and full formatted EXIF. Its only ledger issue was `replacement_delivery`: the
+accepted-result probe requires a non-null image to label a callback successful,
+while the final accepted metadata callback carries no image payload. This diagnostic
+classification limitation prevents a pass; it does not establish a production defect.
+No overlay or expectation was repaired after execution began, and the remaining
+23 invocations, including all D and destruction/active/cleanup cases, did not run.
+
+Both private C/D provider/harness builds passed against host dependencies. Fourteen
+focused synthetic Python tests and four native barrier/supervisor checks without
+helpers passed. The unchanged v3 parser/identity checks and the single service's
+construction/destruction checks passed. Ordinary-user output ownership was verified
+under the privileged wrapper; scope snapshots found no residual helpers, cleanup
+was verified, and post-run retained-input/private-artifact and staged-runtime payload
+integrity passed. Historical packages, both startup-smoke runs and runtime fixtures
+remain preserved. This result provides no performance, overhead or qualification claim.
+
+See the [final assessment](../../build/preview-cancellation-tracing-wxuflfvn/FINAL-ASSESSMENT.md),
+[preregistration](../../build/preview-cancellation-tracing-wxuflfvn/execution/preregistration.json),
+[first failing command](../../build/preview-cancellation-tracing-wxuflfvn/execution/assessment.json),
+[overlay review](../../build/preview-cancellation-tracing-wxuflfvn/review.json),
+and [invocation evidence](../../build/preview-cancellation-tracing-wxuflfvn/execution/observations/).
+
+## Corrected C/D cancellation diagnostic
+
+**Cancellation tracing validation blocked.** The metadata-only final-result probe
+was corrected to classify runtime/raster/error status independently of image payload.
+The new ledger checks join publication, application attempt and acceptance by
+observed identity/selection/payload, and require successful pixels before final
+metadata. Preparation/build tooling now automatically verifies the focused tests,
+records commands and seals artifact/tool identities before execution.
+
+A fresh fixed matrix passed all nine C preparation, active-cancellation and
+replacement-during-cleanup invocations. It stopped at C destruction repetition 1:
+the supervisor thread's `active_release` diagnostic row had service ID 0 because
+its thread-local tracing context was not propagated. The separate ledger validator
+reported `foreign_diagnostic_service`. The harness exited zero, both requests
+avoided successful delivery and cleanup passed; this diagnostic attribution failure
+does not establish a production destruction defect. No repair, changed expectation
+or retry followed. The remaining 14 invocations, including all D cases, did not run.
+
+Both fresh private native builds, 18 focused Python tests and five helper-free C++
+checks passed. All 10 harnesses exited zero with no timeouts, and their v3 TRACE
+parsing/pairing/identity and service-lifecycle checks passed. Observed totals are
+10 service lifetimes, 11 cancelled requests and nine recoveries; the complete
+24-invocation requirements remain unmet. Ordinary-user ownership, helper-scope
+cleanup, retained/private-artifact integrity and staged-runtime payload integrity
+passed. All 20 runtime fixture copies match retained provenance; the earlier failed
+package and both startup-smoke runs remain unchanged. No performance, overhead or
+qualification claim follows.
+
+See the [corrected-run assessment](../../build/preview-cancellation-tracing-837893f4/FINAL-ASSESSMENT.md),
+[preregistration](../../build/preview-cancellation-tracing-837893f4/execution/preregistration.json),
+[first failing command](../../build/preview-cancellation-tracing-837893f4/execution/assessment.json),
+[review](../../build/preview-cancellation-tracing-837893f4/review.json),
+[focused verification](../../build/preview-cancellation-tracing-837893f4/verification.json),
+and [final counts and integrity evidence](../../build/preview-cancellation-tracing-837893f4/final-validation-summary.json).
