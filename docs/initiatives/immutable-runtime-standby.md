@@ -211,3 +211,25 @@ production correction, provider/consumer change, full qualification, deployment,
 publication, pin update or GRUB change followed. Both earlier comparisons remain
 failed. See the [timing report](preview-timing-comparison.md#initial-standby-contention-diagnostic-inconclusive)
 and [retained assessment](../../build/preview-standby-arb90t5w/ASSESSMENT.md).
+
+## Fresh bounded scheduling comparison
+
+The fresh diagnostic is valid, but the single startup pilot is **unsuccessful**.
+All 3,200 measured observations are complete and valid. Correlated preparation
+overlap occurs in 400/400 unchanged-C jobs and 0/400 initial-deferral D jobs.
+Nevertheless, D's large-PNG pixels/metadata p95 worsen by 3.878/3.881 ms (+2.64%)
+against contemporaneous C. All eight startup allowances against contemporaneous
+A-fixed pass, but the independent improvement requirement fails.
+
+The cycle therefore stops without a production scheduler change, another tuning
+cycle, full qualification comparison or repeated resource diagnostics. Earlier
+failed runs remain unchanged; strict qualification remains failed. Frozen source,
+host dependency, binary, harness and fixture identities were verified before
+measurement; final input hashes and helper shutdown checks pass. Ordinary-user
+artifact writes pass through the privileged wrapper before measurement.
+
+The [timing report](preview-timing-comparison.md#fresh-bounded-scheduling-comparison-unsuccessful-pilot)
+and [retained assessment](../../build/preview-standby-drbq1ofy/ASSESSMENT.md) link
+preregistration, raw diagnostic/pilot observations and complete gates. No public
+API, deployment, publication or pin change is made. Deferred follow-ups remain
+outside this experiment.

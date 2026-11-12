@@ -1,5 +1,36 @@
 # Preview timings and corrected-reference qualification
 
+## Fresh bounded scheduling comparison: unsuccessful pilot
+
+A fresh preregistered diagnostic and one uninstrumented startup pilot completed
+with all 3,200 measured observations valid, plus separate warm-ups. Correlated
+standby preparation overlaps demand in 400/400 C jobs and 0/400 D jobs. Input
+identities remain unchanged and no residual helper scopes remain. Earlier failed
+runs and their execution markers are preserved.
+
+D passes all eight unchanged startup allowances against contemporaneous A-fixed,
+but fails the required large-PNG improvement over unchanged C:
+
+| Large-PNG event | A-fixed p95 | C p95 | D p95 | D versus C |
+| --- | ---: | ---: | ---: | ---: |
+| pixels | 138.477 ms | 146.922 ms | 150.800 ms | +3.878 ms / +2.64% |
+| final metadata | 138.507 ms | 146.928 ms | 150.809 ms | +3.881 ms / +2.64% |
+
+The bounded cycle stops unsuccessfully. No production scheduling change, further
+tuning, full qualification or resource rerun follows. Existing qualification remains
+failed. Host-linked private overlays were built only where required; the pilot
+reused matching A-fixed/B/C binaries. Preflight verified frozen sources and 451
+binary/runtime/harness/fixture identities. All 40 tooling tests pass, and all seven
+standby tests also pass through `sudo -A`, including ordinary-user artifact writes.
+
+See the [assessment](../../build/preview-standby-drbq1ofy/ASSESSMENT.md),
+[preregistration](../../build/preview-standby-drbq1ofy/preregistration.json),
+[complete results and gates](../../build/preview-standby-drbq1ofy/result.json),
+[diagnostic decision and traces](../../build/preview-standby-drbq1ofy/diagnostic-result.json)
+and [preflight identities](../../build/preview-standby-drbq1ofy/preflight-identities.json).
+Protected fixtures and all raw logs/observations remain retained. No samples were
+replaced or previous execution markers reset.
+
 ## Initial standby contention diagnostic: inconclusive
 
 The bounded follow-up stops before the startup pilot or a production correction.
