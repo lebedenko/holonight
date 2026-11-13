@@ -214,3 +214,26 @@ operations are available for source inspection, but this report does not establi
 causal explanations for uncovered time. V4 overhead remains unmeasured. No workload,
 installer, compilation or privileged operation ran. C qualification and D pilot
 conclusions remain unchanged.
+
+## Offline audit reliability verification (2026-11-14)
+
+Direct synthetic audit tests now cover all 12 scheduled invocations and 72 unique
+endpoints using temporary manifests, inventories, hashes and source probes, with
+process execution disabled and only trace replay mocked. Regressions cover strict
+context matching, unavailable-transaction cleanup exclusion, wrapper envelopes,
+dual endpoints, cross-thread overlap and raw references. Invalid destinations,
+manifest states, probe containment/hash/line/text errors, incomplete or duplicate
+windows and handoffs, replay mismatch, tampering and changes during analysis block
+the audit; failures after output creation retain partial evidence and a sealed
+blocked assessment. These tests do not depend on retained evidence.
+
+The [fresh offline replay](../../build/preview-delivery-gaps-v4-analysis-20261114-04/ASSESSMENT.md)
+retains exactly the original 72 endpoint rows and summaries, including identities,
+timings, unions and raw references. Its seal and unchanged runtime/prepared input
+inventories were independently rehashed. No workloads were launched. The related
+smoke and v3 gap suites pass; the tracing suite's full historical preparation test
+is blocked by a retained hash mismatch for `scripts/manage-images-generations.py`.
+Historical evidence was not changed to bypass that mismatch.
+
+Attribution remains incomplete and tracing overhead remains unmeasured. This
+reliability work changes neither C qualification nor D pilot conclusions.
