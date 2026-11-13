@@ -49,6 +49,7 @@ def main():
                 run('python3', '-m', 'unittest', 'discover', '-s', 'tests', '-v', cwd=source, env=env)
             continue
         options = ['-DBUILD_DEMO=OFF', '-DBUILD_CONTROLS_GALLERY=OFF', '-DBUILD_QT5_PROBES=OFF']
+        options.extend(f'-D{option}' for option in CATALOG[name].options)
         if name == 'holonight-shell':
             # Native test isolation hides user-managed interpreters under /home.
             options.append('-DPython3_EXECUTABLE=/usr/bin/python3')
@@ -58,6 +59,11 @@ def main():
             f'-DCMAKE_PREFIX_PATH={prefix}', f'-DQML_IMPORT_PATH={prefix}/lib/qt6/qml',
             f'-DBUILD_TESTS={test}', f'-DBUILD_TESTING={test}', *options, env=env)
         run('cmake', '--build', build, '--parallel', (os.environ.get('JOBS') or subprocess.check_output(['nproc'], text=True).strip()), env=env)
+        if name == 'holonight-images':
+            runtime = Path(tempfile.mkdtemp(prefix='runtime-', dir=build)) / 'bundle'
+            run('python3', source / 'scripts/prepare-isolated-runtime.py', '--helper',
+                build / 'holonight-images-helper', '--plugins', '/usr/lib/qt6/plugins', '--output', runtime)
+            run('cmake', '-S', source, '-B', build, f'-DHOLONIGHT_IMAGES_RUNTIME_BUNDLE={runtime}', env=env)
         if args.tests:
             # Prefer this component's freshly built libraries over its previous
             # installation when reusing a development prefix.
