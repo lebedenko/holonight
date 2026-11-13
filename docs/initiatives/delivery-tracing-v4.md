@@ -263,3 +263,33 @@ remains incomplete and tracing overhead unmeasured. These traced observations do
 not establish performance qualification or pure queue residence. The historical
 preparation-test hash mismatch, C qualification and D pilot conclusions remain
 unchanged. No workloads, builds or installer actions ran.
+
+## Matched v4-versus-v3 overhead preparation (2026-11-14)
+
+The [prepared comparison package](../../build/preview-delivery-overhead-20261114-03/ASSESSMENT.md)
+is **uncompiled, unexecuted, overhead unmeasured**. The preparation-only tool
+[`prepare-preview-delivery-overhead.py`](../../scripts/prepare-preview-delivery-overhead.py)
+consumes the frozen v3 overhead package and v4 preparation, with runtime attempt
+`20261113-02`, audit `20261114-04` and the completed frozen-source review as supporting
+evidence. It invokes no subprocesses and exposes no build or execution action.
+
+Eight explicitly named `v3`/`v4` A/B/C/D source and harness trees retain verified
+private header bytes; only private header includes are relocated. Ordered unique
+anchor replay exactly reproduces all retained v4 trees, and the hash-verified
+preparation recipe independently confirms anchors and supplemental header content.
+Source inventories, tracing diffs, probe maps, equivalence evidence, consumed input
+and tool hashes, and the frozen protocol are sealed. The
+[independent verification](../../build/preview-delivery-overhead-20261114-03-independent-verification.json)
+rehashes the output seal and consumed inputs and verifies all eight trees, private
+headers, regenerated probe maps and four replay results.
+
+The later execution protocol fixes three fixtures, separate warm-ups, ten blocks
+of ten observations, rotated variant order and alternating mode order: 264
+invocations, 2,400 measured observations and 24 warm-ups. It requires original
+harness pixel and final-metadata latencies, median and nearest-rank p95, signed
+v4−v3 differences and all ten block comparisons. These would be host measurements
+of incremental instrumentation effects within the existing startup timer.
+Compilation, staging and workload execution require a separate plan. No overhead
+budget, significance claim, phase subtraction or performance qualification is
+introduced. Attribution remains incomplete; the historical preparation-test hash
+mismatch, C qualification and D pilot conclusions remain unchanged.
