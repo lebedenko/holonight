@@ -237,3 +237,29 @@ Historical evidence was not changed to bypass that mismatch.
 
 Attribution remains incomplete and tracing overhead remains unmeasured. This
 reliability work changes neither C qualification nor D pilot conclusions.
+
+## Frozen-source timing review (2026-11-14)
+
+The [sealed source review](../../build/preview-delivery-source-review-20261114-01/ASSESSMENT.md)
+checks audit `20261114-04` against runtime attempt `20261113-02` and prepared
+sources `20261113-03`. All 72 endpoint identities and 24 three-observation cells
+are retained in `review.json`, with coverage statistics, exact raw boundaries,
+frozen-source excerpts and 39 distinct cases selected by median elapsed time and
+largest individual uncovered interval. Input inventories remained unchanged.
+
+Selected largest gaps include enqueue return to callback entry, intervals between
+callbacks, and transitions from acknowledgement or cleanup to storage. Frozen
+control flow identifies intervening predicates and calls, but the retained
+boundaries cannot separate their cost from scheduling, blocking or trace emission.
+Specific-operation unions remain separate from wrapper envelopes; nested scopes
+and overlapping categories are not additive. Worker/callback overlap is preserved.
+The harness `pixels`/`metadata` predicates differ from publication labels; no
+retained handoff satisfies both predicates. Unevaluated conditions and cleanup
+without transaction identity remain unavailable for attribution.
+
+Independent checks rehashed the review seal and consumed inventories and checked
+coverage arithmetic, deterministic selections and source/raw citations. Attribution
+remains incomplete and tracing overhead unmeasured. These traced observations do
+not establish performance qualification or pure queue residence. The historical
+preparation-test hash mismatch, C qualification and D pilot conclusions remain
+unchanged. No workloads, builds or installer actions ran.
