@@ -9,8 +9,8 @@ The Arch installation profile and acceptance image require archlinux-appstream-d
 and kimageformats. Dependency checks remain read-only; incomplete installations
 retain tile fallback. Rebuild and publish the acceptance image before updating its pin.
 Packages builds the published Images revision into its disposable provider prefix.
-Publish provider changes before consumer pins requiring those changes; no publication
-is authorized by this implementation task.
+Publish provider changes before consumer pins requiring those changes. Publication
+and coordinated pin updates require explicit authorization.
 
 Verify Images CTest and installed-package decoding, then Packages resolver regressions,
 model/QML acceptance and staged JPEG XL decoding. Use identical package/catalog
