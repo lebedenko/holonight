@@ -30,3 +30,9 @@ The existing digest remains in use until a replacement is built and verified.
 `task check` automatically acquires the image and pinned provider sources, then runs
 without networking. Docker, Python 3, Git and tar are the host launcher prerequisites.
 No separate preparation command or binary cache is required.
+
+Packages icon acceptance requires `archlinux-appstream-data` and `kimageformats` in
+the next image. Component acceptance checks these dependencies read-only and requires
+successful staged JPEG XL decoding. Before publishing, use Packages' explicit
+`--image-id sha256:...` override to test an immutable local image; keep registry pins
+unchanged until authorized publication.

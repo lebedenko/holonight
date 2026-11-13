@@ -100,6 +100,15 @@ exit "$status"
         self.assertIn("sudo pacman -S --needed appstream-qt", result.stderr)
         self.assertNotIn("cmake -S", self.log.read_text())
 
+    def test_missing_package_icon_runtime(self):
+        for package in ("archlinux-appstream-data", "kimageformats"):
+            with self.subTest(package=package):
+                self.log.write_text("")
+                result = self.check(MISSING_PACKAGE=package)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("sudo pacman -S --needed " + package, result.stderr)
+                self.assertNotIn("cmake -S", self.log.read_text())
+
     def test_package_database_failure_stops_preflight(self):
         result = self.check(PACMAN_FAILURE="1")
         self.assertNotEqual(result.returncode, 0)

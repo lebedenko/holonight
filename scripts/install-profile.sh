@@ -1,6 +1,7 @@
 # Maintained Arch packages for host source installation. CMake owns version requirements.
 readonly HOLONIGHT_INSTALL_PACKAGES=(
   appstream-qt
+  archlinux-appstream-data
   bubblewrap
   base-devel
   cage
@@ -16,6 +17,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   icu
   json-glib
   kconfig
+  kimageformats
   layer-shell-qt
   libexif
   libpulse
