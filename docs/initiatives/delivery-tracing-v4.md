@@ -140,3 +140,60 @@ and hash failures, exact anchors and D preservation. Preparation is checked with
 process execution disabled. Final acceptance requires four source overlays, diffs,
 inventories and probe maps, unchanged consumed hashes and independent static review.
 These checks authorize no native validation, execution, deployment or publication.
+
+## Bounded runtime validation (2026-11-13)
+
+[`run-preview-delivery-smoke.py`](../../scripts/run-preview-delivery-smoke.py)
+adds a fixed A/B/C/D startup gate: three fixtures per variant, three observations
+per invocation, 120-second process-group timeout, five-second termination grace,
+and no retries. It consumes the accepted reassessment, verifies frozen inputs,
+stages fresh protected runtimes with the current installer, and requires original
+stderr v3 lifecycle accounting plus explicit v4 delivery and transaction evidence.
+Synthetic tests cover rejection and stopping before the next launch.
+
+The [first execution assessment](../../build/preview-delivery-runtime-smoke-20261113-01/ASSESSMENT.md)
+is **failed before harness execution**: 0 invocations, 0 observations, all 12 rows
+unexecuted. All three current-installer staging commands returned zero. The
+runner's staged-payload check incorrectly interpreted the regular `current`
+generation-name marker as a directory and stopped. Retained input integrity and
+final scope isolation passed. The original assessment, runner snapshot and seal
+remain unchanged; no retry, uninstall or deletion occurred.
+
+The checker now resolves the marker through `generations/<name>`, validates its
+ownership record and exact payload, and checks each variant before staging the
+next. A synthetic regression covers the marker contract. A separate
+[read-only diagnosis](../../build/preview-delivery-runtime-smoke-20261113-01-diagnosis/diagnosis.json)
+verifies the original evidence seal, all preserved staged payload hashes,
+protected modes and root ownership. It launches no workloads and does not change
+the failed outcome. The corrected runner has not been executed against retained
+workloads. Runtime tracing and delivery correlation remain unvalidated.
+
+These additions preserve the historical preparation claims above. They establish
+no performance, overhead or gap-attribution result; C's failed qualification and
+D's failed pilot conclusions remain unchanged.
+
+
+## Successful bounded runtime validation (2026-11-13, attempt 02)
+
+The [new execution assessment](../../build/preview-delivery-runtime-smoke-20261113-02/ASSESSMENT.md)
+**passed all 12 invocations and 36 observations**, in the fixed A/B/C/D and
+three-fixture order, without retries or timeouts. This separately authorized
+attempt used fresh protected staging and the corrected runner; the first failed
+attempt and its sealed evidence remain unchanged.
+
+All observations passed exact pixel and metadata checks, v3 lifecycle accounting,
+and v4 endpoint correlation (72 endpoints), including complete delivery chains
+and variant-appropriate transaction acknowledgements, helper exits and cleanup.
+Scope and corresponding cgroup isolation passed before and after every invocation
+and at finalization. Retained input integrity and staged payload hashes, inventory,
+modes and root ownership passed their final comparisons. The evidence seal was
+independently rehashed after execution. Private work directories and staged
+runtimes remain preserved.
+
+During execution the document was kept at its manifest-verified historical bytes;
+the preceding runtime-report section was saved separately and restored afterward.
+No historical hash exception or runtime acceptance rule was changed. The earlier
+statement that runtime correlation was unvalidated describes attempt 01; this
+successful attempt establishes bounded startup tracing and delivery correlation.
+It does not establish performance qualification, tracing overhead or completed gap
+attribution. C's failed qualification and D's failed pilot remain unchanged.
