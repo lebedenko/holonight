@@ -197,3 +197,20 @@ statement that runtime correlation was unvalidated describes attempt 01; this
 successful attempt establishes bounded startup tracing and delivery correlation.
 It does not establish performance qualification, tracing overhead or completed gap
 attribution. C's failed qualification and D's failed pilot remain unchanged.
+
+
+## Offline delivery accounting (2026-11-14)
+
+The [offline assessment](../../build/preview-delivery-gaps-v4-analysis-20261114-01/ASSESSMENT.md)
+replayed all 12 original stderr streams with original harness samples and matched
+saved accounting. All 72 endpoint windows were retained with raw references,
+branch outcomes, verified frozen probe locations, category unions, separate
+wrapper-envelope coverage and specific-operation uncovered intervals. Runtime
+and prepared inputs remained unchanged; the output seal was independently checked.
+Per-cell summaries contain counts, minima, medians and maxima only.
+
+Accounting is complete; attribution remains incomplete. Probe locations and raw
+operations are available for source inspection, but this report does not establish
+causal explanations for uncovered time. V4 overhead remains unmeasured. No workload,
+installer, compilation or privileged operation ran. C qualification and D pilot
+conclusions remain unchanged.
