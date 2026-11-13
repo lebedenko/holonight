@@ -13,6 +13,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
+sys.path.insert(0, str(ROOT / 'scripts'))
+from install_state import inventory, manifest_text
 import test_install_ownership as ownership
 spec = importlib.util.spec_from_file_location('generations', ROOT / 'scripts/manage-images-generations.py')
 generations = importlib.util.module_from_spec(spec)
@@ -27,7 +29,6 @@ def exercise(bundle):
     fixture.setUp()
     try:
         fixture.root.chmod(0o755)
-        shutil.copy2(ROOT / 'scripts/manage-images-generations.py', fixture.root / 'scripts')
         staged = fixture.stage / 'usr/libexec/holonight-images/runtime'
         staged.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(bundle, staged)
@@ -36,11 +37,37 @@ def exercise(bundle):
         runtime = fixture.target / 'usr/libexec/holonight-images/runtime'
         state = fixture.target / 'var/lib/holonight/source-install/manifest.tsv'
 
+        prepared_counter = 0
         def install(accepted=True):
-            result = fixture.run_functions('PROTECTED_IMAGES=1; make_manifest; collision_check; copy_stage')
+            nonlocal prepared_counter
+            prepared_counter += 1
+            prepared = fixture.root / f'prepared-{prepared_counter}'
+            images = prepared / 'holonight-images' / 'usr/libexec/holonight-images/runtime'
+            images.parent.mkdir(parents=True)
+            shutil.copytree(staged, images)
+            viewer = prepared / 'holonight-viewer/usr/bin/hn-viewer'
+            viewer.parent.mkdir(parents=True)
+            viewer.write_bytes(b'inert viewer fixture')
+            components = {}
+            for name in ('holonight-images', 'holonight-viewer'):
+                components[name] = {'revision': 'fixture', 'options': [],
+                                    'inventory': inventory(prepared / name, name, 'fixture')}
+            import hashlib
+            host = hashlib.sha256(subprocess.check_output(['pacman', '-Q'], text=True).strip().encode()).hexdigest()
+            (prepared / 'prepared.json').write_text(json.dumps({
+                'selection': ['holonight-images', 'holonight-viewer'], 'host': host,
+                'components': components, 'root': str(fixture.target),
+                'protected_images': True, 'adopt': False, 'maintenance': False}))
+            result = subprocess.run(['python3', str(ROOT / 'scripts/source-install.py'), 'deploy',
+                                     '--root', str(fixture.target), '--prepared', str(prepared)],
+                                    capture_output=True, text=True, timeout=60)
             if (result.returncode == 0) != accepted:
                 raise AssertionError(result.stdout + result.stderr)
             return result
+
+        def runtime_records():
+            return '\n'.join(line for line in state.read_text().splitlines()
+                              if '/usr/libexec/holonight-images/runtime' in line)
 
         def uninstall():
             return subprocess.run(['bash', str(ROOT / 'scripts/uninstall.sh'), '--yes', '--root', str(fixture.target)],
@@ -74,10 +101,12 @@ def exercise(bundle):
         # unowned or busy, and must preserve the corresponding ownership rows.
         injected = runtime / 'generations' / third / 'unowned'
         injected.write_bytes(b'preserve unowned fixture')
-        before = state.read_bytes()
+        before = runtime_records()
         result = uninstall()
         assert result.returncode == 0, result.stderr
-        assert injected.exists() and state.read_bytes() == before
+        assert injected.exists() and runtime_records() == before
+        assert not (fixture.target / 'usr/bin/hn-viewer').exists()
+        assert '/usr/bin/hn-viewer' not in state.read_text()
         injected.unlink()
         payload = runtime / 'generations' / third / 'manifest.json'
         original = payload.read_bytes()
@@ -85,22 +114,23 @@ def exercise(bundle):
         result = uninstall()
         assert result.returncode == 0, result.stderr
         assert payload.read_bytes() == original + b' '
-        assert state.read_bytes() == before
+        assert runtime_records() == before
         payload.write_bytes(original)
         with generations.lease(runtime / 'generations' / third):
             result = uninstall()
             assert result.returncode == 0, result.stderr
-            assert (runtime / 'current').exists() and state.read_bytes() == before
+            assert (runtime / 'current').exists() and runtime_records() == before
             assert len(list((runtime / 'generations').iterdir())) == 2
         result = uninstall()
         assert result.returncode == 0, result.stderr
         assert not (runtime / 'current').exists()
         assert not list((runtime / 'generations').iterdir())
         assert json.loads((runtime / 'ownership.json').read_text()) == []
-        assert state.exists() and '/runtime/.lock' in state.read_text()
+        assert state.exists() and '/runtime/ownership.json' in state.read_text()
+        assert not (runtime / '.lock').exists()
         result = uninstall()
         assert result.returncode == 0, result.stderr
-        assert '/runtime/.lock' in state.read_text()
+        assert '/runtime/ownership.json' in state.read_text()
         print('managed installer: generation ownership, upgrades, busy cap, excluded generic loops and conservative repeated uninstall passed')
     finally:
         fixture.doCleanups()

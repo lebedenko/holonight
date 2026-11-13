@@ -35,10 +35,12 @@ class ViewerOwnership(unittest.TestCase):
         scripts = self.root / "scripts"
         scripts.mkdir()
         shutil.copy(ROOT / "scripts/install-dependencies.sh", scripts)
+        shutil.copy(ROOT / 'scripts/install_catalog.py', scripts)
+        shutil.copy(ROOT / 'scripts/install_state.py', scripts)
         shutil.copy(ROOT / "scripts/prune-icons.py", scripts)
         shutil.copy(ROOT / "scripts/reconcile-images-runtime.py", scripts)
-        # Load the production functions without running preflight/build/host installation.
-        source = (ROOT / "scripts/install.sh").read_text()
+        # Produce legacy ownership records without running preflight or host installation.
+        source = (ROOT / "tests/fixtures/legacy-installer.sh").read_text()
         functions, separator, _ = source.partition('\npreflight\nnote "Preflight passed"')
         self.assertTrue(separator, "installer entrypoint changed")
         self.functions = scripts / "installer-functions.sh"

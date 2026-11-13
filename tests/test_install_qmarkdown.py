@@ -45,7 +45,7 @@ class QMarkdownOwnership(unittest.TestCase):
             self.assertEqual((self.fixture.target / name).read_bytes(), b'package-owned')
 
     def test_installer_has_no_external_acquisition_or_staging(self):
-        script = (ROOT / 'scripts/install.sh').read_text()
+        script = (ROOT / 'scripts/source-install.py').read_text()
         self.assertNotIn('stage_qmarkdown', script)
         self.assertNotIn('git -C "$source" fetch', script)
         self.assertNotIn('QMARKDOWN_SOURCE', script)

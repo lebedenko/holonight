@@ -132,11 +132,12 @@ class ViewerDefaults(unittest.TestCase):
 
 class InstallerPreferenceBoundary(unittest.TestCase):
     def run_functions(self, body):
-        source = (ROOT / 'scripts/install.sh').read_text().split('\npreflight\nnote "Preflight passed"')[0]
+        source = (ROOT / 'tests/fixtures/legacy-installer.sh').read_text().split('\npreflight\nnote "Preflight passed"')[0]
         with tempfile.TemporaryDirectory() as directory:
             scripts = Path(directory) / 'scripts'
             scripts.mkdir()
             shutil.copy(ROOT / 'scripts/install-dependencies.sh', scripts)
+            shutil.copy(ROOT / 'scripts/install_catalog.py', scripts)
             functions = scripts / 'functions.sh'
             functions.write_text(source)
             return subprocess.run(['bash', '-eu', '-c', 'source "$1" --yes; ' + body,

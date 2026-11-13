@@ -2,28 +2,17 @@
 """Check or prune obsolete payload strictly inside the Images runtime."""
 import argparse
 import hashlib
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 import stat
+
+from install_state import read_manifest as read_ownership
 
 RUNTIME = '/usr/libexec/holonight-images/runtime'
 
 
 def read_manifest(path):
-    entries = {}
-    if not path.exists():
-        return entries
-    for line in path.read_text().splitlines():
-        row = line.split('\t')
-        if len(row) != 6:
-            raise ValueError(f'invalid ownership row in {path}')
-        name = PurePosixPath(row[5])
-        if not name.is_absolute() or '..' in name.parts or str(name) != row[5]:
-            raise ValueError(f'invalid ownership path: {row[5]}')
-        if row[5] == RUNTIME or row[5].startswith(RUNTIME + '/'):
-            if row[5] in entries:
-                raise ValueError(f'duplicate ownership path: {row[5]}')
-            entries[row[5]] = row
-    return entries
+    return {name: row for name, row in read_ownership(path).items()
+            if name == RUNTIME or name.startswith(RUNTIME + '/')}
 
 
 def reconcile(root, old, new, prune):

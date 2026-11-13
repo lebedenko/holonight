@@ -4,12 +4,13 @@
 import argparse
 import os
 from pathlib import Path
-import re
 import subprocess
 import tempfile
 
+from install_catalog import CATALOG
+
 ROOT = Path(__file__).resolve().parents[1]
-ORDER = re.search(r'^readonly MODULES=\(([^)]*)\)', (ROOT / 'scripts/install.sh').read_text(), re.M).group(1).split()
+ORDER = list(CATALOG)
 
 
 def run(*args, **kwargs):

@@ -46,7 +46,7 @@ class IsolatedImagesOwnership(unittest.TestCase):
             command.chmod(0o755)
         result = fixture.run_functions('configure_and_stage holonight-images; configure_and_stage holonight-thumbnails')
         self.assertEqual(result.returncode, 0, result.stderr)
-        commands = log.read_text().splitlines()
+        commands = [line for line in log.read_text().splitlines() if 'install_catalog.py' not in line]
         self.assertIn('-DHOLONIGHT_IMAGES_ISOLATED=ON', commands[0])
         self.assertIn('--build', commands[1])
         self.assertIn('prepare-isolated-runtime.py --helper', commands[2])

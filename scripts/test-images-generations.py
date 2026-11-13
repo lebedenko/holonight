@@ -12,6 +12,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 from types import SimpleNamespace
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('generations', Path(__file__).with_name('manage-images-generations.py'))
 generations = importlib.util.module_from_spec(spec)
@@ -156,7 +157,23 @@ def exercise(helper):
             raise AssertionError('implicit legacy conversion succeeded')
         args.check = False
         args.maintenance_migrate, args.ownership_manifest = True, ownership
+        args.transaction_journal = root / 'legacy-transaction.json'
+        (legacy / '.lock').write_bytes(b'changed legacy lock')
+        (legacy / '.lock').chmod(0o644)
+        (legacy.parent / '.images-install.lock').write_bytes(b'')
+        (legacy.parent / '.images-install.lock').chmod(0o644)
+        try:
+            generations.run(args)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('nonempty stranded legacy lock was quarantined')
+        assert (legacy / '.lock').read_bytes() == b'changed legacy lock'
+        (legacy / '.lock').write_bytes(b'')
         generations.run(args)
+        assert not (legacy / '.lock').exists()
+        assert not (legacy.parent / '.images-install.lock').exists()
+        assert list(root.glob('legacy-lock-quarantine-*/intent.json'))
         assert (legacy / 'current').is_file()
         installed_rows = io.StringIO()
         with redirect_stdout(installed_rows):
@@ -164,6 +181,55 @@ def exercise(helper):
         ownership.write_text(installed_rows.getvalue())
         args.command = 'remove'
         generations.run(args)
+        # The umbrella's durable journal permits retries after initialization and
+        # publication failures without adopting unrelated output.
+        retry = root / 'retry'
+        retry_manifest = root / 'retry.tsv'
+        journal = root / 'retry-journal.json'
+        retry_args = SimpleNamespace(runtime=retry, source=source, helper=helper, command='install',
+                                     generation=None, maintenance_migrate=False, ownership_manifest=retry_manifest,
+                                     transaction_journal=journal, check=False)
+        with patch.object(generations, 'verify', side_effect=ValueError('injected verification failure')):
+            try:
+                generations.run(retry_args)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('injected verification failure did not fail')
+        assert not (retry / '.lock').exists()
+        generations.run(retry_args)
+        before = (retry / 'current').read_text()
+        rows = io.StringIO()
+        with redirect_stdout(rows):
+            generations.inventory(retry, 'fixture')
+        retry_manifest.write_text(rows.getvalue())
+        journal.rename(root / 'first-journal.completed.json')
+        version(7)
+        publish = generations.publish
+        def interrupt_publication(stage, destination):
+            publish(stage, destination)
+            raise InterruptedError('injected after generation publication')
+        with patch.object(generations, 'publish', side_effect=interrupt_publication):
+            try:
+                generations.run(retry_args)
+            except InterruptedError:
+                pass
+            else:
+                raise AssertionError('publication interruption did not fail')
+        assert (retry / 'current').read_text() == before
+        generations.run(retry_args)
+        assert (retry / 'current').read_text() != before
+        assert len(list((retry / 'generations').iterdir())) == 2
+        # A conflicting edit is never accepted as an installer-produced state.
+        current = retry / 'current'
+        current.write_text('administrator edit\n')
+        try:
+            generations.run(retry_args)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('conflicting selector was overwritten')
+        assert current.read_text() == 'administrator edit\n'
     print('generation lifecycle: fresh copies, two-generation bound, busy upgrades/removal, rollback, ownership, process exit and maintenance migration passed')
 
 

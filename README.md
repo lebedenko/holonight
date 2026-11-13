@@ -61,6 +61,10 @@ The umbrella can build every pinned production component in dependency order and
 ```sh
 task install -- --check
 task install
+task install -- holonight-viewer
+task install -- holonight-images
+task install -- --resume
+task uninstall -- holonight-viewer
 ```
 
 Install shared QMarkdown 1.x separately before running the installer. The pinned Arch recipe is in
@@ -69,6 +73,23 @@ metadata during component configuration; QMarkdown files remain owned by the pac
 manager and survive umbrella uninstall. Native builds consume installed dependencies,
 using `CMAKE_PREFIX_PATH` for additional prefixes. Container acceptance automatically
 obtains pinned provider sources; configure and build never download packages.
+
+Explicit component names use current local checkouts, including dirty sources. Selecting a
+provider also prepares its installed dependents; it does not add absent applications.
+Multiple names are accepted. Scoped provider removal requires selecting its installed
+dependents too. Checks and refresh hooks follow the selection.
+
+Native CMake/Ninja caches persist between installs. Each completed preparation saves
+independent payloads and inventories before approval. `--resume` deploys those saved
+payloads without building, after verifying their contents and host package identity.
+If host packages changed, prepare again without `--resume`. Interrupted deployment
+retains a durable transaction; retry accepts only previous or intended file states
+and preserves conflicting changes. Modified files retained by uninstall retain their
+original ownership evidence for future attempts. Use `task uninstall -- --resume`
+with the original selection and root to retry interrupted removal.
+
+See [source installation design](docs/source-install-design.md) for locking,
+preparation, ownership and recovery contracts.
 
 The installer supports Arch Linux and Arch-derived distributions. It checks the pinned submodules, compiler, build
 tools, system packages, and Greeter account without installing packages. Builds run without privilege and every
@@ -127,14 +148,14 @@ files forgotten by older manifests), modified obsolete files, symlinks and incom
 path types block deployment, even with `--adopt-existing`. Move each reported conflict
 outside the runtime or resolve it manually before retrying; an untracked `libcrypto.so.3`
 must be manually quarantined, since its filename cannot establish ownership.
-The staged native helper verifies the deployed bundle before ownership records are
-replaced. A deployment failure preserves the previous ownership manifest, but does
-not roll back payloads already copied during an interrupted or failed installation.
+The native helper verifies the deployed bundle before ownership records are replaced.
+A failure retains transaction evidence for explicit `--resume`; it does not roll back
+payloads already copied.
 
 To migrate existing files from an unmanaged source installation, run
 `task install -- --adopt-existing`. The installer rejects package-owned files and
-backs up all files being adopted under `/var/backups/holonight-source-migration.*`
-before replacing any payload. The new files enter the umbrella ownership manifest,
+backs up adopted files in private `adoption-backup-*` directories under
+`/var/lib/holonight/source-install/` before replacing them. The new files enter the umbrella ownership manifest,
 so subsequent installs need no migration flag. Uninstall does not restore backups.
 
 Older umbrella installations generated an untracked `icon-theme.cache`. Upgrades preserve and report

@@ -47,11 +47,11 @@ tasks:
     cmds:
     - python3 -m unittest discover -s tests -p 'test_install*.py' -v
   install:
-    desc: Build and install the pinned HoloNight ecosystem from source
+    desc: Prepare and install pinned ecosystem or selected local components; supports --resume
     cmds:
     - scripts/install.sh {{.CLI_ARGS}}
   uninstall:
-    desc: Remove an umbrella-managed source installation
+    desc: Remove selected components or the managed ecosystem conservatively
     cmds:
     - scripts/uninstall.sh {{.CLI_ARGS}}
   build:
