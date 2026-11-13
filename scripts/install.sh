@@ -200,7 +200,7 @@ managed_images_runtime() {
   ((MAINTENANCE_IMAGES == 0)) || args+=(--maintenance-migrate)
   revision="$(git -C "$REPO_ROOT/holonight-images" rev-parse HEAD)"
   as_root python3 "$SCRIPT_DIR/manage-images-generations.py" install \
-    --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" \
+    --runtime "${TARGET_ROOT%/}/usr/libexec/holonight-images/runtime" \
     --source "$BUILD_ROOT/stage/usr/libexec/holonight-images/runtime" \
     --helper "$BUILD_ROOT/stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper" \
     --ownership-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv" --revision "$revision" "${args[@]}" "$@"
@@ -326,7 +326,7 @@ copy_stage() {
   local images_operation_fd images_operation_lock
   if ((PROTECTED_IMAGES)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
     images_operation_lock="$(as_root python3 "$SCRIPT_DIR/manage-images-generations.py" operation-lock \
-      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper /bin/false \
+      --runtime "${TARGET_ROOT%/}/usr/libexec/holonight-images/runtime" --helper /bin/false \
       --ownership-manifest "$TARGET_ROOT/$STATE_REL/manifest.tsv")"
     exec {images_operation_fd}< "$images_operation_lock"
     flock -x "$images_operation_fd"
@@ -372,7 +372,7 @@ copy_stage() {
   fi
   if ((PROTECTED_IMAGES)) && [[ -d "$stage/usr/libexec/holonight-images/runtime" ]]; then
     as_root python3 "$SCRIPT_DIR/manage-images-generations.py" validate \
-      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" \
+      --runtime "${TARGET_ROOT%/}/usr/libexec/holonight-images/runtime" \
       --helper "$stage/usr/libexec/holonight-images/runtime/usr/libexec/holonight-images-helper"
   fi
   # Retain original hashes for modified obsolete icons and retired portal files

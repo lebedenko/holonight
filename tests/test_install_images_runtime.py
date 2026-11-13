@@ -19,6 +19,20 @@ import test_install_ownership as ownership
 
 
 class IsolatedImagesOwnership(unittest.TestCase):
+    def test_generation_management_receives_clean_runtime_path(self):
+        fixture = ownership.ViewerOwnership()
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        for root in ('/', str(fixture.target)):
+            with self.subTest(root=root):
+                result = fixture.run_functions(
+                    'as_root() { printf "%s\\n" "$@"; }; '
+                    f'TARGET_ROOT="{root}"; managed_images_runtime --check')
+                self.assertEqual(result.returncode, 0, result.stderr)
+                arguments = result.stdout.splitlines()
+                self.assertEqual(arguments[arguments.index('--runtime') + 1],
+                                 root.rstrip('/') + '/usr/libexec/holonight-images/runtime')
+
     def test_normal_staging_prepares_runtime_before_installing_dependents(self):
         fixture = ownership.ViewerOwnership()
         fixture.setUp()

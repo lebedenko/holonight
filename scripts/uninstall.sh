@@ -44,7 +44,7 @@ hash_path() {
 images_operation_fd=""
 if [[ "$TARGET_ROOT" = / || -e "$TARGET_ROOT/usr/libexec/holonight-images/.images-install.lock" ]]; then
   images_operation_lock="$(as_root python3 "$SCRIPT_DIR/manage-images-generations.py" operation-lock \
-    --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper /bin/false \
+    --runtime "${TARGET_ROOT%/}/usr/libexec/holonight-images/runtime" --helper /bin/false \
     --ownership-manifest "$MANIFEST")"
   exec {images_operation_fd}< "$images_operation_lock"
   flock -x "$images_operation_fd"
@@ -70,7 +70,7 @@ if awk -F '\t' '$6 == "/usr/libexec/holonight-images/runtime/ownership.json" { f
   managed_manifest="$(mktemp)"
   trap '[[ -z "$managed_manifest" ]] || rm -f -- "$managed_manifest"' EXIT
   if [[ -n "$helper" ]] && as_root python3 "$SCRIPT_DIR/manage-images-generations.py" remove \
-      --runtime "$TARGET_ROOT/usr/libexec/holonight-images/runtime" --helper "$helper" \
+      --runtime "${TARGET_ROOT%/}/usr/libexec/holonight-images/runtime" --helper "$helper" \
       --ownership-manifest "$MANIFEST" --revision "$revision" --emit-manifest > "$managed_manifest"; then
     managed_images_removed=1
   else
