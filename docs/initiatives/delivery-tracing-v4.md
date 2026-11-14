@@ -926,3 +926,96 @@ distributions, rankings, selections, publication windows and source/raw citation
 without importing the reporter. Scoped elevation reads protected retained hashes;
 permissions are unchanged. Whitespace checks passed. Broader unchanged verification
 is reused; production and public APIs are unchanged.
+
+## Retained pre-decode phase priorities (2026-11-15)
+
+The [sealed offline drill-down](../../build/preview-predecode-20261115-06/REPORT.md)
+replays the same 20 measured v4 A/C large-PNG invocations. It verifies 400 endpoint
+mappings, then analyzes 200 invocation-local observations once each: pixel and
+metadata pre-decode boundaries, spans and ownership agree. Their endpoint-window
+shares differ because delivery times differ; both original harness latencies and
+endpoint references remain preserved. Existing matched overhead and scheduler
+verification are reused without another workload or scheduler analysis.
+
+C's largest disjoint phase set is **generation validation + runtime validation**:
+56.773% median share of pre-decode, 66.328% nearest-rank p95 share, 49.280 ms median
+and 58.113 ms p95 elapsed time. Runtime validation is nested inside generation
+validation. The next group is helper preparation outside measured nested spans:
+34.161% median share, 28.418 ms median and 42.681 ms p95. Inspect exchange outside
+nested acquisition follows at 4.799% median share and 4.220 ms median; source
+capture follows at 1.939% and 1.657 ms. Every selected C class—including the five
+slowest pre-decode observations with cutoff ties, nearest-median ties, largest
+uncovered-gap ties and existing endpoint harness selections—has the same dominant
+validation group. These overlapping selections are descriptive, not independent
+samples.
+
+Inclusive generation validation is 50.068 ms median / 59.113 ms p95; its time
+outside runtime validation, computed per observation before summarizing, is
+0.673 ms / 1.065 ms. Inclusive C helper preparation is 28.423 ms / 42.683 ms.
+A's runtime validation is 48.629 ms / 58.347 ms, nested inside its 78.437 ms /
+94.932 ms helper preparation. A helper time outside nested measured spans is
+28.140 ms / 41.052 ms. These distributions are not obtained by subtracting
+quantiles. A's generation phases remain absent by design; other missing phases
+remain unavailable. Measurements do not establish a validation speedup.
+
+[Observation rows](../../build/preview-predecode-20261115-06/observations.json)
+retain clipped inclusive spans, phase unions, disjoint segments labelled by their
+active phase set, uncovered time and parent interval subtraction.
+[Endpoint mappings](../../build/preview-predecode-20261115-06/endpoint-mappings.json)
+preserve both harness endpoints.
+[Pooled/per-block distributions](../../build/preview-predecode-20261115-06/distributions.json)
+include count, minimum, median, nearest-rank p95 and maximum.
+[Rankings](../../build/preview-predecode-20261115-06/rankings.json) include zero
+coverage for valid observations where a phase-set group is absent, with A beside
+C. [Selected timelines](../../build/preview-predecode-20261115-06/selected-timelines.json)
+and [selection comparisons](../../build/preview-predecode-20261115-06/selection-comparison.json)
+retain all ties and compare group shares without adding overlapping intervals.
+
+The [source comparison](../../build/preview-predecode-20261115-06/source-comparison.json)
+resolves the earlier unavailable source relationship: recorded literal anchors
+reproduce v4 from frozen AT, matched v3 differs from AT only in the private trace
+include path, and an explicit allowlist of private v3 tracing/include edits
+reconstructs every production-source byte of AU. AU's complete source inventory
+matches this qualification's A-fixed inventory exactly. The comparison records
+all transformations, the exact U/T diff and empty residual/qualification diffs;
+it executes no historical recipe. This proves source equivalence under those
+private tracing transformations, not binary, runtime or timing equivalence.
+Historical qualification results remain separate and unchanged.
+
+[Frozen call-chain excerpts](../../build/preview-predecode-20261115-06/source-boundaries.md),
+[source citations](../../build/preview-predecode-20261115-06/source-citations.json)
+and [raw citations](../../build/preview-predecode-20261115-06/raw-citations.json)
+link the probes to construction, pool demand preparation, RuntimeOwner::refresh,
+verifyRuntime, helper launch/readiness, capture and inspect/decode exchange.
+Generation validation includes protected-tree checks and verifyRuntime; the latter
+contains manifest parsing, attribute checks, file reads/SHA-256 and inventory
+traversal. C helper preparation resolves an existing lease before launcher/scope,
+gate and readiness work; A validates inside helper preparation. No durations are
+assigned to individual uninstrumented calls, hashing, launcher operations or
+scheduling.
+
+The narrowest next investigation is inside runtime validation, supported by both
+median and selected-tail evidence. A separately approved measurement would need
+boundaries for protected-tree traversal, manifest read/parse, file attributes,
+file reads/hash computation and final inventory traversal, plus matched A/C
+scheduler switch/wakeup and blocking evidence to distinguish running work,
+runnable delay and non-runnable waits. The secondary helper hypothesis requires
+launcher start, scope discovery/limit verification, gate release and readiness
+boundaries; transport requires separate writes/reads. No experiment was executed.
+These retained elapsed times are not causes of the separate failed qualification,
+optimization gains or overhead-adjusted measurements. C's qualification and D's
+pilot conclusions remain unchanged.
+
+Verification: 18 new process-launch-free regressions and 56 affected existing
+reporting/accounting checks passed. Coverage includes endpoint deduplication and
+ownership, clipping, nesting, cross-thread overlap, disjoint reconciliation,
+missing phases, per-observation subtraction, deterministic ranking, tied
+selections, quantiles, restricted source reconstruction, qualification differences,
+provenance mismatches, destination rejection, input drift and sealed failures.
+The [independent replay](../../build/preview-predecode-20261115-06-verification.json)
+uses a [standalone verifier](../../build/verify-preview-predecode-20261115.py)
+without importing the reporter and checks seals/hashes, all observation arithmetic,
+distributions, rankings, selections, source transformations and citations.
+Protected evidence was read with scoped `sudo -A`; permissions were unchanged.
+Whitespace checks passed. No builds, recordings, preview workloads, live-runtime
+inspection, API changes or qualification reruns were performed.
