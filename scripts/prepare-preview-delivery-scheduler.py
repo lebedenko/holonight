@@ -21,6 +21,7 @@ HEADER = r'''
 #include <QCoreApplication>
 #include <QEvent>
 namespace SchedulerTrace {
+inline std::atomic<unsigned long long> sequence{1};
 inline thread_local unsigned long long dispatch=0;
 inline void event(const char* edge, unsigned long long id, unsigned long long parent,
                   long long captured, unsigned long long publication=0) {
@@ -30,7 +31,7 @@ inline void event(const char* edge, unsigned long long id, unsigned long long pa
   if(n>0 && n<static_cast<int>(sizeof(line))) { auto ignored=write(2,line,n); (void)ignored; }
 }
 struct Dispatch {
-  unsigned long long parent=dispatch, id=DeliveryTrace::identity();
+  unsigned long long parent=dispatch, id=sequence.fetch_add(1);
   Dispatch() { const auto t=DeliveryTrace::now(); dispatch=id; event("enter",id,parent,t); }
   ~Dispatch() { const auto t=DeliveryTrace::now(); dispatch=parent; event("exit",id,parent,t); }
 };
@@ -80,6 +81,15 @@ def verify_generated(output, prepared):
     anchors=o.read(output/'anchors.json')
     require(len({a['file'] for a in anchors})==len(anchors),'duplicate replay path')
     by_name={a['file']:a for a in anchors}
+    expected_patches=set()
+    for i,anchor in enumerate(anchors,1):
+        relative=Path(anchor['file'])
+        require(len(relative.parts)>=3 and relative.parts[0] in 'ABCD' and relative.parts[1] in o.prep.GROUPS and '..' not in relative.parts,'invalid anchor path')
+        patch=relative.parts[0]+'-'+str(i)+'.diff'; expected_patches.add(patch)
+        original=prepared/'v4'/relative
+        expected=''.join(difflib.unified_diff(anchor['before'].splitlines(True),anchor['after'].splitlines(True),fromfile=str(original),tofile=str(output/relative)))
+        require((output/patch).read_text()==expected,'patch excerpt mismatch')
+    require({path.name for path in output.glob('*.diff')}==expected_patches,'patch inventory mismatch')
     for variant in 'ABCD':
         source=prepared/'v4'/variant
         require((output/variant/'trace.h').read_bytes()==(source/'trace.h').read_bytes()+HEADER.encode(), 'header replay mismatch')
@@ -89,12 +99,33 @@ def verify_generated(output, prepared):
             for name in original:
                 key=variant+'/'+group+'/'+name
                 old=(source/group/name).read_bytes()
-                expected=old
-                if key in by_name:
-                    anchor=by_name[key]
-                    require(anchor['before'].encode()==old,'replay input mismatch')
-                    expected=anchor['after'].encode()
+                # Derive permitted edits from frozen input, never from recorded anchors.
+                expected=old.replace(str(source/'trace.h').encode(),str(output/variant/'trace.h').encode())
+                if Path(name).suffix=='.cpp':
+                    expected=expected.replace(b'QCoreApplication app(argc, argv);',b'SchedulerTrace::Application app(argc, argv);')
+                    probe=b'DeliveryTrace::Scope delivery_callback("callback_execution");'
+                    require(expected.count(probe)<=1,'duplicate callback anchor')
+                    expected=expected.replace(probe,b'SchedulerTrace::publication();\n          '+probe)
+                include=b'#include "'+str(output/variant/'trace.h').encode()+b'"'
+                if b'SchedulerTrace::Application app' in expected and include not in expected:
+                    expected=include+b'\n'+expected
+                if old!=expected:
+                    require(key in by_name,'missing substitution anchor')
+                    require(by_name[key]['before'].encode()==old and by_name[key]['after'].encode()==expected,'unauthorized preparation edit')
+                else:
+                    require(key not in by_name,'unexpected preparation anchor')
                 require((output/key).read_bytes()==expected,'replay mismatch: '+key)
+    expected_citations=[]
+    for variant in 'ABCD':
+        target=output/variant
+        require(sum(b'SchedulerTrace::Application app(argc, argv);' in (target/g/n).read_bytes() for g in o.prep.GROUPS for n in o.inventory(target/g))>=1,'missing application substitution')
+        for path in [target/'trace.h',*(target/'source').rglob('*.cpp'),*(target/'harness-source').rglob('*.cpp')]:
+            lines=path.read_text().splitlines()
+            for i,line in enumerate(lines):
+                if 'SchedulerTrace::' in line or 'event("' in line and path.name=='trace.h':
+                    expected_citations.append(dict(file=str(path),sha256=o.digest(path),line=i+1,text=line,excerpt='\n'.join(lines[max(0,i-3):i+4])))
+    require(o.read(output/'source-citations.json')==expected_citations,'missing or altered probe excerpts')
+    require(set(by_name)=={str(path.relative_to(output)) for v in 'ABCD' for g in o.prep.GROUPS for path in (output/v/g).rglob('*') if path.is_file() and path.read_bytes()!=(prepared/'v4'/v/g/path.relative_to(output/v/g)).read_bytes()},'anchor inventory mismatch')
     for citation in o.read(output/'source-citations.json'):
         path=Path(citation['file'])
         require(path.resolve().is_relative_to(output.resolve()) and not path.is_symlink(),'citation escape')
@@ -106,7 +137,7 @@ def verify_generated(output, prepared):
 def prepare(prepared, gap, output):
     o.fresh(output, prepared, gap)
     before = {}; result = dict(status='blocked', warning=WARNING)
-    tool_paths=[Path(__file__).resolve(),ROOT/'scripts/analyze-preview-delivery-scheduler.py',ROOT/'tests/test_preview_delivery_scheduler.py']
+    tool_paths=[Path(__file__).resolve(),ROOT/'scripts/analyze-preview-delivery-scheduler.py',ROOT/'tests/test_preview_delivery_scheduler.py',ROOT/'scripts/run-preview-delivery-scheduler.py',ROOT/'scripts/normalize-preview-delivery-perf.py',ROOT/'tests/test_preview_delivery_scheduler_pilot.py']
     tools={str(path):o.digest(path) for path in tool_paths}
     try:
         require(all(p.absolute()==p.resolve() for p in (prepared,gap)), 'symlink input ancestors refused')

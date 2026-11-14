@@ -13,7 +13,7 @@ spec=importlib.util.spec_from_file_location('scheduler_prepare',ROOT/'scripts/pr
 p=importlib.util.module_from_spec(spec); spec.loader.exec_module(p)
 o=p.o
 require=o.require
-CONTRACT = dict(version=1, clock=dict(name='CLOCK_MONOTONIC', provenance='explicit shared host/boot identity required'),
+CONTRACT = dict(version=2, supported_versions=[1,2], unresolved_external_identity='version 2 permits null TGID; idle key uses CPU as lifetime; export_complete false blocks attribution', clock=dict(name='CLOCK_MONOTONIC', provenance='explicit shared host/boot identity required'),
     bounds='start_ns <= stop_ns; complete coverage required',
     tasks='pid, tid, lifetime, start_ns, stop_ns; reuse requires disjoint lifetimes',
     initial='one state per live task at capture start: running (with cpu), runnable, non_runnable, unknown',
@@ -26,16 +26,17 @@ def integer(value):
 
 
 def scheduler(capture, clock):
-    require(capture['version']==1 and capture['clock']==clock and clock['name']=='CLOCK_MONOTONIC'
+    require(type(capture['version']) is int and capture['version'] in (1,2) and capture['clock']==clock and clock['name']=='CLOCK_MONOTONIC'
             and bool(clock['provenance']), 'clock mismatch or missing provenance')
     start,stop=capture['start_ns'],capture['stop_ns']
     require(integer(start) and integer(stop) and start<stop,'invalid capture bounds')
     tasks={}; intervals=defaultdict(list); state={}; issues=[]
+    if capture.get('export_complete') is False: issues.append('incomplete export')
     for task in capture['tasks']:
-        key=tuple(task['key']); require(len(key)==3 and all(integer(v) for v in key),'invalid task key')
-        require(key not in tasks and start<=task['start_ns']<task['stop_ns']<=stop,'invalid task lifetime')
+        key=tuple(task['key']); require(len(key)==3 and all(integer(v) or (capture['version']==2 and i==0 and v is None) for i,v in enumerate(key)),'invalid task key')
+        require(key not in tasks and integer(task['start_ns']) and integer(task['stop_ns']) and start<=task['start_ns']<task['stop_ns']<=stop,'invalid task lifetime')
         for other,t in tasks.items():
-            require(key[:2]!=other[:2] or min(t['stop_ns'],task['stop_ns'])<=max(t['start_ns'],task['start_ns']), 'ambiguous task reuse')
+            require(key[0]==0 or key[1]!=other[1] or min(t['stop_ns'],task['stop_ns'])<=max(t['start_ns'],task['start_ns']), 'ambiguous task reuse')
         tasks[key]=task
         initial=task.get('initial','unknown')
         if initial=='running' and not integer(task.get('cpu')): initial='unknown'
@@ -43,7 +44,7 @@ def scheduler(capture, clock):
         state[key]=(task['start_ns'],initial,task.get('cpu'))
     def transition(key,ns,new,cpu=None):
         require(key in tasks,'unknown task lifetime')
-        t=tasks[key]; require(t['start_ns']<=ns<t['stop_ns'],'event outside task lifetime')
+        t=tasks[key]; require(t['start_ns']<=ns<=t['stop_ns'],'event outside task lifetime')
         a,old,old_cpu=state[key]
         require(a<=ns,'misordered transition')
         intervals[key].append(dict(start_ns=a,stop_ns=ns,state=old,cpu=old_cpu))
@@ -79,15 +80,22 @@ def scheduler(capture, clock):
             if nxt in state and state[nxt][1] in ('running','non_runnable'):
                 issues.append('missing wakeup or duplicate running task')
                 a,_,_=state[nxt]; state[nxt]=(a,'unknown',None)
+            require(nxt in tasks and ns<tasks[nxt]['stop_ns'],'switch into terminated task')
             transition(nxt,ns,'running',event['cpu'])
         elif kind=='wakeup':
             key=tuple(event['task'])
-            require(key in state,'unknown wakeup task')
+            require(key in state and ns<tasks[key]['stop_ns'],'unknown or terminated wakeup task')
             if state[key][1]!='running': transition(key,ns,'runnable')
         else: raise ValueError('unknown scheduler event')
         cpu_conflicts(ns)
     for key,(a,s,cpu) in state.items():
         intervals[key].append(dict(start_ns=a,stop_ns=tasks[key]['stop_ns'],state=s,cpu=cpu))
+    if capture['version']==2:
+        for diagnostic in capture.get('diagnostics',[]):
+            if diagnostic.get('reason')!='unparsed perf record':
+                for key,rows in intervals.items():
+                    if key[1]==diagnostic.get('tid') or list(key)==diagnostic.get('key'):
+                        for row in rows: row.update(state='unknown',cpu=None)
     return intervals,issues
 
 
@@ -105,7 +113,7 @@ def account(invocations, records, capture=None):
     require(isinstance(invocations,list) and isinstance(records,list),'malformed input')
     indexed=defaultdict(list); dispatches=defaultdict(list)
     for index,r in enumerate(records):
-        require(isinstance(r,dict) and r.get('version')==1 and r.get('edge') in ('enter','exit','publication'),'malformed supplemental record')
+        require(isinstance(r,dict) and type(r.get('version')) is int and r.get('version')==1 and r.get('edge') in ('enter','exit','publication'),'malformed supplemental record')
         require(all(integer(r.get(k)) for k in ('ns','pid','tid','dispatch','parent','publication')) and r['pid']>0 and r['tid']>0,'malformed supplemental identity')
         require(isinstance(r.get('invocation'),str),'missing invocation-local identity')
         r=dict(r,raw_index=index)
@@ -118,11 +126,41 @@ def account(invocations, records, capture=None):
         if len(enters)!=1 or len(exits)!=1 or enters[0]['ns']>exits[0]['ns'] or enters[0]['parent']!=exits[0]['parent']:
             issues.append(dict(dispatch=key,reason='missing/duplicate dispatch boundary')); continue
         spans[key]=(enters[0],exits[0])
-    for key,(entry,exit) in spans.items():
-        if entry['parent']:
-            parent=spans.get((*key[:3],entry['parent']))
-            if parent is None or not parent[0]['ns']<=entry['ns']<=exit['ns']<=parent[1]['ns']:
-                issues.append(dict(dispatch=key,reason='invalid nested dispatch'))
+    # Validate the actual per-thread stack, including sibling overlap and ownership.
+    threads=defaultdict(list)
+    for rs in dispatches.values():
+        for r in rs: threads[r['invocation'],r['pid'],r['tid']].append(r)
+    invalid=set()
+    used={}
+    for key in dispatches:
+        token=(key[0],key[1],key[3])
+        if token in used and used[token]!=key:
+            invalid.update((key,used[token])); issues.append(dict(dispatch=key,reason='cross-thread dispatch identity collision'))
+        used[token]=key
+    for thread,rs in threads.items():
+        rs.sort(key=lambda r:r['raw_index'])
+        stack=[]
+        if any(y['ns']<x['ns'] for x,y in zip(rs,rs[1:])):
+            issues.append(dict(thread=thread,reason='misordered thread records'))
+            invalid.update((*thread,r['dispatch']) for r in rs)
+        for r in sorted(rs,key=lambda x:(x['ns'],x['raw_index'])):
+            key=(*thread,r['dispatch'])
+            good=r['dispatch']>0
+            if r['edge']=='enter':
+                good &= r['publication']==0 and r['parent']==(stack[-1] if stack else 0) and r['dispatch'] not in stack
+                stack.append(r['dispatch'])
+            elif r['edge']=='exit':
+                good &= r['publication']==0 and bool(stack) and stack[-1]==r['dispatch']
+                if stack and stack[-1]==r['dispatch']: stack.pop()
+            else:
+                good &= r['parent']==0 and r['publication']>0 and bool(stack) and stack[-1]==r['dispatch']
+            if not good:
+                issues.append(dict(dispatch=key,reason='invalid nesting or publication ownership'))
+                invalid.add(key)
+        if stack:
+            issues.append(dict(thread=thread,reason='unclosed dispatch'))
+            invalid.update((*thread,d) for d in stack)
+    for key in invalid: spans.pop(key,None)
     timelines={}; sched_issues=[]
     if capture is not None:
         clocks=[v['clock'] for v in invocations]
@@ -149,30 +187,40 @@ def account(invocations, records, capture=None):
                 callback=callbacks[0]['begin']; require(callback['tid']==link['tid'] and link['ns']<=callback['ns']<=b['ns'],'callback link mismatch')
                 row['dispatch_to_callback_ns']=callback['ns']-a['ns']
                 row['callback_entry']=callback
+                require(not any(k[:3]==key[:3] and k!=key and x['ns']<=callback['ns']<y['ns'] and x['ns']>=a['ns'] for k,(x,y) in spans.items()),'callback owned by nested dispatch')
                 enqueues=[s for s in report['spans'] if s['operation']=='enqueue_call' and s['begin']['pid']==pid and s['begin']['publication']==pub]
                 require(len(enqueues)==1,'missing/duplicate invoke accounting')
                 invoke=enqueues[0]
                 row['invoke_return']=invoke['end']
                 row['invoke_return_to_dispatch_ns']=a['ns']-invoke['stop']
+                row['invoke_return_to_callback_ns']=callback['ns']-invoke['stop']
                 row['callback_before_invoke_return']=callback['ns']<invoke['stop']
                 if capture is not None:
                     matches=[v for k,v in timelines.items() if k[:2]==(pid,link['tid']) and v[0]['start_ns']<=a['ns'] and v[-1]['stop_ns']>=callback['ns']]
                     row['scheduler']=clipped(matches[0] if len(matches)==1 else [],a['ns'],callback['ns'])
-                    row['scheduler']['complete'] &= not sched_issues
-                    start,stop=invoke['start'],callback['ns']
-                    require(start<=stop,'callback precedes invocation')
+                    row['scheduler']['complete'] &= len(matches)==1 and not any(i in sched_issues for i in ('capture loss','incomplete export'))
+                    start,stop=invoke['stop'],callback['ns']
+                    # Negative return-to-callback order is retained, never clipped into a positive window.
+                    start=min(start,stop)
                     row['thread_accounting']=[]
                     for tid in sorted({invoke['begin']['tid'],callback['tid']}):
                         matches=[v for k,v in timelines.items() if k[:2]==(pid,tid) and v[0]['start_ns']<=start and v[-1]['stop_ns']>=stop]
                         value=clipped(matches[0] if len(matches)==1 else [],start,stop)
-                        value['complete'] &= not sched_issues
-                        row['thread_accounting'].append(dict(tid=tid,**value))
+                        value['complete'] &= len(matches)==1 and not any(i in sched_issues for i in ('capture loss','incomplete export'))
+                        parts={}
+                        if invoke['stop']<callback['ns']:
+                            for label,left,right in (('return_to_dispatch',invoke['stop'],max(invoke['stop'],a['ns'])),('dispatch_to_callback',max(invoke['stop'],a['ns']),callback['ns'])):
+                                parts[label]=clipped(matches[0] if len(matches)==1 else [],left,right)
+                        row['thread_accounting'].append(dict(tid=tid,parts=parts,**value))
                     row['scheduler']['complete'] &= all(t['complete'] for t in row['thread_accounting'])
             rows.append(row)
+    known={(v['invocation'],h['identity']['pid'],h['identity']['publication']) for v in invocations for h in v['accounting']['handoffs']}
+    for key in indexed:
+        if key not in known: issues.append(dict(publication=key,reason='orphan publication'))
     require(all(r['invocation'] in seen for r in records),'unknown invocation records')
     return dict(rows=rows,dispatches=[dict(key=k,records=v) for k,v in dispatches.items()],issues=issues,
                 scheduler_issues=sched_issues, scheduler_available=capture is not None,
-                attribution_complete=bool(rows) and capture is not None and not issues and not sched_issues and all(r['link_status']=='linked' and isinstance(r['scheduler'],dict) and r['scheduler']['complete'] for r in rows),
+                attribution_complete=bool(rows) and capture is not None and not issues and not any(i in sched_issues for i in ('capture loss','incomplete export')) and all(r['link_status']=='linked' and isinstance(r['scheduler'],dict) and r['scheduler']['complete'] for r in rows),
                 interpretation='Boundary accounting only; exact queue insertion unavailable. Overlaps are non-additive; non-runnable time does not establish blocking cause.')
 
 

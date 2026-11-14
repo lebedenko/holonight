@@ -1,0 +1,8 @@
+worker 10/11 [000] 0.000000010: sched:sched_switch: prev_comm=worker prev_pid=11 prev_prio=120 prev_state=R ==> next_comm=swapper next_pid=0 next_prio=120
+external 20/21 [001] 0.000000020: sched:sched_wakeup: comm=worker pid=11 prio=120 target_cpu=1
+swapper 0/0 [001] 0.000000030: sched:sched_switch: prev_comm=swapper prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=worker next_pid=11 next_prio=120
+worker 10/11 [001] 0.000000035: sched:sched_process_exit: comm=worker pid=11 prio=120
+worker 10/11 [001] 0.000000040: sched:sched_switch: prev_comm=worker prev_pid=11 prev_prio=120 prev_state=S ==> next_comm=swapper next_pid=0 next_prio=120
+parent 30/30 [000] 0.000000060: sched:sched_process_fork: comm=parent pid=30 child_comm=child child_pid=11
+parent 30/30 [000] 0.000000070: sched:sched_wakeup_new: comm=child pid=11 prio=120 target_cpu=0
+swapper 0/0 [000] 0.000000080: sched:sched_switch: prev_comm=swapper prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=child next_pid=11 next_prio=120

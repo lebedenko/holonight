@@ -520,3 +520,107 @@ That historical script and its consumed evidence were not modified.
 [Independent verification](../../build/preview-delivery-scheduler-20261114-05-verification.json)
 reconstructs all 152 patches and checks 135 citations, the package seal, tool hashes
 and unchanged consumed trees. Whitespace checks passed.
+
+### Bounded scheduler pilot: stopped at recorder readiness
+
+The [reviewed blocked report](../../build/preview-delivery-scheduler-pilot-20261114-01-report-reviewed/REPORT.md)
+retains the outcome of the approved **B / `160x80.png`** pilot. Exactly one
+uncaptured observation ran. It passed correctness, v3/v4 accounting, supplemental
+publication linkage, private-work provenance, isolation and cleanup. Recorder
+readiness then failed, so **the ten-observation captured invocation never
+launched**. There were no workload retries, other fixtures or automatic expansion.
+No scheduler attribution or captured-gap recurrence conclusion is available.
+
+The [execution preparation](../../build/preview-delivery-scheduler-20261114-06/ASSESSMENT.md)
+retains all four private source variants. Preparation verification independently
+reconstructs allowed header relocation, application substitutions, includes and
+publication probes from frozen inputs; it verifies complete patches and exact
+probe excerpts rather than trusting recorded replacement text. Dispatch identities
+now use their own atomic counter. Preparation `-05`, historical tools, consumed
+evidence, production sources and historical hash mismatches remain unchanged.
+The [final tooling preparation](../../build/preview-delivery-scheduler-20261114-07/ASSESSMENT.md)
+also freezes the subsequent offline parser and acknowledgement corrections. It
+was not built or executed after the pilot stopped; B's compiled sources remain
+bound to `-06`.
+
+[Elevated preflight](../../build/preview-delivery-scheduler-pilot-20261114-01-preflight-privileged/ASSESSMENT.md)
+verified consumed seals, source/probe identities, fixture hashes, the previously
+verified installer snapshot, installed dependencies, perf options, all six
+scheduler tracepoint formats and recording access. It retains kernel, perf, Qt,
+host and boot identities, and a small non-preview access probe with explicit
+`CLOCK_MONOTONIC` recording attributes (`use_clockid=1`, `clockid=1`). The initial
+sandbox preflight was retained as blocked by tracepoint access. `sudo -A` supplied
+the scoped privilege; no permissions, sysctls or kernel settings were changed.
+
+[Only B was built](../../build/preview-delivery-scheduler-pilot-20261114-01-native-privileged/assessment.json)
+against host dependencies using the recorded Release recipe and four jobs:
+Images → Thumbnails → File Browser → harness. Installed-package resolution,
+runtime payloads, linkage and a small native dispatch test passed. The native test
+covers nested delivery, true/false return preservation, exception propagation and
+v4 identity-sequence independence without preview work. The unprivileged build
+attempt stopped before compilation because it could not read protected perf
+preflight data; the privileged build consumed that data without changing its
+permissions. One fresh protected managed runtime was staged with the sealed
+installer snapshot and its ownership/collision protections. The harness ran as
+UID 1000 with its session environment and offscreen Qt.
+
+The [original execution failure](../../build/preview-delivery-scheduler-pilot-20261114-01-execution/assessment.json)
+is `recorder readiness failed`. The recorder used all CPUs, six scheduler
+tracepoints, `CLOCK_MONOTONIC`, no stacks and 256 pages per CPU. It was finalized
+without launching the captured workload. Raw `perf.data`, recorder streams,
+commands, boot identity, partial bounds and the successful uncaptured observation
+remain sealed. The original runner required a newline-only acknowledgement;
+[upstream perf writes the terminating NUL too](https://github.com/torvalds/linux/blob/master/tools/perf/util/evlist.c#L2311).
+The runner now accepts and saves the documented acknowledgement framing, including
+fragmented reads. This correction was tested offline, with no second pilot.
+The original acknowledgement bytes were not retained, so the framing mismatch is
+a supported explanation rather than a byte-confirmed diagnosis.
+
+The [reviewed report](../../build/preview-delivery-scheduler-pilot-20261114-01-report-reviewed/assessment.json)
+preserves the original error and independently verifies consumed seals, patches,
+citations, uncaptured accounting/linkage and protected runtime integrity. It saves
+a nanosecond perf export and recorder clock header before offline normalization.
+The partial scheduler stream covers recorder setup only; it does not cover a
+preview invocation. [Final integrity](../../build/preview-delivery-scheduler-pilot-20261114-01-execution/integrity.json),
+[execution checks](../../build/preview-delivery-scheduler-pilot-20261114-01-execution/execution-final-checks.json)
+and [independent report checks](../../build/preview-delivery-scheduler-pilot-20261114-01-report-reviewed/integrity.json)
+passed, including unchanged inputs/artifacts/runtime, empty helper scopes and no
+residual preview processes. Protected runtime and fixture evidence remain retained.
+
+`scripts/run-preview-delivery-scheduler.py` provides `preflight`, `build`, `execute`
+and `report` actions with fresh, disjoint destinations beneath ignored `build/`.
+Execution is fixed to one uncaptured observation followed by one ten-observation
+invocation, with a 30-second workload/capture bound and five-second termination
+or finalization grace. A built-artifact execution marker prevents reuse. Failure
+stops dependent actions and seals partial artifacts with separate final checks.
+`scripts/normalize-preview-delivery-perf.py` consumes saved perf exports, recording
+metadata and explicit task-identity records; it and the analyzer launch no
+processes. File/line/raw references are retained. Task exit is kept distinct from
+the final switch-out, and initial state remains unknown until established.
+
+Scheduler contract version 2 preserves version 1 input support. External task keys
+may have a null process ID; a tracepoint TID never invents a task-group identity.
+Idle task lifetimes are separate per CPU. `diagnostics` scope identity/lifetime
+uncertainty to affected tasks, while `export_complete=false`, loss or incompatible
+clock provenance prevents complete attribution. Unresolved target identities,
+unknown state or missing transitions in a target window also prevent completion;
+unrelated incomplete initial history does not invalidate all target windows.
+Actual per-thread dispatch stacks reject sibling overlap, wrong enclosing
+publication ownership, duplicate/orphan records and cross-thread identity
+conflicts. Invoke return, dispatch entry and callback entry remain separate, with
+signed ordering differences. Positive return-to-callback windows retain clipped
+running, runnable, non-runnable and unknown time for both publication threads,
+split at dispatch entry. Overlapping thread/endpoint views are non-additive;
+non-runnable time identifies no blocking cause and exact queue insertion is absent.
+
+Verification: 33 focused scheduler/preparation/pilot checks, 24 directly affected
+overhead preparation/gap checks, 18 overhead-runner checks and 13 v4 gap-analysis
+checks passed. Offline tests forbid process launches and cover preparation edits,
+probe omissions, nesting, identity independence, external wakeups, migration,
+idle CPUs, reuse, unknown history, missing transitions, clocks, malformed/truncated
+input, loss, raw references, recorder ordering/framing/timeouts, fixed limits,
+first-failure stopping, destination reuse, symlink escapes, input drift and sealed
+partial failures. Broader native verification was reused; no ecosystem acceptance
+suite ran. Whitespace checks passed. Incremental overhead remains unmeasured;
+unavailable-transaction cleanup, unevaluated conditions, C qualification and D
+pilot conclusions remain unchanged.

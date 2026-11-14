@@ -50,8 +50,8 @@ class SchedulerTests(unittest.TestCase):
         self.assertEqual(a.account(inv,rs+rs[1:2])['rows'][0]['link_status'],'ambiguous_or_missing')
         self.assertEqual(a.account(inv,[r for r in rs if r['edge']!='publication'])['rows'][0]['link_status'],'ambiguous_or_missing')
         with self.assertRaises(ValueError): a.account(inv,[dict(rs[0],ns=True)])
-        nested=[dict(rs[0],dispatch=20,parent=1,ns=11),dict(rs[2],dispatch=20,parent=1,ns=25)]
-        self.assertFalse(a.account(inv,rs+nested)['issues'])
+        nested=[dict(rs[0],dispatch=20,parent=1,ns=11),dict(rs[2],dispatch=20,parent=1,ns=14)]
+        self.assertFalse(a.account(inv,sorted(rs+nested,key=lambda r:(r['invocation'],r['ns'])))['issues'])
         nested[1]['ns']=100
         self.assertTrue(a.account(inv,rs+nested)['issues'])
 
@@ -115,7 +115,7 @@ class SchedulerTests(unittest.TestCase):
             span=copy.deepcopy(span); span['begin']['publication']=2; span['end']['publication']=2
             report['spans'].append(span)
         rs.append(dict(rs[1],publication=2))
-        result=a.account(inv,rs)
+        result=a.account(inv,sorted(rs,key=lambda r:(r['invocation'],r['ns'])))
         self.assertTrue(all(r['link_status']=='linked' for r in result['rows']))
         self.assertEqual(result['rows'][0]['dispatch'],result['rows'][1]['dispatch'])
 
