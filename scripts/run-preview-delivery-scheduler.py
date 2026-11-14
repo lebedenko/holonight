@@ -53,13 +53,13 @@ def residuals(output):
     for path in Path('/proc').glob('[0-9]*/cmdline'):
         try:
             text=path.read_bytes().replace(b'\0',b' ').decode(errors='replace')
-            if ('preview-benchmark' in text or 'holonight-images-helper' in text) and int(path.parent.name)!=os.getpid():
+            if ('preview-benchmark' in text or 'holonight-images-helper' in text or ('perf' in text and '--control' in text)) and int(path.parent.name)!=os.getpid():
                 # Interpreter shell/runner arguments are not a residual preview process.
                 executable=path.read_bytes().split(b'\0',1)[0].decode(errors='replace')
-                if Path(executable).name in ('preview-benchmark','holonight-images-helper'): found.append(dict(pid=int(path.parent.name),cmdline=text))
+                if Path(executable).name in ('preview-benchmark','holonight-images-helper','perf'): found.append(dict(pid=int(path.parent.name),cmdline=text))
         except (FileNotFoundError,ProcessLookupError,PermissionError): continue
     write(output/'residual-processes.json',found)
-    require(not found,'residual preview processes')
+    require(not found,'residual preview or recorder processes')
 
 
 def sealed_action(output, inputs, action):
@@ -146,11 +146,15 @@ def preflight(package,output):
         for event,fields in required_fields.items():
             require(all(re.search(r'field:[^;]*\b'+field+r'\s*;',formats[event]) for field in fields),'tracepoint schema mismatch: '+event)
         boot=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-        command([*record_argv(output/'access-probe.perf.data'),'--','/usr/bin/true'],output,'perf-access-probe')
-        header=command(['perf','report','--header-only','--stdio','-i',str(output/'access-probe.perf.data')],output,'recorder-header')
-        clock_header(header)
-        require(Path('/proc/sys/kernel/random/boot_id').read_text().strip()==boot,'boot changed')
-        write(output/'clock.json',dict(name='CLOCK_MONOTONIC',provenance=dict(boot_id=boot,host=Path('/etc/machine-id').read_text().strip())))
+        clock=dict(name='CLOCK_MONOTONIC',provenance=dict(boot_id=boot,host=Path('/etc/machine-id').read_text().strip()))
+        write(output/'clock.json',clock)
+        _,metadata=capture(output,lambda remaining: None)
+        metadata['clock']=clock
+        write(output/'recording-metadata.json',metadata)
+        exported=(output/'perf-export.stdout').read_text()
+        normalized=n.normalize(exported,metadata,(),str(output/'perf-export.stdout'))
+        write(output/'scheduler.json',normalized)
+        require(normalized['export_complete'] and not any(e['kind']=='loss' for e in normalized['events']),'rehearsal export incomplete or capture loss')
         env,credentials=session(); scope=o.gate.scope_snapshot(1000,env,credentials)
         write(output/'scopes.json',scope); require(scope['isolated'],'initial isolation unverified')
         result['status']='ready'
@@ -272,7 +276,9 @@ def acknowledge(fd,recorder,target):
     # perf evlist__ctlfd_ack writes sizeof("ack\n"), including the NUL.
     # Retain bytes even when the protocol or readiness check fails.
     deadline=time.monotonic()+5; data=b''
+    write(target/'recorder-ack.json',dict(hex=''))
     while b'\n' not in data:
+        require(recorder.poll() is None,'recorder exited before acknowledgement')
         require(select.select([fd],[],[],max(0,deadline-time.monotonic()))[0],'recorder readiness timeout')
         chunk=os.read(fd,64); data+=chunk
         write(target/'recorder-ack.json',dict(hex=data.hex()))
@@ -280,8 +286,30 @@ def acknowledge(fd,recorder,target):
     require(data in (b'ack\n',b'ack\n\0') and recorder.poll() is None,'recorder readiness failed')
 
 
+def shutdown(recorder,ready=False):
+    # One deadline includes escalation and explicit child reaping.
+    deadline=time.monotonic()+5
+    result=dict(passed=False,reaped=False,forced=False,timed_out=False,sigint_sent=False)
+    try:
+        if recorder.poll() is None:
+            recorder.send_signal(signal.SIGINT)
+            result['sigint_sent']=True
+        try:
+            code=recorder.wait(timeout=max(0,deadline-time.monotonic()-1))
+        except subprocess.TimeoutExpired:
+            result.update(forced=True,timed_out=True)
+            os.killpg(recorder.pid,signal.SIGKILL)
+            code=recorder.wait(timeout=max(0,deadline-time.monotonic()))
+        result.update(reaped=True,exit=code)
+        result['passed']=not result['timed_out'] and (code==0 or (ready and result['sigint_sent'] and code==-signal.SIGINT)) and time.monotonic()<=deadline
+        if not result['passed']: result['failure']='recorder finalization timeout' if result['timed_out'] else 'recorder failed'
+    except ERRORS as error:
+        result['failure']=str(error)
+    return result
+
+
 def capture(target,work):
-    ctl_r,ctl_w=os.pipe(); ack_r,ack_w=os.pipe(); recorder=None; finalize_deadline=None
+    ctl_r,ctl_w=os.pipe(); ack_r,ack_w=os.pipe(); recorder=None; cleanup=None
     boot=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
     started=time.monotonic(); start_ns=time.monotonic_ns()
     argv=[*record_argv(target/'perf.data'),'--delay','-1','--control',f'fd:{ctl_r},{ack_w}']
@@ -289,30 +317,31 @@ def capture(target,work):
     try:
         with (target/'recorder.stdout').open('x') as stdout,(target/'recorder.stderr').open('x') as stderr:
             recorder=subprocess.Popen(argv,stdout=stdout,stderr=stderr,pass_fds=(ctl_r,ack_w),start_new_session=True)
+            identity=Path('/proc')/str(recorder.pid)
+            write(target/'recorder-process.json',dict(pid=recorder.pid,stat=(identity/'stat').read_text() if identity.exists() else None,argv=argv))
             os.close(ctl_r); ctl_r=None; os.close(ack_w); ack_w=None
             os.write(ctl_w,b'enable\n')
             acknowledge(ack_r,recorder,target)
+            write(target/'recorder-readiness.json',dict(start_ns=start_ns,ready_ns=time.monotonic_ns(),pid=recorder.pid))
             value=work(max(0,30-(time.monotonic()-started)))
             require(time.monotonic()-started<=30,'capture session timeout')
-            finalize_deadline=time.monotonic()+5
-            recorder.send_signal(signal.SIGINT)
-            require(recorder.wait(timeout=5)==0,'recorder failed')
+            cleanup=shutdown(recorder,ready=True)
+            write(target/'recorder-shutdown.json',cleanup)
+            require(cleanup['passed'],cleanup.get('failure','recorder cleanup failed'))
             stop_ns=time.monotonic_ns()
         header=command(['perf','report','--header-only','--stdio','-i',str(target/'perf.data')],target,'recording-header')
+        command(['perf','script','--ns','--show-task-events','--show-lost-events','-F','comm,pid,tid,cpu,time,event,trace','-i',str(target/'perf.data')],target,'perf-export')
         clock_header(header)
+        require(all('sched:'+event in header for event in EVENTS),'recorded tracepoint missing')
         require(boot==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),'boot changed during capture')
         return value,dict(start_ns=start_ns,stop_ns=stop_ns,boot_before=boot,boot_after=boot,clock_verified=True,header_file=str(target/'recording-header.stdout'))
     finally:
         original_error=sys.exc_info()[0] is not None
-        cleanup=dict(passed=True)
         try:
-            if recorder is not None and recorder.poll() is None:
-                os.killpg(recorder.pid,signal.SIGINT)
-                if finalize_deadline is None: finalize_deadline=time.monotonic()+5
-                try: recorder.wait(timeout=max(0,finalize_deadline-time.monotonic()))
-                except subprocess.TimeoutExpired:
-                    os.killpg(recorder.pid,signal.SIGKILL)
-                    cleanup=dict(passed=False,failure='recorder finalization timeout')
+            if recorder is not None and cleanup is None:
+                cleanup=shutdown(recorder)
+                write(target/'recorder-shutdown.json',cleanup)
+            if cleanup is None: cleanup=dict(passed=True,reaped=True,not_started=True)
             write(target/'recording-partial.json',dict(start_ns=start_ns,final_check_ns=time.monotonic_ns(),boot_before=boot,boot_after=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),clock_verified=False,cleanup=cleanup))
         except ERRORS as error:
             cleanup=dict(passed=False,failure=str(error))
@@ -362,7 +391,6 @@ def execute(package,preflight_path,built,output):
             integrity()
             inv,records=validate_invocation(targets/'captured.json',10,process,clock)
             write(output/'accounting.json',inv); write(output/'supplemental.json',records)
-            command(['perf','script','--ns','--show-task-events','--show-lost-events','-F','comm,pid,tid,cpu,time,event,trace','-i',str(output/'perf.data')],output,'perf-export')
             identities=records+[e for v in inv for e in v['accounting']['events']]
             write(output/'task-identities.json',identities)
             normalized=n.normalize((output/'perf-export.stdout').read_text(),metadata,identities,str(output/'perf-export.stdout'))
@@ -392,7 +420,9 @@ def report(evidence,output):
             require(path.absolute()==path.resolve(),'consumed source symlink')
             require(o.inventory(path)==expected,'independent consumed input drift: '+name)
             if (path/'seal.json').exists(): o.check_output(path)
-            if (path/'anchors.json').exists(): p.verify_generated(path,PREPARED)
+            # Historical preparation predates the corrected dispatch counter.
+            # Its consumed inventory/seal is verified above, without rewriting it.
+            if (path/'anchors.json').exists() and path!=HISTORICAL: p.verify_generated(path,PREPARED)
             checked[name]=dict(passed=True)
         write(output/'independent-input-verification.json',checked)
         write(output/'evidence.json',dict(path=str(evidence),seal=o.digest(evidence/'seal.json'),assessment=assessment))
@@ -424,7 +454,7 @@ def report(evidence,output):
             normalized=n.normalize((evidence/'perf-export.stdout').read_text(),read(evidence/'recording-metadata.json'),read(evidence/'task-identities.json'),str(evidence/'perf-export.stdout'))
             require(normalized==read(evidence/'scheduler.json'),'normalization replay mismatch')
             replay=a.account(read(evidence/'accounting.json'),read(evidence/'supplemental.json'),read(evidence/'scheduler.json'))
-            require(replay==read(evidence/'analysis.json'),'analysis replay mismatch')
+            require(json.loads(json.dumps(replay))==read(evidence/'analysis.json'),'analysis replay mismatch')
         result.update(status=assessment['status'],failure=assessment.get('failure',''),evidence=str(evidence))
         captured=(evidence/'observations/captured.json').exists()
         (output/'REPORT.md').write_text('Status: '+result['status']+'\n\n'+result.get('failure','')+'\n\nUncaptured observations: '+str(int(target.exists()))+'. Captured invocation completed: '+str(captured)+'.\n\nNo retries or expanded fixtures. Raw recording and nanosecond export retained. A partial recorder session is not a captured preview workload.\n\nIndependent source reconstruction, consumed-input seals, uncaptured accounting replay, runtime inventory, final scope and residual-process checks are retained separately. Exact queue insertion remains unavailable. Overlapping thread and endpoint views are non-additive. Non-runnable time identifies no blocking cause. Incremental overhead remains unmeasured.\n')

@@ -109,6 +109,26 @@ class NormalizerTests(OfflineMixin,unittest.TestCase):
         self.assertEqual(capture['events'][0]['raw']['line'],1)
         self.assertEqual(timelines[10,11,1][0]['state'],'unknown')
 
+    def test_unknown_prefix_identity_preserves_final_switch_and_payload_tasks(self):
+        for prefix in ('99/-1','-1/-1','-1/99'):
+            with self.subTest(prefix=prefix):
+                text=('worker 99/11 [000] 0.000000010: sched:sched_process_exit: comm=worker pid=11 prio=120\n'
+                      ':-1 '+prefix+' [000] 0.000000020: sched:sched_switch: prev_comm=worker prev_pid=11 prev_state=X ==> next_comm=idle next_pid=0\n')
+                with patch.object(n.a.o.subprocess,'Popen',side_effect=AssertionError('offline only')):
+                    capture=n.normalize(text,self.metadata())
+                self.assertTrue(capture['export_complete'])
+                self.assertFalse(capture['diagnostics'])
+                self.assertEqual(capture['events'][0]['prev'],[None,11,1])
+                self.assertEqual(capture['events'][0]['next'],[0,0,0])
+                task=next(t for t in capture['tasks'] if t['key']==[None,11,1])
+                self.assertEqual(task['stop_ns'],20)
+                self.assertEqual(capture['events'][0]['raw']['line'],2)
+
+    def test_other_negative_or_malformed_prefix_remains_incomplete(self):
+        for prefix in ('99/-2','-2/99','99/nope'):
+            text='worker '+prefix+' [000] 0.000000020: sched:sched_switch: prev_pid=11 prev_state=X next_pid=0\n'
+            self.assertFalse(n.normalize(text,self.metadata())['export_complete'])
+
     def test_clock_truncation_malformed_and_loss(self):
         text=(ROOT/'tests/fixtures/preview-delivery-scheduler/perf-script.txt').read_text()
         for change in (dict(clock_verified=False),dict(boot_after='other'),dict(stop_ns=50)):
@@ -176,7 +196,7 @@ class RunnerTests(OfflineMixin,unittest.TestCase):
                 self.assertGreater(remaining,0); self.assertLessEqual(remaining,30)
                 order.append('work'); return 'observations'
             def ack(fd,size): order.append('ready'); return b'ack\n'
-            with patch.object(r.subprocess,'Popen',return_value=recorder),patch.object(r.os,'write'),patch.object(r.os,'read',side_effect=ack),patch.object(r.select,'select',return_value=([1],[],[])),patch.object(r,'command',return_value='# clockid: 1'):
+            with patch.object(r.subprocess,'Popen',return_value=recorder),patch.object(r.os,'write'),patch.object(r.os,'read',side_effect=ack),patch.object(r.select,'select',return_value=([1],[],[])),patch.object(r,'command',return_value='# clockid: 1\n'+' '.join('sched:'+event for event in r.EVENTS)):
                 value,metadata=r.capture(output,work)
             self.assertEqual(value,'observations')
             self.assertEqual(order,['ready','work','stop','finalize'])
@@ -199,7 +219,8 @@ class RunnerTests(OfflineMixin,unittest.TestCase):
             output=Path(tmp); recorder=self.recorder(); work=Mock()
             with patch.object(r.subprocess,'Popen',return_value=recorder),patch.object(r.os,'write'),patch.object(r.select,'select',return_value=([],[],[])),patch.object(r.os,'killpg') as kill:
                 with self.assertRaisesRegex(ValueError,'readiness timeout'): r.capture(output,work)
-            work.assert_not_called(); kill.assert_called_once()
+            work.assert_not_called(); recorder.send_signal.assert_called_once_with(r.signal.SIGINT)
+            self.assertTrue(a.o.read(output/'recorder-shutdown.json')['reaped'])
             self.assertTrue((output/'recording-partial.json').exists())
 
     def test_failed_workload_is_not_retried_and_cleanup_keeps_first_error(self):
@@ -211,6 +232,45 @@ class RunnerTests(OfflineMixin,unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'workload failed'): r.capture(output,work)
             work.assert_called_once()
             self.assertFalse(a.o.read(output/'recording-partial.json')['cleanup']['passed'])
+
+    def test_eof_malformed_and_early_exit_prevent_acknowledgement(self):
+        for chunk,exit_code in ((b'',None),(b'bad\n',None),(b'ack\n',1)):
+            with self.subTest(chunk=chunk,exit=exit_code),tempfile.TemporaryDirectory(dir=ROOT/'build') as tmp:
+                recorder=self.recorder(); recorder.poll.return_value=exit_code
+                with patch.object(r.select,'select',return_value=([1],[],[])),patch.object(r.os,'read',return_value=chunk):
+                    with self.assertRaises(ValueError): r.acknowledge(1,recorder,Path(tmp))
+                self.assertTrue((Path(tmp)/'recorder-ack.json').exists())
+
+    def test_forced_shutdown_reaps_with_remaining_shared_deadline(self):
+        recorder=self.recorder()
+        recorder.wait.side_effect=[r.subprocess.TimeoutExpired('perf',4),-9]
+        with patch.object(r.time,'monotonic',side_effect=[10,10,14,14.5]),patch.object(r.os,'killpg') as kill:
+            result=r.shutdown(recorder)
+        self.assertFalse(result['passed']); self.assertTrue(result['reaped'])
+        self.assertTrue(result['timed_out']); self.assertTrue(result['forced'])
+        self.assertEqual([call.kwargs['timeout'] for call in recorder.wait.call_args_list],[4,1])
+        kill.assert_called_once_with(recorder.pid,r.signal.SIGKILL)
+
+    def test_graceful_shutdown_reaps_and_accepts_only_success(self):
+        for code in (0,1):
+            recorder=self.recorder(); recorder.wait.return_value=code
+            result=r.shutdown(recorder)
+            self.assertTrue(result['reaped']); self.assertFalse(result['forced'])
+            self.assertEqual(result['passed'],code==0)
+
+    def test_sigint_exit_requires_readiness_and_our_shutdown_signal(self):
+        for ready in (False,True):
+            for already_exited in (False,True):
+                with self.subTest(ready=ready,already_exited=already_exited):
+                    recorder=self.recorder()
+                    recorder.poll.return_value=-r.signal.SIGINT if already_exited else None
+                    recorder.wait.return_value=-r.signal.SIGINT
+                    result=r.shutdown(recorder,ready=ready)
+                    self.assertEqual(result['passed'],ready and not already_exited)
+                    self.assertTrue(result['reaped'])
+                    self.assertEqual(result['sigint_sent'],not already_exited)
+        recorder=self.recorder(); recorder.wait.return_value=-r.signal.SIGTERM
+        self.assertFalse(r.shutdown(recorder,ready=True)['passed'])
 
     def test_blocked_preflight_cannot_build_or_execute(self):
         with tempfile.TemporaryDirectory(dir=ROOT/'build') as tmp:

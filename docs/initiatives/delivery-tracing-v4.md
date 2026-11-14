@@ -624,3 +624,163 @@ partial failures. Broader native verification was reused; no ecosystem acceptanc
 suite ran. Whitespace checks passed. Incremental overhead remains unmeasured;
 unavailable-transaction cleanup, unevaluated conditions, C qualification and D
 pilot conclusions remain unchanged.
+
+## Recorder rehearsal attempt 2026-11-14 (-02)
+
+The separately bounded attempt stopped at its recorder-only preflight. No build,
+managed runtime, uncaptured observation or captured preview invocation ran, and
+there was no recorder retry. Preparations `-05` through `-07`, the first pilot and
+its execution marker remain unchanged.
+
+[Fresh preparation -08](../../build/preview-delivery-scheduler-20261114-08/ASSESSMENT.md)
+retains all four source variants and freezes the corrected runner and focused
+regressions. Preflight now uses the capture control-pipe/acknowledgement and
+shutdown path, immediately finalizing after readiness without a preview workload.
+Successful rehearsal requires explicit monotonic clock/boot provenance, all six
+configured tracepoints, a saved nanosecond export, successful normalization and
+no capture loss. Recorder process identity, acknowledgement bytes and readiness
+bounds are retained. Shutdown shares one five-second deadline: four seconds for
+graceful termination and the remaining second for forced termination and explicit
+reaping. A timeout remains a failure even after successful cleanup; the original
+error is preserved separately from cleanup evidence. Residual-process checks
+include perf recorders as well as preview processes. Production interfaces and
+scheduler versions 1/2 remain unchanged.
+
+The [single elevated rehearsal](../../build/preview-delivery-scheduler-pilot-20261114-02-preflight/assessment.json)
+used `sudo -A` without changing permissions, sysctls or kernel settings. It received
+acknowledgement bytes `61636b0a00` (`ack\n\0`) after 498,665,104 ns. Perf wrote raw
+recording data, then returned `-2` after SIGINT. Shutdown therefore failed the
+existing successful-exit requirement with `recorder failed`; it did not time out,
+did not require forced termination and explicitly reaped the child. This proves
+the acknowledgement exchange on this host but does **not** establish successful
+recorder finalization or authorize dependent work.
+
+The [reviewed blocked report](../../build/preview-delivery-scheduler-pilot-20261114-02-report-reviewed/REPORT.md)
+retains the original failure and independently verifies consumed inventories,
+seals, current preparation source reconstruction and citations. It saves a
+nanosecond export and header from the retained raw recording; the header records
+all six scheduler tracepoints with `use_clockid=1, clockid=1`. The rehearsal did not
+reach normalization, so export completeness and loss-free capture are not claimed.
+All preflight and reviewed-report final integrity checks passed, with isolated
+helper scopes and no residual preview or recorder processes. No runtime was
+staged. Signed publication boundaries, both-thread interval accounting and gap
+recurrence are unavailable because no preview invocation ran.
+
+The [first report](../../build/preview-delivery-scheduler-pilot-20261114-02-report/assessment.json)
+is also sealed and preserved. It retained `recorder failed` and separately recorded
+`header replay mismatch`: historical preparation `-05` predates the corrected
+header. The report-only correction verifies that historical input by its consumed
+inventory and seal, while reconstructing the current preparation against current
+rules. The reviewed report performs no new recording or workload execution.
+
+Verification: 36 focused scheduler/preparation/pilot tests passed, including
+NUL-terminated and fragmented acknowledgements, EOF/malformed replies, early
+recorder exit, readiness timeout, graceful shutdown, forced termination/reaping,
+the shared shutdown deadline, first-error preservation, blocked build gating and
+sealed partial artifacts. Offline normalizer/analyzer tests remain process-launch
+free. Whitespace checks passed. No ecosystem acceptance, performance qualification,
+overhead measurement, C/D reassessment or production changes were performed.
+
+## Corrected SIGINT shutdown and fresh pilot 2026-11-14 (-03)
+
+Shutdown now accepts `-SIGINT` only after recorder readiness and a SIGINT sent by
+the runner itself. Early signal exits, other signals, forced termination and
+shutdown timeouts remain failures. Export, clock/boot, tracepoint, normalization
+and loss checks remain mandatory. Regression coverage includes expected versus
+unsolicited SIGINT exits and other-signal rejection.
+
+[Preparation -09](../../build/preview-delivery-scheduler-20261114-09/ASSESSMENT.md)
+freezes all four variants and the corrected tooling. The
+[single fresh elevated rehearsal](../../build/preview-delivery-scheduler-pilot-20261114-03-preflight/assessment.json)
+passed acknowledgement, expected SIGINT shutdown, reaping, all six tracepoints,
+explicit monotonic clock/boot provenance, export, normalization and no-loss checks.
+The [fresh host-native B build](../../build/preview-delivery-scheduler-pilot-20261114-03-native/assessment.json)
+then passed the recorded four-job Release recipe, installed-package resolution,
+runtime payload and linkage checks, and the native dispatch test.
+
+The [sealed execution](../../build/preview-delivery-scheduler-pilot-20261114-03-execution/assessment.json)
+staged one protected managed runtime and ran as UID 1000 with offscreen Qt.
+Exactly one uncaptured observation passed correctness, v3/v4 accounting,
+supplemental linkage, input/runtime integrity, isolation and cleanup. Exactly one
+ten-observation captured invocation then completed. Recorder readiness and
+shutdown passed, including explicit reaping with no timeout or forced termination.
+No workload was repeated or fixture set expanded; the build execution marker
+remains retained.
+
+The attempt stopped at `scheduler attribution incomplete`. All 20 publication
+rows linked with no publication-linkage issues. Signed invoke-return-to-dispatch
+intervals range from 15,408 to 237,088 ns; dispatch-to-callback intervals from
+2,295 to 28,274 ns; invoke-return-to-callback intervals from 39,605 to 244,555 ns.
+All callback entries follow invoke return. Both-thread interval accounting is
+retained in `analysis.json`, but complete attribution is unavailable. The saved
+export produced 26 normalizer diagnostics, including scheduler records rendered
+with TID `-1`, which the current parser rejects. `export_complete` is false;
+no loss records were parsed, which does not establish a complete loss-free stream.
+Scheduler diagnostics also include missing transitions, inconsistent CPU ownership
+and missing wakeups. No parser or attribution repair was made during this attempt.
+
+For example, the first publication's 191,318 ns return-to-callback window has
+provisional receiver totals of 45,507 ns running, 5,892 ns runnable and 139,919 ns
+non-runnable, while its publisher interval remains unknown. Both thread views are
+marked incomplete. These are diagnostic intervals, not a qualified scheduler
+explanation. No conclusion about recurrence of the historical gap is established.
+
+The [reviewed report](../../build/preview-delivery-scheduler-pilot-20261114-03-report-reviewed/REPORT.md)
+independently verifies consumed sources/citations, inventories, seals, uncaptured
+accounting, protected runtime, normalization and analysis replay. Raw recording,
+nanosecond exports, clock headers and both-thread intervals remain sealed.
+Execution and reviewed-report final checks all passed, including runtime integrity,
+scope isolation and absence of residual preview or recorder processes. The
+[first report](../../build/preview-delivery-scheduler-pilot-20261114-03-report/assessment.json)
+remains preserved: its additional replay comparison failure was caused by tuple
+identities becoming JSON lists. The report-only correction compares serialized
+JSON representations; the replay is equivalent and attribution remains blocked.
+The interruption during reporting caused no additional workload execution.
+
+Verification: 37 focused scheduler/preparation/pilot tests and whitespace checks
+passed. Earlier attempts and preparations are preserved. No ecosystem acceptance,
+performance qualification, overhead measurement, C/D reassessment, production
+changes or unrelated `holonight-grub/` changes were performed.
+
+## Offline unknown-prefix correction for pilot -03
+
+The user-authorized offline reanalysis preserves the original capture and all
+sealed blocked assessments. The earlier description of “26 unparsed records” was
+imprecise: there were **14 unparsed final switch records and 12 resulting exit
+without final switch diagnostics**, totaling 26 normalizer diagnostics.
+
+The normalizer now accepts the explicit unknown sentinel `-1` in either sample
+prefix PID/TID field. Other negative values and malformed identities still fail
+parsing. Scheduler task identities continue to come from tracepoint payloads and
+corroborated publication records; sample-prefix identities never supply an invented
+TGID. The regression reproduces final switch-out after process exit, checks raw
+references and payload identities, and forbids process launches. It failed before
+the correction and passed afterward.
+
+[Fresh offline normalization](../../build/preview-delivery-scheduler-pilot-20261114-03-offline-normalized-01/assessment.json)
+recovers all 14 final switches. The saved export is now complete with no normalizer
+diagnostics and no parsed loss records. The
+[fresh offline analysis](../../build/preview-delivery-scheduler-pilot-20261114-03-offline-analysis-01/assessment.json)
+reports `attribution_complete=true` for all 20 publication rows and 40 thread
+windows. Signed boundary intervals are unchanged. Both-thread running, runnable,
+non-runnable and unknown totals and splits remain available per publication.
+The first receiver window retains the previously reported 45,507 ns running,
+5,892 ns runnable and 139,919 ns non-runnable; its accounting is now complete.
+
+There remain 32 missing-switch-transition and 31 missing-wakeup-or-duplicate-running
+scheduler diagnostics outside complete target windows. These are retained under
+the existing scoped uncertainty rules; no attribution rules were relaxed. Complete
+target accounting does not imply complete initial history for every recorded task,
+and non-runnable time establishes no blocking cause.
+
+The [independent offline report](../../build/preview-delivery-scheduler-pilot-20261114-03-offline-report-01/REPORT.md)
+seals replayed analysis and tool snapshots. Original capture seals, consumed input
+inventories/seals, current preparation source reconstruction/citations, offline
+input hashes, normalization/analysis replay, protected runtime integrity, isolation
+and residual-process checks passed. No recording, native build or preview workload
+was launched for this correction. The original execution remains historically
+blocked; the new offline report establishes complete target attribution from its
+retained export.
+
+Verification: 39 focused scheduler/preparation/pilot tests and whitespace checks
+passed. Changes are limited to the offline parser, focused tests and this note.

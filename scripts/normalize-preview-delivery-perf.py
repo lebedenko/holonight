@@ -15,7 +15,9 @@ ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('scheduler_analysis',ROOT/'scripts/analyze-preview-delivery-scheduler.py')
 a=importlib.util.module_from_spec(spec); spec.loader.exec_module(a)
 o=a.o
-SAMPLE=re.compile(r'^\s*(.*?)\s+(\d+)\s*/\s*(\d+)\s+\[(\d+)\]\s+(\d+)\.(\d{9}):\s+(sched:\w+):\s*(.*)$')
+# perf may render unknown sample-prefix identities as -1. Scheduler task
+# identities still come exclusively from tracepoint payloads and explicit evidence.
+SAMPLE=re.compile(r'^\s*(.*?)\s+(-1|\d+)\s*/\s*(-1|\d+)\s+\[(\d+)\]\s+(\d+)\.(\d{9}):\s+(sched:\w+):\s*(.*)$')
 
 
 def normalize(text, metadata, identities=(), source='<saved perf export>'):
