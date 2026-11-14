@@ -867,3 +867,62 @@ justify another experiment. A separately approved matched experiment would be
 justified only to investigate the larger historical metadata tail or quantify
 recurrence under comparable instrumentation; this ten-observation pilot cannot
 answer that question. No further experiment was executed.
+
+## Retained startup bottleneck priorities (2026-11-14)
+
+The [sealed offline report](../../build/preview-startup-bottlenecks-20261114-06/REPORT.md)
+replays only the 20 measured v4 A/C invocations for `3200x2400.png`: 200
+observations, 400 endpoints and 400 invocation-local unique publications. Existing
+validated matched overhead summaries are reused; the full 264-invocation audit
+is not repeated. The corrected-reference qualification and completed B/small-PNG
+scheduler interpretation remain separate context. No builds, recordings, preview
+workloads, live-runtime inspections or qualification runs were performed.
+
+C's median per-observation trace-window shares rank **pre-decode**, then decode
+exchange, then post-decode for both endpoints. Pre-decode has approximately 63.6%
+median share, 86.514 ms median duration and 106.814 ms nearest-rank p95. A's
+corresponding durations are 84.848 ms median and 102.082 ms p95. C's decode
+exchange has 29.912 ms median and 38.925 ms p95; post-decode has 19.315 ms median
+and 21.518 ms p95 for pixels, and 19.361 ms median and 21.532 ms p95 for metadata.
+The selected slowest harness observations support the same pre-decode priority.
+These shares use each trace-origin-to-endpoint window, not the original harness
+timer. They are neither optimization gains nor causes of the separate failed gate.
+
+[Observation rows](../../build/preview-startup-bottlenecks-20261114-06/observations.json)
+retain original harness latency, explicit coarse boundaries, clipped operation
+unions, nested spans, overlap excess, uncovered intervals and full timelines.
+[Pooled and block distributions](../../build/preview-startup-bottlenecks-20261114-06/distributions.json)
+include minimum, median, nearest-rank p95 and maximum with explicit observation,
+endpoint and publication denominators.
+[Rankings](../../build/preview-startup-bottlenecks-20261114-06/rankings.json)
+retain A's distributions alongside C's; overlapping spans are never added and
+quantiles are never subtracted.
+[Selected timelines](../../build/preview-startup-bottlenecks-20261114-06/selected-timelines.json)
+include five slowest harness samples with cutoff ties, every nearest-median tie
+and every largest-uncovered-interval tie.
+[Publication rows](../../build/preview-startup-bottlenecks-20261114-06/publications.json)
+preserve signed return-to-callback windows and count dual-endpoint publications
+once. Exact raw and frozen v3/v4 source citations are retained separately.
+
+The [provenance](../../build/preview-startup-bottlenecks-20261114-06/provenance.json)
+records unavailable normalized source equivalence between traced A and this
+qualification's A-fixed freeze; those runs are not assumed interchangeable.
+[Qualification context](../../build/preview-startup-bottlenecks-20261114-06/qualification-context.md)
+preserves the original outcome. The B pilot's scheduler states are not assigned
+to A/C. Next investigate the observed pre-decode interval. Discriminating its
+hypotheses requires matched qualification-time phase evidence, normalized source
+comparison, A/C scheduler/blocking evidence and finer validation/transport/work
+boundaries. No follow-up experiment was executed. Historical thresholds, C's
+failed qualification and D's failed pilot remain unchanged.
+
+Verification: 10 process-launch-free reporter regressions, 12 scheduler reporting,
+8 overhead gap, 13 v4 gap and 7 v3 gap checks passed. They cover ownership,
+missing/ambiguous boundaries, clipped nested coverage, signed publications,
+dual endpoints, denominators, deterministic rankings, tied selections, quantiles,
+input drift and sealed blocked assessments. The
+[independent replay](../../build/preview-startup-bottlenecks-20261114-06-verification.txt)
+checks the output seal, all 20 selected invocations, coverage arithmetic,
+distributions, rankings, selections, publication windows and source/raw citations
+without importing the reporter. Scoped elevation reads protected retained hashes;
+permissions are unchanged. Whitespace checks passed. Broader unchanged verification
+is reused; production and public APIs are unchanged.
