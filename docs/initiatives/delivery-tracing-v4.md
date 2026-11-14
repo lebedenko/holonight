@@ -413,3 +413,40 @@ These are descriptive measurements on this host within the original startup time
 Negative differences are retained. No threshold, significance claim, overhead
 subtraction, causal scheduling/CPU attribution or performance qualification is
 introduced. C qualification and D pilot conclusions remain unchanged.
+
+### Offline delivery-gap analysis of the completed overhead attempt
+
+The [gap assessment](../../build/preview-delivery-overhead-gaps-20261114-01/ASSESSMENT.md)
+replays all 264 sealed invocations without launching processes or accessing live
+protected runtimes. It accounts for 1,200 measured v4 observations and 2,400 endpoint
+windows, exactly 100 in each of 24 cells; all 24 warm-up invocations are separately
+inventoried and v3 remains overhead context. The new
+`scripts/analyze-preview-delivery-overhead-gaps.py` imports historical parsing,
+identity and interval helpers without changing historical tools or the frozen runner.
+
+[Endpoint accounting](../../build/preview-delivery-overhead-gaps-20261114-01/endpoints.json)
+retains invocation-local identities, harness latency, decode-end elapsed time,
+raw records, clipped unions, branches and overlapping operations.
+[Summaries](../../build/preview-delivery-overhead-gaps-20261114-01/summary.json)
+include minimum, median, nearest-rank p95 and maximum per cell and block.
+The [259 selected cases](../../build/preview-delivery-overhead-gaps-20261114-01/selected.json)
+retain slowest/median-harness and largest-gap reasons, tied boundary records and
+[hash-verified frozen source excerpts](../../build/preview-delivery-overhead-gaps-20261114-01/source-citations.json).
+
+The largest individual endpoint gap is bounded by enqueue return/callback entry in
+1,391 windows, cleanup end/storage entry in 377 and successive callbacks in 275.
+These patterns recur in the earlier source review, compared descriptively with
+separate denominators. Shared intervals across endpoints are not independent events.
+Actual queue insertion/dispatch boundaries and runnable/running/blocked transitions
+on both threads are the minimum useful next diagnostic for the dominant cross-thread
+pattern; enqueue-to-callback elapsed time is not pure queue residence.
+
+[Final integrity checks](../../build/preview-delivery-overhead-gaps-20261114-01/integrity.json)
+and [independent verification](../../build/preview-delivery-overhead-gaps-20261114-01/independent-verification.json)
+retain separate outcomes. Existing native verification is reused; no builds,
+workloads, installers, tuning or qualification runs were performed. The completed
+[overhead report](../../build/preview-delivery-overhead-attempt-20261114-01/report-privileged/REPORT.md)
+is retained without subtracting overhead or declaring tracing harmless. Current
+runtime ownership is not revalidated. Unavailable-transaction cleanup and absent
+short-circuit conditions remain unresolved. C qualification and D pilot conclusions
+remain unchanged; new instrumentation requires a separate plan.
