@@ -450,3 +450,73 @@ is retained without subtracting overhead or declaring tracing harmless. Current
 runtime ownership is not revalidated. Unavailable-transaction cleanup and absent
 short-circuit conditions remain unresolved. C qualification and D pilot conclusions
 remain unchanged; new instrumentation requires a separate plan.
+
+### Public dispatch and scheduler preparation
+
+The [fresh preparation](../../build/preview-delivery-scheduler-20261114-05/ASSESSMENT.md)
+consumes the sealed `preview-delivery-overhead-20261114-03` preparation and
+`preview-delivery-overhead-gaps-20261114-01` analysis. All four private v4 source
+and harness trees are retained with patches, exact byte replay, hashed probe
+locations/excerpts, and independent final input integrity results. Historical
+sources, runners and evidence remain unchanged. Earlier preparation iterations
+remain retained; `-05` is the reviewed preparation.
+
+`scripts/prepare-preview-delivery-scheduler.py` adds a separate `SCHEDULER` version 1
+stream. The private application subclass brackets public `QEvent::MetaCall`
+delivery, delegates once and returns the original result; scope destruction emits
+the exit on both return and exception propagation. Nested thread-local dispatch
+identities are restored on exit and never copied into worker context. Publication
+links capture their timestamp before diagnostic output. Original v3/v4 record
+formats and queued invocation remain unchanged. Dispatch entry, callback entry and
+invoke return stay distinct; callback entry may precede invoke return. Exact queue
+insertion is unavailable; none of these intervals establish queue residence.
+
+`scripts/analyze-preview-delivery-scheduler.py` accepts `--accounting`,
+`--supplemental`, optional `--scheduler`, and a fresh `--output` beneath ignored
+`build/`. Accounting is a JSON array of `{invocation, accounting, clock}` wrappers
+around saved v4 analyzer reports. Supplemental input is a JSON array of emitted
+records with an added invocation identifier; retain file/line references when
+normalizing saved output. Invocation identifiers must be unique strings. The
+analyzer retains raw records and indexes, invocation-local publication identities,
+nested dispatches, concurrent publications, missing/ambiguous links and signed
+invoke-return/dispatch boundaries. Without scheduler input, scheduler attribution
+is explicitly unavailable.
+
+The normalized scheduler contract is version 1: `clock` has `name` equal to
+`CLOCK_MONOTONIC` and explicit shared host/boot `provenance`, identical to accounting.
+No timing-based clock alignment is permitted. Capture `start_ns`/`stop_ns` bound
+ordered `events` and `tasks`. Each task has `key: [pid, tid, lifetime]`, lifetime
+`start_ns`/`stop_ns`, and initial state `running`, `runnable`, `non_runnable` or
+`unknown`; initial running state requires `cpu`. Task-ID reuse requires disjoint
+lifetimes. Switch events contain `kind: switch`, `ns`, `cpu`, `prev`, `next` and
+`prev_state` (`runnable` or `non_runnable`). Wakeups contain `kind: wakeup`, `ns`,
+`cpu` and `task`; the CPU is the event CPU, not an inferred target CPU. Lost records
+contain `kind: loss`, `ns` and positive `count`. Unknown initial state, missing
+transitions, loss, ambiguous lifetimes and insufficient coverage prevent complete
+attribution. Intervals are clipped per thread and boundary window; overlapping
+thread/endpoint views remain non-additive. Non-runnable time proves no particular
+blocking cause. This input is a normalization contract, not a perf decoder.
+
+The [read-only feasibility report](../../build/preview-delivery-scheduler-20261114-05/host-feasibility.json)
+identifies perf 7.3.4-1, kernel 7.3.4-arch1-1 and Qt 6.12.0, retaining binary and
+package identity hashes. Scheduler tracepoint formats and trace-clock visibility
+were denied in this environment. They remain unverified prerequisites for a later
+pilot; no escalation, registration, permission change or kernel tuning was done.
+Preparation success does not establish scheduler-capture readiness.
+
+Verification: 16 focused scheduler/preparation test checks, 24 directly relevant
+overhead preparation/gap checks and 13 v4 gap-analysis checks passed. Offline tests
+disable process launch, exercise identity collisions and ordering, scheduler
+preemption/wakeups/migration/lifetime reuse, loss and coverage, destination reuse,
+symlink escapes, replay/source mismatches, input drift and sealed partial failures.
+Existing native verification is reused. **Uncompiled, unexecuted, incremental
+overhead unmeasured**: no native builds, capture, workloads, installation or tuning.
+Unavailable-transaction cleanup, unevaluated conditions, C's failed qualification
+and D's failed pilot remain unresolved or unchanged.
+
+The historical tracing preparation suite passed 15 of 16 checks; its full-preparation
+check remains blocked by the recorded `manage-images-generations.py` hash mismatch.
+That historical script and its consumed evidence were not modified.
+[Independent verification](../../build/preview-delivery-scheduler-20261114-05-verification.json)
+reconstructs all 152 patches and checks 135 citations, the package seal, tool hashes
+and unchanged consumed trees. Whitespace checks passed.
