@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import pwd
 import shutil
+import stat
 import subprocess
 import sys
 
@@ -27,17 +28,30 @@ prep = module('delivery_overhead_preparation', 'prepare-preview-delivery-overhea
 gate = module('delivery_overhead_gate', 'run-preview-delivery-smoke.py')
 require, read = gate.require, gate.read
 digest, inventory, write = prep.digest, prep.inventory, prep.write
+RUNTIME_ROOT = Path('/run')
 KEYS = [(mode, v) for mode in ('v3', 'v4') for v in 'ABCD']
-# Reuse the exact gate with only the scheduled observation bound generalized.
-namespace = dict(gate.__dict__)
-source = (ROOT / 'scripts/run-preview-delivery-smoke.py').read_text()
-start = source.index('def validate_trace_report(')
-stop = source.index('\n\ndef validate_invocation', start)
-exec(source[start:stop].replace('def validate_trace_report(report, variant):',
-     'def validate_trace_report(report, variant, count):').replace('len(endpoints) == 6',
-     'len(endpoints) == 2 * count').replace('for observation in (1, 2, 3):',
-     'for observation in range(1, count + 1):'), namespace)
-v4_gate = namespace['validate_trace_report']
+def v4_gate(report, variant, count):
+    require(not report['issues'] and report['events'], 'v3/v4 trace issues or missing v4 records')
+    events, spans = report['events'], report['spans']
+    endpoints = [e for e in events if e['operation'].startswith('endpoint_')]
+    require(len(endpoints) == 2 * count, 'two unique endpoints per observation required')
+    for observation in range(1, count + 1):
+        selected = [e for e in endpoints if e['observation'] == observation]
+        require(sorted(e['operation'] for e in selected) == ['endpoint_metadata', 'endpoint_pixels'], 'missing or duplicate endpoints')
+        require(len({tuple(e[k] for k in ('pid', *gate.analyzer.IDENTITIES) if k != 'publication') for e in selected}) == 1, 'endpoint identities conflict')
+        for e in selected:
+            require(all(e[k] is not None for k in ('service', 'observation', 'job', 'worker', 'generation', 'session', 'transaction', 'publication')), 'explicit endpoint identity required')
+            handoff = [h for h in report['handoffs'] if h['pid'] == e['pid'] and h['publication'] == e['publication']]
+            require(len(handoff) == 1 and not handoff[0].get('unavailable') and not handoff[0].get('decision_unavailable'), 'incomplete handoff')
+            for op in ('enqueue_call', 'callback_execution', 'apply_result', 'changed_emission'):
+                found = [s for s in spans if s['operation'] == op and gate.analyzer.identity(s['begin']) == gate.analyzer.identity(e)]
+                require(len(found) == 1 and found[0]['begin']['line'] < found[0]['end']['line'], 'missing or misordered required handoff span')
+        endpoint = selected[0]
+        owned = [s for s in spans if all(s['begin'][k] == endpoint[k] for k in ('pid', 'service', 'observation', 'job', 'worker', 'preparation', 'generation', 'session', 'transaction'))]
+        required = {'reusable_completion_ack': 'acknowledged'} if variant in 'CD' else {'oneshot_ack': 'sent', 'helper_exit': 'validated_exit', 'effective_cleanup': 'verified'}
+        for op, outcome in required.items():
+            found = [s for s in owned if s['operation'] == op]
+            require(len(found) == 1 and found[0]['end']['outcome'] == outcome and found[0]['begin']['line'] < found[0]['end']['line'] and found[0]['stop'] <= min(e['ns'] for e in selected), 'missing or invalid transaction evidence: ' + op)
 
 
 def verify(package):
@@ -64,10 +78,18 @@ def verify(package):
     return inventory(package)
 
 
-def fresh(output, package):
+def fresh(output, *consumed):
     require(not output.is_symlink() and not output.exists(), 'fresh output required')
-    require(output.is_relative_to(ROOT / 'build') and not output.is_relative_to(package) and
-            not package.is_relative_to(output), 'output must be disjoint beneath ignored build/')
+    require(output == output.resolve() and output.is_relative_to((ROOT / 'build').resolve()) and
+            all(not output.is_relative_to(p.resolve()) and not p.resolve().is_relative_to(output)
+                for p in consumed), 'output must be disjoint beneath ignored build/')
+    protected = [*old.RETAINED, old.FIXTURE_ROOT, *(ROOT / 'build' / n for n in prep.SUPPORT)]
+    if consumed and (consumed[0] / 'input-integrity.json').is_file():
+        integrity = read(consumed[0] / 'input-integrity.json')
+        protected += [Path(n) for n in integrity['trees']]
+        protected += [Path(n).parent for n in integrity['before']]
+    require(all(not output.is_relative_to(p.resolve()) and not p.resolve().is_relative_to(output)
+                for p in protected), 'destination overlaps consumed historical evidence')
     output.mkdir()
 
 
@@ -93,6 +115,52 @@ def tools():
     paths = [*(ROOT / 'scripts' / n for n in names), *(ROOT / 'tests' / n for n in tests)]
     return {str(p): digest(p) for p in paths}
 
+
+
+def providers(base):
+    expected = {
+        'build/holonight-images/CMakeCache.txt': set(),
+        'build/holonight-thumbnails/CMakeCache.txt': {'HolonightImages'},
+        'build/holonight-file-browser/CMakeCache.txt': {'HolonightImages', 'HolonightThumbnails'},
+        'reuse-harness/CMakeCache.txt': {'HolonightImages', 'HolonightThumbnails', 'HolonightFileBrowser'},
+    }
+    caches = {}
+    for relative, required in expected.items():
+        entries = [s for s in (base / relative).read_text().splitlines()
+                   if s.startswith('Holonight') and '_DIR:' in s]
+        require({s.split('_DIR:', 1)[0] for s in entries} == required, 'required provider resolution missing')
+        for entry in entries:
+            path = Path(entry.split('=', 1)[1])
+            require(path.is_relative_to(base / 'prefix') and path.resolve().is_relative_to(base / 'prefix'), 'foreign provider resolution')
+        caches[relative] = entries
+    return caches
+
+
+def bundles(base):
+    manifests = []
+    for group in ('runtime', 'prefix/libexec/holonight-images/runtime'):
+        bundle = base / group
+        manifest = read(bundle / 'manifest.json')
+        files = manifest['files']
+        require(set(inventory(bundle)) == {r['path'] for r in files} | {'manifest.json'} and
+                len(files) == len({r['path'] for r in files}), 'runtime inventory mismatch')
+        for row in files:
+            path = prep.child(bundle, row['path'])
+            require(digest(path) == row['sha256'] and path.stat().st_size == row['size'] and
+                    stat.S_IMODE(path.stat().st_mode) == row['mode'], 'runtime payload mismatch')
+        require(digest(bundle / 'usr/libexec/holonight-images-helper') ==
+                digest(base / 'build/holonight-images/holonight-images-helper'), 'runtime helper mismatch')
+        manifests.append(manifest)
+    require(manifests[0] == manifests[1], 'runtime manifests differ')
+
+
+def built_integrity(built, execution):
+    expected = read(built / 'seal.json')
+    actual = inventory(built)
+    marker = actual.pop('execution-started.json', None)
+    if marker is not None:
+        require(read(built / 'execution-started.json') == dict(output=str(execution)), 'execution marker mismatch')
+    require(actual == dict(expected, **{'seal.json': digest(built / 'seal.json')}), 'built inventory drift')
 
 
 def build(package, output):
@@ -135,12 +203,8 @@ def build(package, output):
                         a = a.replace(str(base / group), str(package / mode / variant / group))
                     command.append(a)
                 run(command, base / f'build-{i:02}.log')
-            caches = {}
-            for cache in [*(base / 'build').glob('*/CMakeCache.txt'), base / 'reuse-harness/CMakeCache.txt']:
-                entries = [s for s in cache.read_text().splitlines() if s.startswith('Holonight') and '_DIR:' in s]
-                require(all(s.split('=', 1)[1].startswith(str(base / 'prefix') + '/') for s in entries), 'foreign provider resolution')
-                caches[str(cache.relative_to(base))] = entries
-            write(base / 'package-resolution.json', caches)
+            write(base / 'package-resolution.json', providers(base))
+            bundles(base)
             for label, relative in [('helper', 'build/holonight-images/holonight-images-helper'), ('harness', 'reuse-harness/preview-benchmark')]:
                 for kind, cmd in [('linkage', ['ldd']), ('symbols', ['nm', '-C'])]:
                     run([*cmd, str(base / relative)], base / f'{label}-{kind}.log')
@@ -240,8 +304,10 @@ def run_commands(commands, output, result, uid, env, credentials, integrity):
         before = gate.scope_snapshot(uid, env, credentials)
         write(target.with_suffix('.scopes-before.json'), before)
         require(before['isolated'], 'residual scopes')
+        result['invocations'].append(dict(entry, status='failed'))
+        write(output / 'progress.json', result)
         process = gate.smoke.execute(entry['argv'], target, env, credentials)
-        result['invocations'].append(dict(entry, process=process, status='failed'))
+        result['invocations'][-1]['process'] = process
         write(output / 'progress.json', result)
         after = gate.scope_snapshot(uid, env, credentials)
         write(target.with_suffix('.scopes-after.json'), after)
@@ -256,9 +322,9 @@ def execute(package, built, output, uid):
     require(os.geteuid() == 0 and uid and uid > 0, 'privileged wrapper and ordinary uid required')
     require(not (built / 'execution-started.json').exists(), 'execution already started')
     account = pwd.getpwuid(uid)
-    fresh(output, package)
+    fresh(output, package, built)
     result = dict(status='blocked', invocations=[], qualified=False)
-    runtime = Path('/run') / ('holonight-delivery-overhead-' + built.name + '-' + output.name)
+    runtime = RUNTIME_ROOT / ('holonight-delivery-overhead-' + built.parent.name + '-' + built.name + '-' + output.name)
     runtime_before = None
     credentials = dict(user=uid, group=account.pw_gid, extra_groups=os.getgrouplist(account.pw_name, account.pw_gid))
     env = {k: os.environ[k] for k in ('PATH', 'LANG', 'LC_ALL', 'TZ') if k in os.environ}
@@ -276,18 +342,24 @@ def execute(package, built, output, uid):
         subprocess.run([sys.executable, '-c', 'import pathlib,sys;pathlib.Path(sys.argv[1]).write_text("ok")', str(probe)], env=env, check=True, **credentials)
         require(probe.stat().st_uid == uid, 'ordinary-user write failed')
         commands = [dict(invocation=row, argv=[str(built / row['mode'] / row['variant'] / 'reuse-harness/preview-benchmark'), str(runtime / row['mode'] / row['variant']), str(old.FIXTURE_ROOT / row['fixture']), 'startup', str(row['observations']), str(targets / f'{i:03}.json')]) for i, row in enumerate(prep.schedule())]
-        write(output / 'preregistration.json', dict(commands=commands, environment=env, credentials=credentials, runtime=str(runtime), fixtures=inventory(old.FIXTURE_ROOT), built_seal=digest(built / 'seal.json'), protocol=read(package / 'protocol.json')))
+        write(output / 'preregistration.json', dict(built=str(built), prepared=str(package), host=list(os.uname()), tools=read(built / 'tools.json'), fixture_identities=read(built / 'fixtures.json'), dependencies={mode + '/' + variant: read(built / mode / variant / 'package-resolution.json') for mode, variant in KEYS}, staging_commands=[dict(mode=mode, variant=variant, source=str(built / mode / variant / 'runtime'), destination=str(runtime / mode / variant), helper=str(built / mode / variant / 'build/holonight-images/holonight-images-helper')) for mode, variant in KEYS], commands=commands, environment=env, credentials=credentials, runtime=str(runtime), fixtures=inventory(old.FIXTURE_ROOT), built_seal=digest(built / 'seal.json'), protocol=read(package / 'protocol.json')))
         require(gate.scope_snapshot(uid, env, credentials)['isolated'], 'scope isolation unavailable')
         with (built / 'execution-started.json').open('x') as marker:
             json.dump(dict(output=str(output)), marker)
+        require(not runtime.exists() and not runtime.is_symlink(), 'runtime destination reused')
         runtime.mkdir(mode=0o755)
+        staging_commands = []
         for mode, variant in KEYS:
             base, destination = built / mode / variant, runtime / mode
             destination.mkdir(exist_ok=True)
             if variant == 'A':
+                staging_commands.append(dict(copytree=[str(base / 'runtime'), str(destination / variant)]))
+                write(output / 'staging-commands.json', staging_commands)
                 shutil.copytree(base / 'runtime', destination / variant)
             else:
                 command = [sys.executable, '-B', str(built / 'tools/manage-images-generations.py'), 'install', '--runtime', str(destination / variant), '--source', str(base / 'runtime'), '--helper', str(base / 'build/holonight-images/holonight-images-helper')]
+                staging_commands.append(dict(argv=command))
+                write(output / 'staging-commands.json', staging_commands)
                 process = gate.smoke.execute(command, output / f'installer-{mode}-{variant}.json', installer_env, {})
                 write(output / f'installer-{mode}-{variant}-status.json', process)
                 require(process['exit'] == 0 and not process['timeout'] and process['cleanup_verified'], 'staging failed')
@@ -296,7 +368,7 @@ def execute(package, built, output, uid):
         write(output / 'runtime-before.json', runtime_before)
         def integrity():
             require(verify(package) == read(built / 'prepared-inventory.json'), 'input drift')
-            gate.smoke.verify_hashes(built, read(built / 'seal.json'))
+            built_integrity(built, output)
             gate.smoke.verify_hashes(Path('/'), read(built / 'tools.json'))
             require(fixture_hashes() == read(built / 'fixtures.json'), 'fixture drift')
             require(gate.protected_inventory(runtime) == runtime_before, 'runtime drift')
@@ -306,19 +378,38 @@ def execute(package, built, output, uid):
     except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError, RuntimeError, subprocess.SubprocessError) as error:
         result['failure'] = str(error)
     finally:
-        try:
-            require(verify(package) == read(built / 'prepared-inventory.json'), 'final prepared drift')
+        checks = {}
+        def checked(name, action):
+            try:
+                action()
+                checks[name] = dict(passed=True)
+            except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError, RuntimeError, subprocess.SubprocessError) as error:
+                checks[name] = dict(passed=False, failure=str(error))
+        def inputs():
+            final = verify(package)
+            write(output / 'final-input-inventory.json', final)
+            require(final == read(built / 'prepared-inventory.json'), 'final prepared drift')
             gate.smoke.verify_hashes(Path('/'), read(built / 'tools.json'))
             require(fixture_hashes() == read(built / 'fixtures.json'), 'final fixture drift')
-            gate.smoke.verify_hashes(built, read(built / 'seal.json'))
-            require(runtime_before is not None and gate.protected_inventory(runtime) == runtime_before, 'final runtime drift')
+        def artifacts():
+            write(output / 'final-artifact-inventory.json', inventory(built))
+            built_integrity(built, output)
+        def runtimes():
+            after = gate.protected_inventory(runtime)
+            write(output / 'runtime-after.json', after)
+            require(runtime_before is not None and after == runtime_before, 'final runtime drift')
+            for mode, variant in KEYS:
+                staged(built / mode, runtime / mode, variant)
+        def scopes():
             snapshot = gate.scope_snapshot(uid, env, credentials)
             write(output / 'scopes-final.json', snapshot)
             require(snapshot['isolated'], 'final scopes unverified')
-            write(output / 'runtime-after.json', gate.protected_inventory(runtime))
-            result['integrity_verified'] = True
-        except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError, subprocess.SubprocessError) as error:
-            result.update(status='blocked', integrity_failure=str(error))
+        for name, action in [('inputs', inputs), ('artifacts', artifacts), ('runtime', runtimes), ('scopes', scopes)]:
+            checked(name, action)
+        result['final_checks'] = checks
+        result['integrity_verified'] = all(c['passed'] for c in checks.values())
+        if not result['integrity_verified']:
+            result['status'] = 'blocked'
         write(output / 'assessment.json', result)
         (output / 'ASSESSMENT.md').write_text('# Incremental delivery tracing overhead\n\n' + result['status'] + '\n\n' + result.get('failure', '') + '\n\nNo qualification or causal attribution claim. Retained fixtures must not be removed.\n')
         seal(output)
@@ -330,8 +421,9 @@ def render_report(output, assessment, statistics=None):
              'Status: **' + assessment['status'] + '**.', '']
     if statistics is None:
         lines += ['Failure: ' + str(assessment.get('execution_failure') or assessment.get('failure')), '',
-                  f"Launched invocations: {assessment.get('launched', 0)} of 264; unexecuted: {assessment.get('unexecuted', 264)}.",
-                  f"Measured observations launched: {assessment.get('measured_observations', 0)} of 2,400.", '',
+                  f"Launched invocations: {assessment.get('launched')} of 264; failed: {assessment.get('failed')}; unexecuted: {assessment.get('unexecuted')}.",
+                  f"Validated warm-up observations available: {assessment.get('warmup_observations')} of 24.",
+                  f"Validated measured observations available: {assessment.get('measured_observations', 0)} of 2,400.", '',
                   'Statistics are unavailable. No failed or missing sample is replaced.']
     else:
         lines += ['All 2,400 measured observations are retained; only the 24 declared warm-ups are excluded.', '',
@@ -352,28 +444,69 @@ def render_report(output, assessment, statistics=None):
 
 
 def report(package, execution, output):
-    fresh(output, package)
+    consumed = [package, execution]
+    try:
+        built_name = read(execution / 'preregistration.json')['built']
+        require(isinstance(built_name, str) and Path(built_name).is_absolute(), 'invalid artifact root')
+        consumed.append(Path(built_name))
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    fresh(output, *consumed)
     try:
         verify(package)
         check_output(execution)
         result = read(execution / 'assessment.json')
+        prereg = read(execution / 'preregistration.json')
+        built = Path(prereg['built'])
+        require(digest(built / 'seal.json') == prereg['built_seal'], 'build seal mismatch')
+        built_integrity(built, execution)
+        gate.smoke.verify_hashes(Path('/'), read(built / 'tools.json'))
+        require(fixture_hashes() == read(built / 'fixtures.json'), 'report fixture drift')
+        gate.smoke.verify_hashes(Path('/'), read(built / 'recipe-identity.json'))
+        require(read(execution / 'scopes-final.json')['isolated'], 'final scopes unverified')
+        require(all(result['final_checks'][name]['passed'] for name in ('inputs', 'artifacts', 'runtime', 'scopes')), 'failed final checks')
+        require(verify(package) == read(execution / 'final-input-inventory.json') == read(built / 'prepared-inventory.json'), 'final source mismatch')
+        require(inventory(built) == read(execution / 'final-artifact-inventory.json'), 'final artifact mismatch')
+        require(read(execution / 'runtime-before.json') == read(execution / 'runtime-after.json'), 'saved runtime mismatch')
+        runtime = Path(prereg['runtime'])
+        require(gate.protected_inventory(runtime) == read(execution / 'runtime-after.json'), 'final runtime mismatch')
+        for mode, variant in KEYS:
+            staged(built / mode, runtime / mode, variant)
+        expected_commands = [dict(invocation=row, argv=[str(built / row['mode'] / row['variant'] / 'reuse-harness/preview-benchmark'), str(runtime / row['mode'] / row['variant']), str(old.FIXTURE_ROOT / row['fixture']), 'startup', str(row['observations']), str(execution / 'observations' / f'{i:03}.json')]) for i, row in enumerate(prep.schedule())]
+        require(prereg['commands'] == expected_commands, 'scheduled commands mismatch')
         require(result['status'] == 'complete' and result['integrity_verified'], 'incomplete run')
         rows = []
         uid = read(execution / 'preregistration.json')['credentials']['user']
-        for row in result['invocations']:
+        require(len(result['invocations']) == 264, 'incomplete experiment')
+        for row, expected in zip(result['invocations'], expected_commands):
+            require(row['invocation'] == expected['invocation'] and row['argv'] == expected['argv'] and row['status'] == 'passed', 'saved command mismatch')
             target = Path(row['argv'][-1])
             saved = {suffix: digest(target.with_suffix(suffix)) for suffix in ('.v3.json', '.v4.json') if target.with_suffix(suffix).exists()}
             samples = validate(target, row['invocation'], row['process'], uid, replay=True)
+            require(samples == row['samples'], 'saved samples mismatch')
             require(all(digest(target.with_suffix(s)) == h for s, h in saved.items()), 'accounting replay mismatch')
             rows.append(dict(invocation=row['invocation'], samples=samples))
         statistics = statistics_report(rows)
         require(statistics == read(execution / 'statistics.json'), 'statistics replay mismatch')
         write(output / 'statistics.json', statistics)
         write(output / 'assessment.json', dict(status='complete', independent_replay=True))
-    except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError) as error:
+    except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError, RuntimeError) as error:
         assessment = result if 'result' in locals() and isinstance(result, dict) else {}
-        invocations = assessment.get('invocations', [])
-        write(output / 'assessment.json', dict(status='blocked', failure=str(error), execution_failure=assessment.get('failure'), launched=len(invocations), unexecuted=264-len(invocations), measured_observations=sum(r['invocation']['observations'] for r in invocations if not r['invocation']['warmup']), statistics_available=False))
+        invocations = assessment.get('invocations')
+        valid = isinstance(invocations, list) and len(invocations) <= 264
+        if valid:
+            valid = all(isinstance(r, dict) and r.get('invocation') == expected and
+                        r.get('status') in ('passed', 'failed')
+                        for r, expected in zip(invocations, prep.schedule()))
+        counts = dict(launched=None, failed=None, unexecuted=None, measured_observations=None, warmup_observations=None)
+        if valid:
+            counts.update(launched=len(invocations), failed=sum(r['status'] == 'failed' for r in invocations), unexecuted=264-len(invocations))
+            # Only saved, validated samples count as available observations.
+            for warmup, key in [(False, 'measured_observations'), (True, 'warmup_observations')]:
+                counts[key] = sum(len(r['samples']) for r in invocations
+                                  if r['invocation']['warmup'] == warmup and r['status'] == 'passed'
+                                  and isinstance(r.get('samples'), list) and len(r['samples']) == r['invocation']['observations'])
+        write(output / 'assessment.json', dict(status='blocked', failure=str(error), execution_failure=assessment.get('failure'), **counts, statistics_available=False))
     assessment = read(output / 'assessment.json')
     render_report(output, assessment, read(output / 'statistics.json') if assessment['status'] == 'complete' else None)
     seal(output)
@@ -390,6 +523,7 @@ def main():
     parser.add_argument('--uid', type=int)
     args = parser.parse_args()
     require(not args.output.is_symlink(), 'symlink output refused')
+    require(args.output.absolute() == args.output.resolve(), 'symlink output ancestors refused')
     package, output = args.prepared.resolve(), args.output.resolve()
     if args.action == 'build':
         return build(package, output)

@@ -349,3 +349,67 @@ records the incomplete outcome without calculating statistics from warm-ups.
 performance conclusions, significance claims, causal scheduling/CPU attribution,
 or changes to C qualification or D pilot conclusions. A new fixed execution
 attempt requires separate authorization; the retained failed attempt is final.
+
+## Hardened fixed overhead comparison (2026-11-14)
+
+The approved fresh attempt at
+[`preview-delivery-overhead-attempt-20261114-01`](../../build/preview-delivery-overhead-attempt-20261114-01/)
+completed **264 invocations, 2,400 measured observations and 24 separate warm-ups**,
+with zero failed or unexecuted invocations and no retries, repairs, resumed work,
+replacement samples or fixture removal. Previous attempts remain unchanged.
+
+The runner now uses an explicit local count-aware v4 validator without rewriting
+historical tool source. It checks required consumer providers while allowing Images
+an empty provider set, validates both runtime manifests against their payloads and
+built helper, and rejects overlapping evidence destinations and symlink escapes.
+Execution records artifact, tool, fixture, dependency and staging identities before
+workloads. Final input, artifact, runtime and scope checks run independently and
+retain each outcome without replacing the original failure. Reports validate seals,
+scheduled commands, saved accounting, final inventories and protected selectors;
+malformed invocation rows yield unavailable counts rather than invented totals.
+
+Before native work, 18 focused deterministic tests passed, including a full synthetic
+build → execute → report schedule, real one/ten-observation trace validation for
+all variants, trace identity and transaction failures, fixture counts and ownership,
+provider requirements, destination collisions, malformed/missing evidence,
+timeout/first-failure stopping, independent finalization, replay immutability and
+signed median/nearest-rank p95 statistics. The 11 historical delivery-smoke tests
+passed; the nine historical overhead tests passed with the privileged ownership
+test skipped in the ordinary sandbox. The historical installer mismatch remains
+unchanged. No ecosystem acceptance suite or extra retained workload smoke ran.
+
+All eight fresh Release builds used four jobs and the same host dependencies in
+Images → Thumbnails → File Browser → benchmark order, with separate private prefixes
+and unchanged frozen sources/private headers. The
+[native build assessment](../../build/preview-delivery-overhead-attempt-20261114-01/native-build/assessment.json)
+passed provider resolution, linkage, tracing-mode and both runtime-bundle checks.
+Eight fresh protected runtimes preserved A's legacy layout and B/C/D's managed
+selectors. Harnesses ran as UID 1000 with offscreen Qt, that user's session manager
+and a successful artifact-write probe. The
+[execution assessment](../../build/preview-delivery-overhead-attempt-20261114-01/execution/assessment.json)
+records all four final checks passing; build and execution evidence is sealed.
+
+The ordinary sandbox maps host root ownership to `nobody`, so the first
+[offline report](../../build/preview-delivery-overhead-attempt-20261114-01/report/REPORT.md)
+blocked on protected-runtime ownership. That report and its separate sandbox
+verification remain retained. A fresh
+[privileged offline report](../../build/preview-delivery-overhead-attempt-20261114-01/report-privileged/REPORT.md)
+passed with host ownership visibility, launching no processes and rewriting no
+consumed evidence. It contains every per-cell median/p95, signed v4−v3 millisecond
+and percentage difference, and all ten block comparisons for pixels and final
+metadata. Across the 24 endpoint cells, observed median differences range from
+−2.447 to +3.631 ms and p95 differences from −8.292 to +9.745 ms; these ranges do not
+replace the per-cell and block results.
+
+The [independent verification](../../build/preview-delivery-overhead-attempt-20261114-01/independent-verification-privileged.json)
+passed every check: it independently rehashed build/execution/report seals, verified
+consumed inputs and final source/artifact/runtime inventories, checked all eight
+protected selectors, and replayed saved accounting without changing evidence. A
+separate statistics implementation reproduced all 24 endpoint cells and their ten
+block comparisons exactly against both execution and report output. Build and
+execution seals were rehashed again after replay.
+
+These are descriptive measurements on this host within the original startup timer.
+Negative differences are retained. No threshold, significance claim, overhead
+subtraction, causal scheduling/CPU attribution or performance qualification is
+introduced. C qualification and D pilot conclusions remain unchanged.

@@ -1,5 +1,7 @@
 """Deterministic checks for the fixed delivery overhead experiment."""
 import copy
+from contextlib import ExitStack
+import shutil
 import importlib.util
 import os
 from pathlib import Path
@@ -162,6 +164,245 @@ class MeasurementTests(unittest.TestCase):
             report = m.read(root / 'build/report/assessment.json')
             self.assertEqual(report['unexecuted'], 264)
             self.assertFalse(report['statistics_available'])
+
+
+    def test_destination_collisions_and_symlink_ancestors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'build').mkdir()
+            consumed = root / 'build/consumed'
+            consumed.mkdir()
+            (root / 'build/link').symlink_to(consumed, target_is_directory=True)
+            with patch.object(m, 'ROOT', root):
+                for output in (consumed, consumed / 'nested', root / 'build/link/new', root / 'build'):
+                    with self.assertRaises(ValueError):
+                        m.fresh(output, consumed)
+
+    def test_malformed_reports_are_sealed_without_invented_counts(self):
+        for rows in (None, 'bad', [None], [{'invocation': {}}], [{}] * 265):
+            with self.subTest(rows=type(rows).__name__), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                (root / 'build').mkdir()
+                execution = root / 'build/execution'
+                execution.mkdir()
+                m.write(execution / 'assessment.json', dict(status='blocked', invocations=rows))
+                m.seal(execution)
+                before = m.inventory(execution)
+                with patch.object(m, 'ROOT', root), patch.object(m, 'verify'):
+                    self.assertEqual(m.report(root / 'prepared', execution, root / 'build/report'), 1)
+                m.check_output(root / 'build/report')
+                self.assertIsNone(m.read(root / 'build/report/assessment.json')['launched'])
+                self.assertEqual(before, m.inventory(execution))
+
+    def test_missing_report_evidence_is_sealed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'build').mkdir()
+            with patch.object(m, 'ROOT', root), patch.object(m, 'verify'):
+                self.assertEqual(m.report(root / 'prepared', root / 'missing', root / 'build/report'), 1)
+            m.check_output(root / 'build/report')
+
+    def test_required_provider_resolution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            required = [('build/holonight-images', []), ('build/holonight-thumbnails', ['Images']),
+                        ('build/holonight-file-browser', ['Images', 'Thumbnails']),
+                        ('reuse-harness', ['Images', 'Thumbnails', 'FileBrowser'])]
+            for relative, names in required:
+                directory = base / relative
+                directory.mkdir(parents=True)
+                (directory / 'CMakeCache.txt').write_text(''.join(f'Holonight{n}_DIR:PATH={base}/prefix/lib/cmake/Holonight{n}\n' for n in names))
+            m.providers(base)
+            cache = base / 'build/holonight-thumbnails/CMakeCache.txt'
+            for invalid in ('', 'HolonightImages_DIR:PATH=/foreign'):
+                cache.write_text(invalid)
+                with self.assertRaises(ValueError):
+                    m.providers(base)
+
+    def raw_trace(self, variant, count, supplemental=True):
+        fixture = load('counted_trace_fixture', 'tests/test_preview_delivery_smoke.py')
+        historical, values = fixture.combined(variant)
+        h = [e for e in historical if e['observation'] == 0]
+        v = []
+        for observation in range(1, count + 1):
+            for source, target in ((historical, h), (values, v)):
+                for original in source:
+                    if original['observation'] != 1:
+                        continue
+                    event = dict(original)
+                    for key in ('service', 'job', 'preparation', 'session', 'transaction', 'publication', 'span'):
+                        if event.get(key):
+                            event[key] += (observation - 1) * 10000
+                    event['observation'] = observation
+                    event['ns'] += (observation - 1) * 10000
+                    target.append(event)
+        return fixture.trace(h, v if supplemental else [])
+
+    def test_real_trace_count_validation_and_replay(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture = root / 'image.png'
+            fixture.write_bytes(b'fixture')
+            with patch.object(m.old, 'FIXTURE_ROOT', root):
+                for variant in 'ABCD':
+                    for count in (1, 10):
+                        for mode in ('v3', 'v4'):
+                            target = root / f'{variant}-{mode}-{count}.json'
+                            row = dict(variant=variant, mode=mode, observations=count, fixture=fixture.name)
+                            m.write(target, dict(scenario='startup', fixture=str(fixture), samples=[f.sample()] * count))
+                            target.with_suffix('.stdout').write_text('')
+                            target.with_suffix('.stderr').write_text(self.raw_trace(variant, count, mode == 'v4'))
+                            work = root / (target.name + '.work-private')
+                            (work / 'cache').mkdir(parents=True)
+                            for i in range(count * 8 + 8):
+                                (work / f'{i}.png').write_bytes(b'fixture')
+                            process = dict(exit=0, timeout=False, cleanup_verified=True)
+                            m.validate(target, row, process, os.getuid())
+                            before = m.inventory(root)
+                            m.validate(target, row, process, os.getuid(), replay=True)
+                            self.assertEqual(before, m.inventory(root))
+                            m.write(target.with_suffix('.v3.json'), {})
+                            with self.assertRaisesRegex(ValueError, 'replay mismatch'):
+                                m.validate(target, row, process, os.getuid(), replay=True)
+
+
+    def test_synthetic_build_execute_report_full_schedule(self):
+        with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+            root = Path(tmp)
+            (root / 'build').mkdir()
+            package = root / 'prepared'
+            package.mkdir()
+            m.write(package / 'protocol.json', dict(schedule=m.prep.schedule()))
+            fixtures = root / 'fixtures'
+            fixtures.mkdir()
+            for name in m.old.FIXTURES:
+                (fixtures / name).write_bytes(b'fixture')
+            built, execution, report = [root / 'build' / n for n in ('native', 'execution', 'report')]
+            runtime_root = root / 'run'
+            runtime_root.mkdir()
+            def bundle(base):
+                helper = base / 'build/holonight-images/holonight-images-helper'
+                helper.parent.mkdir(parents=True, exist_ok=True)
+                helper.write_bytes(b'helper')
+                for relative in ('runtime', 'prefix/libexec/holonight-images/runtime'):
+                    directory = base / relative
+                    payload = directory / 'usr/libexec/holonight-images-helper'
+                    payload.parent.mkdir(parents=True, exist_ok=True)
+                    payload.write_bytes(helper.read_bytes())
+                    m.write(directory / 'manifest.json', dict(files=[dict(path='usr/libexec/holonight-images-helper', sha256=m.digest(payload), size=6, mode=0o644)]))
+            def native(cmd, **kwargs):
+                if '-B' in cmd:
+                    directory = Path(cmd[cmd.index('-B') + 1])
+                    directory.mkdir(parents=True, exist_ok=True)
+                    base = directory.parent if directory.name == 'reuse-harness' else directory.parent.parent
+                    names = {'holonight-images': [], 'holonight-thumbnails': ['Images'], 'holonight-file-browser': ['Images', 'Thumbnails'], 'reuse-harness': ['Images', 'Thumbnails', 'FileBrowser']}[directory.name]
+                    (directory / 'CMakeCache.txt').write_text(''.join(f'Holonight{n}_DIR:PATH={base}/prefix/lib/cmake/Holonight{n}\n' for n in names))
+                    if directory.name == 'holonight-images':
+                        bundle(base)
+                    if directory.name == 'reuse-harness':
+                        (directory / 'preview-benchmark').write_bytes(b'harness')
+                elif cmd[0] == 'nm':
+                    kwargs['stdout'].write('StandbyTrace:: x ' + ('DeliveryTrace::' if '/v4/' in cmd[-1] else ''))
+                elif '-c' in cmd:
+                    Path(cmd[-1]).write_text('ok')
+            traces = {(v, mode, count): self.raw_trace(v, count, mode == 'v4') for v in 'ABCD' for mode in ('v3', 'v4') for count in (1, 10)}
+            def process(cmd, target, env, credentials):
+                if 'install' in cmd:
+                    destination = Path(cmd[cmd.index('--runtime') + 1])
+                    source = Path(cmd[cmd.index('--source') + 1])
+                    generation = 'a' * 64
+                    shutil.copytree(source, destination / 'generations' / generation)
+                    (destination / 'current').write_text(generation)
+                    m.write(destination / 'ownership.json', [generation])
+                else:
+                    variant = Path(cmd[0]).parents[1].name
+                    mode = Path(cmd[0]).parents[2].name
+                    count = int(cmd[-2])
+                    m.write(target, dict(scenario='startup', fixture=cmd[2], samples=[f.sample()] * count))
+                    target.with_suffix('.stderr').write_text(traces[variant, mode, count])
+                    target.with_suffix('.stdout').write_text('')
+                    work = target.parent / (target.name + '.work-private')
+                    (work / 'cache').mkdir(parents=True)
+                    for i in range(count * 8 + 8):
+                        (work / f'{i}{Path(cmd[2]).suffix}').write_bytes(b'fixture')
+                return dict(exit=0, timeout=False, cleanup_verified=True)
+            def observations(output, uid, gid):
+                directory = output / 'observations'
+                directory.mkdir()
+                return directory
+            for obj, name, value in [(m, 'ROOT', root), (m, 'RUNTIME_ROOT', runtime_root), (m.old, 'FIXTURE_ROOT', fixtures)]:
+                stack.enter_context(patch.object(obj, name, value))
+            stack.enter_context(patch.object(m, 'verify', return_value={}))
+            stack.enter_context(patch.object(m, 'tools', return_value={}))
+            stack.enter_context(patch.object(m, 'fixture_hashes', return_value={}))
+            stack.enter_context(patch.object(m.subprocess, 'check_output', return_value='synthetic host'))
+            stack.enter_context(patch.object(m.subprocess, 'run', side_effect=native))
+            stack.enter_context(patch.object(m.os, 'geteuid', return_value=0))
+            stack.enter_context(patch.object(m.gate, 'observation_directory', side_effect=observations))
+            stack.enter_context(patch.object(m.gate, 'scope_snapshot', return_value=dict(isolated=True)))
+            stack.enter_context(patch.object(m.gate, 'protected_inventory', side_effect=m.inventory))
+            workloads = stack.enter_context(patch.object(m.gate.smoke, 'execute', side_effect=process))
+            stack.enter_context(patch('builtins.print'))
+            self.assertEqual(m.build(package, built), 0)
+            self.assertEqual(m.execute(package, built, execution, os.getuid()), 0)
+            assessment = m.read(execution / 'assessment.json')
+            self.assertEqual(len(assessment['invocations']), 264)
+            self.assertEqual(sum(len(r['samples']) for r in assessment['invocations']), 2424)
+            self.assertEqual(workloads.call_count, 270)
+            before = m.inventory(execution)
+            self.assertEqual(m.report(package, execution, report), 0)
+            m.check_output(report)
+            self.assertEqual(before, m.inventory(execution))
+            with self.assertRaisesRegex(ValueError, 'already started'):
+                m.execute(package, built, root / 'build/reused', os.getuid())
+
+    def test_final_checks_are_independent_and_keep_original_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'build').mkdir()
+            built = root / 'build/native'
+            built.mkdir()
+            m.write(built / 'assessment.json', dict(status='built'))
+            m.write(built / 'tools.json', {})
+            m.write(built / 'fixtures.json', {})
+            m.seal(built)
+            with patch.object(m, 'ROOT', root), patch.object(m.os, 'geteuid', return_value=0), \
+                 patch.object(m, 'verify', side_effect=ValueError('input failure')), \
+                 patch.object(m, 'built_integrity', side_effect=ValueError('artifact failure')), \
+                 patch.object(m.gate, 'protected_inventory', side_effect=ValueError('runtime failure')), \
+                 patch.object(m.gate, 'scope_snapshot', return_value=dict(isolated=True)) as scopes:
+                output = root / 'build/execution'
+                self.assertEqual(m.execute(root / 'prepared', built, output, os.getuid()), 1)
+                assessment = m.read(output / 'assessment.json')
+                self.assertEqual(assessment['failure'], 'input failure')
+                self.assertEqual(set(assessment['final_checks']), {'inputs', 'artifacts', 'runtime', 'scopes'})
+                self.assertTrue(assessment['final_checks']['scopes']['passed'])
+                self.assertEqual(scopes.call_count, 1)
+                m.check_output(output)
+
+
+    def test_raw_trace_identity_and_transaction_failures_all_counts(self):
+        import json
+        for variant in 'ABCD':
+            for count in (1, 10):
+                raw = self.raw_trace(variant, count)
+                lines = raw.splitlines()
+                for failure in ('missing', 'identity', 'transaction'):
+                    changed = []
+                    for line in lines:
+                        if line.startswith('DELIVERY '):
+                            event = json.loads(line[len('DELIVERY '):])
+                            if failure == 'missing' and event['operation'] == 'endpoint_pixels':
+                                continue
+                            if failure == 'identity' and event['operation'] == 'endpoint_metadata':
+                                event['transaction'] += 999
+                            if failure == 'transaction' and event['operation'] in ('reusable_completion_ack', 'oneshot_ack'):
+                                event['outcome'] = 'failed'
+                            line = 'DELIVERY ' + json.dumps(event)
+                        changed.append(line)
+                    report = m.gate.analyzer.analyze('\n'.join(changed), '/raw', variant, [f.sample()] * count)
+                    with self.subTest(variant=variant, count=count, failure=failure), self.assertRaises(ValueError):
+                        m.v4_gate(report, variant, count)
 
 
 if __name__ == '__main__':
