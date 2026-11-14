@@ -293,3 +293,59 @@ Compilation, staging and workload execution require a separate plan. No overhead
 budget, significance claim, phase subtraction or performance qualification is
 introduced. Attribution remains incomplete; the historical preparation-test hash
 mismatch, C qualification and D pilot conclusions remain unchanged.
+
+## Incremental overhead execution (2026-11-14)
+
+The approved fixed comparison now has a separate
+[`measure-preview-delivery-overhead.py`](../../scripts/measure-preview-delivery-overhead.py)
+runner with `build`, `execute`, and offline `report` actions. It verifies the
+prepared package and precisely consumed historical inputs, keeps frozen sources
+and private headers unchanged, snapshots tools and the current installer, and
+uses private installed prefixes and host Release builds with four jobs. Historical
+runners, installer expectations and the documented historical mismatch remain
+unchanged.
+
+The [native build assessment](../../build/preview-delivery-overhead-native-20261114-02/assessment.json)
+passed all eight v3/v4 A/B/C/D builds, provider-resolution, linkage and runtime
+helper checks. An earlier
+[blocked build](../../build/preview-delivery-overhead-native-20261114-01/assessment.json)
+retains a checker error that incorrectly required provider entries in the first
+provider's CMake cache. That error was corrected before the fresh eight-build
+attempt; no workloads ran in the earlier output.
+
+The [execution assessment](../../build/preview-delivery-overhead-native-20261114-02/execution/ASSESSMENT.md)
+is **blocked after one warm-up invocation**: one warm-up observation executed,
+zero measured observations, and 263 invocations unexecuted. All eight protected
+runtimes staged successfully. The first v3/A warm-up returned zero and passed
+pixel, final-metadata, delivery-order and v3 lifecycle checks. The runner then
+incorrectly required 32 private fixture copies. The frozen harness actually
+creates `count * 8 + 8`: 16 for this one-observation warm-up and 88 for a measured
+ten-observation block. Execution stopped before the next launch, returned nonzero,
+and sealed partial evidence. No retry, replacement, repair, resampling, retained
+runtime deletion or extra manager cleanup occurred.
+
+The [independent integrity verification](../../build/preview-delivery-overhead-native-20261114-02/independent-verification.json)
+checked the original tool identities before subsequent runner corrections, build
+and execution seals, prepared inventories, all eight selectors and protected
+runtime ownership, modes and exact payload inventories. Final runtime inventories
+matched their pre-execution records; final scope isolation passed. The separate
+[read-only diagnosis](../../build/preview-delivery-overhead-native-20261114-02/diagnosis/assessment.json)
+replayed the saved warm-up accounting and confirmed all 16 private copies against
+the original fixture, without modifying the execution evidence or its status.
+
+The final runner corrects the copy-count check and adds guards for tool and fixture
+drift, unique runtime paths, and reporting that preserves incomplete evidence.
+Ten focused deterministic tests pass, including warm-up/block fixture counts,
+one/ten-observation v4 gates for all variants, contamination, ownership, integrity,
+timeouts, first-failure stopping, distributions and incomplete reports. The 11
+unchanged delivery-smoke tests pass; the nine historical overhead tests pass with
+one privileged ownership test skipped in the ordinary sandbox. Corrected execution
+has **not** been run. The original executed runner snapshot remains in the native
+build evidence.
+
+The [descriptive report](../../build/preview-delivery-overhead-native-20261114-02/report-reviewed/REPORT.md)
+records the incomplete outcome without calculating statistics from warm-ups.
+**Incremental v4 overhead remains unmeasured.** There are no per-cell or block
+performance conclusions, significance claims, causal scheduling/CPU attribution,
+or changes to C qualification or D pilot conclusions. A new fixed execution
+attempt requires separate authorization; the retained failed attempt is final.
