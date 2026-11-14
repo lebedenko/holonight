@@ -784,3 +784,86 @@ retained export.
 
 Verification: 39 focused scheduler/preparation/pilot tests and whitespace checks
 passed. Changes are limited to the offline parser, focused tests and this note.
+
+## Interpretation of the completed B scheduler pilot (2026-11-14)
+
+The [sealed offline interpretation](../../build/preview-delivery-scheduler-interpretation-20261114-03/REPORT.md)
+uses the original `-03` execution, corrected normalization and analysis, and the
+historical overhead gap package. The new
+[`report-preview-delivery-scheduler.py`](../../scripts/report-preview-delivery-scheduler.py)
+verifies seals, consumed hashes, frozen-source reconstruction and citations,
+replays accounting and corrected scheduler analysis, and seals a blocked report
+on failure. Original blocked execution and analysis assessments remain unchanged.
+No builds, recorders, preview workloads or live-runtime checks ran.
+
+All ten captured observations are retained separately from the single uncaptured
+observation. The captured group has 20 endpoints, 20 unique publications and 40
+complete thread windows; the uncaptured observation has two endpoints and two
+publications, with scheduler states unavailable. Endpoint ownership follows
+accounting identities and invocation-local publication linkage, including the
+possibility that one publication satisfies both harness predicates. Publication
+labels are not substituted for the pixel/metadata predicates. No cross-invocation
+join uses publication IDs or timestamp proximity.
+
+The historical enqueue-return → callback-entry boundary pattern appears in this
+pilot: all 20 captured publication intervals are positive. Using those same
+boundaries for both datasets gives the following descriptive nanosecond values.
+Each pilot endpoint has ten samples; its nearest-rank p95 is therefore its maximum.
+Each historical endpoint has 100 samples from ten invocations. The combined views
+in `summary.json` retain their separate unique-publication denominators.
+
+| Dataset | Endpoint | Observations / endpoints / publications | Minimum ns | Median ns | p95 ns | Maximum ns |
+|---|---|---|---:|---:|---:|---:|
+| Captured pilot | Pixels | 10 / 10 / 10 | 39,605 | 120,870 | 191,318 | 191,318 |
+| Historical B / 160x80.png | Pixels | 100 / 100 / 100 | 4,239 | 93,855.5 | 160,057 | 173,198 |
+| Captured pilot | Metadata | 10 / 10 / 10 | 54,125 | 166,443.5 | 244,555 | 244,555 |
+| Historical B / 160x80.png | Metadata | 100 / 100 / 100 | 51,271 | 154,822 | 239,260 | 403,109 |
+
+The largest pixel window is observation 1, publication 16: 191,318 ns, comprising
+168,705 ns before dispatch entry and 22,613 ns from dispatch to callback. The
+receiver has 45,507 ns running, 5,892 ns runnable and 139,919 ns non-runnable; the
+publisher has 95,195 ns running and 96,123 ns non-runnable. The largest metadata
+window is observation 4, publication 112: 244,555 ns, comprising 237,088 ns before
+dispatch and 7,467 ns afterward. Its receiver has 86,421 ns running, 12,198 ns
+runnable and 145,936 ns non-runnable; its publisher has 29,068 ns running and
+215,487 ns non-runnable. Both selected receivers are running throughout their
+respective dispatch-to-callback intervals. Every target thread window has zero
+unknown time. These overlapping thread views must not be summed.
+
+[Publication rows](../../build/preview-delivery-scheduler-interpretation-20261114-03/publications.json)
+retain all signed return/dispatch/callback intervals, both-thread states and splits
+at dispatch entry.
+[Selected timelines](../../build/preview-delivery-scheduler-interpretation-20261114-03/selected-timelines.json)
+retain tied maxima, establishing scheduler transitions and exact raw references;
+[raw citations](../../build/preview-delivery-scheduler-interpretation-20261114-03/raw-citations.json)
+and [source citations](../../build/preview-delivery-scheduler-interpretation-20261114-03/source-citations.json)
+retain file hashes, line numbers and records or frozen probe excerpts. The 32
+missing-switch-transition and 31 missing-wakeup-or-duplicate-running diagnostics
+remain preserved. They occur outside the complete target windows; resolved target
+lifetimes, coverage and reconciled state totals justify retaining complete target
+accounting under the unchanged scheduler rules.
+
+Verification: 12 new process-launch-free reporting regressions and all 39 existing
+scheduler/preparation/pilot checks passed. They cover endpoint mapping, duplicate
+and overlapping publications, invocation-local identity collisions, signed
+intervals, thread and dispatch-split reconciliation, tied maxima, ten-sample
+statistics, raw citation mismatch, destination rejection, input drift and sealed
+failures. The [independent verification](../../build/preview-delivery-scheduler-interpretation-20261114-03-verification.json)
+checks input/output seals and hashes, normalization and analysis replay, endpoint
+ownership, all observations, summary denominators and statistics, selections,
+thread arithmetic and source/raw citations without importing the reporting tool.
+Scoped elevation read protected retained evidence without changing permissions.
+Whitespace checks passed. Earlier sealed exploratory reports remain preserved.
+
+Instrumentation differs, so the distributions establish neither statistical
+significance nor a change in the underlying distribution. No recurrence threshold
+was invented. Non-runnable time identifies no blocking cause, and enqueue-return
+→ callback-entry is not pure queue residence. Overhead remains unmeasured; no
+subtraction, production/API change, performance qualification or C/D reassessment
+is made.
+
+Recommendation: these complete, sub-millisecond pilot windows do not by themselves
+justify another experiment. A separately approved matched experiment would be
+justified only to investigate the larger historical metadata tail or quantify
+recurrence under comparable instrumentation; this ten-observation pilot cannot
+answer that question. No further experiment was executed.
