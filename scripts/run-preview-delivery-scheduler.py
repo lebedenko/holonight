@@ -308,12 +308,12 @@ def shutdown(recorder,ready=False):
     return result
 
 
-def capture(target,work):
+def capture(target,work,*,bounds=None,export_env=None,export_credentials=None):
     ctl_r,ctl_w=os.pipe(); ack_r,ack_w=os.pipe(); recorder=None; cleanup=None
     boot=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
     started=time.monotonic(); start_ns=time.monotonic_ns()
     argv=[*record_argv(target/'perf.data'),'--delay','-1','--control',f'fd:{ctl_r},{ack_w}']
-    write(target/'record-command.json',dict(argv=argv,bounds=BOUNDS,boot=boot))
+    write(target/'record-command.json',dict(argv=argv,bounds=BOUNDS if bounds is None else bounds,boot=boot))
     try:
         with (target/'recorder.stdout').open('x') as stdout,(target/'recorder.stderr').open('x') as stderr:
             recorder=subprocess.Popen(argv,stdout=stdout,stderr=stderr,pass_fds=(ctl_r,ack_w),start_new_session=True)
@@ -329,8 +329,11 @@ def capture(target,work):
             write(target/'recorder-shutdown.json',cleanup)
             require(cleanup['passed'],cleanup.get('failure','recorder cleanup failed'))
             stop_ns=time.monotonic_ns()
-        header=command(['perf','report','--header-only','--stdio','-i',str(target/'perf.data')],target,'recording-header')
-        command(['perf','script','--ns','--show-task-events','--show-lost-events','-F','comm,pid,tid,cpu,time,event,trace','-i',str(target/'perf.data')],target,'perf-export')
+        readers={}
+        if export_env is not None: readers['env']=export_env
+        if export_credentials is not None: readers['credentials']=export_credentials
+        header=command(['perf','report','--header-only','--stdio','-i',str(target/'perf.data')],target,'recording-header',**readers)
+        command(['perf','script','--ns','--show-task-events','--show-lost-events','-F','comm,pid,tid,cpu,time,event,trace','-i',str(target/'perf.data')],target,'perf-export',**readers)
         clock_header(header)
         require(all('sched:'+event in header for event in EVENTS),'recorded tracepoint missing')
         require(boot==Path('/proc/sys/kernel/random/boot_id').read_text().strip(),'boot changed during capture')

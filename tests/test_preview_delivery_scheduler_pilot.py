@@ -203,6 +203,25 @@ class RunnerTests(OfflineMixin,unittest.TestCase):
             self.assertTrue(metadata['clock_verified'])
             self.assertTrue((output/'record-command.json').exists())
 
+    def test_capture_drops_only_export_readers_to_the_evidence_owner(self):
+        with tempfile.TemporaryDirectory(dir=ROOT/'build') as tmp:
+            output=Path(tmp); recorder=self.recorder()
+            env=dict(PATH='/usr/bin',HOME='/tmp/desktop')
+            credentials=dict(user=1000,group=1000,extra_groups=[1000])
+            header='# clockid: 1\n'+' '.join('sched:'+event for event in r.EVENTS)
+            with patch.object(r.subprocess,'Popen',return_value=recorder) as launch,patch.object(r.os,'write'),patch.object(r.os,'read',return_value=b'ack\n'),patch.object(r.select,'select',return_value=([1],[],[])),patch.object(r,'command',return_value=header) as reader:
+                value,metadata=r.capture(output,lambda remaining:'observations',export_env=env,export_credentials=credentials)
+            self.assertEqual(value,'observations')
+            self.assertTrue(metadata['clock_verified'])
+            self.assertNotIn('user',launch.call_args.kwargs)
+            self.assertNotIn('group',launch.call_args.kwargs)
+            self.assertEqual(len(reader.call_args_list),2)
+            for call in reader.call_args_list:
+                self.assertEqual(call.kwargs,dict(env=env,credentials=credentials))
+            self.assertEqual(reader.call_args_list[0].args[0][0:2],['perf','report'])
+            self.assertEqual(reader.call_args_list[1].args[0][0:2],['perf','script'])
+            recorder.send_signal.assert_called_once_with(r.signal.SIGINT)
+
     def test_nul_terminated_or_fragmented_perf_acknowledgement(self):
         for chunks in ((b'ack\n\0',),(b'a',b'ck\n\0'),(b'ack\n',)):
             with self.subTest(chunks=chunks),tempfile.TemporaryDirectory(dir=ROOT/'build') as tmp:
