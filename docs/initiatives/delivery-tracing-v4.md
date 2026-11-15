@@ -1019,3 +1019,910 @@ distributions, rankings, selections, source transformations and citations.
 Protected evidence was read with scoped `sudo -A`; permissions were unchanged.
 Whitespace checks passed. No builds, recordings, preview workloads, live-runtime
 inspection, API changes or qualification reruns were performed.
+
+## A/C validation and scheduler protocol (2026-11-15)
+
+The private diagnostic tooling is
+[`prepare-preview-validation.py`](../../scripts/prepare-preview-validation.py),
+[`run-preview-validation.py`](../../scripts/run-preview-validation.py),
+[`report-preview-validation.py`](../../scripts/report-preview-validation.py), and
+[`verify-preview-validation.py`](../../scripts/verify-preview-validation.py).
+Only ignored copies of frozen A/C source and harness trees receive probes. No
+production source, installed package, public API, launcher expression, harness
+latency expression, qualification threshold or historical outcome changes.
+
+Preparation resolves the frozen inputs through the completed pre-decode report,
+checks recorded seals and inventories, repeats A/A-fixed reconstruction, and
+replays recorded v4 anchors as literal data without executing historical recipes.
+The fixture identity comes from the bound execution preregistration, rather than
+assuming the previous reporter consumed the fixture directly. All A/C probe
+anchors are reviewed before emitting source trees. Baseline copies retain v4;
+validation copies append an independent RAII stream. Source inventories, literal
+anchors, diffs, tool snapshots and probe citations are sealed. Preparation performs
+no compilation or process launch.
+
+Each `VALIDATION` record has invocation-local `(pid, validation)` and `(pid, span)`
+identities, a parent span, actual executing thread, existing service/observation/
+job/worker/preparation context, manifest ordinal (`-1` outside file work), operation,
+edge, monotonic timestamp and exit outcome. Validation and span sequences do not
+advance v3/v4 identities. Nested runtime validation has its own validation identity
+and retains its generation parent. RAII records balanced exceptional exits; accepted
+measurements require successful original correctness gates and returned exits.
+
+Runtime probes cover initial path/manifest checks, manifest reading, parsing and
+policy, file-record preparation, attributes, open, **combined reading and hashing**,
+digest comparison, required files and inventory traversal. `hash.addData(&file)`
+remains the original combined operation. Its short circuit with open and digest
+comparison is preserved. C additionally measures protected base/generation trees,
+selector/descriptors, nested runtime validation, manifest open/read, parse/policy,
+digest and final identity checks. No finer helper instrumentation is introduced.
+The built runtime manifest freezes the ordinal-to-relative-path/size/digest mapping.
+
+The fixed budget is 100 observations per variant per arm:
+
+| Arm | Private configuration | Scheduler |
+|---|---|---|
+| Baseline | Existing v4 | Off |
+| Validation | v4 plus validation probes | Off |
+| Captured | Same validation binary | On |
+
+Six separate one-observation warm-ups precede ten blocks. Each block contains all
+six combinations, with ten observations per invocation: 66 invocations, 606 total
+observations, including 600 measured observations and 1,200 measured endpoint
+mappings. Starting order is A-baseline, C-baseline, A-validation, C-validation,
+A-captured, C-captured. Block `b` rotates this order left by `b % 6`, then reverses
+it when `b` is odd. No cache flushing, affinity changes, artificial load or retries
+are permitted.
+
+The runner prepares four native configurations using the retained installed-provider
+build sequence and four jobs. It records commands, host tools, dependency resolution,
+binary hashes and linkage. Builds and workloads run as the desktop user. Scoped
+`sudo -A` workers stage A's one-shot layout and C's protected generation layout
+under a fresh `/run/holonight-validation-*` root, or operate the recorder; evidence
+and diagnostic runtimes are preserved. All workload, staging and recorder commands
+are registered before staging or workloads. A single preview-free recorder rehearsal
+checks readiness, monotonic clock metadata, export and shutdown before warm-ups.
+The existing six scheduler tracepoints, all CPUs, 256 mmap pages per CPU and no
+stack sampling are retained. Sessions have 30 seconds including readiness, plus
+five seconds for termination. The shared recorder's optional bounds metadata keeps
+its B-pilot defaults and behavior unchanged.
+
+Offline accounting replays original v3/v4 records, checks both endpoint pre-decode
+boundaries and ownership before deduplicating, and retains original harness timers,
+inclusive spans, clipped unions, disjoint work groups, uncovered intervals and
+per-observation parent subtraction. Rankings use the deepest active measured work
+on each thread; enclosing spans remain separate. Shares use each observation's
+validation window. File activity is aggregated within an observation before any
+distribution is computed. Captured windows require an unambiguous task lifetime,
+matching clock, no capture loss and complete running/runnable/non-runnable coverage.
+Raw transitions and source/record citations remain available. Nested scheduler
+windows and concurrent threads are non-additive.
+
+Pooled and per-block distributions retain count, minimum, median, nearest-rank p95
+and maximum. C's groups sort by median share, p95 share and label, with A alongside.
+Selections retain the five slowest validation/pre-decode/harness observations with
+cutoff ties, all nearest-median ties and largest-uncovered-gap ties. Selection and
+between-arm priority disagreements are explicit. Baseline→validation and
+validation→captured harness differences describe probe/recorder effects under this
+protocol. No overhead is subtracted and no significance or acceptance threshold is
+invented. Running time cannot isolate hashing CPU cost, and non-runnable time
+identifies no I/O or blocking cause. A next investigation requires agreement between
+internal phase rankings and selected-tail evidence.
+
+### Stopped preparation attempt 01
+
+The [sealed preparation assessment](../../build/preview-validation-20261115-01-prepared/ASSESSMENT.md)
+is **blocked before source overlays, builds or workloads**. It retained the fixed
+protocol and a successful A/A-fixed reconstruction, then reported `output integrity
+drift` while checking the historical v3 preparation package. Exactly **zero**
+invocations and observations were launched; all 66 invocations remain unexecuted.
+No recorder rehearsal, staging or privileged runtime change occurred.
+
+The [read-only diagnosis](../../build/preview-validation-20261115-01-diagnosis/REPORT.md)
+identifies an overly strict new checker, rather than changed sealed source bytes.
+That historical preparation seal predates appended execution and reporting evidence.
+Its originally sealed files remain unchanged; full-directory equality incorrectly
+rejected the appended evidence. The corrected checker verifies every originally
+sealed file while retaining strict complete inventories for the frozen source trees
+and newer sealed packages. The failed assessment and seal remain unchanged, and
+byte-identical snapshots reproduce its recorded preparation-tool and test hashes.
+
+The stop-on-first-failed-gate rule was honored: **no corrected preparation or
+experimental retry was executed**. The remaining tooling was implemented and tested
+using synthetic files and deterministic recorder fixtures. It remains uncompiled
+and unvalidated against native workloads. No validation-sub-operation or A/C
+scheduler conclusion, overhead estimate or optimization recommendation is available
+from this attempt. C's failed qualification and D's failed pilot remain unchanged.
+
+Verification: 27 new process-launch-free regressions and 107 affected existing
+checks passed. They cover literal source replay, expression/exception preservation,
+span ownership and nesting, file mappings, per-observation interval arithmetic,
+complete scheduler coverage and lifetime errors, quantiles, deterministic rankings,
+tied selections, schedule counts/order, stopping before another launch, provenance
+and fixture binding, input drift and sealed failures. Existing deterministic
+recorder regressions cover readiness failure, timeout, SIGINT shutdown and partial
+evidence. The independent verifier imports no new validation reporter; it checked
+the failed preparation seal, consumed hashes (using exact historical tool snapshots),
+retained provenance, zero observations and 66 unexecuted invocations. Native
+build/linkage, full measurement accounting and final experimental replay remain
+unexecuted because the first preparation gate failed.
+
+### Native build and stopped recorder rehearsal, attempt 02 (2026-11-15)
+
+The separately authorized fresh attempt passed
+[preparation](../../build/preview-validation-20261115-02-prepared/ASSESSMENT.md)
+and all four [native builds](../../build/preview-validation-20261115-02-built/ASSESSMENT.md).
+Baseline and validation A/C used the retained installed-provider sequence, four
+build jobs and host dependencies (Qt 6.12.0, libexif 0.6.26 and libwebp 1.6.0).
+Dependency resolution, helper/harness hashes and linkage, runtime payloads and
+manifest ordinal mappings passed. All four protected diagnostic runtimes were
+staged successfully and remain preserved under
+`/run/holonight-validation-preview-validation-20261115-02-execution`.
+
+The [execution assessment](../../build/preview-validation-20261115-02-execution/ASSESSMENT.md)
+is **blocked at the preview-free recorder rehearsal**. Readiness acknowledgement
+and SIGINT shutdown passed; the recorder was reaped without timeout or forced
+termination. Its subsequent root-run `perf report` rejected the desktop-owned
+`perf.data` under perf's ownership check. This is an export-reader identity error
+in the new runner. Zero warm-up or measured observations were launched, and all
+66 scheduled invocations remain unexecuted. Final artifact/runtime integrity,
+scope isolation and residual-process checks passed. No retry occurred.
+
+A separate [sealed read-only diagnosis](../../build/preview-validation-20261115-02-diagnosis/REPORT.md)
+retains successful desktop-user header and raw export commands against the original
+recording, without changing its ownership, permissions or bytes. Offline checks
+confirm CLOCK_MONOTONIC, all six tracepoints, complete normalization and no recorded
+capture loss. These supplemental checks do not retroactively pass the failed
+rehearsal and provide no target validation windows or startup measurements.
+
+The recorder helper now accepts optional export environment/credentials. The A/C
+worker keeps recording privileged and drops only the offline readers to the desktop
+file owner. Existing B-pilot defaults, capture options, readiness/shutdown logic and
+session budgets remain unchanged. A deterministic regression checks that recorder
+launch retains its credentials while both readers receive the desktop credentials;
+51 focused recorder and validation regressions passed. Whitespace checks passed.
+The repaired helper was not used for another rehearsal or workload invocation.
+
+Independent verification, without importing the new validation reporter, checked
+all three original seals, consumed hashes, literal source reconstruction, eight
+native binary identities and linkage, four ordinal mappings, protected payloads,
+pre-registration, original readiness/shutdown evidence, offline clock/export and
+zero workload counts. The original execution seal and failure remain unchanged.
+Native compilation is now established for the private probe configurations;
+accepted balanced runtime spans, 600-observation accounting, A/C scheduler
+attribution, probe/recorder effects and an optimization recommendation remain
+unavailable. C's qualification and D's pilot conclusions remain unchanged.
+
+### Desktop-only analysis and stopped warm-up accounting, attempt 03 (2026-11-15)
+
+The authorized rerun passed fresh
+[preparation](../../build/preview-validation-20261115-03-prepared/ASSESSMENT.md),
+all four [native configurations](../../build/preview-validation-20261115-03-built/ASSESSMENT.md),
+protected staging and the preview-free recorder rehearsal. Both offline readers
+ran with desktop credentials. Scheduler identity extraction and normalization were
+moved out of the privileged recorder worker and ran as UID 1000; their retained
+output files are desktop-owned. The common build/orchestration/report boundary now
+also rejects root callers before creating output. Root remains limited to the
+protected staging worker and recorder control. B-pilot defaults and capture budgets
+are unchanged.
+
+The [original execution](../../build/preview-validation-20261115-03-execution/ASSESSMENT.md)
+passed A-baseline, C-baseline and A-validation warm-ups. The fourth, C-validation,
+completed with correct pixels/metadata, original v3/v4 accounting and process
+cleanup, but the new validation accounting rejected `unowned validation spans`.
+C constructs an initial setup service before observation 1. Its generation/runtime
+validation has a known service identity and an unavailable observation identity;
+these extra spans were absent from the initial analyzer's test model. The runner
+stopped at that accounting gate. Original accepted warm-ups remain three; four
+warm-up harness samples exist. **Zero measured observations were launched and all
+62 remaining invocations remain unexecuted.** Final input/artifact/runtime integrity,
+scope isolation and residual-process checks passed.
+
+The [sealed read-only diagnosis](../../build/preview-validation-20261115-03-diagnosis/REPORT.md)
+retains corrected offline accounting for all four existing warm-up observations,
+eight endpoint mappings and one separate setup-validation group. No recorder or
+workload was repeated. Setup activity retains `observation: null` and binds to the
+original v3 `setup_activity` construction and generation/runtime boundaries using
+explicit invocation/process/service/thread context and enclosing spans. A measured
+service with missing observation identity, missing/ambiguous setup bindings,
+foreign processes, exceptional exits or overlap with observation windows remains
+an error. No setup activity is assigned to an observation, pooled into distributions
+or discarded. Full reports now retain it in `setup-validations.json`, with raw
+citations; online per-invocation sidecars support exact replay.
+
+An independent desktop-user verifier, using no sudo and importing no new validation
+reporter, checked all original seals and archived tool identities, source
+reconstruction, eight binary/linkage identities, four manifest ordinal mappings,
+protected payloads, successful rehearsal/clock/export, all original invocation
+correctness and cleanup gates, phase arithmetic, every raw validation span and its
+ownership, setup v3 citations and all eight endpoint mappings. It confirms complete
+separate ownership of the setup spans without manufacturing observation identities.
+The original failure and counts remain unchanged; the offline correction does not
+resume or complete the stopped experiment.
+
+Verification: 57 focused recorder/validation regressions and 41 affected existing
+pre-decode/endpoint/accounting checks passed; whitespace checks passed. New tests
+cover the root-action guard, privilege separation of recording versus readers,
+desktop-only normalization, preserved loss evidence and explicit setup ownership
+with missing/ambiguous/foreign/overlapping cases. Existing broader unchanged
+verification is reused. Captured A/C validation windows, the 600-observation
+experiment, distributions, overhead effects and an optimization recommendation
+remain unavailable. C qualification and D pilot conclusions are unchanged.
+
+## Completed matched validation/scheduler diagnostic, attempt 04 (2026-11-15)
+
+The [sealed decision report](../../build/preview-validation-20261115-04-findings/REPORT.md)
+completes the approved experiment: **66 invocations, 600 measured observations,
+1,200 measured endpoint mappings and six separately reported warm-ups**. All four
+fresh native configurations, installed-provider resolution, binary/linkage checks,
+protected staging, recorder rehearsal, original pixel/metadata/lifecycle/cleanup
+gates, balanced new spans and captured scheduler target coverage passed. No
+workload retries occurred. All 23 recordings and diagnostic runtimes are retained.
+The earlier failed attempts remain unchanged.
+
+The operation to investigate next is **combined file reading and SHA-256** through
+`QCryptographicHash::addData(&file)`. For C, its median per-observation share of the
+validation window is 96.262% without recording and 96.312% with recording. The
+respective median durations are 47.908 ms and 47.270 ms, with nearest-rank p95
+57.644 ms and 57.259 ms. A's median durations are 48.069 ms and 48.165 ms.
+Both arms' pooled rankings and every retained C selection class agree on this
+priority. No internal quantiles are subtracted and no overhead is removed.
+
+In captured C observations, the median per-observation running share of this
+combined operation is 99.850%; runnable share is 0.150%. No non-runnable or unknown
+time is observed in these read/hash windows. A's corresponding running/runnable
+medians are 99.946%/0.054%. Running includes kernel work and cannot isolate hashing
+CPU cost from copying, memory/page-fault effects or diagnostic logging. These
+scheduler states identify no I/O or blocking cause and establish no universal
+absence of blocking.
+
+Per-file activity is first summarized within each observation. Each file's
+distributions then use 100 observations per variant/arm. C's largest median
+contributor in both arms is `usr/lib/libicudata.so.78` (33,112,920 bytes): 15.730 ms
+without recording and 15.723 ms with recording. QtCore and QtGui follow, with their
+secondary order swapped between arms. Lower operation order also differs:
+generation-manifest digest and the nested-runtime residual swap ranks 17/18;
+all operation/file order differences are retained in the sealed findings.
+Profile the combined loop, including these
+payloads, to distinguish hashing, copying, memory effects and logging before
+selecting an optimization. No follow-up workload or production optimization was
+performed, and these measurements do not predict a gain.
+
+Original harness latency differences remain descriptive. C's pixel medians are
+136.363 ms baseline, 138.302 ms validation and 137.004 ms captured; A's are
+141.656 ms, 142.635 ms and 141.529 ms. Both endpoint distributions, negative recorder
+differences, pooled/per-block count/minimum/median/nearest-rank-p95/maximum,
+deterministic rankings and all tied selections remain in the
+[full report](../../build/preview-validation-20261115-04-analysis/REPORT.md).
+No significance, overhead subtraction, acceptance threshold, qualification rerun or
+C/D reassessment is made.
+
+Setup validation remains separate: all 22 invocation-level C setup groups retain
+null observation identities and explicit v3 setup bindings. The measured tables
+contain only the 600 scheduled measured observations. Builds, workloads, readers,
+normalization, reporting and independent verification ran as the desktop user;
+scoped sudo was limited to protected staging and live recording.
+
+After collection, offline replay was made to reuse each parsed scheduler timeline,
+index task transitions, cache citation file reads and use JSON-compatible task
+keys. Exact sealed-sidecar replay passed for captured warm-ups and ten-observation
+A/C batches. Four new process-launch-free cache/JSON/citation regressions and 57
+focused existing checks passed; valid unchanged broader verification is reused.
+These offline changes preserve the gates, source expressions, recordings and
+original harness timers. They do not rerun or alter measurements.
+
+The [independent replay](../../build/preview-validation-20261115-04-independent-verification.json)
+imports no new validation reporter and verifies all original seals, source
+transformations, schedule/counts, observation and setup ownership, phase and
+scheduler arithmetic, distributions, rankings, tied selections, effects and
+citations. [Supplementary verification](../../build/preview-validation-20261115-04-findings/independent-verification.json)
+checks file/state statistics, ordinal mappings, all recording sessions, 132
+before/after scope gates, eight native binary identities, package resolution and
+protected host payloads. Separate warm-up verification checks both captured
+warm-ups. Direct raw-stack replay verifies depths, parent/operation/ordinal fields
+and raw/clipped boundaries for all 158,358 fine spans across the 66 invocations.
+Whitespace checks passed. The completed diagnostic supports a specific
+next investigation inside validation; C's failed qualification and D's failed
+pilot remain unchanged.
+
+## Focused C userspace CPU profile (2026-11-15)
+
+This private attribution experiment reuses attempt 04's unchanged validation/C
+harness, helper, runtime manifest and `3200x2400.png`. It makes no production
+change, qualification rerun, validation-policy change or buffer-tuning experiment.
+The tools are [preparation](../../scripts/prepare-preview-cpu-profile.py),
+[desktop runner](../../scripts/run-preview-cpu-profile.py),
+[offline reporter](../../scripts/report-preview-cpu-profile.py) and
+[independent replay](../../scripts/verify-preview-cpu-profile.py).
+
+The fixed schedule has a separate one-observation warm-up per arm, unprofiled
+first, followed by four blocks of five observations per arm. Blocks 0/2 run
+unprofiled first; blocks 1/3 run profiled first. This permits exactly ten harness
+invocations, 40 measured observations and two warm-ups. No replenishment, trimming
+or retries are permitted. Both arms use the same desktop-owned gate, which reports
+readiness and blocks before exec. In the profiled arm perf attaches to that PID,
+acknowledges enablement and only then permits exec without changing PID.
+
+The task-scoped recorder uses `cpu-clock:u`, strict 999 Hz frequency, inherited
+worker/descendant sampling, DWARF call chains with a 16 KiB stack snapshot,
+`CLOCK_MONOTONIC` and 256 mmap pages. There is no all-CPU recording, scheduler
+tracepoint or privileged-recorder fallback. Readiness consumes the 30-second
+session budget; termination has five seconds. A single synthetic rehearsal must
+verify attachment, exec identity, thread/descendant inheritance, monotonic sample
+boundaries, stack export and shutdown before any harness invocation. The first
+execution, integrity, cleanup, accounting or capture-loss failure stops the run.
+Scoped sudo is limited to the existing conservative installer staging one fresh
+protected C runtime. Prior markers, generations and runtimes remain retained.
+
+Preparation checks the sealed native artifacts, source provenance, prior linkage
+and provider-resolution results, fixture, manifest ordinals and payload hashes.
+No rebuild is needed. Current payload/host ELF hashes and build IDs are recorded;
+historical disassembly supplies no symbol identity. QtCore, OpenSSL and libc debug
+files must match those build IDs and contain debug information, lines and symbol
+tables. Downloads go into a fresh ignored cache without installing packages.
+Automatic downloads are disabled during recording and offline export. A private
+symbol mirror uses ordinary files compatible with the conservative evidence
+sealer. The sealed cache and sized symbol ranges keep unknown addresses explicit
+instead of attributing them to a nearby exported symbol.
+
+Offline tooling joins samples to half-open read/hash spans using recording-local
+PID/TID and monotonic boundaries. Original validation span ownership and setup
+bindings are reused: setup has unavailable observation identities and is reported
+separately. Exclusive self categories are hashing/dispatch, Qt I/O/buffering,
+userspace copying, demonstrated probe logging and other/unresolved. A generic
+write or formatting frame alone does not demonstrate probe logging. Inclusive
+stack presence is separate and non-additive. Raw addresses, periods, unresolved
+frames and depth-limited stacks are retained. A depth below the exporter limit
+does not prove that the 16 KiB snapshot captured the complete stack.
+
+Shares are computed within each observation before pooled/per-block
+count/minimum/median/nearest-rank-p95/maximum distributions. Count and period
+weighting remain separate; zero-sample windows are unavailable. File views retain
+frozen manifest ordinals, including ICU data and QtCore/QtGui. Sparse per-file
+sampling limits interpretation. Validation and both original harness endpoints
+retain p95-cutoff tails including all ties. Unprofiled-to-profiled harness
+differences are instrumentation effects: no overhead subtraction, significance
+or gain is inferred. Any next investigation needs agreement across blocks and
+tails, considering whether unresolved samples could reverse the priority.
+Conclusions concern sampled userspace execution; kernel cost and an exact elapsed
+time decomposition remain unresolved.
+
+### Stopped rehearsal and retained evidence
+
+The [first preparation](../../build/preview-cpu-profile-20261115-01-prepared/assessment.json)
+sealed a sandbox network failure without launching workloads. With network access,
+the [second preparation](../../build/preview-cpu-profile-20261115-02-prepared/assessment.json)
+passed: all three downloaded debug files match the frozen payload build IDs.
+The [input identities](../../build/preview-cpu-profile-20261115-02-prepared/inputs.json)
+record harness SHA-256
+`f1c6c6927396a2316216663166808ae593b306c31047abaa0d3104b246021143`
+and build ID `7d06706cf373a0218d85c7fb5313616c48bac113`.
+
+One fresh runtime was staged through the frozen installer. During the single
+synthetic recorder rehearsal, desktop-owned task-attached perf failed to open
+`cpu-clock:u`; its [stderr](../../build/preview-cpu-profile-20261115-01-execution/rehearsal-recording/recorder.stderr)
+reports restricted performance-monitoring access with `perf_event_paranoid=2`.
+This is an observed attachment failure despite the earlier permission check, not
+evidence about hashing, copying, buffering or logging. No permission settings were
+changed and no privileged recording or rehearsal retry was attempted.
+
+The [stopped assessment](../../build/preview-cpu-profile-20261115-01-execution/assessment.json)
+retains **zero harness invocations, zero measured observations, zero warm-ups and
+all ten invocations unexecuted**. Recorder acknowledgement was empty; the gate was
+never released, so the synthetic workload also did not execute. Both recorder and
+gate were reaped; final scope isolation and residual-process checks passed. The
+protected runtime is retained. No samples or next userspace target are available.
+
+Initial evidence sealing exposed a tooling error: the symbol mirror contained
+symlinks rejected by the existing sealer. After the run stopped, those links were
+materialized as identical bytes, with their original destinations recorded in
+[the repair manifest](../../build/preview-cpu-profile-20261115-01-execution/symfs-link-repair.json).
+The original launch tool snapshots match their recorded hashes. The runner now
+copies mirror files directly; this offline repair did not retry execution or
+alter the recorder failure. The stopped execution and blocked offline analysis
+are sealed separately.
+
+[Independent replay](../../build/preview-cpu-profile-20261115-01-independent.json)
+imports no new reporter or runner and verifies seals, consumed payload/fixture
+identities, manifest mapping, symbol identities, original launch tool snapshots,
+fixed command order, recorder settings, disabled downloads, empty acknowledgement,
+unreleased gate, reaping and zero-launch accounting. The analysis correctly
+refuses to report a completed experiment. Nineteen process-launch-free
+[focused regressions](../../tests/test_preview_cpu_profile.py) cover schedule
+counts/order, task scope, readiness and shutdown fixtures with a shared
+termination deadline, half-open boundaries,
+separate setup ownership, exclusive stack categories, unknown/sized/truncated
+frames, count/period weighting, zero samples, JSON report replay, cutoff ties,
+missing/mismatched symbols, sealed failures and tamper detection. Successful live
+attachment/export, sample classification and complete-run independent replay
+remain unverified because the required rehearsal failed.
+
+### Synthetic CPU-recorder diagnosis (2026-11-15)
+
+The approved follow-up diagnosed recording with synthetic Python processes only.
+The stopped experiment, original tool snapshots, seals, ordinary-file symbol
+mirror and protected `/run` runtime were checked without modification. All ten
+original harness invocations remain unexecuted. A new profiling experiment still
+requires a separate plan.
+
+`run-preview-cpu-profile.py diagnose --output <fresh-ignored-build-directory>`
+registers four comparisons before recording: perf-launched and task-attached,
+each with minimal `cpu-clock:u` recording and with the complete original options.
+It uses `perf record -vv` under installed `strace`, restricted to event opening,
+mapping and control syscalls. Each case has a 30-second budget and one shared
+five-second cleanup deadline. It records desktop credentials, capabilities,
+seccomp, namespaces, kernel/tool identities, security settings and resource
+limits. The earlier successful permission check could not be located as a
+reproducible command plus context, so remains explicitly unverified.
+
+The [comparison evidence](../../build/preview-cpu-diagnostic-20261115-02/assessment.json)
+shows:
+
+| Launch | Minimal | Original complete options |
+| --- | --- | --- |
+| Perf-launched synthetic | passed | event opening denied, `EACCES` |
+| Task-attached gated synthetic | passed | event opening denied, `EACCES`; gate not released |
+
+The full event attributes request `PERF_SAMPLE_CALLCHAIN` with
+`exclude_kernel=1` but without `exclude_callchain_kernel=1`. DWARF adds user
+register/stack capture and sets `exclude_callchain_user=1`; that does not exclude
+kernel callchains. The kernel's
+[callchain access check](https://kernel.googlesource.com/pub/scm/linux/security/vulns/+/247fced16dfe16f1ac614ea092d62c8bf5a62c8f)
+explains the observed `EACCES` at paranoid level 2. This is an unintended recorder
+request for kernel callchains, rather than evidence that all unprivileged task
+sampling is prohibited. The focused repair adds `--user-callchains`, whose
+[documented effect](https://android.googlesource.com/kernel/common/+/c645c11a2dba116bad3ee43e08e330db8f03ede6/tools/perf/Documentation/perf-record.txt)
+is to exclude kernel callchains. Frequency, DWARF stack size, monotonic clock,
+256 mmap pages, timestamps, periods, inheritance and attach-before-release remain
+unchanged. Diagnostic comparisons continue to reproduce the original options.
+
+The [single untraced confirmation](../../build/preview-cpu-confirmation-20261115-01/assessment.json)
+then failed later with `Permission error mapping pages` at the required 256-page
+setting. There was no acknowledgement or gate release; both groups were reaped,
+and descriptors closed. No retry was performed. This run therefore did not
+validate exec identity, inherited samples, stack export or offline sample replay;
+those acceptance checks remain unavailable. The fresh ordinary-file symbol mirror
+was independently verified unchanged.
+
+The desktop context was UID/GID 1000, no effective or permitted capabilities,
+`Seccomp: 0`, kernel `7.3.4-arch1-1`, perf `7.3.4-1`, `perf_event_paranoid=2`,
+`perf_event_mlock_kb=516`, and soft/hard `RLIMIT_MEMLOCK=8388608` bytes. With 32
+CPUs, 256 data pages plus a metadata page per CPU at 4096 bytes need 33,685,504
+bytes. The recorded perf allowance plus memlock limit provides at most
+25,296,896 bytes before other consumption. This budget calculation is consistent
+with the mapping error; the confirmation was intentionally untraced, so its
+mapping syscall errno was not captured. The
+[kernel resource-control documentation](https://docs.kernel.org/admin-guide/perf-security.html#memory-allocation)
+explains the combined limits. No policy, limits, capabilities or recorder
+privilege were changed, and no smaller buffer or alternative attachment mode was
+substituted. Recording remains blocked under the approved settings.
+
+The runner now retains the first exception, errno where supplied, complete
+recorder stderr, gate/recorder identities, acknowledgement bytes and release
+state. Cleanup attempts both groups independently and closes every descriptor
+with separate outcomes, even after another cleanup fails. Forced cleanup stops
+the diagnostic sequence. `confirm` is a separate synthetic-only entrypoint;
+neither diagnostic entrypoint calls staging or the harness scheduler.
+`verify-preview-cpu-profile.py --diagnostic <directory> --output <fresh-json>` and
+`--confirmation <directory> --output <fresh-json>` independently check seals,
+comparison ordering/options, syscall citations, cleanup and preserved inputs,
+without importing the runner or reporter. Verification accepts a sealed blocked
+confirmation as an accurately reported failure, not as recording success.
+
+A preliminary diagnostic command incorrectly placed verbosity before `record`,
+which printed perf build features and exited without opening an event or launching
+a synthetic process. That [sealed preliminary attempt](../../build/preview-cpu-diagnostic-20261115-01/assessment.json)
+was preserved; the corrected four-case sequence ran once in its own directory.
+Process-launch-free CPU regressions and affected scheduler recorder tests passed.
+The [sealed diagnostic report](../../build/preview-cpu-diagnostic-20261115-report/report.md)
+contains comparison and confirmation bindings, final tooling snapshots, focused
+verification results and the unresolved restriction. Native build/linkage results
+were reused; no ecosystem rebuild was performed.
+
+
+### Offline frozen-symbol recovery
+
+`run-preview-cpu-profile.py replay-confirmation --confirmation <sealed-confirmation>
+--output <fresh-build-directory>` reuses the original recording in place. It never
+records, stages, builds or launches a workload. The replay preserves raw MMAP2
+records and completes an ordinary-file copy of the frozen symbol mirror using
+only local ELF files matching recorded build IDs. Missing identities, changed
+sources and destination collisions block recovery. Readers disable debuginfod
+and build-ID cache writes. Future confirmations complete dependencies after
+recording and distinguish recording, mirror, export and rehearsal failures;
+workload errors remain separate.
+
+`verify-preview-cpu-profile.py --replay <sealed-replay> --output <fresh-json>`
+independently checks source bindings, mappings, ELF identities, mirror hashes,
+reader outputs, original capture/cleanup and all three marker-bounded stacks.
+Verification output stays outside the replay seal; failures produce structured
+JSON and a nonzero exit. Legacy post-recording failures must be reproduced from
+sealed evidence. A successful recovery has its own status and never changes the
+original blocked confirmation or authorizes any of the ten harness invocations.
+
+### Fixed live CPU attempt after accepted recovery
+
+The [second offline recovery](../../build/preview-cpu-replay-20261115-02/assessment.json)
+and its [final independent verification](../../build/preview-cpu-replay-20261115-02-final-independent.json)
+accepted the recovered recording. The original blocked confirmation remains
+historical: the recovery corrected incomplete symbol-mirror handling and does
+not retroactively turn the original export failure into recording failure.
+
+The runner now provides read-only `preflight-execution --package <prepared-package>
+--output <prospective-execution-directory>`. Execution repeats admission before
+reserving the destination. It binds desktop host namespaces, accepted recovery,
+consumed historical seals, frozen artifacts/debug identities, installer identities,
+tool snapshots and the fixed commands before staging. Every recording must
+complete its ordinary-file mirror before export; evidence retains raw mappings,
+ELF build IDs, hashed non-ELF exclusions and source hashes. Existing mirror bytes
+remain intact and the final inventory is sealed. Failure stages and a readable
+assessment survive a stopped attempt. Independent replay checks host/runtime
+integrity, recorded commands, acknowledgement/release ordering, rehearsal stacks,
+mapping classifications, source identities and reproduced reader output.
+
+The [fresh execution](../../build/preview-cpu-profile-20261115-02-execution/assessment.json)
+passed host preflight and staged one fresh protected C runtime. Its single
+rehearsal passed attachment, acknowledgement, unchanged exec PID, cleanup and
+multiframe main-thread, worker-thread and descendant sampling. The unprofiled
+one-observation warm-up passed. The profiled warm-up finished its workload and
+recorder cleanup, but mapping completion stopped on the unavailable recorded
+path `/usr/libexec/holonight-images-helper`. No mirror/export retry or replacement
+attempt was made. The raw mapping evidence and recording remain sealed; no
+historical evidence or protected runtime was removed.
+
+Two harness invocations launched, one warm-up was accepted, zero measured
+observations were accepted, and eight invocations remain unexecuted. The
+[analysis](../../build/preview-cpu-profile-20261115-02-analysis/assessment.json)
+therefore reports blocked. [Independent execution verification](../../build/preview-cpu-profile-20261115-02-independent.json)
+passed for the accurately stopped result; [final verification](../../build/preview-cpu-profile-20261115-02-final-verification.json)
+also covers the blocked analysis. Verification success is not experiment
+completion. The required ten successful invocations and 40 measured observations
+were not achieved.
+
+There are no measured block distributions, p95 tails, exclusive self-category
+shares or separate inclusive-presence results to prioritize userspace activity.
+The attribution evidence is inconclusive; no next performance investigation,
+gain or significance claim follows. Kernel cost and exact elapsed-time
+decomposition remain unresolved. Focused CPU regressions use forbidden real
+process launches and cover schedule accounting, mirror-before-export ordering,
+report arithmetic, namespace/destination rejection, identities and tampering.
+Unchanged scheduler and native results were reused without rebuilding.
+
+### Helper namespace correction and successful fixed rerun
+
+The user authorized correcting helper availability and rerunning the experiment.
+The helper had executed successfully: its path inside the workload filesystem
+namespace, `/usr/libexec/holonight-images-helper`, was unavailable to the host
+symbol reader. The private symbol mirror now includes an ordinary-file copy at
+that namespace path, taken from the prepared native helper with matching SHA-256
+and build ID. Recorded mapping identities are still required before export.
+No host installation, workload, payload, recorder setting or production behavior
+changed. Offline checking of the previous warm-up's raw mappings resolved all
+224 ELF paths with matching identities before the fresh attempt. The runner also
+binds the stopped attempt's execution/analysis seals and inventories all retained
+CPU experiment runtimes during preflight and subsequent integrity checks.
+
+The [third execution](../../build/preview-cpu-profile-20261115-03-execution/assessment.json)
+completed one rehearsal and all ten harness invocations, accepting two warm-ups
+and 40 measured observations. The six recordings retain individual mapping and
+source-hash evidence, and the shared ordinary-file mirror has a sealed final
+inventory. [Independent execution verification](../../build/preview-cpu-profile-20261115-03-independent.json)
+and [final execution/report verification](../../build/preview-cpu-profile-20261115-03-final-verification.json)
+passed. Historical seals and old/new protected runtime inventories remained
+unchanged. Earlier blocked attempts remain sealed and separate.
+
+The [report](../../build/preview-cpu-profile-20261115-03-analysis/REPORT.md)
+contains the block timing distributions; its `observations.json`, `summary.json`,
+`tails.json` and `setup.json` retain observation, frozen-file-ordinal, tail and
+separate setup views. Within measured read/hash spans, 792 sampled userspace
+self observations break down as follows. All selected samples have the same
+recorded period, so count and period shares agree.
+
+| Exclusive self category | Samples | Count and period share |
+|---|---:|---:|
+| Hashing/dispatch | 777 | 98.11% |
+| Qt I/O/buffering | 5 | 0.63% |
+| Userspace copying | 5 | 0.63% |
+| Demonstrated probe logging | 0 | 0% |
+| Other/unresolved | 5 | 0.63% |
+
+Hashing/dispatch shares in blocks 0–3 are 97.40%, 97.46%, 98.62% and 98.92%.
+The two validation p95-tail observations (invocation 7, observations 2 and 4,
+including all cutoff ties) contain 100% and 95.74% hashing self samples. Pixel
+and metadata tails select invocation 3 observation 2 and invocation 4 observation
+3, with 97.73% and 97.37% hashing shares. Across the measured spans there are
+3,167 unresolved frames among 18,188 frames, including three unresolved leaves,
+and zero truncated stacks. Unresolved caller frames are not additional self
+samples; even assigning every other/unresolved self sample to one competitor
+cannot reverse the priority.
+
+Inclusive stack presence is separate and non-additive: `verifyRuntime` appears
+in 791 measured samples, `SHA256_Update_thunk` in 773, and
+`sha256_block_data_order_shaext` in 769. These counts must not be added to the
+exclusive self categories. The largest frozen-file sample counts are ordinal 31
+(`libicudata.so.78`, 275), ordinal 7 (`libQt6Gui.so.6`, 96), ordinal 5
+(`libQt6Core.so.6`, 95) and ordinal 18 (`libcrypto.so.4`, 58). Sparse small-file
+windows remain unsuitable for ranking individual files. Separate setup read/hash
+spans contain 241 samples: 231 hashing, four Qt I/O, one copying, one demonstrated
+probe logging and four other/unresolved; 965 frames are unresolved and none of
+the setup stacks are truncated.
+
+The next investigation should examine SHA-256 execution/dispatch and the volume
+of repeated runtime verification within the existing integrity contract. Blocks,
+validation tails and endpoint tails agree on that userspace priority. This is an
+investigation recommendation, not authorization to weaken validation or alter
+production behavior. Sampling covers read/hash spans rather than an exact
+elapsed-time decomposition; kernel cost remains unresolved. No performance gain
+or statistical significance is claimed. All 46 focused CPU tests and whitespace
+checks passed; unchanged native and scheduler results were reused without a
+rebuild or symbol download.
+
+## Offline runtime verification work audit, 2026-11-15
+
+The [sealed work audit](../../build/preview-verification-work-20261115-04/REPORT.md)
+reconciles the successful CPU `-03` execution's raw validation spans with its
+saved observations and setup records. The new
+`scripts/audit-preview-verification-work.py` consumes execution/report paths and
+writes a fresh ignored build directory; `scripts/verify-preview-verification-work.py`
+independently replays raw spans and manifest accounting without importing the
+audit or its reporter. The [independent result](../../build/preview-verification-work-20261115-04-independent.json)
+binds the audit seal. Consumed seals, manifest payloads and frozen source hashes
+are checked before analysis and again before sealing output.
+
+Each runtime pass validates 60 frozen manifest ordinals totaling **87,215,960
+bytes**. Forty measured passes infer **3,488,638,400 bytes**; two warm-ups infer
+174,431,920 bytes and ten setup passes infer 872,159,600 bytes, retained as separate
+populations. The enclosing generation validation contributes no second payload
+pass. Zero-byte files contribute zero bytes. These byte counts follow successful
+full-file validation and are not direct read counters.
+
+Summed measured read/hash elapsed time is 1,925,287,578 ns, giving pooled combined
+reading/hash throughput of approximately **1.812 GB/s** (decimal). Per-arm pooled
+rates are 1.814 GB/s unprofiled and 1.810 GB/s profiled. These rates use summed bytes
+and durations, may include scheduling delays, and do not isolate crypto CPU
+throughput. Per-validation median validation/read-hash/residual times are
+49.919/48.065/1.785 ms; nearest-rank p95 values are 61.231/59.442/2.530 ms.
+Quantiles describe their own populations and are not additive. JSON outputs
+retain per-file, per-block, per-arm and pooled distributions, raw citations and
+the existing validation/pixel/metadata p95-tail membership including ties. CPU
+sample attribution remains separate from elapsed throughput.
+
+All 52 observed validations belong to distinct invocation/PID/service lifetimes:
+40 observation constructions, two warm-up constructions and ten setup
+constructions. The frozen service queues session-pool construction on its worker;
+the pool constructs `RuntimeOwner`, whose constructor calls `refresh()`. Its
+`generation_validation` probe encloses the observed validation root. The service
+constructor body's end therefore does not end asynchronous owner construction.
+Matching lifecycle identity and frozen call paths support these classifications;
+timestamp proximity and reused object addresses do not establish ownership.
+
+The source audit retains hashes and line excerpts for owner construction/refresh,
+pool construction/refresh, service construction/refresh, fallback launch validation
+and helper verification. Explicit service/pool refresh entrypoints have no distinct
+refresh-call probe in this frozen version. Additional unexplained roots must block
+classification rather than being called redundant. Helper verification paths are
+not all instrumented: absence of a trace cannot prove their absence. Matching
+payload content across service lifetimes does not prove unchanged generation
+identity. No repeated pass within one unchanged owner/generation lifetime is
+established.
+
+Select exactly one follow-up: a **bounded native Qt-versus-installed-backend
+SHA-256 throughput diagnostic** using the frozen payload. This audit alone cannot
+establish unexpectedly slow cryptographic throughput. The proposal remains a
+subsequent step; no diagnostic, workload, recording, build, staging operation,
+symbol download or production change was performed for this audit. Mutable-runtime
+full validation, generation identity, ownership checks, leases and installer
+protections remain intact. No gain or significance claim is made.
+
+Verification covers successful and blocked offline paths, nested generation/runtime
+spans, separate service lifetimes, setup/warm-up separation, zero-byte files,
+missing/repeated ordinals, duplicate/missing/exceptional spans, nonpositive durations,
+p95 ties, input/source/manifest/seal tampering, output collisions and independently
+detected accounting tampering after resealing. A second explicit refresh without
+lifecycle identity is rejected rather than inferred. Seven focused tests, 37
+validation/parser regressions and 46 CPU regressions passed, with process-launch
+entrypoints forbidden in the new tests. Existing native and scheduler results were
+reused. Whitespace checks passed.
+
+## Native SHA-256 diagnostic implementation and blocked run, 2026-11-15
+
+The standalone [native harness](../../tooling/preview-hash-throughput/README.md),
+`scripts/run-preview-hash-throughput.py` and independent stdlib-only
+`scripts/verify-preview-hash-throughput.py` implement the approved five-case,
+64 KiB SHA-256 comparison. Preparation checks the sealed audit, successful
+independent-verification binding, frozen manifest and host Qt/libcrypto/libc
+hashes/build IDs. The runner preserves source/tool snapshots, Release build
+commands/flags, binary/linkage identity, host/CPU identity, raw streams, the full
+rotated schedule and process cleanup records. File opening/loading, digest checks
+and output remain outside the primary update timer; initialization and finalization
+have separate durations. The checker recomputes raw counts, bytes, distributions
+and block-matched ratios, rejecting missing/duplicate rows and accounting changes
+even after resealing. No production code or older validator/candidate experiment
+was changed.
+
+The [sealed attempt](../../build/preview-hash-throughput-20261115-01/assessment.json)
+passed provenance, host Release configuration/build and native digest correctness,
+but exited before emitting any identity or sweep rows: `actual EVP provider
+unavailable`. The installed OpenSSL did not expose a provider through the legacy
+EVP descriptor used by the initial provider probe. The process returned 1 in
+approximately 58 ms; cleanup succeeded. All **130 scheduled sweeps remain
+unexecuted**, including all five warm-ups and 125 measured sweeps. There is no
+throughput result, block-direction comparison, optimization selection, performance
+qualification or whole-preview gain claim. The investigation is **inconclusive**.
+Historical audit throughput remains contextual because its timer/probe conditions
+differ. Crypto dispatch, streaming overhead, Qt device behavior and file-access
+costs remain unresolved.
+
+The implementation now fetches SHA-256 once outside per-file timers, uses that
+implementation for every EVP context and records its provider. Native correctness
+also checks that initialized contexts retain the fetched provider, covering the
+provider-reporting gap missed by the initial test. The corrected harness was
+rebuilt against host dependencies and passed its correctness test; it has not run
+the frozen experiment. The failed attempt's sealed source snapshots and binary
+remain unchanged. No retry was launched because the approved protocol explicitly
+prohibits retries. A fresh measurement requires authorization.
+
+[Independent partial-evidence verification](../../build/preview-hash-throughput-20261115-01-independent.json)
+checks the seal, provenance/payload/dependency identities, retained tool/source
+snapshots, native binary identity, successful preparation/correctness records,
+empty raw stdout, complete unexecuted schedule and failed-process cleanup. It
+retains blocked experiment status and prohibits performance interpretation.
+Twelve focused Python regressions and native correctness passed after the fix;
+coverage includes schedule rotation, warm-up exclusion, zero bytes, pooled-rate
+arithmetic, nearest-rank p95 ties, malformed/duplicate/missing output, wrong
+digests, nonpositive durations, provenance drift, destination collisions,
+termination/kill/reap cleanup and accounting tampering after resealing. Existing
+native, scheduler and CPU-profile results were reused. Whitespace checks passed.
+No staging, preview/helper launch, container build, symbol download, profiler
+recording, package installation, deployment or publication occurred. Runtime
+validation, generation identity, ownership checks, leases and installer
+protections remain unchanged.
+
+## Authorized native SHA-256 diagnostic completion, 2026-11-15
+
+After explicit authorization to launch a fresh attempt with the tested provider
+fix, the [sealed native run](../../build/preview-hash-throughput-20261115-02/REPORT.md)
+completed the fixed schedule without retries or adaptive changes. Its single
+persistent process returned 0 in 5.011 seconds and cleanup succeeded. All 125
+measured sweeps (25 per case) reconcile **7,500 per-file rows** and
+**10,901,995,000 logical bytes**. Five excluded warm-ups retain 300 separate rows
+and 436,079,800 logical bytes. No scheduled sweep remains unexecuted. The earlier
+blocked attempt remains sealed and contributes no performance observations.
+
+Pooled primary throughput divides summed logical bytes by summed update/read-hash
+durations; initialization, finalization, opening/loading, digest checks and output
+are excluded from that primary comparison:
+
+| Case | MiB/s |
+|---|---:|
+| Qt device | 2063.522 |
+| Qt file streaming | 2102.771 |
+| EVP file streaming | 2098.979 |
+| Qt memory streaming | 2410.330 |
+| EVP memory streaming | 2424.506 |
+
+Block-matched throughput ratios, in block order 0–4, are:
+
+| Numerator / denominator | Block 0 | Block 1 | Block 2 | Block 3 | Block 4 | Direction agrees |
+|---|---:|---:|---:|---:|---:|---|
+| Qt device / Qt file | 0.97702 | 0.98891 | 0.97588 | 0.98051 | 0.98439 | Yes, below 1 |
+| Qt file / EVP file | 1.01172 | 1.00189 | 0.99453 | 1.00831 | 0.99270 | No |
+| Qt memory / EVP memory | 0.99652 | 0.98788 | 1.00975 | 0.98638 | 0.99031 | No |
+
+The evidence supports one investigation recommendation: inspect Qt's device
+buffering/read path, since Qt device throughput was lower than Qt file streaming
+in every block. This is source investigation, not an optimization selection or a
+causal attribution. Qt/EVP streaming directions do not agree across blocks.
+File-access costs, device buffering, streaming-call overhead, scheduling and
+backend dispatch remain unresolved. The recorded EVP provider is `default`;
+actual mappings include `/usr/lib/libQt6Core.so.6.12.0`,
+`/usr/lib/libcrypto.so.4` and `/usr/lib/libc.so.6`, matching the frozen identities.
+These observations do not establish Qt's provider or hardware dispatch. The
+historical audit's approximately 1.812 GB/s combined read/hash rate remains
+contextual because its timer/probe conditions differ; it is not a paired arm.
+No slow-crypto threshold, significance claim, performance qualification or
+whole-preview gain claim is introduced.
+
+[Independent verification](../../build/preview-hash-throughput-20261115-02-independent.json)
+replays all raw rows against the frozen manifest and recomputes counts, bytes,
+separate warm-up/per-block/pooled distributions and all 15 matched ratios. It
+checks the complete schedule, process bounds/cleanup, Release compile flags,
+consumed audit/provenance seals, payload hashes, native binary identity,
+source/tool identities and mapped dependency identities. The evidence includes
+[raw output](../../build/preview-hash-throughput-20261115-02/native.stdout),
+[distributions and ratios](../../build/preview-hash-throughput-20261115-02/summary.json),
+[preregistration](../../build/preview-hash-throughput-20261115-02/preregistration.json)
+and [completion assessment](../../build/preview-hash-throughput-20261115-02/assessment.json).
+The 12 focused Python regressions and corrected native correctness result from
+the preceding implementation were reused; the runner also passed its native
+correctness gate before measurement. No concurrent test/build workload was
+launched during measurement. Only this initiative note changed for the authorized
+run; generated evidence remains under ignored `build/`. Whitespace checks passed.
+Production validation, generation identity, ownership checks, leases and installer
+protections remain unchanged. No deployment or publication occurred.
+
+### Qt device-path source and binary investigation (2026-11-16)
+
+The [offline audit](../../build/preview-hash-device-path-20261116-06/REPORT.md)
+reuses completed run `preview-hash-throughput-20261115-02` and its passing
+independent-verification binding. Both historical measurement attempts remain
+intact. No new benchmark, build, recording, symbol download or production change
+was performed; existing native, scheduler and CPU-profile results are reused.
+
+Recomputing primary `update_ns` from every raw row gives the following mean
+full-payload sweep durations. Each arm has five sweeps per block over all 60
+ordinals and 87,215,960 logical bytes. Differences are **device minus streaming**;
+adjacent sweeps are not treated as individually paired observations.
+
+| Block | Qt device ms | Qt 64 KiB streaming ms | Signed difference ms | Existing throughput ratio |
+| --- | ---: | ---: | ---: | ---: |
+| 0 | 40.308347 | 39.381915 | +0.926432 | 0.97701638 |
+| 1 | 40.273175 | 39.826353 | +0.446822 | 0.98890523 |
+| 2 | 40.514648 | 39.537543 | +0.977105 | 0.97588268 |
+| 3 | 40.078402 | 39.297171 | +0.781231 | 0.98050742 |
+| 4 | 40.363407 | 39.733262 | +0.630145 | 0.98438820 |
+
+The equal-block mean difference is **+0.752347 ms** per full-payload sweep.
+[Per-file accounting](../../build/preview-hash-device-path-20261116-06/accounting.json)
+retains every ordinal and negative contribution; this payload has no zero-byte
+files, and fixtures cover their accounting. Each
+file contributes its device block mean minus its streaming block mean. Integer
+five-sweep differences sum exactly to the full-payload difference before division
+by 5,000,000 to obtain mean milliseconds. These are descriptive elapsed-time
+observations, not production savings estimates or significance claims.
+
+The [identity record](../../build/preview-hash-device-path-20261116-06/identity.json)
+binds installed `libQt6Core.so.6.12.0` to the member extracted from cached
+`qt6-base 6.12.0-5`: SHA-256
+`5205d073601b17d36c2e988378157747870122fef75b81d3ef5e38e05ca26f77`,
+build ID `a6c99e3c0418a2ae0f6147f6bfe9c87fa338ade2`. The retained debug file
+matches that build ID and its historically sealed hash. Arch packaging revision
+`b289afcf8a3c03b5215bfb9ce3139f37536b6051` has the exact `.BUILDINFO` recipe
+SHA-256 `e39eef05adc04cdec70ff5f32057c6f8bda8bcfaff721c8a2eb32cd809bb0d8c`.
+
+**Source-level limitation:** the primary Qt repository's retrieved `v6.12.0`
+commit is `025bdad181de241e81bf853c8a2d7bf3d19261a9`, but its Git tar archive
+SHA-256 `f24f106cee5f49a1e0778ec84301467640f6fdbbbcdf61e77623c119ab966208`
+differs from recipe checksum
+`d97ef157dc50bdf0425337e9adede8135ab508a4ab2f1abae7e9cfc42c5f86db`.
+The archive, recipe, two checksum-validated packaging patches, four cherry-pick
+diffs, revision identifiers and primary retrieval URLs are retained in
+[source provenance](../../build/preview-hash-device-path-20261116-06/source-provenance.json).
+Packaging scripts were not executed and no package was installed. Candidate Qt
+sources therefore do not support exact-build source conclusions. The mechanism
+findings below use independently bound binary evidence and frozen harness source.
+
+[SHA-256 and inclusive line citations](../../build/preview-hash-device-path-20261116-06/citations.json)
+cover the frozen harness and relevant disassembly. Public
+`QCryptographicHash::addData(QIODevice*)` jumps to the private routine at
+`0x30dce0`, identified by matching debug symbols. At `0x30dd2b` it passes
+`0x400` (1,024) bytes to `QIODevice::read`; `0x30dd3e` loops on positive read
+results and the body calls the hash-update routine. By comparison, frozen harness
+`main.cpp` uses a 65,536-byte buffer, hashes positive chunks, rejects negative
+reads and unexpected zero reads, and stops on zero. The device arm additionally
+checks `file.error()` and `atEnd()` and obtains `pos()` inside the primary timer;
+the streaming arm maintains its byte offset. File opening and digest finalization
+are outside this timer.
+
+Compiled `QIODevicePrivate` construction stores `0x4000` (16,384) as its default
+buffer chunk; its read routine has buffering and direct-read branches.
+`QRingBuffer::read` contains a `memcpy` call. `QFileDevice::readData` delegates to
+the file engine with error-handling branches; the Unix `QFSFileEngine::read`
+contains `read`/`fread` calls and retry/error branches. Thus the binary supports
+smaller device API requests and additional buffered-copy machinery. Assuming
+ordinary full reads, 1 KiB requests require more read/hash-update API iterations
+than 64 KiB requests. This conditional expectation does not establish actual
+syscall counts, selected branches, cache behavior, provider selection, hardware
+dispatch or which mechanism accounts for the observed elapsed-time difference.
+
+The investigation recommendation is to resolve the source archive checksum
+mismatch against the package builder's retained VCS input before attributing
+costs or selecting an optimization. The stdlib-only
+`verify-preview-hash-device-path.py` independently checks evidence bindings,
+package/debug identities, provenance, citations, disassembly and raw block/file
+arithmetic without importing the auditor. Its
+[passing verification](../../build/preview-hash-device-path-20261116-06-independent.json)
+binds the final audit seal. Focused fixtures cover signed reconciliation,
+zero-byte files, missing/duplicate ordinals, identity and citation mismatches,
+destination collisions, sealed partial failures and accounting tampering after
+resealing. Generated evidence remains under ignored `build/`.
