@@ -1926,3 +1926,60 @@ binds the final audit seal. Focused fixtures cover signed reconciliation,
 zero-byte files, missing/duplicate ordinals, identity and citation mismatches,
 destination collisions, sealed partial failures and accounting tampering after
 resealing. Generated evidence remains under ignored `build/`.
+
+### Buffered 64 KiB hashing practical-value assessment (2026-11-16)
+
+The [offline protocol](../sdd/preview-hash-value.md) records the **5 ms per-preview
+planning threshold** before assessment and reuses the unchanged passing independent
+verifications for `preview-hash-device-mechanism-20261116-01` and
+`preview-verification-work-20261115-04`. Seals, verification bindings, recursive
+consumed identities, frozen payload mapping, dependency/process mappings and source
+citations were rechecked without reconstruction, builds or workload reruns.
+
+The **new post hoc direct comparison** is device buffered minus explicit stream
+64K buffered, recomputed from raw timing rows rather than added prior effects.
+All eight three-sweep block means, ratios and signed per-ordinal integer contributions,
+including empty files, are retained in
+[arithmetic.json](../../build/preview-hash-value-20261116-02/arithmetic.json).
+
+| Block | Signed difference, ms | Device / stream duration ratio |
+|---|---:|---:|
+| 0 | +1.160586 | 1.02950010 |
+| 1 | +1.151952 | 1.02926801 |
+| 2 | +1.300482 | 1.03318440 |
+| 3 | +1.204901 | 1.03071444 |
+| 4 | −0.552415 | 0.98612639 |
+| 5 | +1.411246 | 1.03595370 |
+| 6 | +1.468762 | 1.03773350 |
+| 7 | +1.118073 | 1.02838540 |
+
+Seven blocks favor streaming; one favors device hashing. Directions are mixed
+and inconclusive. All eight observed differences are below 5 ms; none equals or
+exceeds it. **Defer a private A/B experiment on current evidence.** This decision
+does not establish an upper bound or prove that a future implementation cannot
+save 5 ms. A candidate experiment requires its own plan.
+
+The [sealed report](../../build/preview-hash-value-20261116-02/report.md) places
+these results alongside historical validation, read/hash, pixel and metadata
+latencies. Measured, warm-up and setup populations remain separate, as do profiled
+and unprofiled groups. Measured unprofiled validation/read-hash medians are
+50.393/48.302 ms; pixel/metadata medians are 133.050/133.151 ms. These historical
+latencies are a separate measurement population: no standalone difference is
+subtracted from an endpoint, no quantiles are combined, and no exact critical-path
+saving is claimed. Explicit execution/invocation/observation identities reconcile
+historical endpoints within the same retained execution.
+
+Frozen citations place validation in RuntimeOwner construction/refresh and read/hash
+in verifyRuntime. All 52 accounted service lifetimes have one validation each;
+distinct constructions do not demonstrate redundant validation within one unchanged
+owner/generation lifetime. Generation identity remains unproven.
+
+Evidence includes the [protocol](../../build/preview-hash-value-20261116-02/protocol.json),
+[input bindings](../../build/preview-hash-value-20261116-02/inputs.json),
+[context distributions and identities](../../build/preview-hash-value-20261116-02/context.json),
+tool/test snapshots, source citations, lifetimes, machine-readable decision and
+sealed completion assessment. Verification uses seven focused Python fixtures,
+one offline assessment, the
+[independent stdlib-only checker](../../build/preview-hash-value-20261116-02-independent.json),
+snapshot comparisons and whitespace checks. Production code, prior evidence and
+existing uncommitted work are preserved.
