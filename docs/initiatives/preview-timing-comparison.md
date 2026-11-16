@@ -682,3 +682,8 @@ It retains the failed 78/80 qualification and unchanged thresholds, compares fro
 A-fixed/C source relationships and separate diagnostic populations, and identifies
 helper preparation as the next unresolved boundary. Hashing and initial standby
 deferral remain deferred; the review does not close qualification.
+
+The [private helper-startup preparation](delivery-tracing-v4.md#private-ac-helper-startup-preparation-2026-11-16)
+now records finer A/C parent-side probes and a frozen future protocol. It remains
+uncompiled and unexecuted, selects no optimization and leaves the failed 78/80
+qualification and its thresholds unchanged.
