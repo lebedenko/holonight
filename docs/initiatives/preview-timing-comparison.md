@@ -673,3 +673,12 @@ attribution is established. Previous assessments, the overhead host-activity
 limitation, C's failed qualification and D's failed pilot remain unchanged. Native
 validation and any fixed diagnostic experiment require a separately planned step.
 No deployment, publication, pin changes or commit were performed.
+
+## Remaining cold-start selection (2026-11-16)
+
+The [bounded offline review](delivery-tracing-v4.md#remaining-cold-start-decision-2026-11-16)
+selects **Evidence insufficient**, with no optimization or new experiment.
+It retains the failed 78/80 qualification and unchanged thresholds, compares frozen
+A-fixed/C source relationships and separate diagnostic populations, and identifies
+helper preparation as the next unresolved boundary. Hashing and initial standby
+deferral remain deferred; the review does not close qualification.

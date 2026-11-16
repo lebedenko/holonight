@@ -2154,3 +2154,58 @@ one offline assessment, the
 [independent stdlib-only checker](../../build/preview-hash-value-20261116-02-independent.json),
 snapshot comparisons and whitespace checks. Production code, prior evidence and
 existing uncommitted work are preserved.
+
+## Remaining cold-start decision (2026-11-16)
+
+The [sealed offline assessment](../../build/preview-cold-start-20261116-07/REPORT.md)
+ends with **Evidence insufficient**. No optimization is selected. Qualification
+remains failed at 78/80 numerical gates: large-PNG startup p95 fails for pixels
+and metadata; metadata remains 142.340 ms against the unchanged 140.619 ms
+allowance (A-fixed 127.835 ms).
+
+[`assess-preview-cold-start.py`](../../scripts/assess-preview-cold-start.py)
+accepts explicit qualification, traced-startup, pre-decode, validation-work,
+hash-assessment and independent-verification inputs, plus a fresh ignored build
+output. It replays A's restricted source reconstruction and both variants'
+matched-source relationships, checks C's uninstrumented inventory against the
+qualification freeze, and binds the completed overhead assessment and statistics.
+Passing pre-decode, validation-work and latest hash-value verification records are
+bound to their seals. Input hashes are checked again before completion; failures
+retain a sealed blocked result. Historical checkout-tool inventories and the
+unrelated B scheduler pilot are explicitly excluded from consumed runtime evidence.
+
+The [400 endpoint rows](../../build/preview-cold-start-20261116-07/observations.json)
+and [block summaries](../../build/preview-cold-start-20261116-07/block-summaries.json)
+cover owner initialization, helper preparation, inspection/decode, transaction
+completion, thumbnail storage and result delivery for A/C pixels and metadata.
+Inclusive spans, clipped unions, nested/concurrent work, missing evidence,
+within-run selected tails, raw citations and exact frozen source differences
+remain available. Validation, standalone hashing and qualification are separate
+populations; their quantiles are neither combined nor subtracted.
+
+Shared validation occurs in different places: A nests it in helper preparation,
+while C validates during owner initialization and passes generation leases to
+preparation. Those inclusive envelopes cannot be compared as exclusive work.
+The earlier pre-decode subtraction remains available through the retained spans.
+Inspection/decode and storage largely represent shared work; their elapsed cost
+alone does not establish a removable C-specific implementation. Hashing and
+initial standby deferral remain deferred under their existing assessments.
+
+The highest-priority unresolved remaining boundary is helper preparation after
+lease/validation resolution and before readiness. The minimum discriminating
+observation would separate launcher checks/start, scope discovery/limit checks,
+gate release and readiness receive, with same-invocation A/C scheduler/blocking
+identities. Retained source and elapsed boundaries cannot separate these competing
+explanations. Such observation requires a separate plan; none was prepared or run.
+Later diagnostic timings do not explain the historical qualification failure.
+
+Seven [synthetic tests](../../tests/test_preview_cold_start.py) pass for identity
+mismatches, population separation, nested/overlapping unions, missing evidence,
+deterministic ranking, input drift and sealed blocked results. The
+[independent stdlib-only check](../../build/preview-cold-start-20261116-07-independent.json)
+rehashed the seal and consumed files, recomputed all endpoint unions and block
+statistics, and checked 22,696 source/raw citation records without importing the
+assessor. Its [checker](../../build/verify-preview-cold-start.py) is retained.
+Documentation links and whitespace were checked. Existing native, package and
+lifecycle evidence is reused; no builds, benchmarks, deployment, pin updates,
+public APIs, protocols or installed-package interfaces changed.
