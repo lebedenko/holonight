@@ -715,3 +715,10 @@ excluded warm-ups. Execution and offline-report independent verification passed.
 The diagnostic retains selected demand, standby and setup separately, reports
 scheduler coverage and signed block-median arm comparisons, and selects no
 optimization. Qualification remains failed at 78/80 under unchanged thresholds.
+
+The [offline helper-startup decision review](helper-startup-decision.md) reconciles
+the retained 150 measured observations and 300 endpoints, keeping six warm-ups
+separate. Independent interval, scheduler, selection and decision verification
+passes. The decision is **Evidence insufficient** because C's block rankings
+disagree and uncovered startup time dominates; no optimization or new experiment
+is selected. Qualification remains failed at **78/80** under unchanged thresholds.

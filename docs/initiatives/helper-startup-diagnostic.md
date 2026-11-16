@@ -298,3 +298,12 @@ qualification evidence or a significance test. No optimization is selected.
 Qualification remains failed at **78/80** numerical gates under unchanged thresholds.
 All historical evidence remains sealed. Documentation links and whitespace checks
 passed; no broad container suite or production deployment was performed.
+
+## Offline decision review
+
+The subsequent [offline decision review](helper-startup-decision.md) reconstructs
+endpoint startup windows and operation rankings from this sealed evidence without
+running another experiment. Its independently verified decision is **Evidence
+insufficient**: C's block rankings disagree, and uncovered startup time dominates
+all required views. The completed diagnostic above remains historical evidence;
+no optimization is selected and qualification remains failed at **78/80**.
