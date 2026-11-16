@@ -153,7 +153,7 @@ def cleanup_all(process, recorder, descriptors, deadline, ready=False):
     return outcomes
 
 
-def workload(argv, target, profiled, recorder_command=record_argv):
+def workload(argv, target, profiled, recorder_command=record_argv, recorder_identity=None):
     """Attach while blocked, acknowledge perf, then exec without changing PID."""
     require(os.geteuid() == 1000, 'no privileged recorder fallback')
     start = time.monotonic()
@@ -189,7 +189,7 @@ def workload(argv, target, profiled, recorder_command=record_argv):
                 with (directory / 'recorder.stdout').open('x') as rout, (directory / 'recorder.stderr').open('x') as rerr:
                     recorder = subprocess.Popen(command, env=env, pass_fds=(ctl_r, ack_w),
                                                 stdout=rout, stderr=rerr, start_new_session=True)
-                write(directory / 'recorder-identity.json', identity(recorder.pid))
+                write(directory / 'recorder-identity.json', (recorder_identity or identity)(recorder.pid))
                 os.close(ctl_r); ctl_r = None
                 os.close(ack_w); ack_w = None
                 os.write(ctl_w, b'enable\n')

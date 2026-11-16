@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Independent offline verifier. Imports neither preparation nor runner."""
 import argparse
+import hashlib
 import importlib.util
 import math
 from pathlib import Path
@@ -116,6 +117,18 @@ def check_events(events, root):
     return dict(mappings=mappings, exclusions=exclusions, lifetimes=sorted([list(x) for x in seen]))
 
 
+def check_recorder_access(access, identity, gate, recorder_sha256):
+    path = Path(access['path'])
+    h.require(path.is_absolute() and path.parent.parent == Path('/var/lib') and
+              path.parent.name.startswith('holonight-identity-recorder-') and path.name == 'perf' and
+              access == dict(path=str(path), sha256=recorder_sha256, capability='cap_perfmon=ep',
+                             uid=0, gid=1000, mode=0o750), 'unsupported capability recorder binding')
+    fields = dict(line.split(':', 1) for line in identity['status'].splitlines() if ':' in line)
+    h.require(fields['Uid'].split() == ['1000'] * 4 and
+              int(fields['CapPrm'], 16) == int(fields['CapEff'], 16) == 1 << 38 and
+              identity['namespaces'] == gate['identity']['namespaces'], 'recorder privilege/namespace identity')
+
+
 def checked_report(observations):
     populations, blocks = {}, []
     for captured in (False, True):
@@ -144,7 +157,7 @@ def checked_report(observations):
 def check_raw_perf(path, root, exported):
     """Re-decode raw task/namespace/mapping records independently of the runner."""
     data = path.read_bytes()
-    h.require(data[:8] == b'PERFILE2', 'unsupported raw perf format')
+    h.require(len(data) >= 104 and data[:8] == b'PERFILE2', 'truncated raw perf format')
     attr_stride, attr_offset, attr_bytes, begin, length = struct.unpack_from('<QQQQQ', data, 16)
     h.require(attr_bytes == attr_stride and attr_stride >= 112 and attr_offset + attr_stride <= len(data),
               'recorder event membership')
@@ -152,22 +165,69 @@ def check_raw_perf(path, root, exported):
     event_type, attr_size, config, period, sample_type = struct.unpack_from('<IIQQQ', attr)
     flags = struct.unpack_from('<Q', attr, 40)[0]
     required = sum(1 << bit for bit in (1, 5, 8, 9, 13, 18, 23, 24, 25, 28, 34))
-    h.require(event_type == 1 and config == 9 and period == 0 and flags & required == required and
-              not flags & (1 << 26) and not sample_type & ((1 << 5) | (1 << 11)) and
+    h.require(attr_size >= 96 and attr_size + 16 == attr_stride and event_type == 1 and config == 9 and
+              period == 0 and flags & required == required and not flags & (1 << 26) and sample_type == 263 and
               struct.unpack_from('<i', attr, 92)[0] == 1, 'raw recorder is not metadata-only monotonic dummy:u')
     h.require(begin + length <= len(data), 'truncated raw capture')
-    tasks = {root['pid']: [root['start'], root['namespace'], False]}
-    actual = []
+    ordered = []
     cursor = begin
-    def emit(kind, pid, **extra):
-        life = tasks[pid]
-        actual.append(dict(kind=kind, pid=pid, start=life[0], namespace=life[1], **extra))
     while cursor < begin + length:
+        h.require(begin + length - cursor >= 8, 'raw short header')
         kind, misc, count = struct.unpack_from('<IHH', data, cursor)
         h.require(count >= 8 and cursor + count <= begin + length, 'raw record length')
         body = data[cursor:cursor + count]
+        position = cursor
         cursor += count
         h.require(kind not in (2, 5, 6, 9, 13), 'raw capture loss/samples/throttle')
+        if kind >= 64:
+            h.require(misc == 0, 'raw bookkeeping flags')
+            if kind in (68, 82):
+                h.require(count == 8, 'raw marker length')
+            elif kind == 69 or kind == 73:
+                h.require(count >= 16, 'raw bookkeeping count absent')
+                entries = int.from_bytes(body[8:16], 'little')
+                width = 32 if kind == 69 else 24
+                h.require(count - 16 == entries * width, 'raw bookkeeping array length')
+            elif kind == 74:
+                h.require(count == 16, 'raw CPU_MAP length')
+                h.require(body[8:10] == b'\x02\x00' and body[10] in (0, 1) and body[11] == 0 and
+                          int.from_bytes(body[12:14], 'little') <= int.from_bytes(body[14:16], 'little') < 65535,
+                          'raw CPU_MAP range/encoding/padding')
+            elif kind == 78:
+                h.require(count == 32, 'raw EVENT_UPDATE length')
+                h.require(int.from_bytes(body[8:16], 'little') == 3, 'raw EVENT_UPDATE variant')
+                ids_begin, ids_length = struct.unpack_from('<QQ', attr, attr_stride - 16)
+                h.require(ids_length > 0 and ids_length % 8 == 0 and ids_begin + ids_length <= len(data),
+                          'raw EVENT_UPDATE ID section')
+                ids = [data[i:i + 8] for i in range(ids_begin, ids_begin + ids_length, 8)]
+                h.require(body[16:24] in ids, 'raw EVENT_UPDATE event ID')
+                h.require(body[24:26] == b'\x02\x00' and body[26] in (0, 1) and body[27] == 0 and
+                          int.from_bytes(body[28:30], 'little') <= int.from_bytes(body[30:32], 'little') < 65535,
+                          'raw EVENT_UPDATE CPU range/encoding/padding')
+            elif kind == 79:
+                h.require(count == 56, 'raw TIME_CONV length')
+                h.require(int.from_bytes(body[8:16], 'little') < 64 and int.from_bytes(body[16:24], 'little') > 0 and
+                          body[48] in (0, 1) and body[49] in (0, 1) and body[50:] == bytes(6),
+                          'raw TIME_CONV fields')
+            else:
+                raise ValueError('raw unsupported metadata: ' + str(kind))
+            continue
+        h.require(kind in (1, 3, 4, 7, 8, 10, 14, 15, 16, 17, 18, 19, 20, 21), 'raw unsupported metadata')
+        minimum = {1: 41, 3: 17, 4: 32, 7: 32, 10: 73, 16: 136}.get(kind, 8)
+        h.require(count >= minimum + 16, 'raw missing timestamp trailer')
+        timestamp = int.from_bytes(body[-8:], 'little')
+        body = body[:-16]
+        if kind in (1, 3, 10):
+            h.require(b'\0' in body[{1: 40, 3: 16, 10: 72}[kind]:], 'raw string termination')
+        if kind in (4, 7, 16):
+            h.require(len(body) == (136 if kind == 16 else 32), 'raw fixed record length')
+        ordered.append((timestamp, position, kind, misc, body))
+    tasks = {root['pid']: [root['start'], root['namespace'], False]}
+    actual = []
+    def emit(kind, pid, **extra):
+        life = tasks[pid]
+        actual.append(dict(kind=kind, pid=pid, start=life[0], namespace=life[1], **extra))
+    for _, _, kind, misc, body in sorted(ordered, key=lambda row: (row[0], row[1])):
         if kind in (4, 7):
             pid, parent, tid, _, stamp = struct.unpack_from('<IIIIQ', body, 8)
             if tid != pid:
@@ -196,7 +256,7 @@ def check_raw_perf(path, root, exported):
                 h.require(kind == 10, 'raw mapping missing build ID')
                 name = body[72:].split(b'\0', 1)[0].decode()
                 mapping = dict(path=name)
-                if name.startswith('/'):
+                if name.startswith('/') and not name.startswith('//'):
                     h.require(misc & (1 << 14) and 0 < body[40] <= 20, 'raw missing build ID')
                     h.require(len(actual) < len(exported), 'raw mapping membership')
                     saved = exported[len(actual)]
@@ -207,6 +267,63 @@ def check_raw_perf(path, root, exported):
         else:
             h.require(kind in (8, 14, 15, 17, 18, 19, 20, 21), 'raw unsupported metadata')
     h.require(actual == exported and not tasks, 'raw exported process/mapping/namespace binding')
+
+
+def check_mapping_source(record, root, frozen, payload, staging):
+    """Bind bytes to the namespace's source independently of the runner."""
+    sandbox = record['namespace'] != root['namespace']
+    h.require(record['scope'] == ('sandbox' if sandbox else 'desktop'), 'mapping source scope')
+    path = record['path']
+    member = None
+    if sandbox:
+        current, desktop = bytes.fromhex(record['namespace']), bytes.fromhex(root['namespace'])
+        h.require(len(current) == len(desktop) == 112 and current[80:96] != desktop[80:96],
+                  'sandbox mount namespace source binding')
+        h.require(path.startswith('/usr/') and path[1:] in payload, 'sandbox source membership')
+        member = path[1:]
+        source = frozen / member
+    elif Path(path).is_relative_to(Path(staging['runtime'])):
+        # The disposable staged tree has already been removed at verification.
+        # Join its retained outer identity to the exact frozen payload instead.
+        relative = str(Path(path).relative_to(staging['runtime']))
+        h.require(relative.startswith(staging['prefix']), 'staged source variant')
+        member = relative[len(staging['prefix']):]
+        h.require(member in payload, 'staged source membership')
+        inode = staging['inventory'].get(relative, {})
+        h.require(inode.get('kind') == 'file' and inode.get('uid') == 0 and not inode.get('mode', 0) & 0o022 and
+                  all(inode.get(k) == payload[member][k] for k in ('size', 'sha256')), 'staged source inode binding')
+        source = frozen / member
+    else:
+        source = Path(path).resolve()
+    actual = e.ordinary(source)
+    h.require(actual == {k: record[k] for k in ('size', 'sha256')} and e.elf_id(source) == record['build_id'],
+              'mapped source ELF identity')
+    if member is not None:
+        h.require(actual == payload[member], 'mapped source payload identity')
+
+
+def check_authorization(value, before_ns):
+    h.require(value['argv'] == ['sudo', '-A', '-v'] and value['exit'] == 0 and
+              value['worker_reaped'] is True and value['interrupted'] is False,
+              'unsuccessful authorization')
+    begin, end = value['started_ns'], value['completed_ns']
+    h.require(type(begin) is int and type(end) is int and 0 <= begin <= end <= before_ns and
+              math.isclose(value['wait_seconds'], (end - begin) / 1e9), 'authorization/timing boundary')
+
+
+def check_elevated_phase(output, action):
+    machine = h.read(output / (action + '-execution.json'))
+    check_authorization(h.read(output / (action + '-authorization.json')), machine['started_ns'])
+    begin, end = machine['started_ns'], machine['completed_ns']
+    h.require(machine['argv'][:2] == ['sudo', '-n'] and machine['exit'] == 0 and
+              machine['worker_reaped'] is True and machine['interrupted'] is False and
+              type(begin) is int and type(end) is int and 0 <= begin <= end and
+              math.isclose(machine['elapsed_seconds'], (end - begin) / 1e9), 'elevated worker completion')
+    worker = h.read(output / (action + '-worker.json'))
+    h.require(begin <= worker['started_ns'] <= worker['verified_ns'] <= worker['completed_ns'] <= end and
+              math.isclose(worker['verification_seconds'], (worker['verified_ns'] - worker['started_ns']) / 1e9) and
+              math.isclose(worker['operation_seconds'], (worker['completed_ns'] - worker['verified_ns']) / 1e9),
+              'elevated worker phase timing')
 
 
 def verify_execution(output):
@@ -231,6 +348,8 @@ def verify_execution(output):
     else:
         h.require(result.get('failure') or result.get('cleanup_failure'), 'unexplained blocked execution')
     if not result['synthetic'] and result['status'] != 'blocked':
+        for action in ('stage', 'cleanup'):
+            check_elevated_phase(output, action)
         capability = h.read(output / 'capability.json')
         h.require(capability['uid'] != 0 and capability['preparation_seal'] == preparation['seal'] and
                   capability['protocol'] == h.read(package / 'protocol.json'), 'capability binding')
@@ -255,10 +374,14 @@ def verify_execution(output):
             h.require(source != output and checked['outcome'] == 'rehearsed' and not checked['synthetic'] and
                       checked == verify_execution(source) and h.read(source / 'capability.json') == capability,
                       'missing accepted capability rehearsal')
+    capability = h.read(output / 'capability.json') if not result['synthetic'] and (output / 'capability.json').exists() else {}
     ledgers = {}
     for i, observation in enumerate(observations):
         h.require(observation['schedule'] == schedule[i], 'observation schedule mixing')
         raw = h.read(output / f'{i:03}/raw-result.json')
+        if not result['synthetic'] and 'recorder_access' in capability:
+            process = h.read(output / f'{i:03}/harness.process.json')
+            check_authorization(h.read(output / f'{i:03}/workload-authorization.json'), process['start_ns'])
         h.require(raw['exit'] == 0 and not raw['timeout'] and 0 <= raw['elapsed_seconds'] <= 30 and
                   raw['cleanup'] and 0 <= raw['cleanup_seconds'] <= 5, 'execution deadline/cleanup')
         samples = raw['harness'].get('samples', [])
@@ -292,6 +415,14 @@ def verify_execution(output):
                           'recorder loss/error diagnostic')
 
                 gate = h.read(recording / 'gate.json')
+                if 'recorder_access' in capability:
+                    recorder = h.read(recording / 'recorder-identity.json')
+                    check_recorder_access(capability['recorder_access'], recorder, gate, capability['recorder_sha256'])
+                    reader = h.read(output / f"recorder-identity-reader-{recorder['pid']}.json")
+                    h.require(reader['exit'] == 0 and reader['argv'][:2] == ['sudo', '-n'] and
+                              reader['worker_reaped'] is True and reader['interrupted'] is False and
+                              h.json.loads(reader['stdout']) == recorder,
+                              'recorder identity reader evidence')
                 h.require(raw['root']['pid'] == gate['pid'] and raw['root']['start'] ==
                           gate['stat'].rsplit(')', 1)[1].split()[19], 'gate PID/start identity')
                 namespace_bytes = bytes.fromhex(raw['root']['namespace'])
@@ -305,6 +436,22 @@ def verify_execution(output):
                 h.require(any(m['pid'] == raw['root']['pid'] and m['build_id'] == harness_id for m in account['mappings']) and
                           any(m['pid'] != raw['root']['pid'] and m['namespace'] != raw['root']['namespace'] and
                               m['build_id'] == helper_id for m in account['mappings']), 'missing captured harness/helper identity')
+
+                source_inputs = h.read(package / 'inputs.json')['variants'][variant]
+                source_outer = h.read(output / 'staged-outer.json')
+                source_request = h.read(output / 'stage-request.json')
+                expected_runtime = '/run/holonight-identity-' + hashlib.sha256(str(output).encode()).hexdigest()[:20]
+                h.require(source_request['runtime'] == expected_runtime, 'staged source root binding')
+                source_prefix = 'A-fixed/'
+                if variant == 'C':
+                    selected = bytes.fromhex(source_outer['C/current']['bytes']).decode().strip()
+                    h.require(len(selected) == 64 and all(c in '0123456789abcdef' for c in selected),
+                              'staged source generation identity')
+                    source_prefix = 'C/generations/' + selected + '/'
+                source_staging = dict(runtime=expected_runtime, prefix=source_prefix, inventory=source_outer)
+                for mapping in account['mappings']:
+                    check_mapping_source(mapping, raw['root'], package / 'frozen' / variant / 'runtime',
+                                         source_inputs['payload'], source_staging)
 
                 if schedule[i]['warmup']:
                     for number, (_, identity) in enumerate(sorted(ledger.items())):

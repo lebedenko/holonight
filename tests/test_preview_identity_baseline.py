@@ -7,7 +7,7 @@ import struct
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -87,6 +87,228 @@ class SyntheticBackend:
 
 
 class IdentityBaselineTests(unittest.TestCase):
+    def native_backend(self):
+        backend = r.NativeBackend(self.package, None, Path('/var/lib/holonight-identity-recorder-test/perf'))
+        backend.output = self.root
+        backend.request = self.root / 'request.json'
+        return backend
+
+    def mapping_candidates(self):
+        # Equal GNU build IDs need not mean byte-identical ELF files.
+        elf = bytearray(120)
+        elf[:6] = b'\x7fELF\x02\x01'
+        struct.pack_into('<Q', elf, 32, 64)
+        struct.pack_into('<HH', elf, 54, 56, 1)
+        note = struct.pack('<III', 4, 20, 3) + b'GNU\0' + bytes.fromhex('ab'*20)
+        struct.pack_into('<IIQQQQ', elf, 64, 4, 0, 120, 0, 0, len(note))
+        desktop = self.root / 'desktop-lib.so'
+        desktop.write_bytes(elf + note + b'desktop')
+        package = self.root / 'mapping-package'
+        frozen = package / 'frozen/A-fixed/runtime'
+        source = frozen / 'usr/lib/test.so'
+        source.parent.mkdir(parents=True)
+        source.write_bytes(elf + note + b'sandbox')
+        payload = {'usr/lib/test.so': p.e.ordinary(source)}
+        h.write(package / 'inputs.json', dict(variants={'A-fixed': dict(payload=payload)}))
+        namespace = b''.join(struct.pack('<QQ', 7, i + 1) for i in range(7))
+        sandbox = bytearray(namespace)
+        struct.pack_into('<Q', sandbox, 5 * 16 + 8, 999)
+        backend = r.NativeBackend(package, None)
+        backend.root_namespace = namespace.hex()
+        return backend, desktop, source, payload, namespace.hex(), sandbox.hex()
+
+    def test_same_build_id_different_bytes_are_bound_to_their_namespace(self):
+        backend, desktop, sandbox, _, host_ns, sandbox_ns = self.mapping_candidates()
+        def filesystem(path):
+            return desktop if str(path) == '/usr/lib/test.so' else Path(path)
+        with patch.object(r, 'Path', side_effect=filesystem):
+            host = backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, host_ns)
+            isolated = backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, sandbox_ns)
+        self.assertEqual(host, dict(p.e.ordinary(desktop), build_id='ab'*20))
+        self.assertEqual(isolated, dict(p.e.ordinary(sandbox), build_id='ab'*20))
+        self.assertNotEqual(host['sha256'], isolated['sha256'])
+        self.assertEqual(backend.sources['A-fixed', 'desktop:/usr/lib/test.so'][0], desktop)
+        self.assertEqual(backend.sources['A-fixed', 'sandbox:/usr/lib/test.so'][0], sandbox)
+
+    def test_independent_verifier_rejects_swapped_namespace_bytes(self):
+        backend, desktop, sandbox, payload, host_ns, sandbox_ns = self.mapping_candidates()
+        staging = dict(runtime=str(self.root / 'staged'), prefix='A-fixed/', inventory={})
+        frozen = backend.package / 'frozen/A-fixed/runtime'
+        host = dict(path='/usr/lib/test.so', namespace=host_ns, scope='desktop',
+                    build_id='ab'*20, **p.e.ordinary(desktop))
+        isolated = dict(path='/usr/lib/test.so', namespace=sandbox_ns, scope='sandbox',
+                        build_id='ab'*20, **p.e.ordinary(sandbox))
+        with patch.object(v, 'Path', side_effect=lambda path: desktop if str(path) == '/usr/lib/test.so' else Path(path)):
+            for record in (host, isolated):
+                v.check_mapping_source(record, dict(namespace=host_ns), frozen, payload, staging)
+            for record, wrong in ((host, isolated), (isolated, host)):
+                with self.assertRaisesRegex(ValueError, 'source ELF identity'):
+                    v.check_mapping_source(dict(record, size=wrong['size'], sha256=wrong['sha256']),
+                                           dict(namespace=host_ns), frozen, payload, staging)
+
+    def test_resolver_does_not_fallback_across_namespace_sources(self):
+        backend, desktop, sandbox, _, host_ns, sandbox_ns = self.mapping_candidates()
+        with patch.object(r, 'Path', side_effect=lambda path: desktop if str(path) == '/usr/lib/test.so' else Path(path)):
+            desktop.unlink()
+            with self.assertRaisesRegex(ValueError, 'desktop mapped build ID'):
+                backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, host_ns)
+            desktop.write_bytes(sandbox.read_bytes())
+            sandbox.unlink()
+            with self.assertRaisesRegex(ValueError, 'sandbox mapped build ID'):
+                backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, sandbox_ns)
+
+    def test_resolver_rejects_build_id_payload_and_in_scope_source_drift(self):
+        backend, desktop, sandbox, _, host_ns, sandbox_ns = self.mapping_candidates()
+        with patch.object(r, 'Path', side_effect=lambda path: desktop if str(path) == '/usr/lib/test.so' else Path(path)):
+            with self.assertRaisesRegex(ValueError, 'desktop mapped build ID'):
+                backend.resolve('A-fixed', '/usr/lib/test.so', 'cd'*20, host_ns)
+            backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, host_ns)
+            desktop.write_bytes(desktop.read_bytes() + b'changed')
+            with self.assertRaisesRegex(ValueError, 'mapping source conflict'):
+                backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, host_ns)
+            sandbox.write_bytes(sandbox.read_bytes() + b'changed')
+            with self.assertRaisesRegex(ValueError, 'payload drift'):
+                backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, sandbox_ns)
+
+    def test_sandbox_source_requires_a_changed_mount_namespace_and_listed_path(self):
+        backend, _, sandbox, payload, host_ns, sandbox_ns = self.mapping_candidates()
+        user_only = bytearray.fromhex(host_ns)
+        struct.pack_into('<Q', user_only, 4 * 16 + 8, 999)
+        with self.assertRaisesRegex(ValueError, 'mount namespace'):
+            backend.resolve('A-fixed', '/usr/lib/test.so', 'ab'*20, user_only.hex())
+        with self.assertRaisesRegex(ValueError, 'unlisted sandbox mapping'):
+            backend.resolve('A-fixed', '/usr/lib/unlisted.so', 'ab'*20, sandbox_ns)
+        record = dict(path='/usr/lib/test.so', namespace=user_only.hex(), scope='sandbox',
+                      build_id='ab'*20, **p.e.ordinary(sandbox))
+        with self.assertRaisesRegex(ValueError, 'mount namespace'):
+            v.check_mapping_source(record, dict(namespace=host_ns), backend.package / 'frozen/A-fixed/runtime',
+                                   payload, dict(runtime=str(self.root / 'staged'), prefix='A-fixed/', inventory={}))
+
+    def test_independent_verifier_binds_removed_staging_to_frozen_payload(self):
+        backend, _, sandbox, payload, host_ns, _ = self.mapping_candidates()
+        relative = 'A-fixed/usr/lib/test.so'
+        staging = dict(runtime=str(self.root / 'staged'), prefix='A-fixed/',
+                       inventory={relative: dict(kind='file', uid=0, mode=0o644, **p.e.ordinary(sandbox))})
+        record = dict(path=staging['runtime'] + '/' + relative, namespace=host_ns, scope='desktop',
+                      build_id='ab'*20, **p.e.ordinary(sandbox))
+        frozen = backend.package / 'frozen/A-fixed/runtime'
+        v.check_mapping_source(record, dict(namespace=host_ns), frozen, payload, staging)
+        staging['inventory'][relative]['sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError, 'staged source inode'):
+            v.check_mapping_source(record, dict(namespace=host_ns), frozen, payload, staging)
+
+    def test_human_wait_is_separate_from_machine_staging_duration(self):
+        backend = self.native_backend()
+        now = [0]
+        commands = []
+        def launch(command, **options):
+            commands.append(command)
+            self.assertNotIn('timeout', options)
+            self.assertEqual(options['process_group'], 0)
+            self.assertNotIn('start_new_session', options)
+            worker = Mock(returncode=0)
+            def finish():
+                now[0] += (300 if command == ['sudo', '-A', '-v'] else 119) * 10**9
+                return None, None
+            worker.communicate.side_effect = finish
+            return worker
+        with patch.object(subprocess, 'Popen', side_effect=launch), patch.object(r.time, 'monotonic_ns', side_effect=lambda: now[0]):
+            backend.elevated('stage')
+        auth = h.read(self.root / 'stage-authorization.json')
+        machine = h.read(self.root / 'stage-execution.json')
+        self.assertEqual(auth['wait_seconds'], 300)
+        self.assertEqual(machine['elapsed_seconds'], 119)
+        self.assertGreaterEqual(machine['started_ns'], auth['completed_ns'])
+        self.assertEqual(commands[1][:2], ['sudo', '-n'])
+        self.assertTrue(machine['worker_reaped'])
+
+    def test_authorization_failure_never_launches_staging(self):
+        backend = self.native_backend()
+        worker = Mock(returncode=1)
+        worker.communicate.return_value = (None, None)
+        with patch.object(subprocess, 'Popen', return_value=worker) as launch:
+            with self.assertRaises(subprocess.CalledProcessError):
+                backend.elevated('stage')
+        self.assertEqual(launch.call_count, 1)
+        self.assertFalse((self.root / 'stage-execution.json').exists())
+        self.assertEqual(h.read(self.root / 'stage-authorization.json')['exit'], 1)
+
+    def test_cancelled_wait_joins_worker_before_reporting_cancellation(self):
+        backend = self.native_backend()
+        auth = Mock(returncode=0)
+        auth.communicate.return_value = (None, None)
+        worker = Mock(returncode=0)
+        worker.communicate.side_effect = [KeyboardInterrupt, KeyboardInterrupt, (None, None)]
+        with patch.object(subprocess, 'Popen', side_effect=[auth, worker]):
+            with self.assertRaisesRegex(InterruptedError, 'after worker completion'):
+                backend.elevated('stage')
+        evidence = h.read(self.root / 'stage-execution.json')
+        self.assertTrue(evidence['worker_reaped'])
+        self.assertTrue(evidence['interrupted'])
+        self.assertEqual(backend.completed_actions['stage'], 0)
+
+    def test_workload_authorization_precedes_timed_process(self):
+        backend = self.native_backend()
+        backend.runtime = self.root / 'runtime'
+        backend.cpu = Mock()
+        auth = Mock(returncode=0)
+        auth.communicate.return_value = (None, None)
+        def workload(*args, **kwargs):
+            self.assertEqual(h.read(self.root / 'workload-authorization.json')['exit'], 0)
+            raise ValueError('timed workload boundary reached')
+        backend.cpu.workload.side_effect = workload
+        with patch.object(subprocess, 'Popen', return_value=auth), patch.object(backend, 'isolation'):
+            with self.assertRaisesRegex(ValueError, 'timed workload boundary reached'):
+                backend.invoke(dict(variant='A-fixed', captured=True), self.root)
+
+    def test_timed_recorder_read_cannot_show_askpass(self):
+        backend = self.native_backend()
+        worker = Mock(returncode=0)
+        worker.communicate.return_value = ('{"pid": 777}', '')
+        with patch.object(subprocess, 'Popen', return_value=worker) as launch:
+            self.assertEqual(backend.recorder_identity(os.getpid()), dict(pid=777))
+        self.assertEqual(launch.call_args.args[0][:2], ['sudo', '-n'])
+        self.assertNotIn('timeout', launch.call_args.kwargs)
+
+    def test_independent_verifier_excludes_human_wait_and_requires_completed_workers(self):
+        auth = dict(argv=['sudo', '-A', '-v'], exit=0, started_ns=0, completed_ns=300_000_000_000,
+                    wait_seconds=300, worker_reaped=True, interrupted=False)
+        v.check_authorization(auth, 300_000_000_001)
+        with self.assertRaisesRegex(ValueError, 'timing boundary'):
+            v.check_authorization(auth, 299_000_000_000)
+        h.write(self.root / 'stage-authorization.json', auth)
+        machine = dict(argv=['sudo', '-n', 'worker'], exit=0, started_ns=300_000_000_000,
+                       completed_ns=600_000_000_000, elapsed_seconds=300, worker_reaped=True, interrupted=False)
+        worker = dict(started_ns=301_000_000_000, verified_ns=500_000_000_000,
+                      completed_ns=599_000_000_000, verification_seconds=199, operation_seconds=99)
+        h.write(self.root / 'stage-execution.json', machine)
+        h.write(self.root / 'stage-worker.json', worker)
+        v.check_elevated_phase(self.root, 'stage')  # Machine work is not capped at 120 either.
+        h.write(self.root / 'stage-execution.json', dict(machine, worker_reaped=False))
+        with self.assertRaisesRegex(ValueError, 'worker completion'):
+            v.check_elevated_phase(self.root, 'stage')
+
+    def test_capability_recorder_rejects_unprotected_location(self):
+        with self.assertRaisesRegex(ValueError, 'unsafe capability recorder path'):
+            r.recorder_access(Path('/tmp/perf'))
+
+    def test_recorder_identity_reader_rejects_unprivileged_call(self):
+        with patch.object(os, 'geteuid', return_value=1000):
+            with self.assertRaisesRegex(ValueError, 'scoped elevation'):
+                r.recorder_snapshot(123, '100', Path('/tmp/perf'))
+
+    def test_independent_recorder_check_requires_only_perfmon_and_matching_namespaces(self):
+        access = dict(path='/var/lib/holonight-identity-recorder-test/perf', sha256='a'*64,
+                      capability='cap_perfmon=ep', uid=0, gid=1000, mode=0o750)
+        identity = dict(status='Uid:\t1000 1000 1000 1000\nCapPrm:\t4000000000\nCapEff:\t4000000000\n',
+                        namespaces={'mnt': 'mnt:[1]'})
+        gate = dict(identity=dict(namespaces={'mnt': 'mnt:[1]'}))
+        v.check_recorder_access(access, identity, gate, 'a'*64)
+        for bad in (dict(identity, status=identity['status'].replace('4000000000', '4000000001')),
+                    dict(identity, namespaces={'mnt': 'mnt:[2]'})):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                v.check_recorder_access(access, bad, gate, 'a'*64)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='identity-synthetic-', dir=ROOT / 'build')
         self.addCleanup(self.temp.cleanup)
@@ -346,15 +568,10 @@ class IdentityBaselineTests(unittest.TestCase):
 
     def test_truncated_or_loss_perf_data_rejected(self):
         raw = self.root / 'perf.data'
-        header = bytearray(104)
-        header[:8] = b'PERFILE2'
-        struct.pack_into('<QQ', header, 40, 104, 8)
-        raw.write_bytes(header + struct.pack('<IHH', 2, 0, 8))
-        with self.assertRaisesRegex(ValueError, 'capture loss'):
-            r.decode_perf(raw, capture()[0], lambda *args: {})
-        raw.write_bytes(header)
-        with self.assertRaisesRegex(ValueError, 'truncated'):
-            r.decode_perf(raw, capture()[0], lambda *args: {})
+        for data in (b'', b'PERFILE2' + bytes(96)):
+            raw.write_bytes(data)
+            with self.assertRaises(ValueError):
+                r.decode_perf(raw, capture()[0], lambda *args: {})
 
     def test_nonfinite_or_wrong_count_correctness_rejected(self):
         for rows in ([], [dict(first_ms=float('nan'))], [{}, {}]):
@@ -413,6 +630,7 @@ class IdentityBaselineTests(unittest.TestCase):
         root = dict(pid=10, start=100, namespace='desktop')
         bid = bytes.fromhex('ab'*20)
         def record(kind, body, misc=0):
+            body += struct.pack('<IIQ', 10, 10, 1000)
             return struct.pack('<IHH', kind, misc, 8 + len(body)) + body
         def execution(pid):
             return record(3, struct.pack('<II', pid, pid) + b'harness\0', 1 << 13)
@@ -429,7 +647,7 @@ class IdentityBaselineTests(unittest.TestCase):
         header, attr = bytearray(104), bytearray(144)
         header[:8] = b'PERFILE2'
         struct.pack_into('<QQQQQ', header, 16, 144, 104, 144, 248, len(body))
-        struct.pack_into('<IIQQQ', attr, 0, 1, 128, 9, 0, 0)
+        struct.pack_into('<IIQQQ', attr, 0, 1, 128, 9, 0, 263)
         struct.pack_into('<Q', attr, 40, sum(1 << bit for bit in (1, 5, 8, 9, 13, 18, 23, 24, 25, 28, 34)))
         struct.pack_into('<i', attr, 92, 1)
         raw = self.root / 'perf-binary.data'
@@ -454,6 +672,152 @@ class IdentityBaselineTests(unittest.TestCase):
         raw.write_bytes(header + attr + body)
         with self.assertRaisesRegex(ValueError, 'metadata-only'):
             v.check_raw_perf(raw, root, events)
+
+    def binary_capture(self, chunks, sample_type=263):
+        header, attr = bytearray(104), bytearray(160)
+        header[:8] = b'PERFILE2'
+        body = b''.join(chunks)
+        struct.pack_into('<QQ', attr, 144, 264 + len(body), 8)
+        struct.pack_into('<QQQQQ', header, 16, 160, 104, 160, 264, len(body))
+        struct.pack_into('<IIQQQ', attr, 0, 1, 144, 9, 0, sample_type)
+        struct.pack_into('<Q', attr, 40, sum(1 << bit for bit in (1, 5, 8, 9, 13, 18, 23, 24, 25, 28, 34)))
+        struct.pack_into('<i', attr, 92, 1)
+        path = self.root / 'generated.data'
+        path.write_bytes(header + attr + body + struct.pack('<Q', 4605))
+        return path
+
+    @staticmethod
+    def binary_record(kind, body=b'', misc=0, stamp=None):
+        if stamp is not None:
+            body += struct.pack('<IIQ', 10, 10, stamp)
+        return struct.pack('<IHH', kind, misc, 8 + len(body)) + body
+
+    def lifecycle_records(self):
+        record = self.binary_record
+        ns = struct.pack('<IIQ', 20, 20, 7) + struct.pack('<QQ', 1, 2) * 7
+        return [record(7, struct.pack('<IIIIQ', 10, 0, 10, 0, 100), stamp=0),
+                record(3, struct.pack('<II', 10, 10) + b'init\0', stamp=0),
+                record(3, struct.pack('<II', 10, 10) + b'root\0', 1 << 13, 10),
+                record(7, struct.pack('<IIIIQ', 20, 10, 20, 10, 123), stamp=20),
+                record(16, ns, stamp=30),
+                record(3, struct.pack('<II', 20, 20) + b'child\0', 1 << 13, 30),
+                record(4, struct.pack('<IIIIQ', 20, 10, 20, 10, 456), stamp=40),
+                record(4, struct.pack('<IIIIQ', 10, 0, 10, 0, 789), stamp=50),
+                record(10, struct.pack('<IIQQQ', 10, 10, 4096, 4096, 0) +
+                       bytes([20, 0, 0, 0]) + bytes.fromhex('ab'*20) +
+                       struct.pack('<II', 5, 2) + b'/usr/lib/lib.so\0', 1 << 14, 15)]
+
+    def assert_binary_agreement(self, chunks):
+        raw = self.binary_capture(chunks)
+        root = dict(pid=10, start=100, namespace='desktop')
+        events = r.decode_perf(raw, root, lambda name, bid, ns: dict(build_id=bid, size=4, sha256='a'*64))
+        v.check_raw_perf(raw, root, events)
+        self.assertEqual(r.identities(events, root), v.check_events(events, root))
+        return events
+
+    def assert_binary_rejected(self, chunks, sample_type=263):
+        root = dict(pid=10, start=100, namespace='desktop')
+        valid = self.binary_capture(self.lifecycle_records())
+        expected = r.decode_perf(valid, root, lambda name, bid, ns: dict(build_id=bid, size=4, sha256='a'*64))
+        raw = self.binary_capture(chunks, sample_type)
+        with self.assertRaises(ValueError):
+            r.decode_perf(raw, root, lambda *args: {})
+        with self.assertRaises(ValueError):
+            v.check_raw_perf(raw, root, expected)
+
+    def test_bookkeeping_layouts_and_cpu_buffer_order(self):
+        record = self.binary_record
+        metadata = [record(68), record(69, struct.pack('<Q', 1) + bytes(32)),
+                    record(73, struct.pack('<Q', 1) + bytes(24)),
+                    record(74, struct.pack('<HBBHH', 2, 0, 0, 0, 31)),
+                    record(79, struct.pack('<QQQQQBB6x', 1, 2, 0, 0, 0, 1, 0)), record(82)]
+        lifecycle = self.lifecycle_records()
+        expected = self.assert_binary_agreement(lifecycle)
+        # Physical buffers interleave; equal-time namespace/exec keep file-offset order.
+        shuffled = [lifecycle[i] for i in (7, 3, 0, 1, 4, 5, 6, 2, 8)]
+        self.assertEqual(self.assert_binary_agreement(metadata + shuffled), expected)
+        self.assertEqual(expected[2]['start'], 123)  # Native fork time, not trailer time 20.
+        self.assertEqual([x['kind'] for x in expected], ['exec', 'mapping', 'fork', 'namespace', 'exec', 'exit', 'exit'])
+        for item in metadata:
+            self.assertEqual(self.assert_binary_agreement([item] + lifecycle), expected)
+
+    def test_bookkeeping_corruptions_and_unknown_variants(self):
+        record = self.binary_record
+        bad = [record(68, bytes(8)), record(82, bytes(8)), record(69), record(73),
+               record(69, struct.pack('<Q', 2) + bytes(32)),
+               record(73, struct.pack('<Q', 0) + bytes(24)),
+               record(69, struct.pack('<Q', 1) + bytes(48)),
+               record(74, bytes(8)), record(74, struct.pack('<HBBHH', 2, 2, 0, 0, 31)),
+               record(74, struct.pack('<HBBHH', 2, 0, 1, 0, 31)),
+               record(74, struct.pack('<HBBHH', 2, 0, 0, 31, 0)),
+               record(74, bytes(16)), record(79, bytes(24)), record(79, bytes(48)),
+               record(79, struct.pack('<QQQQQBB6x', 64, 2, 0, 0, 0, 1, 0)),
+               record(79, struct.pack('<QQQQQBB6x', 1, 2, 0, 0, 0, 2, 0)),
+               record(79, struct.pack('<QQQQQBB6s', 1, 2, 0, 0, 0, 1, 0, b'badpad')),
+               record(78), record(80), record(999), b'\x00', struct.pack('<IHH', 68, 0, 100)]
+        for item in bad:
+            with self.subTest(item=item.hex()):
+                self.assert_binary_rejected([item] + self.lifecycle_records())
+
+    def test_cpu_event_update_is_bound_to_frozen_event(self):
+        record = self.binary_record
+        cpus = struct.pack('<HBBHH', 2, 0, 0, 0, 31)
+        update = record(78, struct.pack('<QQ', 3, 4605) + cpus)
+        expected = self.assert_binary_agreement(self.lifecycle_records())
+        self.assertEqual(self.assert_binary_agreement([update] + self.lifecycle_records()), expected)
+        for payload in (struct.pack('<QQ', 2, 4605) + cpus,
+                        struct.pack('<QQ', 3, 9999) + cpus,
+                        struct.pack('<QQ', 3, 4605) + bytes(8),
+                        struct.pack('<QQHBBHH', 3, 4605, 2, 0, 1, 0, 31),
+                        struct.pack('<QQHBBHH', 3, 4605, 2, 0, 0, 31, 0),
+                        struct.pack('<QQ', 3, 4605) + cpus + bytes(8)):
+            with self.subTest(payload=payload.hex()):
+                self.assert_binary_rejected([record(78, payload)] + self.lifecycle_records())
+        for location, size in ((0, 0), (1000000, 8), (264, 7)):
+            raw = self.binary_capture([update] + self.lifecycle_records())
+            data = bytearray(raw.read_bytes())
+            struct.pack_into('<QQ', data, 104 + 144, location, size)
+            raw.write_bytes(data)
+            root = dict(pid=10, start=100, namespace='desktop')
+            with self.assertRaises(ValueError):
+                r.decode_perf(raw, root, lambda *args: {})
+            with self.assertRaises(ValueError):
+                v.check_raw_perf(raw, root, expected)
+
+    def test_timestamp_layout_loss_and_attribution_rejections(self):
+        rows = self.lifecycle_records()
+        for samples in (0, 6, 7, 263 | (1 << 16)):
+            self.assert_binary_rejected(rows, samples)
+        no_trailer = self.binary_record(4, struct.pack('<IIIIQ', 10, 0, 10, 0, 789))
+        self.assert_binary_rejected(rows[:7] + [no_trailer] + rows[8:])
+        for kind in (2, 5, 6, 9, 13):
+            self.assert_binary_rejected([self.binary_record(kind)] + rows)
+        self.assert_binary_rejected(rows[:3] + rows[4:])  # Parentage cannot be inferred from time.
+        raw = self.binary_capture(rows)
+        value = bytearray(raw.read_bytes())
+        struct.pack_into('<Q', value, 104 + 40, 0)  # Missing sample_id_all and required flags.
+        raw.write_bytes(value)
+        for reader in (lambda: r.decode_perf(raw, dict(pid=10, start=100, namespace='desktop'), lambda *args: {}),
+                       lambda: v.check_raw_perf(raw, dict(pid=10, start=100, namespace='desktop'), [])):
+            with self.assertRaises(ValueError):
+                reader()
+
+    def test_anonymous_binary_mappings_do_not_require_file_build_ids(self):
+        for name in (b'//anon\0', b'[anon]\0'):
+            with self.subTest(name=name):
+                body = struct.pack('<IIQQQ', 10, 10, 4096, 4096, 0)
+                body += bytes(24) + struct.pack('<II', 3, 0) + name
+                rows = self.lifecycle_records() + [self.binary_record(10, body, misc=2, stamp=12)]
+                events = self.assert_binary_agreement(rows)
+                excluded = r.identities(events, dict(pid=10, start=100, namespace='desktop'))['exclusions']
+                self.assertEqual(len(excluded), 1)
+                self.assertEqual(excluded[0]['record']['path'], name[:-1].decode())
+                self.assertNotIn('build_id', excluded[0]['record'])
+
+    def test_file_backed_binary_mapping_still_requires_a_build_id(self):
+        body = struct.pack('<IIQQQ', 10, 10, 4096, 4096, 0)
+        body += bytes(24) + struct.pack('<II', 3, 0) + b'/usr/lib/test.so\0'
+        self.assert_binary_rejected(self.lifecycle_records() + [self.binary_record(10, body, misc=2, stamp=12)])
 
     def test_elf_build_id_is_read_without_executing_an_elf(self):
         elf = bytearray(120)

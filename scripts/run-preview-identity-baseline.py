@@ -7,6 +7,8 @@ import math
 import os
 from pathlib import Path
 import shutil
+import signal
+import stat
 import statistics
 import struct
 import subprocess
@@ -27,11 +29,68 @@ def load(name, filename):
     return module
 
 
+def wait_elevated(command, **options):
+    """Join sudo and its worker before reporting completion or cancellation.
+
+    Staging has no outer timeout: terminating only sudo can leave its privileged
+    worker running. A terminal interrupt is deferred until the worker is reaped.
+    A separate process group prevents terminal SIGINT from interrupting that
+    join, while retaining the session used by sudo's authorization timestamp.
+    """
+    process = subprocess.Popen(command, process_group=0, **options)
+    interrupted = False
+    while True:
+        try:
+            stdout, stderr = process.communicate()
+            return subprocess.CompletedProcess(command, process.returncode, stdout, stderr), interrupted
+        except KeyboardInterrupt:
+            interrupted = True
+
+
 def record_argv(path, pid, control, ack):
     return ['perf', 'record', '--event', 'dummy:u', '--no-samples', '--buildid-mmap',
             '--namespaces', '--clockid', 'mono', '--no-buildid-cache',
             '--timestamp', '--pid', str(pid), '--delay', '-1', '--control', f'fd:{control},{ack}',
             '--output', str(path)]
+
+
+def recorder_access(path):
+    """Accept only a disposable, protected, byte-identical CAP_PERFMON copy."""
+    path = path.absolute()
+    h.require(path == path.resolve() and path.parent.parent == Path('/var/lib') and
+              path.parent.name.startswith('holonight-identity-recorder-') and path.name == 'perf',
+              'unsafe capability recorder path')
+    for item in (path.parent, path):
+        info = item.lstat()
+        h.require(info.st_uid == 0 and info.st_gid == 1000 and stat.S_IMODE(info.st_mode) == 0o750,
+                  'unprotected capability recorder')
+    h.require(path.is_file() and h.digest(path) == h.digest(Path('/usr/bin/perf')),
+              'capability recorder byte substitution')
+    # VFS_CAP_REVISION_2, effective flag, and only capability 38 (CAP_PERFMON).
+    capability = struct.pack('<IIIII', 0x02000001, 0, 0, 1 << (38 - 32), 0)
+    h.require(os.getxattr(path, 'security.capability') == capability, 'unexpected recorder capabilities')
+    return dict(path=str(path), sha256=h.digest(path), capability='cap_perfmon=ep', uid=0, gid=1000, mode=0o750)
+
+
+def recorder_snapshot(pid, start, recorder):
+    """Read only the opted-in UID 1000 recorder; never execute its arguments."""
+    h.require(os.geteuid() == 0 and pid > 1, 'recorder identity reader requires scoped elevation')
+    recorder_access(recorder)
+    root = Path('/proc') / str(pid)
+    h.require((root / 'exe').resolve() == recorder, 'unexpected recorder executable')
+    cpu = load('identity_recorder_reader', 'run-preview-cpu-profile.py')
+    value = cpu.identity(pid)
+    fields = dict(line.split(':', 1) for line in value['status'].splitlines() if ':' in line)
+    h.require(fields['Uid'].split() == ['1000'] * 4 and
+              int(fields['CapPrm'], 16) == int(fields['CapEff'], 16) == 1 << 38,
+              'unexpected recorder credentials')
+    argv = bytes.fromhex(value['cmdline']).split(b'\0')
+    h.require(argv[:2] == [b'perf', b'record'] and b'dummy:u' in argv and b'--namespaces' in argv,
+              'unexpected recorder command')
+    h.require(value['stat'].rsplit(')', 1)[1].split()[19] == start and
+              (root / 'stat').read_text().rsplit(')', 1)[1].split()[19] == start and
+              (root / 'exe').resolve() == recorder, 'recorder identity changed')
+    return value
 
 
 def valid_sample(data):
@@ -208,19 +267,81 @@ def execute(package, output, backend, rehearsal=False):
 
 # Linux perf metadata reader. Decode record order and explicit fork/exit identities;
 # do not infer relationships from neighbouring timestamps or resolve old captures.
+def perf_records(data):
+    """Validate the frozen event and order this finite capture across CPU buffers."""
+    h.require(len(data) >= 104 and data[:8] == b'PERFILE2', 'truncated/unsupported perf format')
+    stride, base, length, begin, size = struct.unpack_from('<QQQQQ', data, 16)
+    h.require(length == stride and stride >= 112 and base + stride <= len(data), 'recorder event membership')
+    attr = data[base:base + stride]
+    event, version, config, period, samples = struct.unpack_from('<IIQQQ', attr)
+    flags = struct.unpack_from('<Q', attr, 40)[0]
+    required = sum(1 << bit for bit in (1, 5, 8, 9, 13, 18, 23, 24, 25, 28, 34))
+    h.require(version + 16 == stride and version >= 96 and event == 1 and config == 9 and period == 0 and
+              samples == 263 and flags & required == required and not flags & (1 << 26) and
+              struct.unpack_from('<i', attr, 92)[0] == 1, 'recorder is not metadata-only monotonic dummy:u')
+    end = begin + size
+    h.require(end <= len(data), 'truncated perf data')
+    records = []
+    while begin < end:
+        h.require(end - begin >= 8, 'truncated perf header')
+        kind, misc, length = struct.unpack_from('<IHH', data, begin)
+        h.require(length >= 8 and begin + length <= end, 'truncated perf record')
+        raw = data[begin:begin + length]
+        if kind in (2, 5, 6, 9, 13):
+            raise ValueError('capture loss/samples/throttling')
+        if kind in (68, 82):
+            h.require(length == 8 and misc == 0, 'invalid perf marker')
+        elif kind in (69, 73):
+            h.require(length >= 16 and misc == 0, 'invalid perf bookkeeping header')
+            count = struct.unpack_from('<Q', raw, 8)[0]
+            h.require(length == 16 + count * (32 if kind == 69 else 24), 'invalid perf bookkeeping count')
+        elif kind == 74:
+            h.require(length == 16 and misc == 0, 'invalid CPU_MAP length')
+            encoding, any_cpu, pad, first, last = struct.unpack_from('<HBBHH', raw, 8)
+            h.require(encoding == 2 and any_cpu <= 1 and pad == 0 and first <= last < 65535,
+                      'unsupported CPU_MAP encoding/range/padding')
+        elif kind == 78:
+            h.require(length == 32 and misc == 0, 'unsupported EVENT_UPDATE layout')
+            update, event_id = struct.unpack_from('<QQ', raw, 8)
+            ids_offset, ids_size = struct.unpack_from('<QQ', attr, stride - 16)
+            h.require(ids_size > 0 and ids_size % 8 == 0 and ids_offset + ids_size <= len(data),
+                      'invalid EVENT_UPDATE event ID section')
+            ids = {item[0] for item in struct.iter_unpack('<Q', data[ids_offset:ids_offset + ids_size])}
+            h.require(update == 3 and event_id in ids, 'unsupported EVENT_UPDATE variant/event ID')
+            encoding, any_cpu, pad, first, last = struct.unpack_from('<HBBHH', raw, 24)
+            h.require(encoding == 2 and any_cpu <= 1 and pad == 0 and first <= last < 65535,
+                      'unsupported EVENT_UPDATE CPU encoding/range/padding')
+        elif kind == 79:
+            h.require(length == 56 and misc == 0, 'unsupported TIME_CONV layout')
+            shift, mult = struct.unpack_from('<QQ', raw, 8)
+            h.require(shift < 64 and mult > 0 and raw[48] <= 1 and raw[49] <= 1 and not any(raw[50:]),
+                      'invalid TIME_CONV fields')
+        else:
+            h.require(kind in (1, 3, 4, 7, 8, 10, 14, 15, 16, 17, 18, 19, 20, 21),
+                      'unsupported perf metadata type: ' + str(kind))
+            # Frozen sample_type: IP | TID | TIME | PERIOD. Non-sample trailer is TID/TIME.
+            minimum = {1: 41, 3: 17, 4: 32, 7: 32, 10: 73, 16: 136}.get(kind, 8)
+            h.require(length >= minimum + 16, 'missing timestamp trailer')
+            stamp = struct.unpack_from('<Q', raw, length - 8)[0]
+            payload = raw[:-16]
+            if kind in (1, 3, 10):
+                start = {1: 40, 3: 16, 10: 72}[kind]
+                h.require(b'\0' in payload[start:], 'unterminated perf string')
+            if kind == 16:
+                h.require(len(payload) == 136, 'unsupported namespace metadata')
+            if kind in (4, 7):
+                h.require(len(payload) == 32, 'invalid task record')
+            records.append((stamp, begin, kind, misc, payload))
+        begin += length
+    return sorted(records, key=lambda row: (row[0], row[1]))
+
+
 def decode_perf(path, root, resolve):
     data = path.read_bytes()
-    h.require(data[:8] == b'PERFILE2', 'unsupported perf format')
-    offset, length = struct.unpack_from('<QQ', data, 40)
-    stop = offset + length
-    h.require(stop <= len(data), 'truncated perf data')
+    records = perf_records(data)
     active = {root['pid']: dict(root)}
     events = []
-    while offset < stop:
-        kind, misc, size = struct.unpack_from('<IHH', data, offset)
-        h.require(size >= 8 and offset + size <= stop, 'truncated perf record')
-        raw = data[offset:offset + size]
-        offset += size
+    for _, _, kind, misc, raw in records:
         if kind in (2, 5, 6, 9, 13):
             raise ValueError('capture loss/samples/throttling')
         if kind in (7, 4):  # FORK/EXIT carry their own monotonic time.
@@ -258,7 +379,7 @@ def decode_perf(path, root, resolve):
                 if not process.get('exec_seen'):
                     continue
                 name = raw[72:].split(b'\0', 1)[0].decode('utf-8', 'strict')
-                if name.startswith('/'):
+                if name.startswith('/') and not name.startswith('//'):
                     h.require(misc & (1 << 14), 'missing mapping build ID')
                     count = raw[40]
                     h.require(0 < count <= 20, 'missing/unsupported mapping build ID')
@@ -279,14 +400,20 @@ class NativeBackend:
     """Ordinary-user recorder/workloads; narrowly scoped protected staging worker."""
     synthetic = False
 
-    def __init__(self, package, rehearsal):
+    def __init__(self, package, rehearsal, recorder=None):
         self.package, self.rehearsal = package, rehearsal
+        self.recorder = recorder
         self.runtime = None
         self.sources = {}
         self.dependencies = {}
+        self.completed_actions = {}
+        self.sandbox_payloads = {}
 
     def capability(self, package, rehearsal=False):
         h.require(os.geteuid() != 0, 'ordinary desktop user required; no privileged recorder fallback')
+        self.recorder_access = recorder_access(self.recorder) if self.recorder else None
+        if self.recorder:
+            os.environ['PATH'] = str(self.recorder.parent) + os.pathsep + os.environ.get('PATH', os.defpath)
         if not rehearsal:
             h.require(self.rehearsal is not None, 'later authorized capability rehearsal required')
             checked = h.read(self.rehearsal)
@@ -295,14 +422,33 @@ class NativeBackend:
             h.require(checked == verifier.verify_execution(source) and checked['status'] == 'passed' and
                       checked['outcome'] == 'rehearsed' and not checked['synthetic'], 'unsupported capability rehearsal')
             binding = h.read(source / 'capability.json')
-            h.require(binding == dict(preparation_seal=h.digest(package / 'seal.json'),
+            expected = dict(preparation_seal=h.digest(package / 'seal.json'),
                       recorder_sha256=h.digest(Path(shutil.which('perf'))), uid=os.getuid(),
                       boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(), host=os.uname().nodename,
-                      protocol=h.read(package / 'protocol.json')), 'capability recorder/user/protocol drift')
+                      protocol=h.read(package / 'protocol.json'))
+            if self.recorder_access:
+                expected['recorder_access'] = self.recorder_access
+            h.require(binding == expected, 'capability recorder/user/protocol drift')
         # The existing process primitive uses a fresh gated process, attach/enable
         # acknowledgement, a 30-second deadline and shared five-second cleanup.
         self.cpu = load('identity_gated_process', 'run-preview-cpu-profile.py')
         self.cpu.offline_env()
+
+    def recorder_identity(self, pid):
+        start = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[19]
+        command = ['sudo', '-n', sys.executable, '-B', str(Path(__file__).resolve()),
+                   'recorder-identity', '--pid', str(pid), '--start', start,
+                   '--capability-recorder', str(self.recorder)]
+        destination = self.output / f'recorder-identity-reader-{pid}.json'
+        # The read-only worker owns its five-second alarm after sudo authorizes
+        # it; the parent joins it instead of abandoning a privileged child.
+        completed, interrupted = wait_elevated(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        h.write(destination, dict(argv=command, exit=completed.returncode,
+                stdout=completed.stdout, stderr=completed.stderr, worker_reaped=True, interrupted=interrupted))
+        if interrupted:
+            raise InterruptedError('recorder identity read cancelled after worker completion')
+        h.require(completed.returncode == 0, 'scoped recorder identity read failed')
+        return h.json.loads(completed.stdout)
 
     def stage(self, package, output):
         self.output = output
@@ -310,6 +456,10 @@ class NativeBackend:
                   recorder_sha256=h.digest(Path(shutil.which('perf'))), uid=os.getuid(),
                   boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(), host=os.uname().nodename,
                   protocol=h.read(package / 'protocol.json')))
+        if self.recorder_access:
+            binding = h.read(output / 'capability.json')
+            binding['recorder_access'] = self.recorder_access
+            h.write(output / 'capability.json', binding)
         name = hashlib.sha256(str(output).encode()).hexdigest()[:20]
         self.runtime = Path('/run') / ('holonight-identity-' + name)
         h.require(not os.path.lexists(self.runtime), 'protected staging collision')
@@ -318,15 +468,43 @@ class NativeBackend:
         self.request = output / 'stage-request.json'
         h.write(self.request, dict(package=str(package), seal=h.digest(package / 'seal.json'),
                                   runtime=str(self.runtime), execution=str(output)))
-        self.elevated('stage')
-        self.outer = self.inventory()
-        h.write(output / 'cleanup-expected.json', self.outer)
+        try:
+            self.elevated('stage')
+        finally:
+            # A cancelled wait can still have completed staging successfully.
+            # Bind its full identity before allowing conservative cleanup.
+            if self.completed_actions.get('stage') == 0:
+                self.outer = self.inventory()
+                h.write(output / 'cleanup-expected.json', self.outer)
+
+    def authorize(self, action, directory):
+        command = ['sudo', '-A', '-v']
+        print(f'Authorizing {action}: askpass wait is outside machine and workload timing.', flush=True)
+        begin = time.monotonic_ns()
+        completed, interrupted = wait_elevated(command)
+        end = time.monotonic_ns()
+        h.write(directory / (action + '-authorization.json'), dict(argv=command, exit=completed.returncode,
+                started_ns=begin, completed_ns=end, wait_seconds=(end - begin) / 1e9,
+                worker_reaped=True, interrupted=interrupted))
+        completed.check_returncode()
+        if interrupted:
+            raise InterruptedError('authorization cancelled before ' + action)
 
     def elevated(self, action):
-        command = ['sudo', '-A', sys.executable, '-B', str(Path(__file__).resolve()), action,
+        self.authorize(action, self.output)
+        command = ['sudo', '-n', sys.executable, '-B', str(Path(__file__).resolve()), action,
                    '--request', str(self.request)]
+        begin = time.monotonic_ns()
         with (self.output / (action + '.log')).open('x') as log:
-            subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=120)
+            completed, interrupted = wait_elevated(command, stdout=log, stderr=subprocess.STDOUT)
+        end = time.monotonic_ns()
+        self.completed_actions[action] = completed.returncode
+        h.write(self.output / (action + '-execution.json'), dict(argv=command, exit=completed.returncode,
+                started_ns=begin, completed_ns=end, elapsed_seconds=(end - begin) / 1e9,
+                worker_reaped=True, interrupted=interrupted))
+        completed.check_returncode()
+        if interrupted:
+            raise InterruptedError(action + ' cancelled after worker completion')
 
     def inventory(self):
         result = e.tree(self.runtime)
@@ -343,19 +521,26 @@ class NativeBackend:
         return result
 
     def resolve(self, variant, path, build_id, namespace):
-        # Namespace-local /usr paths can denote the protected helper payload.
-        # Prefer exact build-ID matching; differing candidate bytes are ambiguous.
-        candidates = [Path(path)]
-        if path.startswith('/usr/'):
-            candidates.append(self.package / 'frozen' / variant / 'runtime' / path[1:])
-        matches = []
-        for candidate in candidates:
-            if candidate.is_file() and candidate.read_bytes()[:4] == b'\x7fELF' and e.elf_id(candidate) == build_id:
-                matches.append((candidate.resolve(), e.ordinary(candidate.resolve())))
-        h.require(matches and len({v['sha256'] for _, v in matches}) == 1, 'unavailable/conflicting mapped identity: ' + path)
-        source, identity = matches[0]
-        identity = dict(identity, build_id=build_id)
         scope = 'desktop' if namespace == self.root_namespace else 'sandbox'
+        if scope == 'desktop':
+            source = Path(path).resolve()
+        else:
+            # The verified launcher binds manifest /usr entries into a distinct
+            # mount namespace. A host file is not a candidate for those paths.
+            current, desktop = bytes.fromhex(namespace), bytes.fromhex(self.root_namespace)
+            h.require(len(current) == len(desktop) == 112 and current[80:96] != desktop[80:96],
+                      'unavailable sandbox mount namespace binding')
+            h.require(path.startswith('/usr/'), 'unsupported sandbox mapping path: ' + path)
+            if variant not in self.sandbox_payloads:
+                self.sandbox_payloads[variant] = h.read(self.package / 'inputs.json')['variants'][variant]['payload']
+            h.require(path[1:] in self.sandbox_payloads[variant], 'unlisted sandbox mapping: ' + path)
+            source = self.package / 'frozen' / variant / 'runtime' / path[1:]
+        h.require(source.is_file() and source.read_bytes()[:4] == b'\x7fELF' and e.elf_id(source) == build_id,
+                  'unavailable ' + scope + ' mapped build ID: ' + path)
+        identity = e.ordinary(source)
+        if scope == 'sandbox':
+            h.require(identity == self.sandbox_payloads[variant][path[1:]], 'sandbox mapped payload drift: ' + path)
+        identity = dict(identity, build_id=build_id)
         key = (variant, scope + ':' + path)
         h.require(key not in self.sources or self.sources[key] == (source, identity), 'mapping source conflict')
         self.sources[key] = (source, identity)
@@ -379,13 +564,16 @@ class NativeBackend:
     def invoke(self, entry, directory):
         variant = entry['variant']
         target = directory / 'harness.json'
+        if self.recorder:
+            self.authorize('workload', directory)
         self.isolation(directory / 'before')
         argv = [str(self.package / 'frozen' / variant / 'preview-benchmark'), str(self.runtime / variant),
                 str(self.package / 'frozen/3200x2400.png'), 'startup', '1', str(target)]
         previous = Path.cwd()
         try:
             os.chdir(directory)
-            process = self.cpu.workload(argv, target, entry['captured'], recorder_command=record_argv)
+            options = dict(recorder_identity=self.recorder_identity) if self.recorder else {}
+            process = self.cpu.workload(argv, target, entry['captured'], recorder_command=record_argv, **options)
         finally:
             os.chdir(previous)
         recording = directory / 'harness-recording'
@@ -450,7 +638,8 @@ class NativeBackend:
     def cleanup(self, staged):
         if self.runtime is None or not self.runtime.exists():
             return
-        h.require(staged, 'partial staging retained; cleanup identity unavailable')
+        h.require(staged or (self.completed_actions.get('stage') == 0 and hasattr(self, 'outer')),
+                  'partial staging retained; cleanup identity unavailable')
         self.isolation(self.output / 'cleanup-isolation')
         h.require(self.inventory() == self.outer, 'modified staging retained')
         self.elevated('cleanup')
@@ -461,8 +650,10 @@ def stage_worker(request, cleanup=False):
     h.require(os.geteuid() == 0, 'protected staging requires scoped elevation')
     config = h.read(request)
     package, runtime, output = [Path(config[k]) for k in ('package', 'runtime', 'execution')]
+    begin = time.monotonic_ns()
     verifier = load('staging_identity_verifier', 'verify-preview-identity-baseline.py')
     verifier.verify(package)
+    verified = time.monotonic_ns()
     h.require(h.digest(package / 'seal.json') == config['seal'], 'staging preparation drift')
     name = hashlib.sha256(str(output).encode()).hexdigest()[:20]
     h.require(runtime == Path('/run') / ('holonight-identity-' + name) and runtime.resolve() == runtime,
@@ -473,6 +664,11 @@ def stage_worker(request, cleanup=False):
     installer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(installer)
     owner = dict(package=str(package), seal=config['seal'], execution=str(output))
+    def record_completion():
+        end = time.monotonic_ns()
+        h.write(output / (('cleanup' if cleanup else 'stage') + '-worker.json'),
+                dict(started_ns=begin, verified_ns=verified, completed_ns=end,
+                     verification_seconds=(verified - begin) / 1e9, operation_seconds=(end - verified) / 1e9))
     if cleanup:
         h.require(h.read(runtime / 'diagnostic-owner.json') == owner and
                   e.tree(runtime) == h.read(output / 'cleanup-expected.json'), 'cleanup ownership/drift conflict')
@@ -480,6 +676,7 @@ def stage_worker(request, cleanup=False):
         installer.run(SimpleNamespace(command='remove', runtime=runtime / 'C', helper=package / 'frozen/C/runtime/usr/libexec/holonight-images-helper',
                       source=None, ownership_manifest=None, maintenance_migrate=False))
         installer.remove_tree(runtime)
+        record_completion()
         return
     h.require(not os.path.lexists(runtime), 'staging collision')
     installer.chain(runtime.parent)
@@ -491,18 +688,27 @@ def stage_worker(request, cleanup=False):
     installer.run(SimpleNamespace(command='install', runtime=runtime / 'C', source=package / 'frozen/C/runtime',
                   helper=package / 'frozen/C/runtime/usr/libexec/holonight-images-helper',
                   ownership_manifest=None, maintenance_migrate=False))
+    record_completion()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('execute', 'rehearse', 'stage', 'cleanup', 'report'))
+    parser.add_argument('action', choices=('execute', 'rehearse', 'stage', 'cleanup', 'report', 'recorder-identity'))
     parser.add_argument('--package', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--request', type=Path)
     parser.add_argument('--rehearsal', type=Path)
     parser.add_argument('--authorized-execution', action='store_true')
+    parser.add_argument('--capability-recorder', type=Path)
+    parser.add_argument('--pid', type=int)
+    parser.add_argument('--start')
     args = parser.parse_args()
-    if args.action in ('stage', 'cleanup'):
+    if args.action == 'recorder-identity':
+        # No askpass is permitted in this action. Bound the actual read inside
+        # the elevated worker, so sudo can reap it before the parent continues.
+        signal.alarm(5)
+        print(h.json.dumps(recorder_snapshot(args.pid, args.start, args.capability_recorder)))
+    elif args.action in ('stage', 'cleanup'):
         stage_worker(args.request.absolute(), args.action == 'cleanup')
     elif args.action == 'report':
         h.require(not args.output.exists(), 'report collision')
@@ -511,5 +717,5 @@ if __name__ == '__main__':
         h.require(args.authorized_execution and (args.action == 'rehearse' or args.rehearsal is not None),
                   'later authorized capability rehearsal required before execution')
         print(h.json.dumps(execute(args.package.absolute(), args.output.absolute(),
-                                  NativeBackend(args.package.absolute(), args.rehearsal),
+                                  NativeBackend(args.package.absolute(), args.rehearsal, args.capability_recorder),
                                   rehearsal=args.action == 'rehearse'), indent=2))

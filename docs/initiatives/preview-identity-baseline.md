@@ -33,7 +33,7 @@ synthetically. Its native adapter reuses the existing gated-launch/control-ack
 primitive, not an instrumented harness. Real execution requires later explicit
 authorization and a passing capability rehearsal bound to the preparation seal,
 recorder bytes, host/boot identity, ordinary desktop UID and exact protocol. Unsupported options,
-permissions, metadata formats or identities block execution; there is no privileged
+permissions, metadata formats or identities block execution; there is no automatic privileged
 recorder fallback. A future authorized `rehearse` action runs only the four excluded
 combinations in a separate sealed population; its independent verification must
 pass before `execute` can consume it. Neither action is invoked during preparation.
@@ -61,6 +61,47 @@ membership is checked separately before execution and between invocations. Histo
 source verification is reused; between invocations, recheck the sealed executable
 package and current tool identities rather than replaying the historical analysis.
 
+Namespace metadata requires `CAP_PERFMON` on the current host. An explicitly
+authorized `--capability-recorder /var/lib/holonight-identity-recorder-<attempt>/perf`
+may select a disposable byte-identical copy of `/usr/bin/perf` with only
+`cap_perfmon=ep`. Its directory and executable must be root-owned, group 1000,
+mode 0750, with no symlinks. The runner and harness stay UID 1000; neither inherits
+the recorder capability. System perf, sysctls and deployed runtimes stay unchanged.
+The recorder path, bytes, ownership and permission mode are sealed in capability
+evidence and must match for later baseline execution. This opt-in changes the
+original permission boundary and requires explicit authorization.
+
+Authorization is a separate, untimed interaction. Before staging, cleanup, and
+each capability-recorder workload, the ordinary-user runner waits for
+`sudo -A -v` to finish. It records that wait separately and starts machine timing
+only after successful authorization. Actual elevated actions use `sudo -n`;
+expired authorization fails promptly without opening askpass inside a workload.
+The workload's 30-second deadline and five-second process cleanup budget are
+unchanged and exclude authorization. Authorization timing evidence is never an
+observation or part of a timing distribution.
+
+Staging and protected-tree cleanup have no arbitrary outer wall-clock timeout.
+The runner joins sudo and its worker before inventory, cleanup checks, or sealing.
+Terminal cancellation is deferred until the worker exits; successful staging
+still has its full cleanup identity captured if cancellation was requested.
+Existing installer operation limits and conservative removal checks remain.
+The read-only recorder identity worker has its own five-second alarm after
+noninteractive authorization, and its caller waits for the worker to be reaped.
+Stage/cleanup evidence separates authorization, total machine execution, package
+verification and install/removal durations. The independent verifier checks their
+ordering and requires authorization before each timed workload starts.
+
+Capability execution restricts ordinary `/proc` namespace inspection. Only for an
+opted-in recorder, the native adapter may use the read-only elevated
+`recorder-identity` action. It validates the protected executable, UID 1000, sole
+effective/permitted CAP_PERFMON, metadata recorder command, and stable PID/start
+identity before returning the existing identity format. Reader command, result
+and diagnostics are retained; the independent verifier binds that result to the
+recorder and gate namespaces. No elevated workload or privileged harness fallback
+is permitted. Remove the disposable capability recorder after the authorized
+attempt and retain its recorded identity; a passing rehearsal does not authorize
+recreation for a measured baseline.
+
 The first execution, correctness, recorder, identity or cleanup failure stops the
 schedule. Evidence retains attempted counts, accepted observations, failure and
 all unexecuted schedule entries. Cleanup checks exact ownership and the complete
@@ -83,17 +124,51 @@ new lifetime; forked children inherit the parent's loading context before their
 own exec. Missing exits, unavailable identities/build IDs, capture loss,
 unsupported records, ambiguous candidate bytes or conflicting mapping bytes block
 acceptance. Anonymous/non-file mappings have explicit exclusion records.
+Both raw readers classify perf's `//anon` names as anonymous before checking file
+build IDs, matching the normalized ledger's existing `//` exclusion rule. Absolute
+file-backed mappings still require build-ID evidence.
 
 Captured warm-ups establish separate A-fixed/C dependency-path ledgers, with desktop
 and sandbox scopes distinguished. Freeze ELF bytes, sizes, SHA-256 and available GNU
 build IDs without running the binaries. New captures resolve exact build-ID-matching
-candidates from the current execution's desktop paths and frozen sandbox payload;
-ambiguous bytes block. This lookup is never used for historical recordings. Recheck
+candidates within the recorded namespace's source: desktop mappings use desktop
+paths; sandbox `/usr` mappings use only listed frozen runtime payload entries.
+Sandbox attribution requires a changed mount namespace, not just a change in
+another namespace. The verified launcher binds each manifest entry read-only at
+its sandbox `/usr` path. There is no fallback across these sources. Equal GNU build
+IDs may identify different whole-file bytes in the two namespaces; the separately
+scoped SHA-256/size identities remain exact, and drift within either scope blocks.
+The independent verifier checks these source bindings too, joining removed staging
+paths through their retained protected outer identities to the frozen payload.
+This lookup is never used for historical recordings. Recheck
 sources and frozen copies before and after every measured invocation. Unexpected
 measured paths or changed identities block; repeated paths within a scope cannot
 silently denote different bytes. The strict decoder supports little-endian ELF64
 and Linux perf's build-ID MMAP2 metadata; other formats require a later reviewed
 implementation, not a fallback that weakens identity checks.
+
+The runner and independent verifier validate the frozen single-event `dummy:u`
+attribute before reading trailers: metadata only, `sample_id_all`, monotonic clock,
+and sample type `IP | TID | TIME | PERIOD` (263). Its non-sample trailer contains
+TID and TIME; IP and PERIOD do not add trailer fields. Finite captures are stably
+ordered by trailer timestamp and original file offset before reconstructing active
+lifetimes. Initial synthesized zero-time records retain file order. Native FORK
+time remains the lifetime token; ordering never establishes parentage.
+
+Both readers independently validate header-only `FINISHED_ROUND` (68) and
+`FINISHED_INIT` (82), complete `ID_INDEX` (69) and `THREAD_MAP` (73) arrays,
+range-encoded `CPU_MAP` (74), and the fixed 56-byte `TIME_CONV` (79) layout.
+These records never become normalized lifecycle events. Unsupported encodings,
+malformed counts, missing trailers and unknown types block acceptance. Record
+numbers and layouts follow the [upstream perf definitions](https://github.com/torvalds/linux/blob/master/tools/lib/perf/include/perf/event.h).
+Type 78 is `EVENT_UPDATE`, not `TIME_CONV`. Both readers accept only its
+32-byte CPUS variant (update type 3) with a validated range encoding and an event
+ID present in the frozen attribute's complete ID section. Other update variants,
+unknown IDs, malformed ID sections and CPU encodings remain rejected. This
+bookkeeping never adds lifecycle events or establishes ancestry. Read-only replay
+of attempt 04 now agrees across both readers without removing records, using
+explicitly synthetic mapping identities; it establishes no historical ELF bytes
+and does not change that attempt's original sealed outcome.
 
 ## Reporting and verification
 
@@ -125,6 +200,6 @@ python3 scripts/verify-preview-identity-baseline.py build/preview-identity-basel
 The preparation-only acceptance artifacts are the
 [sealed preparation report](../../build/preview-identity-baseline-20261116-03/REPORT.md)
 and [independent result](../../build/preview-identity-baseline-20261116-03-independent.json).
-The focused suite covers 33 synthetic cases, including binary perf fixtures and ELF
+The focused suite covers 54 synthetic cases, including namespace source bindings, authorization boundaries, binary perf fixtures and ELF
 note parsing, with all real process execution disabled. These artifacts do not
 attest real recorder or execution capability.
