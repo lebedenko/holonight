@@ -1927,6 +1927,98 @@ zero-byte files, missing/duplicate ordinals, identity and citation mismatches,
 destination collisions, sealed partial failures and accounting tampering after
 resealing. Generated evidence remains under ignored `build/`.
 
+### Correction: makepkg Git archive policy (2026-11-16)
+
+The earlier source archive mismatch omitted makepkg's Git attribute sanitization.
+The [corrected audit](../../build/preview-hash-device-path-20261116-10/REPORT.md)
+binds the previous sealed audit and passing verification, copies its retained Git
+repositories, and reads the cached `pacman 7.1.0.r9.g54d9411-4` package matching
+Qt's `.BUILDINFO`. Retained package metadata and the makepkg Git helper establish
+its configuration isolation and `* -export-subst -export-ignore` override; the
+package contains no `etc/makepkg.d/gitconfig`. No packaging scripts were executed.
+
+Under explicit archive policy `makepkg-git-v1`, the Qt archive SHA-256 is
+`d97ef157dc50bdf0425337e9adede8135ab508a4ab2f1abae7e9cfc42c5f86db`, exactly
+the unchanged recipe checksum. This resolves the archive mismatch only.
+Reconstruction with zero fuzz fails in the first packaging patch,
+`qt6-base-cflags.patch`: hunk 1 for `mkspecs/common/gcc-base.conf` fails at line 40.
+The application output and partial reconstruction are retained. The second patch
+and four cherry-picks cannot establish exact prepared sources after this failure;
+complete exact-source tracing and its source citations remain gated. The earlier
+binary findings remain supported by the matched binary evidence.
+
+The [independent verification](../../build/preview-hash-device-path-20261116-10-independent.json)
+reproduces archive policy and patch failure, validates partial sources and retains
+all five blocks and 60 ordinals of unchanged signed accounting. The historical
+audit also passes the updated checker using ordinary Git attributes. Thirteen
+focused tests cover existing accounting/identity protections plus export attributes,
+configuration isolation, unchanged source inputs, policy/attribute/member tampering,
+prior binding and clean/failed patch applications with additions/deletions.
+Historical evidence and conclusions remain intact. No benchmarks, builds,
+recordings, downloads, installation, production changes or optimization selection
+were performed; existing native, scheduler and CPU-profile results are reused.
+
+### Recipe-faithful preparation and exact retained source trace (2026-11-16)
+
+The [fresh audit](../../build/preview-hash-device-path-20261116-15/REPORT.md)
+binds audit `preview-hash-device-path-20261116-10` and its passing verification.
+Archive policy remains `makepkg-git-v1`; reconstruction now records
+`recipe-prepare-v1`. The original archive checksum and packaging patches are
+unchanged. Git 2.56.1 and GNU patch 2.8.1 match `.BUILDINFO`, and their executable
+identities are retained. Preparation uses only retained Git objects and local tools,
+in a disposable repository with isolated configuration and disabled hooks.
+
+All six recipe operations pass. The first gcc-base hunk of
+`qt6-base-cflags.patch` applies at line 40 with fuzz 1; its unique intended edits
+are checked against whole-file expectations and the differing `QMAKE_CFLAGS_APP`
+context remains unchanged. No other hunk uses fuzz. `qt6-base-nostrip.patch`
+applies cleanly, followed by all four ordered `git cherry-pick -n` commands.
+[Preparation evidence](../../build/preview-hash-device-path-20261116-15/preparation.json)
+retains command arguments, exit codes, output, before/after file hashes and modes,
+and staged/working-tree binary-diff hashes. Patch backup/reject artifacts are
+retained when present. Earlier trial directories remain sealed, including the
+failed local-object transfer attempts; no historical evidence was rewritten.
+
+The checksum-bound, recipe-prepared source now corroborates the existing matched
+binary findings. [Function citations](../../build/preview-hash-device-path-20261116-15/citations.json)
+include hashes, full function text and inclusive ranges:
+
+- `qcryptographichash.cpp:944–965` forwards to the private implementation, requests
+  1024 bytes repeatedly, hashes positive reads and returns `device->atEnd()`.
+  This agrees with the retained binary's `0x400` request and positive-read loop.
+- `qiodevice.cpp:1015–1058,1063–1193` covers the public and private read paths.
+  The private implementation first consumes buffered data. With buffering enabled
+  and no peek/transaction retention, a request at least the buffer chunk size can
+  read directly into the caller's buffer; smaller requests refill the ring buffer.
+  `qiodevice_p.h:33–34,115` sets the default chunk size to 16384.
+  `qringbuffer.cpp:239–252` copies buffered bytes with `memcpy`, corroborating
+  the retained constructor and ring-buffer disassembly.
+- `qfiledevice.cpp:479–502` checks flushing, delegates to the engine, propagates
+  errors and invalidates cached size after short reads; `383–411` checks buffered
+  data and engine/size state for `atEnd()`.
+- `qfsfileengine.cpp:587–600` delegates to `nativeRead`;
+  `qfsfileengine_unix.cpp:144–200` handles sequential FILE streams specially and
+  otherwise calls `readFdFh`. `qfsfileengine.cpp:605–659` contains the FILE/fd
+  branches, `fread`/`read` calls and error handling, consistent with retained
+  binary calls. Source branches do not establish which branch ran.
+
+The [independent verification](../../build/preview-hash-device-path-20261116-15-independent.json)
+reconstructs preparation in a separate temporary repository without importing
+reporter code and compares operation results and retained sources. All five
+blocks and 60 ordinals of signed accounting remain byte-for-byte unchanged.
+Seventeen focused tests cover known fuzz, strict rejection, unchanged context,
+ambiguous/unexpected placement, failed patches, ordered commits, renames with and
+without edits, additions/deletions, executable modes, conflicts, retained partial
+results, policy/result/source tampering, and prior identity/accounting protections.
+The historical `-10` audit passes the updated checker under its original policy.
+Retained tool snapshots match the implementation and whitespace checks pass.
+
+Exact source means verified recipe-prepared contents for retained files. It does
+not establish reproducible compilation, runtime branch selection, syscall counts,
+or attribution of the elapsed difference. Existing native, scheduler, CPU-profile,
+package and debug evidence is reused. No benchmarks, builds, recordings, downloads,
+installation, production changes or optimization selection were performed.
+
 ### Buffered 64 KiB hashing practical-value assessment (2026-11-16)
 
 The [offline protocol](../sdd/preview-hash-value.md) records the **5 ms per-preview

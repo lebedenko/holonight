@@ -4,12 +4,14 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
 import tarfile
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGING_URL = 'https://gitlab.archlinux.org/archlinux/packaging/packages/qt6-base.git'
@@ -48,8 +50,8 @@ def seal(root):
                              if p.is_file() and p != root / 'seal.json'})
 
 
-def command(args, output=None):
-    result = subprocess.run([str(a) for a in args], capture_output=True, timeout=180)
+def command(args, output=None, env=None):
+    result = subprocess.run([str(a) for a in args], capture_output=True, timeout=180, env=env)
     if output:
         output.write_bytes(result.stdout)
         output.with_suffix(output.suffix + '.stderr').write_bytes(result.stderr)
@@ -92,10 +94,147 @@ def repo(path, url, tag=None):
     if path is None:
         raise ValueError('internal missing acquisition destination')
     if not path.exists():
-        args = ['git', 'clone', '--quiet', '--bare'] + (['--depth', '1', '--branch', tag] if tag else [])
-        command(args + [url, path])
+        raise ValueError('retained local repository required; network acquisition disabled')
     require(command(['git', '-C', path, 'remote', 'get-url', 'origin']).decode().strip() == url,
             'source repository URL mismatch')
+
+
+def archive_policy(root, qt, buildinfo):
+    installed = re.search(r'^installed = (pacman-[^\n]+)$', buildinfo, re.M).group(1)
+    package = Path('/var/cache/pacman/pkg') / (installed + '.pkg.tar.zst')
+    members = command(['bsdtar', '-tf', package]).decode().splitlines()
+    retained = {}
+    for member, name in (('.PKGINFO', 'pacman-PKGINFO'),
+                         ('usr/share/makepkg/source/git.sh', 'makepkg-git.sh')):
+        command(['bsdtar', '-xOf', package, member], root / name)
+        retained[member] = dict(file=name, sha256=digest(root / name))
+    config = 'etc/makepkg.d/gitconfig'
+    if config in members:
+        command(['bsdtar', '-xOf', package, config], root / 'makepkg-gitconfig')
+    else:
+        (root / 'makepkg-gitconfig').write_text('')
+    helper = (root / 'makepkg-git.sh').read_text()
+    require('export GIT_CONFIG_GLOBAL=/dev/null' in helper and
+            '* -export-subst -export-ignore' in helper, 'unsupported makepkg helper')
+    gitdir = Path(command(['git', '-C', qt, 'rev-parse', '--absolute-git-dir']).decode().strip())
+    (gitdir / 'info').mkdir(exist_ok=True)
+    (gitdir / 'info/attributes').write_text('* -export-subst -export-ignore\n')
+    policy = dict(version='makepkg-git-v1', package=str(package), package_sha256=digest(package),
+                  installed=installed, members=retained, config_present=config in members,
+                  config_sha256=digest(root / 'makepkg-gitconfig'))
+    write(root / 'archive-policy.json', policy)
+    return dict(os.environ, GIT_CONFIG_GLOBAL='/dev/null',
+                GIT_CONFIG_SYSTEM=str((root / 'makepkg-gitconfig').resolve()), GIT_CONFIG_COUNT='0')
+
+
+def expected_patch(before, patch):
+    """Check every hunk, allowing only the recipe's reviewed context difference."""
+    expected = dict(before)
+    sections = re.split(r'^diff --git ', patch, flags=re.M)[1:]
+    for section in sections:
+        name = re.search(r'^--- a/(.+)$', section, re.M).group(1)
+        original = expected[name].decode().splitlines(keepends=True)
+        for header, body in re.findall(r'^@@ ([^\n]+)@@[^\n]*\n(.*?)(?=^@@ |\Z)', section, re.M | re.S):
+            lines = [line for line in body.splitlines(keepends=True) if line[:1] in (' ', '+', '-')]
+            old = [line[1:] for line in lines if line[0] != '+']
+            new = [line[1:] for line in lines if line[0] != '-']
+            special = name == 'mkspecs/common/gcc-base.conf' and header.startswith('-40,9 ')
+            candidates = []
+            for pos in range(len(original) - len(old) + 1):
+                candidate = original[pos:pos + len(old)]
+                if candidate == old or (special and candidate[:-1] == old[:-1]
+                        and candidate[-1].startswith('QMAKE_CFLAGS_APP ')):
+                    candidates.append(pos)
+            require(len(candidates) == 1, 'ambiguous or unintended patch placement')
+            pos = candidates[0]
+            if special:
+                require(old[-1].startswith('QMAKE_CFLAGS_APP '), 'unexpected fuzz context')
+                new[-1] = original[pos + len(old) - 1]
+            original[pos:pos + len(old)] = new
+        expected[name] = ''.join(original).encode()
+    return expected
+
+
+def prepare(root, qt, tag, patches, commits, temporary):
+    environment = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
+    environment.update(GIT_CONFIG_GLOBAL='/dev/null', GIT_CONFIG_SYSTEM='/dev/null',
+                       GIT_CONFIG_COUNT='0', LC_ALL='C', GIT_TERMINAL_PROMPT='0')
+    work = temporary / 'work'
+    git = ['git', '-c', 'core.hooksPath=/dev/null', '-c', 'commit.gpgSign=false',
+           '-c', 'user.name=Audit', '-c', 'user.email=audit@example.invalid', '-C', str(work)]
+    command(['git', 'init', '--quiet', '--template=', work], env=environment)
+    gitdir = qt / '.git' if (qt / '.git').is_dir() else qt
+    require(not (gitdir / 'objects/info/alternates').exists(), 'external object store unsupported')
+    shutil.copytree(gitdir / 'objects', work / '.git/objects', dirs_exist_ok=True)
+    if (gitdir / 'shallow').exists():
+        shutil.copyfile(gitdir / 'shallow', work / '.git/shallow')
+    revision = command(['git', '-C', qt, 'rev-parse', tag + '^{commit}'], env=environment).decode().strip()
+    command(git + ['checkout', '--quiet', '--detach', revision], env=environment)
+    tools = {}
+    buildinfo = (root / 'BUILDINFO').read_text()
+    for tool in ('git', 'patch'):
+        executable = Path(shutil.which(tool)).resolve()
+        version = command([executable, '--version'], env=environment).decode().splitlines()[0]
+        installed = re.search(r'^installed = (' + tool + r'-([^\n]+))$', buildinfo, re.M)
+        require(installed and version.split()[-1] == installed.group(2).rsplit('-', 2)[0], 'preparation tool version mismatch')
+        tools[tool] = dict(path=str(executable), sha256=digest(executable), version=version, installed=installed.group(1))
+    # Compare all archive entries, including executable bits and symbolic links.
+    with tarfile.open(root / 'qtbase.tar') as archive:
+        for member in archive:
+            path = work / member.name
+            require(not Path(member.name).is_absolute() and '..' not in Path(member.name).parts, 'unsafe archive path')
+            if member.isfile():
+                require(path.is_file() and path.read_bytes() == archive.extractfile(member).read()
+                        and bool(path.stat().st_mode & 0o111) == bool(member.mode & 0o111), 'starting archive content mismatch')
+            elif member.issym():
+                require(path.is_symlink() and os.readlink(path) == member.linkname, 'starting symlink mismatch')
+    tracked = set()
+    for name in patches:
+        tracked.update(re.findall(r'^(?:\+\+\+ b/|--- a/)(.+)$', (root / name).read_text(), re.M))
+    for commit in commits:
+        tracked.update(command(git + ['diff', '--no-renames', '--name-only', '-z', commit + '^', commit], env=environment).decode().strip('\0').split('\0'))
+    tracked.discard('')
+    def state():
+        diff = command(git + ['diff', '--binary', '--no-ext-diff', '--no-textconv', 'HEAD'], env=environment)
+        index = command(git + ['diff', '--cached', '--binary', '--no-ext-diff', '--no-textconv'], env=environment)
+        return dict(worktree_sha256=hashlib.sha256(diff).hexdigest(), index_sha256=hashlib.sha256(index).hexdigest(),
+                    files={n: dict(sha256=digest(work / n), executable=bool((work / n).stat().st_mode & 0o111))
+                           if (work / n).is_file() else None for n in sorted(tracked | {n + suffix for n in tracked for suffix in ('.orig', '.rej')
+                                              if (work / (n + suffix)).is_file()})})
+    operations = []
+    limitation = None
+    for kind, target in [('patch', p) for p in patches] + [('cherry-pick', c) for c in commits]:
+        before = state()
+        intended = None
+        validation_error = None
+        if kind == 'patch':
+            patch = (root / target).read_text()
+            names = re.findall(r'^--- a/(.+)$', patch, re.M)
+            try:
+                intended = expected_patch({n: (work / n).read_bytes() for n in names}, patch)
+            except (ValueError, KeyError, OSError) as error:
+                validation_error = str(error)
+        args = (['patch', '--batch', '--forward', '-p1', '-i', str((root / target).resolve())]
+                if kind == 'patch' else git + ['cherry-pick', '-n', target])
+        result = subprocess.run(args, cwd=work, env=environment, capture_output=True, timeout=180)
+        stdout, stderr = result.stdout.decode(), result.stderr.decode()
+        normalized = ['patch', '--batch', '--forward', '-p1', '-i', target] if kind == 'patch' else ['git', 'cherry-pick', '-n', target]
+        operation = dict(argv=normalized, returncode=result.returncode, stdout=stdout, stderr=stderr, before=before, after=state())
+        operations.append(operation)
+        if result.returncode:
+            limitation = kind + ' failed: ' + target
+        elif kind == 'patch':
+            fuzz = re.findall(r'Hunk #(\d+) succeeded at (\d+) with fuzz (\d+)', stdout)
+            if fuzz != ([('1', '40', '1')] if target == 'qt6-base-cflags.patch' else []):
+                limitation = 'unexpected fuzz: ' + target
+            if validation_error:
+                limitation = 'patch preimage validation failed: ' + target
+            elif any((work / n).read_bytes() != data for n, data in intended.items()):
+                limitation = 'unintended patch edits: ' + target
+        if limitation:
+            break
+    return dict(policy='recipe-prepare-v1', tools=tools, operations=operations,
+                passed=limitation is None, limitation=limitation)
 
 
 def acquire(root, packaging, qt, buildinfo):
@@ -120,13 +259,16 @@ def acquire(root, packaging, qt, buildinfo):
         require(digest(root / name) == expected_patch, 'packaging patch checksum mismatch')
     repo(qt, QT_URL, 'v6.12.0')
     tag = command(['git', '-C', qt, 'rev-parse', 'v6.12.0^{commit}']).decode().strip()
-    command(['git', '-c', 'core.abbrev=no', '-C', qt, 'archive', '--format', 'tar', 'v6.12.0'], root / 'qtbase.tar')
+    environment = archive_policy(root, qt, buildinfo)
+    args = ['git', '-c', 'core.abbrev=no', '-C', qt, 'archive', '--format', 'tar', 'v6.12.0']
+    write(root / 'archive-command.json', dict(argv=[str(a) for a in args], environment={k: environment[k] for k in ('GIT_CONFIG_GLOBAL', 'GIT_CONFIG_SYSTEM', 'GIT_CONFIG_COUNT')}))
+    command(args, root / 'qtbase.tar', env=environment)
     archive_matches = digest(root / 'qtbase.tar') == checksums[0]
     for commit in commits:
         try:
             command(['git', '-C', qt, 'cat-file', '-e', commit + '^'])
         except ValueError:
-            command(['git', '-C', qt, 'fetch', '--quiet', '--depth', '2', 'origin', commit])
+            raise ValueError('missing retained cherry-pick parent: ' + commit)
         name = commit + '.patch'
         command(['git', '-C', qt, 'diff', '--no-ext-diff', '--no-textconv', commit + '^', commit], root / name)
         patches.append(name)
@@ -135,7 +277,7 @@ def acquire(root, packaging, qt, buildinfo):
         target = root / name
         shutil.copytree(cache / '.git' if (cache / '.git').is_dir() else cache, target)
         command(['git', '--git-dir=' + str(target), 'config', 'core.bare', 'true'])
-    provenance = dict(status='exact' if archive_matches else 'limited',
+    provenance = dict(archive_policy='makepkg-git-v1', status='exact' if archive_matches else 'limited',
                       limitation=None if archive_matches else 'Qt tag archive checksum does not match the checksum-pinned recipe; candidate sources are not exact-build evidence.',
                       archive_actual_sha256=digest(root / 'qtbase.tar'), packaging_cache='packaging-proof', qt_cache='qt-proof',
                       packaging_url=PACKAGING_URL, packaging_revision=revision, qt_url=QT_URL,
@@ -146,48 +288,73 @@ def acquire(root, packaging, qt, buildinfo):
                                      [QT_URL + '/commit/?id=' + commit for commit in commits])
     if not archive_matches:
         return provenance
-    source = root / 'source'
-    source.mkdir()
-    # Reconstruct only cited files and patch targets, never execute the recipe.
-    names = set(SOURCES)
-    for patch in patches:
-        names.update(re.findall(r'^\+\+\+ b/(.+)$', (root / patch).read_text(), re.M))
-    with tarfile.open(root / 'qtbase.tar') as archive:
-        for name in sorted(names):
-            if name not in archive.getnames():
-                continue  # A retained patch may introduce a new file.
-            member = archive.getmember(name)
-            require(member.isfile() and '..' not in Path(name).parts and not Path(name).is_absolute(), 'unsafe source member')
-            target = source / name
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(archive.extractfile(member).read())
-    for patch in patches:
-        command(['patch', '--batch', '--forward', '-p1', '-d', source, '-i', root / patch], root / (patch + '.apply'))
-    provenance.update(files={n: digest(source / n) for n in sorted(names)}, reconstructed=True)
+    provenance['reconstruction_policy'] = 'recipe-prepare-v1'
+    provenance['source_names'] = sorted(set(SOURCES) | {
+        name for patch in patches for name in re.findall(r'^(?:\+\+\+ b/|--- a/)(.+)$', (root / patch).read_text(), re.M)})
+    for commit in commits:
+        provenance['source_names'] = sorted(set(provenance['source_names']) | set(command(
+            ['git', '-C', qt, 'diff', '--no-renames', '--name-only', '-z', commit + '^', commit]).decode().strip('\0').split('\0')))
+    with tempfile.TemporaryDirectory() as temporary:
+        preparation = prepare(root, qt, tag, patches[:2], commits, Path(temporary))
+        write(root / 'preparation.json', preparation)
+        names = provenance['source_names']
+        provenance['source_names'] = sorted(set(names) | {n + suffix for n in names for suffix in ('.orig', '.rej')
+            if (Path(temporary) / 'work' / (n + suffix)).is_file()})
+        source = root / 'source'
+        source.mkdir()
+        for name in provenance['source_names']:
+            path = Path(temporary) / 'work' / name
+            if path.is_file():
+                target = source / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, target)
+        provenance.update(files={n: digest(source / n) if (source / n).exists() else None
+                                 for n in provenance['source_names']},
+                          reconstructed=preparation['passed'],
+                          status='exact' if preparation['passed'] else 'limited',
+                          limitation=preparation['limitation'])
     return provenance
 
 
 def citations(root):
-    # Whole function/branch excerpts are retained with stable one-based line ranges.
-    ranges = {'src/corelib/tools/qcryptographichash.cpp': [(910, 950)],
-              'src/corelib/io/qiodevice.cpp': [(1015, 1195)],
-              'src/corelib/io/qiodevice_p.h': [(30, 38), (100, 120)],
-              'src/corelib/io/qfiledevice.cpp': [(450, 525), (720, 760)],
-              'src/corelib/io/qfsfileengine.cpp': [(580, 665)],
-              'src/corelib/io/qfsfileengine_unix.cpp': [(140, 202)],
-              'src/corelib/tools/qringbuffer.cpp': [(210, 310)],
-              'harness.cpp': [(1, 110)]}
+    selectors = {
+        'src/corelib/tools/qcryptographichash.cpp': [r'bool QCryptographicHash::addData\(QIODevice', r'bool QCryptographicHashPrivate::addData\(QIODevice'],
+        'src/corelib/io/qiodevice.cpp': [r'qint64 QIODevicePrivate::read\(', r'qint64 QIODevice::read\(char'],
+        'src/corelib/io/qfiledevice.cpp': [r'qint64 QFileDevice::readData\(', r'bool QFileDevice::atEnd\('],
+        'src/corelib/io/qfsfileengine.cpp': [r'qint64 QFSFileEngine::read\(', r'qint64 QFSFileEnginePrivate::readFdFh\('],
+        'src/corelib/io/qfsfileengine_unix.cpp': [r'qint64 QFSFileEnginePrivate::nativeRead\('],
+        'src/corelib/tools/qringbuffer.cpp': [r'qint64 QRingBuffer::read\('],
+    }
     result = []
-    for name, spans in ranges.items():
+    for name, patterns in selectors.items():
+        path = root / 'source' / name
+        text = path.read_text()
+        for pattern in patterns:
+            matches = list(re.finditer(pattern, text))
+            require(len(matches) == 1, 'ambiguous/missing citation function: ' + pattern)
+            start = text.count('\n', 0, matches[0].start()) + 1
+            opening = text.index('{', matches[0].end())
+            depth = 1
+            closing = opening
+            while depth:
+                closing += 1
+                depth += (text[closing] == '{') - (text[closing] == '}')
+            end = text.count('\n', 0, closing) + 1
+            result.append(dict(file='source/' + name, sha256=digest(path), start=start, end=end,
+                               selector=pattern, text='\n'.join(text.splitlines()[start-1:end])))
+    for name in ('src/corelib/io/qiodevice_p.h', 'harness.cpp'):
         path = root / 'source' / name
         lines = path.read_text().splitlines()
-        for start, end in spans:
-            result.append(dict(file='source/' + name, sha256=digest(path), start=start, end=end,
-                               text='\n'.join(lines[start-1:end])))
+        result.append(dict(file='source/' + name, sha256=digest(path), start=1, end=len(lines), text='\n'.join(lines)))
+    for name in ('makepkg-git.sh', 'pacman-PKGINFO', 'makepkg-gitconfig'):
+        path = root / name
+        lines = path.read_text().splitlines()
+        if lines:
+            result.append(dict(file=name, sha256=digest(path), start=1, end=len(lines), text='\n'.join(lines)))
     return result
 
 
-def run(evidence, verification, output, packaging=None, qt=None):
+def run(evidence, verification, output, packaging=None, qt=None, prior_audit=None, prior_verification=None):
     require(not output.exists() and not output.is_relative_to(evidence), 'destination collision')
     output.mkdir(parents=True)
     checker = load_checker()
@@ -216,12 +383,25 @@ def run(evidence, verification, output, packaging=None, qt=None):
         write(output / 'identity.json', identity)
         checker.check_identity(output)
         stage = 'sources'
-        for name, supplied in (('packaging', packaging), ('qt', qt)):
-            if supplied is None:
-                candidates = sorted((ROOT / 'build').glob('preview-hash-device-path-*/' + name + '-proof'))
-                if candidates:
+        require((prior_audit is None) == (prior_verification is None), 'paired prior audit options required')
+        if prior_audit is not None:
+            checker.check_prior(prior_audit, prior_verification)
+            write(output / 'prior.json', dict(audit=str(prior_audit), verification=str(prior_verification),
+                                             audit_seal=digest(prior_audit / 'seal.json'),
+                                             verification_sha256=digest(prior_verification)))
+            for name in ('packaging', 'qt'):
+                isolated = output / (name + '-repo')
+                shutil.copytree(prior_audit / (name + '-proof'), isolated)
+                if name == 'packaging':
+                    packaging = isolated
+                else:
+                    qt = isolated
+        if prior_audit is None:
+            for name, supplied in (('packaging', packaging), ('qt', qt)):
+                if supplied is not None:
                     isolated = output / (name + '-repo')
-                    shutil.copytree(candidates[-1], isolated)
+                    shutil.copytree(supplied / '.git' if (supplied / '.git').is_dir() else supplied, isolated)
+                    command(['git', '--git-dir=' + str(isolated), 'config', 'core.bare', 'true'])
                     if name == 'packaging':
                         packaging = isolated
                     else:
@@ -229,7 +409,7 @@ def run(evidence, verification, output, packaging=None, qt=None):
         try:
             provenance = acquire(output, packaging or output / 'packaging-repo', qt or output / 'qt-repo', (output / 'BUILDINFO').read_text())
         except (ValueError, OSError, subprocess.SubprocessError) as error:
-            provenance = dict(status='limited', limitation=str(error), packaging_url=PACKAGING_URL, qt_url=QT_URL)
+            provenance = dict(archive_policy='makepkg-git-v1', status='limited', limitation=str(error), packaging_url=PACKAGING_URL, qt_url=QT_URL)
         write(output / 'source-provenance.json', provenance)
         (output / 'source').mkdir(exist_ok=True)
         harness = evidence / 'source/main.cpp'
@@ -237,6 +417,13 @@ def run(evidence, verification, output, packaging=None, qt=None):
         write(output / 'citations.json', citations(output) if provenance['status'] == 'exact' else [
             dict(file='source/harness.cpp', sha256=digest(output / 'source/harness.cpp'), start=1, end=110,
                  text='\n'.join(harness.read_text().splitlines()[:110]))])
+        if (output / 'archive-policy.json').exists() and provenance['status'] != 'exact':
+            retained = read(output / 'citations.json')
+            for name in ('makepkg-git.sh', 'pacman-PKGINFO'):
+                path = output / name
+                lines = path.read_text().splitlines()
+                retained.append(dict(file=name, sha256=digest(path), start=1, end=len(lines), text='\n'.join(lines)))
+            write(output / 'citations.json', retained)
         stage = 'disassembly'
         (output / 'disassembly').mkdir()
         for symbol in SYMBOLS:
@@ -282,6 +469,13 @@ def run(evidence, verification, output, packaging=None, qt=None):
 
                    'See citations.json (SHA-256, one-based inclusive ranges), source-provenance.json and disassembly/.',
                    'No syscall counts, cache behavior, provider selection, hardware dispatch, production savings or optimization choice follow from this audit.']
+        if provenance['status'] == 'exact':
+            report += ['', 'Verified recipe-prepared source trace (inclusive function ranges are in citations.json):',
+                       '- QCryptographicHash::addData forwards to its private routine, which reads 1024-byte chunks, updates on positive reads and returns device->atEnd(). This corroborates the matched 0x400 request and positive-read loop in disassembly.',
+                       '- QIODevicePrivate::read first consumes the ring buffer. With buffering enabled and no transaction/peek retention, requests below readBufferChunkSize refill the ring buffer; requests at least that size can read directly into the caller buffer. The default chunk is 16384 bytes. QRingBuffer::read copies with memcpy, consistent with retained disassembly.',
+                       '- QFileDevice::readData checks flushing, delegates to the engine, propagates errors and invalidates cached size after short reads. QFileDevice::atEnd checks buffered data and engine/size state.',
+                       '- QFSFileEngine::read delegates to nativeRead. On Unix, nativeRead handles sequential FILE streams specially and otherwise delegates to readFdFh, whose FILE/fd branches use fread/read with EINTR and error handling. These branches corroborate the matched binary calls; they do not identify runtime branch selection.',
+                       'Exact source means verified recipe-prepared contents of retained files. It does not prove reproducible compilation, syscall counts, branch selection or elapsed-cost attribution.']
         (output / 'REPORT.md').write_text('\n'.join(report) + '\n')
         # Check consumed bindings again before sealing; preserve a sealed partial on any failure.
         require(checker.bind(evidence, verification) == binding, 'consumed evidence drift during audit')
@@ -298,7 +492,9 @@ if __name__ == '__main__':
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--packaging-cache', type=Path)
     parser.add_argument('--qt-cache', type=Path)
+    parser.add_argument('--prior-audit', type=Path)
+    parser.add_argument('--prior-verification', type=Path)
     args = parser.parse_args()
-    result = run(args.evidence.resolve(), args.verification.resolve(), args.output.resolve(), args.packaging_cache, args.qt_cache)
+    result = run(args.evidence.resolve(), args.verification.resolve(), args.output.resolve(), args.packaging_cache, args.qt_cache, args.prior_audit.resolve() if args.prior_audit else None, args.prior_verification.resolve() if args.prior_verification else None)
     print(json.dumps(result, sort_keys=True))
     sys.exit(result['status'] != 'complete')
