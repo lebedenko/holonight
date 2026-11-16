@@ -687,3 +687,31 @@ The [private helper-startup preparation](delivery-tracing-v4.md#private-ac-helpe
 now records finer A/C parent-side probes and a frozen future protocol. It remains
 uncompiled and unexecuted, selects no optimization and leaves the failed 78/80
 qualification and its thresholds unchanged.
+
+The [native helper-startup diagnostic](helper-startup-diagnostic.md) built all four
+private trees and passed one workload-free recorder rehearsal, then stopped at the
+third warm-up on a new lifecycle-validator assumption. All 33 remaining invocations
+were left unexecuted. Corrected offline replay preserves the original blocked
+attempt; no measured population, optimization selection or qualification change
+resulted.
+
+The explicitly authorized rerun with the corrected validator passed fresh native
+builds and a recorder rehearsal, then stopped before invocation 1 because four
+frozen host dependency hashes had changed. Its [retained audit](helper-startup-diagnostic.md#authorized-rerun-after-the-validator-fix)
+records all 36 invocations unexecuted, passing cleanup and staging checks, and
+blocked input-integrity verification. No measured evidence or qualification change
+resulted.
+
+A subsequent [explicit host revision and rerun](helper-startup-diagnostic.md#host-revision-and-captured-warm-up-validator-correction)
+passed four warm-ups, then stopped at captured A because the validator treated
+unrelated scheduler startup warnings as a global coverage failure. The corrected
+offline replay passes all five retained invocations with complete helper-thread
+coverage. The executed attempt remains blocked, with 31 invocations unexecuted and
+no measured block collected.
+
+The authorized [fresh attempt completed](helper-startup-diagnostic.md#completed-fresh-attempt)
+all 36 invocations: 150 measured observations and 300 measured endpoints, plus six
+excluded warm-ups. Execution and offline-report independent verification passed.
+The diagnostic retains selected demand, standby and setup separately, reports
+scheduler coverage and signed block-median arm comparisons, and selects no
+optimization. Qualification remains failed at 78/80 under unchanged thresholds.
