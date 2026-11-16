@@ -2019,6 +2019,85 @@ or attribution of the elapsed difference. Existing native, scheduler, CPU-profil
 package and debug evidence is reused. No benchmarks, builds, recordings, downloads,
 installation, production changes or optimization selection were performed.
 
+## Qt chunk-size and buffering mechanism diagnostic — 2026-11-16
+
+The [standalone protocol](../sdd/preview-hash-device-mechanism.md) independently
+varies chunk size and QFile buffering without changing production behavior. The
+[single sealed run](../../build/preview-hash-device-mechanism-20261116-01/REPORT.md)
+binds exact-source audit `preview-hash-device-path-20261116-15`, its passing
+verification and the unchanged throughput/payload provenance chain. The host Qt
+Core Release executable passed native correctness before one single-threaded
+timing process and a separate counting process. No concurrent builds/tests,
+retries, cache drops, pinning or governor changes occurred.
+
+The fixed schedule completed eight excluded warm-ups, 192 measured sweeps
+(11,520 file rows and 16,745,464,320 logical bytes), then eight untimed counting
+sweeps. All 60 manifest ordinals, including empty files, retained their order.
+Every file matched its digest and byte count; file arms also passed error-free
+EOF and final-position checks. Timing and counting processes took 8.411 and
+0.392 seconds respectively, within the preregistered bounds; cleanup succeeded.
+Opening, preloading, buffer allocation, common post-read validation, comparison
+and output remained outside the primary read/update timer.
+
+The following ranges summarize all eight three-sweep block means. Signed
+milliseconds are left minus right; ratios are left / right durations. Every
+block's magnitude, ratio and signed per-file integer reconciliation is retained
+in [summary.json](../../build/preview-hash-device-mechanism-20261116-01/summary.json).
+
+| Left / right | Signed difference range, ms | Duration ratio range | Block directions |
+|---|---:|---:|---|
+| Stream 1K buffered / stream 64K buffered | +0.484 to +1.677 | 1.01215–1.04272 | 8 positive |
+| Stream 1K unbuffered / stream 64K unbuffered | +10.706 to +14.160 | 1.27221–1.36138 | 8 positive |
+| Device buffered / device unbuffered | −12.085 to −9.417 | 0.77090–0.81139 | 8 negative |
+| Stream 1K buffered / stream 1K unbuffered | −12.781 to −9.517 | 0.76040–0.80979 | 8 negative |
+| Stream 64K buffered / stream 64K unbuffered | −0.463 to +0.461 | 0.98835–1.01173 | Mixed; inconclusive |
+| Device buffered / stream 1K buffered | −1.036 to +0.122 | 0.97429–1.00303 | Mixed; inconclusive |
+| Device unbuffered / stream 1K unbuffered | −2.491 to +0.890 | 0.95329–1.01716 | Mixed; inconclusive |
+| Memory 1K / memory 64K | −0.175 to +0.370 | 0.99495–1.01078 | Mixed; inconclusive |
+
+These contrasts support a configuration-specific chunk-size effect in both file
+buffering modes, larger with buffering disabled, and a buffering effect at 1 KiB.
+They do not establish a consistent separate device-interface penalty at equal
+1 KiB chunks. Effects need not be additive. Pooled throughput is descriptive;
+no adjacent-sweep pairing or subtraction of memory timings estimates exact I/O cost.
+
+The [separate counting output](../../build/preview-hash-device-mechanism-20261116-01/counting.stdout)
+and [joint histograms](../../build/preview-hash-device-mechanism-20261116-01/counts.json)
+show the same readData request populations for device and explicit 1 KiB arms
+within each buffering mode:
+
+| Arm | readData request sizes and counts | Explicit public reads | Explicit hash updates |
+|---|---|---:|---:|
+| Device buffered | 5,469 × 16,384 bytes; 5,298 × 0 bytes | Unobserved | Unobserved |
+| Device unbuffered | 85,260 × 1,024 bytes | Unobserved | Unobserved |
+| Stream 1K buffered | 5,469 × 16,384 bytes; 5,298 × 0 bytes | 85,260 | 85,200 |
+| Stream 1K unbuffered | 85,260 × 1,024 bytes | 85,260 | 85,200 |
+| Stream 64K buffered | 1,424 × 65,536 bytes | 1,424 | 1,364 |
+| Stream 64K unbuffered | 1,424 × 65,536 bytes | 1,424 | 1,364 |
+| Memory 1K | None | 0 | 85,200 |
+| Memory 64K | None | 0 | 1,364 |
+
+Each file arm's returned-size histogram independently reconciles to 87,215,960
+bytes. Public reads include terminal EOF reads. Zero-byte readData requests are
+retained as Qt buffer-drain notifications. Counts come from a forwarding QFile
+subclass in another process; they cannot prove identical branches in ordinary
+QFile timing arms and are not syscall counts. Hardware dispatch, statistical
+significance, exact elapsed-time decomposition and whole-preview gains remain
+unclaimed. No production optimization is selected.
+
+Retained evidence includes [preregistration](../../build/preview-hash-device-mechanism-20261116-01/preregistration.json),
+[source/tool snapshots](../../build/preview-hash-device-mechanism-20261116-01/source),
+[raw timings](../../build/preview-hash-device-mechanism-20261116-01/native.stdout),
+host/CPU identity, build commands/flags, dependency hashes/build IDs, binary/linkage
+and both process mapping identities, cleanup records and the
+[completion assessment](../../build/preview-hash-device-mechanism-20261116-01/assessment.json).
+The [independent stdlib-only verification](../../build/preview-hash-device-mechanism-20261116-01-independent.json)
+replays timing coverage, counting histograms, signed arithmetic, snapshots, seals
+and consumed provenance without importing the runner or reporter. Focused
+verification covers ten Python fixtures and the native standard/empty, boundary,
+partial-chunk, eight-arm/counting-equivalence and failure cases. Unaffected prior
+verification and historical evidence are preserved.
+
 ### Buffered 64 KiB hashing practical-value assessment (2026-11-16)
 
 The [offline protocol](../sdd/preview-hash-value.md) records the **5 ms per-preview
