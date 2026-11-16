@@ -108,6 +108,10 @@ and [binary identities](../../build/preview-standby-arb90t5w/measurement-inputs.
 
 ## Corrected-reference comparison: qualification failed
 
+The [offline startup reconciliation](startup-evidence-decision.md) connects the
+completed investigations and remainder evidence. All three proposals remain deferred;
+finer validation observations already exist in separate populations.
+
 **The cancellation/cleanup race is resolved in A-fixed, but strict qualification remains failed.** The single preregistered comparison collected all 12,000 observations (4,000 per variant), plus separate warm-ups, without correctness, protocol, cleanup or missing-observation failures. Of 80 numerical gates, 78 pass. Large textured PNG startup fails the p95 regression gate for both pixels and final metadata.
 
 | Startup event, 3200×2400 PNG | A-fixed p95 | C p95 | Change | Allowed C p95 |
@@ -722,3 +726,17 @@ separate. Independent interval, scheduler, selection and decision verification
 passes. The decision is **Evidence insufficient** because C's block rankings
 disagree and uncovered startup time dominates; no optimization or new experiment
 is selected. Qualification remains failed at **78/80** under unchanged thresholds.
+
+The subsequent [retained startup remainder assessment](helper-startup-remainder.md)
+explains review 03's helper-uncovered intervals using existing v3/v4 traces. All 32
+required C views agree on runtime verification nested inside generation validation
+as one source-bound investigation. This does not revise the earlier helper-operation
+**Evidence insufficient** decision or the failed **78/80** qualification; no
+experiment or optimization is prepared.
+
+The [qualification C startup-validation applicability audit](startup-validation-applicability.md)
+binds the frozen C execution path and runtime input manifest to validation 04,
+CPU profile 03 and the completed hashing investigations. Mechanism source compatibility,
+different payload bytes and unavailable qualification generation/loading identities
+remain distinct. The decision remains **Evidence insufficient**, with all three
+proposals deferred, no experiment prepared and qualification still **78/80**.

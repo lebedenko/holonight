@@ -1,0 +1,17 @@
+{
+  "purpose": "Audit-time checkpoints of retained historical records; child identities must come from those records. No current hash proves a past execution.",
+  "records": {
+    "build/preview-corrected-qjln5jn4/binary-runtime-inventory.json": "09532a0f7bff3f542edec3ab3ce06d7f57490d72444ccd4c77fec09712231d17",
+    "build/preview-corrected-qjln5jn4/final-tooling-inventory.json": "e9d29b4c69d7bdba3291c4c53fa882247f8461bf02754f16696a68477dd9e67a",
+    "build/preview-corrected-qjln5jn4/harness-inventory-final.json": "4cabd51e647f008c18e33711bdde19605e44d6d0c91bd93cd14feb60a40152fa",
+    "build/preview-corrected-qjln5jn4/prepare-corrected.py": "311f3e4291a4cd54247a4823570f4055d8f1d17ed60bf94d14a8083bff3ba1cd",
+    "build/preview-corrected-qjln5jn4/reuse-measurement-d0nbnsxc/runner.py": "a4d8b43075dffd5d66bf95edfe7a31900b3648544ea91099e0f11cf666ae0270",
+    "build/preview-corrected-qjln5jn4/run-qualification.py": "f10665baa70e022cc1aaa1c6a42ba6d176df5893797042a9669b0d04ebf9a4ca",
+    "build/preview-corrected-qjln5jn4/write-results.py": "ccd4e98328b7225ae79f2c5a9657ce5fdc0b4883e3e627a70b34b1f8ffc1580a",
+    "build/preview-delivery-overhead-20261114-03/seal.json": "e58e5f8024702e377c6b99015ca7f5f61916d2452ab628d88c35d1ad98e59812",
+    "build/preview-startup-reconciliation-20261116-03-independent.json": "4cb429d17ea36d32d3d23a16278d32f7d11fc71578972a7f6f95c347ba02540e",
+    "build/preview-startup-reconciliation-20261116-03/seal.json": "1f70c276ce7ed4d2bd39e02bf185620fc850a32e4803552334d9d33cda345dab",
+    "build/preview-tracing-overhead-20261112/pre-audit-seal.json": "15bf356fe5452df7f9171621d059db167523889d7d4d6aec316eafc93cd6ec2b",
+    "build/preview-tracing-overhead-20261112/preparation.json": "8234eb94dfee2224b0a5fbf35af7ff193a2b7c1488252b30520952e240b52602"
+  }
+}
