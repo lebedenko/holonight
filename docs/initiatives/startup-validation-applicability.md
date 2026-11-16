@@ -135,3 +135,8 @@ python3 -m unittest discover -s tests -p test_preview_startup_applicability.py
 python3 scripts/audit-preview-startup-applicability.py --output build/preview-startup-applicability-NEW
 python3 scripts/verify-preview-startup-applicability.py build/preview-startup-applicability-NEW --output build/preview-startup-applicability-NEW-independent.json
 ```
+
+The subsequent [identity-bound startup baseline protocol](preview-identity-baseline.md)
+prepares a new diagnostic population from retained qualification A-fixed/C bytes.
+Prepared status leaves execution capability unvalidated; it neither recovers the
+historical loading identities nor changes the 78/80 qualification or audit decision.
