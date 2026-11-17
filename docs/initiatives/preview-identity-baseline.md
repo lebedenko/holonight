@@ -203,3 +203,28 @@ and [independent result](../../build/preview-identity-baseline-20261116-03-indep
 The focused suite covers 54 synthetic cases, including namespace source bindings, authorization boundaries, binary perf fixtures and ELF
 note parsing, with all real process execution disabled. These artifacts do not
 attest real recorder or execution capability.
+
+## Offline follow-up review
+
+The [sealed identity review](../../build/preview-identity-review-20261117-03/REPORT.md)
+and [independent verification](../../build/preview-identity-review-20261117-03-independent.json)
+combine execution 20261117-03, preparation 20261117-04, rehearsal 20261117-05,
+applicability audit 05 and reconciliation 03 through retained provenance. The
+[assessor](../../scripts/assess-preview-identity-review.py) accepts `--output` for a
+fresh directory beneath `build/`; the [verifier](../../scripts/verify-preview-identity-review.py)
+accepts that directory and a separate `--output` JSON result. Existing destinations
+and input overlap are rejected; advance the directory suffix on collision.
+
+The review preserves complete desktop/sandbox ledgers and per-observation process
+attribution, compares retained payload and mapping identities, and independently
+checks four populations of 25, nearest-rank p95 and all 20 signed block comparisons.
+Warm-ups and authorization waits are excluded. Captured loading identity cannot
+recover historical qualification or uncaptured loading identities. The decision
+remains **Evidence insufficient**: streaming, validation reuse and SHA-256 dispatch
+remain deferred with their mechanism, applicability, integrity and contradiction
+gaps. Qualification remains **78/80**; no ranking or experiment is prepared.
+
+Verification uses `python3 -m unittest discover -s tests -p test_preview_identity_review.py`
+with process execution disabled, followed by one offline assessment and independent
+verification. No builds, workloads, recordings, staging or qualification reruns are
+part of this follow-up. Earlier audits remain unchanged.
