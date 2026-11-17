@@ -1,4 +1,4 @@
-"""Version 2 correctness contracts. This module never starts processes."""
+"""Version 3 correctness contracts. This module never starts processes."""
 import os
 from pathlib import Path
 import re
@@ -12,7 +12,7 @@ BUILT_SEAL = 'd2e45f0c05b464e1c22de87145f35160ac038ff482a0cc72ca04d6f1396b2d7a'
 
 
 def protocol():
-    return h.read(DIRECTORY / 'CORRECTNESS-v2.json')
+    return h.read(DIRECTORY / 'CORRECTNESS-v3.json')
 
 
 def validate_xml(path, required):
@@ -40,6 +40,11 @@ def source_cases(path, suites):
 
 def validate_membership(native):
     p = protocol()
+    suites = [('runtime-verification', ('RuntimeVerification',)), ('generation-ownership', ('GenerationOwner',)),
+              ('cleanup', ('Cleanup',)), ('scheduling', ('PreviewScheduling',)),
+              ('pool-lifecycle', ('PoolLifecycle',)), ('preview', ('IsolatedPreview', 'WarmPreview'))]
+    h.require(p['prerequisites'] == [dict(label=label, cases=[n for n in p['ordinary']
+              if n.split('.')[0] in members]) for label, members in suites], 'prerequisite order changed')
     for arm in p['arms']:
         frozen = e.PACKAGE / arm / 'source'
         ordinary = []
@@ -110,3 +115,21 @@ def tools():
     paths += list((e.ROOT / 'scripts').glob('*.py'))
     paths += list((DIRECTORY / 'offline').glob('*.py'))
     return {str(p): h.digest(p) for p in sorted(set(paths))}
+
+
+def generator():
+    paths = [e.PACKAGE / arm / 'source/holonight-images/tests/format-fixtures.py' for arm in protocol()['arms']]
+    h.require(paths[0].read_bytes() == paths[1].read_bytes(), 'fixture generator arm mismatch')
+    h.require(h.digest(paths[0]) == protocol()['fixture_generator_sha256'], 'fixture generator protocol mismatch')
+    return paths[0]
+
+
+def fixtures(root):
+    h.require(root.is_dir() and not root.is_symlink(), 'missing or unsafe fixtures')
+    for path in root.rglob('*'):
+        h.require(not path.is_symlink() and path.is_file(), 'unsafe fixture member')
+    inventory = h.inventory(root)
+    h.require(all('sample.' + ext in inventory for ext in ('png', 'jpg', 'bmp', 'tif', 'webp', 'gif')),
+              'missing required fixture')
+    h.require(inventory == protocol()['fixtures'], 'fixture content mismatch')
+    return inventory

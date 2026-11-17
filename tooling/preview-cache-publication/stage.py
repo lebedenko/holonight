@@ -17,7 +17,7 @@ def runtime_path(output, arm):
 def worker(output, arm, remove=False):
     h.require(os.geteuid() == 0 and arm in ('control', 'early'), 'scoped root staging required')
     h.require(output == output.resolve() and output.parent == e.ROOT / 'build' and
-              output.name == 'preview-cache-publication-correctness-20261118-01', 'unsafe staging request')
+              output.name == 'preview-cache-publication-correctness-20261118-02', 'unsafe staging request')
     binding = h.read(output / 'built.json')
     built = Path(binding['path'])
     h.require(h.digest(built / 'seal.json') == c.BUILT_SEAL == binding['seal'], 'staging build binding')

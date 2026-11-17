@@ -1,4 +1,4 @@
-"""Correctness v2 synthetic regressions. Starting any process is forbidden."""
+"""Correctness v3 synthetic regressions. Starting any process is forbidden."""
 import shutil
 from types import SimpleNamespace
 from pathlib import Path
@@ -15,7 +15,7 @@ sys.path.insert(0, str(DIRECTORY))
 import correctness as c
 import qualify
 import stage
-v = c.e.load('synthetic_correctness_v2_verifier', DIRECTORY / 'offline/verify_correctness_v2.py')
+v = c.e.load('synthetic_correctness_v3_verifier', DIRECTORY / 'offline/verify_correctness_v3.py')
 h = c.h
 
 
@@ -192,7 +192,7 @@ class CorrectnessTests(unittest.TestCase):
         protocol = c.protocol()
         protocol['ordinary'] = protocol['ordinary'][1:]
         with patch.object(c, 'protocol', return_value=protocol):
-            with self.assertRaisesRegex(ValueError, 'prerequisite membership'):
+            with self.assertRaisesRegex(ValueError, 'prerequisite'):
                 c.validate_membership(DIRECTORY / 'native')
 
     def test_stopped_schedule_accounts_for_skipped_and_unexecuted_cases(self):
@@ -209,68 +209,196 @@ class CorrectnessTests(unittest.TestCase):
         accounting = qualify.case_accounting(rows, self.root)
         self.assertEqual(accounting[0]['attempted'], row['cases'][:1])
         self.assertEqual(accounting[0]['unexecuted'], row['cases'][1:])
+        self.assertEqual(accounting[0]['skipped'], row['cases'][1:])
         for record in accounting[1:]:
             self.assertEqual(record['unexecuted'], record['required'])
             self.assertFalse(record['attempted'])
 
     def test_resealed_protocol_tampering_is_not_trusted(self):
-        h.write(self.root / 'assessment.json', dict(phase='correctness-v2', status='qualified',
+        h.write(self.root / 'assessment.json', dict(phase='correctness-v3', status='qualified',
             decision='Evidence insufficient', observations=0))
         protocol = c.protocol()
         protocol['ordinary'].pop(0)
-        h.write(self.root / 'protocol-v2.json', protocol)
+        h.write(self.root / 'protocol-v3.json', protocol)
         h.write(self.root / 'seal.json', h.inventory(self.root))
         h.sealed(self.root)
         with self.assertRaisesRegex(ValueError, 'protocol drift'):
             v.verify(self.root)
 
-    def blocked_record(self):
-        rows = self.schedule()
-        fake_built = self.root / 'provider'
-        fake_built.mkdir()
-        h.write(fake_built / 'seal.json', {})
-        h.write(fake_built / 'package.json', dict(prepared=True))
-        rows = qualify.schedule(fake_built, self.root)
-        h.write(self.root / 'schedule.json', rows)
-        h.write(self.root / 'built.json', dict(path=str(fake_built), seal=v.BUILT_SEAL, inventory={}))
-        h.write(self.root / 'package.json', dict(prepared=True))
-        shutil.copyfile(DIRECTORY / 'CORRECTNESS-v2.json', self.root / 'protocol-v2.json')
-        shutil.copytree(DIRECTORY / 'native', self.root / 'native-source')
-        h.write(self.root / 'native-inputs.json', h.inventory(self.root / 'native-source'))
-        tools = c.tools()
-        (self.root / 'tools').mkdir()
-        for path in tools:
-            shutil.copyfile(path, self.root / 'tools' / Path(path).name)
-        h.write(self.root / 'tools.json', tools)
-        h.write(self.root / 'integrity.json', dict(unchanged=True))
-        h.write(self.root / 'case-accounting.json', qualify.case_accounting(rows, self.root))
-        (self.root / 'commands').mkdir()
-        h.write(self.root / 'commands/compiler-command.json', rows[0])
-        h.write(self.root / 'commands/compiler-result.json', dict(start_ns=1, stop_ns=2,
-            exit=1, failure='compiler unavailable', cleanup=True, cleanup_seconds=.001))
-        (self.root / 'commands/compiler.stdout').write_text('')
-        (self.root / 'commands/compiler.stderr').write_text('compiler unavailable')
-        h.write(self.root / 'assessment.json', dict(phase='correctness-v2', status='blocked',
-            decision='Evidence insufficient', observations=0, attempted=['compiler'], completed=[],
-            unexecuted=[row['name'] for row in rows[1:]], native_correctness='unvalidated',
-            cleanup=True, failure='compiler unavailable'))
-        # The mocked prerequisite package lives outside the execution artifact inventory.
-        provider = Path(self.temporary.name + '-provider')
-        fake_built.rename(provider)
-        self.addCleanup(shutil.rmtree, provider)
-        rows = qualify.schedule(provider, self.root)
-        h.write(self.root / 'schedule.json', rows)
-        h.write(self.root / 'built.json', dict(path=str(provider), seal=v.BUILT_SEAL, inventory={}))
-        h.write(self.root / 'commands/compiler-command.json', rows[0])
-        h.write(self.root / 'seal.json', h.inventory(self.root))
-        digest, sealed = h.digest, h.sealed
+    def production_record(self, stop='compiler', cleanup=True, invalid_xml=False, invalid_fixture=False, preparation_failure=False):
+        output = self.root / 'preview-cache-publication-correctness-20261118-02'
+        binding = dict(path=str(self.built), seal=v.BUILT_SEAL, inventory={})
+        package = h.read(self.built / 'package.json')
+        self.enterContext(patch.object(c, 'built_binding', side_effect=ValueError('provider unavailable') if preparation_failure else None,
+                                      return_value=binding))
+        digest, sealed, load = h.digest, h.sealed, c.e.load
         self.enterContext(patch.object(h, 'digest', side_effect=lambda path:
-            v.BUILT_SEAL if path == provider / 'seal.json' else digest(path)))
-        self.enterContext(patch.object(h, 'sealed', side_effect=lambda path: {} if path == provider else sealed(path)))
-        self.enterContext(patch.object(c.e, 'package', return_value=dict(prepared=True)))
-        self.enterContext(patch.object(c.e, 'load', return_value=SimpleNamespace(verify=lambda path:
-            dict(commands=27, failed_command=None))))
-        return rows
+            ('invalid' if preparation_failure else v.BUILT_SEAL) if path == self.built / 'seal.json' else digest(path)))
+        self.enterContext(patch.object(h, 'sealed', side_effect=lambda path: {} if path == self.built else sealed(path)))
+        self.enterContext(patch.object(c.e, 'package', return_value=package))
+        self.enterContext(patch.object(c.e, 'load', side_effect=lambda name, path:
+            SimpleNamespace(verify=lambda path: dict(commands=27, failed_command=None))
+            if name == 'independent_native_build_verifier' else load(name, path)))
+        def invoke(row, root):
+            target = root / 'commands'
+            target.mkdir(exist_ok=True)
+            h.write(target / (row['name'] + '-command.json'), row)
+            failure = row['name'] == stop and not invalid_xml
+            h.write(target / (row['name'] + '-result.json'), dict(start_ns=row['index'] * 2 + 1,
+                stop_ns=row['index'] * 2 + 2, exit=1 if failure else 0,
+                failure='synthetic failure' if failure else None, cleanup=cleanup if failure else True,
+                cleanup_seconds=.001))
+            (target / (row['name'] + '.stdout')).write_text(
+                '[  PASSED  ] ' + str(len(row['cases'])) + ' tests' if row['cases'] else
+                str(Path(sys.executable).resolve()) if row['name'].endswith('-linkage') else '')
+            (target / (row['name'] + '.stderr')).write_text('synthetic failure' if failure else '')
+            if failure:
+                raise ValueError('synthetic failure')
+            if row['name'] == 'fixtures':
+                self.generate(root / 'fixtures')
+                if invalid_fixture:
+                    (root / 'fixtures/sample.jpg').unlink()
+            if row['name'].endswith('-configure'):
+                cache = root / row['arm'] / 'build/CMakeCache.txt'
+                cache.parent.mkdir(parents=True, exist_ok=True)
+                cache.write_text(''.join(name + '_DIR:PATH=' + str(self.built / row['arm'] / 'prefix/lib/cmake' / name) + '\n'
+                    for name in ('HolonightImages', 'HolonightThumbnails', 'HolonightFileBrowser')))
+            if row['cases']:
+                path, xml = self.xml(row['cases'])
+                if invalid_xml and row['name'] == stop:
+                    xml.findall('.//testcase')[0].set('result', 'suppressed')
+                path = Path(next(arg.split('xml:', 1)[1] for arg in row['argv'] if arg.startswith('--gtest_output=xml:')))
+                path.parent.mkdir(parents=True, exist_ok=True)
+                ET.ElementTree(xml).write(path)
+                # xml() is only an in-memory factory here; its scratch file is not evidence.
+                (self.root / 'tests.xml').unlink()
+            if row['workload']:
+                clean = dict(isolated=True, exit=0, stdout='', stderr='', cgroups=[])
+                for phase in ('before', 'after'):
+                    h.write(target / (row['name'] + '-scopes-' + phase + '.json'), clean)
+            if row['name'].endswith('-stage'):
+                arm = row['arm']
+                tree = {'generations/synthetic': dict(uid=0, mode=0o755, sha256=None)}
+                for name, sha in h.inventory(self.built / arm / 'runtime').items():
+                    tree['generations/synthetic/' + name] = dict(uid=0, mode=0o644, sha256=sha)
+                h.write(root / (arm + '-staging.json'), dict(tree=tree, owner=dict(output=str(root), arm=arm,
+                    built=str(self.built), seal=v.BUILT_SEAL),
+                    runtime=str(stage.runtime_path(root, arm))))
+            if row['name'].endswith('-unstage'):
+                arm = row['arm']
+                h.write(root / (arm + '-staging-cleanup.json'), dict(removed=True,
+                    owner=dict(output=str(root), arm=arm, built=str(self.built), seal=v.BUILT_SEAL)))
+
+        with patch.object(qualify, 'invoke', side_effect=invoke):
+            qualify.qualify(self.built, output)
+        self.root = output
+        return h.read(output / 'schedule.json')
+
+    def generate(self, destination):
+        import runpy
+        with patch('ctypes.util.find_library', return_value='libwebp.so.7'), \
+             patch.object(sys, 'argv', [str(c.generator()), str(destination)]):
+            runpy.run_path(str(c.generator()), run_name='__main__')
+
+    def blocked_record(self):
+        return self.production_record()
+
+    def test_provider_preparation_failure_has_no_executed_commands(self):
+        self.production_record(preparation_failure=True)
+        proof = v.verify(self.root)
+        self.assertEqual(proof['outcome'], 'blocked')
+        self.assertTrue(proof['preparation_failure'])
+        self.assertEqual(proof['completed_commands'], 0)
+        self.assertFalse((self.root / 'commands').exists())
+
+    def test_successful_generator_with_missing_fixture_is_blocked(self):
+        self.production_record(invalid_fixture=True)
+        proof = v.verify(self.root)
+        self.assertEqual(proof['outcome'], 'blocked')
+        self.assertEqual(proof['failed_command'], 'fixtures')
+        self.assertNotIn('sample.jpg', h.read(self.root / 'fixtures.json'))
+
+    def test_failed_staging_removal_is_not_cleanup_success(self):
+        self.production_record(stop='control-unstage')
+        proof = v.verify(self.root)
+        self.assertEqual(proof['outcome'], 'blocked')
+        self.assertFalse(h.read(self.root / 'assessment.json')['cleanup'])
+
+    def test_fully_qualified_record_uses_production_persistence(self):
+        self.production_record(stop=None)
+        self.assertEqual(v.verify(self.root)['outcome'], 'qualified')
+
+    def test_compilation_failure_record_is_verifiable(self):
+        self.production_record(stop='control-compile')
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-compile')
+
+    def test_test_failure_record_is_verifiable(self):
+        self.production_record(stop='control-runtime-verification')
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-runtime-verification')
+
+    def test_successful_process_with_invalid_xml_is_blocked(self):
+        self.production_record(stop='control-runtime-verification', invalid_xml=True)
+        self.assertEqual(v.verify(self.root)['outcome'], 'blocked')
+
+    def test_protocol_copy_preserves_frozen_bytes(self):
+        self.production_record()
+        self.assertEqual((self.root / 'protocol-v3.json').read_bytes(),
+                         (DIRECTORY / 'CORRECTNESS-v3.json').read_bytes())
+        self.assertEqual(h.digest(self.root / 'protocol-v3.json'), v.PROTOCOL_SHA256)
+        self.assertEqual(v.verify(self.root)['outcome'], 'blocked')
+
+    def test_preparation_and_cleanup_failures_are_retained(self):
+        self.production_record(stop='fixtures', cleanup=False)
+        self.assertEqual(v.verify(self.root)['outcome'], 'blocked')
+        self.assertFalse(h.read(self.root / 'assessment.json')['cleanup'])
+
+    def test_fixture_inventory_rejects_missing_modified_and_symlinked(self):
+        self.production_record()
+        sample = self.root / 'fixtures/sample.png'
+        original = sample.read_bytes()
+        for mutation in ('missing', 'modified', 'symlink'):
+            with self.subTest(mutation=mutation):
+                sample.unlink()
+                if mutation == 'modified':
+                    sample.write_bytes(b'changed')
+                elif mutation == 'symlink':
+                    sample.symlink_to(self.root / 'fixtures/sample.jpg')
+                if mutation != 'symlink':
+                    h.write(self.root / 'fixtures.json', h.inventory(self.root / 'fixtures'))
+                    inventory = h.inventory(self.root)
+                    inventory.pop('seal.json')
+                    h.write(self.root / 'seal.json', inventory)
+                with self.assertRaises(ValueError):
+                    v.verify(self.root)
+                if sample.is_symlink() or sample.exists():
+                    sample.unlink()
+                sample.write_bytes(original)
+
+    def test_frozen_generator_orientation_and_metadata_transformation(self):
+        self.generate(self.root / 'fixtures')
+        self.assertTrue(c.fixtures(self.root / 'fixtures'))
+        jpeg = (self.root / 'fixtures/sample.jpg').read_bytes()
+        old = bytes.fromhex('ffe1002245786966000049492a0008000000010012010300010000000600000000000000')
+        self.assertIn(old, jpeg)
+        source = (DIRECTORY / 'native/main.cpp').read_text()
+        import re
+        literals = [''.join(re.findall(r'"([0-9a-f]+)"', value)) for value in
+                    re.findall(r'QByteArray::fromHex\((.*?)\);', source, re.S)]
+        self.assertIn(bytes.fromhex(literals[0]), jpeg)
+        self.assertNotEqual(jpeg.replace(bytes.fromhex(literals[0]), bytes.fromhex(literals[1])), jpeg)
+
+    def test_fixture_binding_and_prerequisite_order(self):
+        rows = self.schedule()
+        names = [row['name'] for row in rows]
+        for arm in ('control', 'early'):
+            ordered = [arm + '-' + name for name in ('runtime-verification', 'generation-ownership',
+                'cleanup', 'scheduling', 'pool-lifecycle', 'preview')]
+            self.assertEqual(sorted(ordered, key=names.index), ordered)
+        row = next(row for row in rows if row['name'] == 'control-configure')
+        row['argv'][-1] = '-DFIXTURES=/historical/fixtures'
+        h.write(self.root / 'schedule.json', rows)
+        with self.assertRaises(ValueError):
+            v.verify_schedule(self.root, self.built, c.protocol())
 
     def test_independent_verifier_accepts_stopped_record_and_rejects_resealed_accounting(self):
         self.blocked_record()
@@ -297,7 +425,7 @@ class CorrectnessTests(unittest.TestCase):
 
     def test_offline_verifier_imports_neither_qualifier_nor_build_implementation(self):
         import ast
-        tree = ast.parse((DIRECTORY / 'offline/verify_correctness_v2.py').read_text())
+        tree = ast.parse((DIRECTORY / 'offline/verify_correctness_v3.py').read_text())
         imports = [alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names]
         self.assertNotIn('qualify', imports)
         self.assertNotIn('run', imports)

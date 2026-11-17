@@ -37,6 +37,7 @@ def schedule(built, output):
             argv = ['sudo', '-n', '/usr/bin/env', *[k + '=' + v for k, v in sorted(environment.items())], *argv]
         rows.append(dict(index=len(rows), name=name, arm=arm, argv=argv, environment=environment,
             cases=cases or [], privileged=privileged, workload=workload, uid=0 if privileged else os.getuid()))
+    add('fixtures', [sys.executable, output / 'format-fixtures.py', output / 'fixtures'])
     add('compiler', ['c++', '--version'])
     add('cmake', ['cmake', '--version'])
     add('dependencies', ['pkg-config', '--modversion', 'Qt6Core', 'libexif', 'libwebp'])
@@ -46,11 +47,12 @@ def schedule(built, output):
         add(arm + '-configure', ['cmake', '-S', output / 'native-source', '-B', base / 'build', '-G', 'Ninja',
             '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_PREFIX_PATH=' + str(prefix),
             '-DFROZEN=' + str(e.PACKAGE / arm / 'source'), '-DRUNTIME=' + str(built / arm / 'runtime'),
-            '-DFIXTURES=' + str(e.historical.e.Q / 'fixtures')], arm)
+            '-DFIXTURES=' + str(output / 'fixtures')], arm)
         add(arm + '-compile', ['cmake', '--build', base / 'build', '--parallel', '4'], arm)
         for binary in ('publication-correctness', 'session-correctness', 'images-consumer', 'preview-consumer'):
             add(arm + '-' + binary + '-linkage', ['ldd', base / 'build' / binary], arm)
-        for label, cases in [('ordinary', p['ordinary']), ('mutable-publication', p['publication'])]:
+        groups = [(group['label'], group['cases']) for group in p['prerequisites']]
+        for label, cases in groups + [('mutable-publication', p['publication'])]:
             add(arm + '-' + label, [base / 'build/publication-correctness', '--gtest_filter=' + ':'.join(cases),
                 '--gtest_fail_fast', '--gtest_output=xml:' + str(base / (label + '.xml'))], arm, cases, workload=True)
         for binary in ('images-consumer', 'preview-consumer'):
@@ -90,13 +92,13 @@ def invoke(row, output):
     env = dict(os.environ, **row['environment'])
     target = output / 'commands'
     target.mkdir(exist_ok=True)
-    for key in ('XDG_CACHE_HOME', 'TMPDIR'):
-        if key in row['environment']:
-            Path(env[key]).mkdir(parents=True, mode=0o700, exist_ok=True)
     h.write(target / (row['name'] + '-command.json'), row)
     record = dict(start_ns=time.monotonic_ns(), exit=None, failure=None, cleanup=False)
     process = None
     try:
+        for key in ('XDG_CACHE_HOME', 'TMPDIR'):
+            if key in row['environment']:
+                Path(env[key]).mkdir(parents=True, mode=0o700, exist_ok=True)
         if row['workload']:
             before = scopes(env, time.monotonic() + 5)
             h.write(target / (row['name'] + '-scopes-before.json'), before)
@@ -133,7 +135,8 @@ def invoke(row, output):
             h.require(time.monotonic() <= deadline, 'shared cleanup budget exceeded')
             record['cleanup'] = True
         except ERRORS as error:
-            record['failure'] = str(error) or type(error).__name__
+            record['cleanup_failure'] = str(error) or type(error).__name__
+            record['failure'] = record['failure'] or record['cleanup_failure']
         record['stop_ns'] = time.monotonic_ns()
         h.write(target / (row['name'] + '-result.json'), record)
     h.require(record['failure'] is None and record['cleanup'], record['failure'] or 'cleanup failed')
@@ -158,25 +161,24 @@ def case_accounting(rows, output):
                 failure = str(error)
         attempted = [c['name'] for c in observed if c['status'] == 'run' and not c['skipped']]
         records.append(dict(invocation=row['name'], required=row['cases'], observed=observed,
-            attempted=attempted, unexecuted=[name for name in row['cases'] if name not in attempted],
+            attempted=attempted, skipped=[c['name'] for c in observed if c['skipped']],
+            unexecuted=[name for name in row['cases'] if name not in attempted],
             parse_failure=failure))
     return records
 
 
 def qualify(built, output):
     h.fresh(output, [built, e.PACKAGE, c.DIRECTORY, e.ROOT / 'tests'])
-    result = dict(status='blocked', phase='correctness-v2', decision='Evidence insufficient',
+    result = dict(status='blocked', phase='correctness-v3', decision='Evidence insufficient',
         attempted=[], completed=[], unexecuted=[], native_correctness='unvalidated',
-        observations=0, staging='not attempted', cleanup=True)
+        observations=0, staging='not attempted', cleanup=True, stage='preparation')
     tools = {}
     rows = []
+    native = binding = None
+    h.write(output / 'request.json', dict(built=str(built)))
     try:
-        h.require(output.name == 'preview-cache-publication-correctness-20261118-01', 'fresh approved attempt name required')
+        h.require(output.name == 'preview-cache-publication-correctness-20261118-02', 'fresh approved attempt name required')
         h.require(os.getuid() != 0, 'desktop user required')
-        binding = c.built_binding(built)
-        h.write(output / 'built.json', binding)
-        h.write(output / 'package.json', e.package())
-        c.validate_membership(c.DIRECTORY / 'native')
         shutil.copytree(c.DIRECTORY / 'native', output / 'native-source')
         native = h.inventory(output / 'native-source')
         h.write(output / 'native-inputs.json', native)
@@ -185,16 +187,31 @@ def qualify(built, output):
         for path in tools:
             shutil.copyfile(path, output / 'tools' / Path(path).name)
         h.write(output / 'tools.json', tools)
-        h.write(output / 'protocol-v2.json', c.protocol())
+        shutil.copyfile(c.DIRECTORY / 'CORRECTNESS-v3.json', output / 'protocol-v3.json')
+        verifier = e.load('protocol_v3_pin', c.DIRECTORY / 'offline/verify_correctness_v3.py')
+        h.require(h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256, 'correctness protocol drift')
+        shutil.copyfile(c.generator(), output / 'format-fixtures.py')
+        generator_digest = h.digest(output / 'format-fixtures.py')
         rows = schedule(built, output)
         h.write(output / 'schedule.json', rows)
         result['unexecuted'] = [r['name'] for r in rows]
+        binding = c.built_binding(built)
+        h.write(output / 'built.json', binding)
+        h.write(output / 'package.json', e.package())
+        c.validate_membership(c.DIRECTORY / 'native')
         for row in rows:
             h.require(c.tools() == tools and h.inventory(output / 'native-source') == native, 'frozen source/tool drift')
+            h.require(h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256 and
+                      h.digest(output / 'format-fixtures.py') == generator_digest == h.digest(c.generator()), 'frozen preparation drift')
+            if (output / 'fixtures.json').exists():
+                h.require(c.fixtures(output / 'fixtures') == h.read(output / 'fixtures.json'), 'fixture drift')
             result['stage'] = row['name']
             result['attempted'].append(row['name'])
             result['unexecuted'].remove(row['name'])
             invoke(row, output)
+            if row['name'] == 'fixtures':
+                h.write(output / 'fixtures.json', h.inventory(output / 'fixtures'))
+                c.fixtures(output / 'fixtures')
             if row['cases']:
                 xmlarg = next(v for v in row['argv'] if v.startswith('--gtest_output=xml:'))
                 c.validate_xml(Path(xmlarg.split('xml:', 1)[1]), row['cases'])
@@ -208,6 +225,7 @@ def qualify(built, output):
                     if path.startswith('/'):
                         resolved = Path(path).resolve()
                         identities[str(resolved)] = h.digest(resolved)
+                h.require(identities, 'missing linked dependency identities')
                 h.write(output / (row['name'] + '-identities.json'), identities)
             if row['name'].endswith('-configure'):
                 cache = (output / row['arm'] / 'build/CMakeCache.txt').read_text()
@@ -221,6 +239,11 @@ def qualify(built, output):
         result.update(status='qualified', native_correctness='qualified')
     except ERRORS as error:
         result['failure'] = str(error) or type(error).__name__
+        if result['attempted']:
+            command_result = output / 'commands' / (result['attempted'][-1] + '-result.json')
+            if command_result.exists() and (not h.read(command_result)['cleanup'] or
+                    result['attempted'][-1].endswith('-unstage')):
+                result['cleanup'] = False
     finally:
         # Cleanup is the only permitted work after a failed invocation. Never resume tests.
         for arm in ('control', 'early'):
@@ -235,9 +258,19 @@ def qualify(built, output):
                     h.require(not os.path.lexists(runtime), 'staging retained')
                 except ERRORS as error:
                     result.update(status='blocked', cleanup=False, cleanup_failure=str(error))
-        unchanged = bool(tools) and c.tools() == tools
+        if (output / 'fixtures').is_dir() and not (output / 'fixtures.json').exists():
+            try:
+                h.write(output / 'fixtures.json', h.inventory(output / 'fixtures'))
+            except ERRORS as error:
+                result['fixture_inventory_failure'] = str(error)
+        unchanged = False
         try:
+            unchanged = bool(tools) and c.tools() == tools
             unchanged = unchanged and h.inventory(output / 'native-source') == native and c.built_binding(built) == binding
+            unchanged = unchanged and h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256 and \
+                h.digest(output / 'format-fixtures.py') == generator_digest == h.digest(c.generator())
+            if (output / 'fixtures.json').exists():
+                unchanged = unchanged and h.inventory(output / 'fixtures') == h.read(output / 'fixtures.json')
         except ERRORS:
             unchanged = False
         if not unchanged:
@@ -245,7 +278,7 @@ def qualify(built, output):
         h.write(output / 'integrity.json', dict(unchanged=unchanged))
         h.write(output / 'case-accounting.json', case_accounting(rows, output))
         h.write(output / 'assessment.json', result)
-        (output / 'REPORT.md').write_text('# Correctness protocol v2\n\n' + result['status'] + ': ' +
+        (output / 'REPORT.md').write_text('# Correctness protocol v3\n\n' + result['status'] + ': ' +
             result.get('failure', '') + '\n\nOverlap: Evidence insufficient. No warm-ups or diagnostic observations.\n'
             'Streaming and validation reuse Deferred; candidate selection Evidence insufficient; '
             'historical qualification 78/80 unchanged. Uncaptured historical loading identities remain unavailable.\n')
