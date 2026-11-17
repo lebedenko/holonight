@@ -1,88 +1,256 @@
 #!/usr/bin/env python3
-"""Run installed native gates against retained successful provider compilations."""
+"""One frozen correctness-only attempt against the retained Release providers."""
 import argparse
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
+import time
 import uuid
-import xml.etree.ElementTree as ET
 
 sys.dont_write_bytecode = True
-import evidence as e
-import run
+import correctness as c
+import stage
 
-h = e.h
+h, e = c.h, c.e
+ERRORS = (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError, KeyboardInterrupt)
+
+
+def schedule(built, output):
+    p = c.protocol()
+    rows = []
+    def add(name, argv, arm=None, cases=None, privileged=False, workload=False, runtime=None):
+        environment = dict(QT_QPA_PLATFORM='offscreen', CMAKE_BUILD_PARALLEL_LEVEL='4',
+            XDG_RUNTIME_DIR='/run/user/' + str(os.getuid()),
+            DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(os.getuid()) + '/bus')
+        if arm:
+            base = output / arm
+            environment.update(HOLONIGHT_CACHE_INVOCATION=str(uuid.uuid4()), PUBLICATION_ARM=arm,
+                PUBLICATION_RUNTIME=str(runtime or built / arm / 'runtime'),
+                HN_SESSION_RUNTIME=str(stage.runtime_path(output, arm)),
+                HN_BROWSER_SESSION_RUNTIME=str(stage.runtime_path(output, arm)),
+                XDG_CACHE_HOME=str(base / 'private' / name / 'cache'),
+                TMPDIR=str(base / 'private' / name / 'source'))
+        argv = [str(v) for v in argv]
+        if privileged and cases:
+            argv = ['sudo', '-n', '/usr/bin/env', *[k + '=' + v for k, v in sorted(environment.items())], *argv]
+        rows.append(dict(index=len(rows), name=name, arm=arm, argv=argv, environment=environment,
+            cases=cases or [], privileged=privileged, workload=workload, uid=0 if privileged else os.getuid()))
+    add('compiler', ['c++', '--version'])
+    add('cmake', ['cmake', '--version'])
+    add('dependencies', ['pkg-config', '--modversion', 'Qt6Core', 'libexif', 'libwebp'])
+    for arm in p['arms']:
+        base = output / arm
+        prefix = built / arm / 'prefix'
+        add(arm + '-configure', ['cmake', '-S', output / 'native-source', '-B', base / 'build', '-G', 'Ninja',
+            '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_PREFIX_PATH=' + str(prefix),
+            '-DFROZEN=' + str(e.PACKAGE / arm / 'source'), '-DRUNTIME=' + str(built / arm / 'runtime'),
+            '-DFIXTURES=' + str(e.historical.e.Q / 'fixtures')], arm)
+        add(arm + '-compile', ['cmake', '--build', base / 'build', '--parallel', '4'], arm)
+        for binary in ('publication-correctness', 'session-correctness', 'images-consumer', 'preview-consumer'):
+            add(arm + '-' + binary + '-linkage', ['ldd', base / 'build' / binary], arm)
+        for label, cases in [('ordinary', p['ordinary']), ('mutable-publication', p['publication'])]:
+            add(arm + '-' + label, [base / 'build/publication-correctness', '--gtest_filter=' + ':'.join(cases),
+                '--gtest_fail_fast', '--gtest_output=xml:' + str(base / (label + '.xml'))], arm, cases, workload=True)
+        for binary in ('images-consumer', 'preview-consumer'):
+            add(arm + '-mutable-' + binary, [base / 'build' / binary], arm, workload=True)
+        add(arm + '-stage', ['sudo', '-n', sys.executable, c.DIRECTORY / 'stage.py', '--output', output,
+            '--arm', arm], arm, privileged=True)
+        for label, binary, cases, privileged in (
+            ('protected-fixture', 'publication-correctness', p['protected_fixture'], True),
+            ('protected-publication', 'publication-correctness', p['publication'], False),
+            ('protected-preview', 'publication-correctness', p['protected_preview'], False),
+            ('session', 'session-correctness', p['session'], False)):
+            add(arm + '-' + label, [base / 'build' / binary, '--gtest_filter=' + ':'.join(cases),
+                '--gtest_fail_fast', '--gtest_output=xml:' + str(base / (label + '.xml'))], arm, cases,
+                privileged, workload=not privileged, runtime=stage.runtime_path(output, arm))
+        add(arm + '-protected-consumer', [base / 'build/preview-consumer'], arm,
+            workload=True, runtime=stage.runtime_path(output, arm))
+        add(arm + '-unstage', ['sudo', '-n', sys.executable, c.DIRECTORY / 'stage.py', '--output', output,
+            '--arm', arm, '--remove'], arm, privileged=True)
+    return rows
+
+
+def scopes(env, deadline):
+    """Same scope identity query as the existing startup-smoke supervision gate."""
+    uid = os.getuid()
+    argv = ['systemctl', '--user', 'list-units', '--all', '--plain', '--no-legend',
+            '--no-pager', 'holonight-images-*.scope']
+    value = subprocess.run(argv, env=env, capture_output=True, text=True,
+        timeout=max(.001, deadline - time.monotonic()))
+    group = Path(f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service')
+    paths = sorted(str(p) for p in group.glob('**/holonight-images-*.scope'))
+    return dict(argv=argv, exit=value.returncode, stdout=value.stdout, stderr=value.stderr,
+        cgroups=paths, isolated=value.returncode == 0 and not value.stdout.strip() and not paths and group.is_dir())
+
+
+def invoke(row, output):
+    h.require(os.getuid() != 0, 'qualifier and model workloads must run as desktop user')
+    env = dict(os.environ, **row['environment'])
+    target = output / 'commands'
+    target.mkdir(exist_ok=True)
+    for key in ('XDG_CACHE_HOME', 'TMPDIR'):
+        if key in row['environment']:
+            Path(env[key]).mkdir(parents=True, mode=0o700, exist_ok=True)
+    h.write(target / (row['name'] + '-command.json'), row)
+    record = dict(start_ns=time.monotonic_ns(), exit=None, failure=None, cleanup=False)
+    process = None
+    try:
+        if row['workload']:
+            before = scopes(env, time.monotonic() + 5)
+            h.write(target / (row['name'] + '-scopes-before.json'), before)
+            h.require(before['isolated'], 'preexisting helper scopes or supervision unavailable')
+        with (target / (row['name'] + '.stdout')).open('x') as stdout, (target / (row['name'] + '.stderr')).open('x') as stderr:
+            process = subprocess.Popen(row['argv'], cwd=e.ROOT, env=env, stdout=stdout, stderr=stderr,
+                start_new_session=True)
+            record['pid'] = process.pid
+            record['exit'] = process.wait(timeout=600)
+            h.require(record['exit'] == 0, 'command failed: ' + row['name'])
+    except ERRORS as error:
+        record['failure'] = str(error) or type(error).__name__
+    finally:
+        for suffix in ('.stdout', '.stderr'):
+            (target / (row['name'] + suffix)).touch(exist_ok=True)
+        start = time.monotonic()
+        deadline = start + 5
+        try:
+            if process is not None:
+                # Existing group termination/reaping primitive shares this deadline with scope proof.
+                primitive = e.load('publication_process_cleanup', e.ROOT / 'scripts/run-preview-cpu-profile.py')
+                primitive.terminate(process, deadline=deadline)
+                try:
+                    os.killpg(process.pid, 0)
+                except ProcessLookupError:
+                    pass
+                else:
+                    raise ValueError('process group survived cleanup')
+            if row['workload']:
+                after = scopes(env, deadline)
+                h.write(target / (row['name'] + '-scopes-after.json'), after)
+                h.require(after['isolated'], 'helper scope cleanup unverified')
+            record['cleanup_seconds'] = time.monotonic() - start
+            h.require(time.monotonic() <= deadline, 'shared cleanup budget exceeded')
+            record['cleanup'] = True
+        except ERRORS as error:
+            record['failure'] = str(error) or type(error).__name__
+        record['stop_ns'] = time.monotonic_ns()
+        h.write(target / (row['name'] + '-result.json'), record)
+    h.require(record['failure'] is None and record['cleanup'], record['failure'] or 'cleanup failed')
+
+
+def case_accounting(rows, output):
+    import xml.etree.ElementTree as ET
+    records = []
+    for row in rows:
+        if not row['cases']:
+            continue
+        path = Path(next(v.split('xml:', 1)[1] for v in row['argv'] if v.startswith('--gtest_output=xml:')))
+        observed = []
+        failure = None
+        if path.exists():
+            try:
+                observed = [dict(name=case.attrib['classname'] + '.' + case.attrib['name'],
+                    status=case.attrib.get('status'), result=case.attrib.get('result'),
+                    failed=case.find('failure') is not None, skipped=case.find('skipped') is not None)
+                    for case in ET.parse(path).getroot().findall('.//testcase')]
+            except (OSError, KeyError, ET.ParseError) as error:
+                failure = str(error)
+        attempted = [c['name'] for c in observed if c['status'] == 'run' and not c['skipped']]
+        records.append(dict(invocation=row['name'], required=row['cases'], observed=observed,
+            attempted=attempted, unexecuted=[name for name in row['cases'] if name not in attempted],
+            parse_failure=failure))
+    return records
 
 
 def qualify(built, output):
-    def work(result):
-        h.sealed(built)
-        source_assessment = h.read(built / 'assessment.json')
-        h.require(source_assessment['failure'] == 'native correctness gates not yet validated; execution prohibited',
-                  'cannot resume a compilation or native correctness failure')
-        commands = list(built.glob('*-result.json')) + list(built.glob('*/*-result.json'))
-        h.require(len(commands) == 27 and all(h.read(p)['exit'] == 0 and h.read(p)['failure'] is None
-                  for p in commands), 'provider compilation incomplete or failed')
-        h.write(output / 'built.json', dict(path=str(built), seal=h.digest(built / 'seal.json')))
-        native = Path(__file__).parent / 'native'
-        inputs = h.inventory(native)
-        shutil.copytree(native, output / 'native-source')
-        h.write(output / 'native-inputs.json', inputs)
-        h.write(output / 'correctness.json', dict(passed=False, arms={}))
+    h.fresh(output, [built, e.PACKAGE, c.DIRECTORY, e.ROOT / 'tests'])
+    result = dict(status='blocked', phase='correctness-v2', decision='Evidence insufficient',
+        attempted=[], completed=[], unexecuted=[], native_correctness='unvalidated',
+        observations=0, staging='not attempted', cleanup=True)
+    tools = {}
+    rows = []
+    try:
+        h.require(output.name == 'preview-cache-publication-correctness-20261118-01', 'fresh approved attempt name required')
+        h.require(os.getuid() != 0, 'desktop user required')
+        binding = c.built_binding(built)
+        h.write(output / 'built.json', binding)
+        h.write(output / 'package.json', e.package())
+        c.validate_membership(c.DIRECTORY / 'native')
+        shutil.copytree(c.DIRECTORY / 'native', output / 'native-source')
+        native = h.inventory(output / 'native-source')
+        h.write(output / 'native-inputs.json', native)
+        tools = c.tools()
+        (output / 'tools').mkdir()
+        for path in tools:
+            shutil.copyfile(path, output / 'tools' / Path(path).name)
+        h.write(output / 'tools.json', tools)
+        h.write(output / 'protocol-v2.json', c.protocol())
+        rows = schedule(built, output)
+        h.write(output / 'schedule.json', rows)
+        result['unexecuted'] = [r['name'] for r in rows]
+        for row in rows:
+            h.require(c.tools() == tools and h.inventory(output / 'native-source') == native, 'frozen source/tool drift')
+            result['stage'] = row['name']
+            result['attempted'].append(row['name'])
+            result['unexecuted'].remove(row['name'])
+            invoke(row, output)
+            if row['cases']:
+                xmlarg = next(v for v in row['argv'] if v.startswith('--gtest_output=xml:'))
+                c.validate_xml(Path(xmlarg.split('xml:', 1)[1]), row['cases'])
+            if row['name'].endswith('-linkage'):
+                linkage = (output / 'commands' / (row['name'] + '.stdout')).read_text()
+                h.require('not found' not in linkage, 'unresolved linkage')
+                identities = {}
+                for line in linkage.splitlines():
+                    tokens = line.split()
+                    path = tokens[2] if len(tokens) > 2 and tokens[1] == '=>' else tokens[0] if tokens else ''
+                    if path.startswith('/'):
+                        resolved = Path(path).resolve()
+                        identities[str(resolved)] = h.digest(resolved)
+                h.write(output / (row['name'] + '-identities.json'), identities)
+            if row['name'].endswith('-configure'):
+                cache = (output / row['arm'] / 'build/CMakeCache.txt').read_text()
+                resolution = {line.split(':', 1)[0]: line.split('=', 1)[1] for line in cache.splitlines()
+                    if line.startswith(('HolonightImages_DIR:', 'HolonightThumbnails_DIR:', 'HolonightFileBrowser_DIR:'))}
+                h.require(len(resolution) == 3 and all(Path(v).resolve().is_relative_to(built / row['arm'] / 'prefix')
+                          for v in resolution.values()), 'installed package resolution mismatch')
+                h.write(output / row['arm'] / 'package-resolution.json', resolution)
+            result['completed'].append(row['name'])
+        h.require(c.built_binding(built) == binding, 'provider drift')
+        result.update(status='qualified', native_correctness='qualified')
+    except ERRORS as error:
+        result['failure'] = str(error) or type(error).__name__
+    finally:
+        # Cleanup is the only permitted work after a failed invocation. Never resume tests.
         for arm in ('control', 'early'):
-            result['stage'] = 'correctness-' + arm
-            base = output / arm
-            base.mkdir()
-            runtime = built / arm / 'runtime'
-            prefix = built / arm / 'prefix'
-            run.command(['cmake', '-S', output / 'native-source', '-B', base / 'build', '-G', 'Ninja',
-                '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_PREFIX_PATH=' + str(prefix),
-                '-DFROZEN=' + str(e.PACKAGE / arm / 'source'), '-DRUNTIME=' + str(runtime),
-                '-DFIXTURES=' + str(e.historical.e.Q / 'fixtures')], base, 'correctness-configure')
-            run.command(['cmake', '--build', base / 'build', '--parallel', '4'], base, 'correctness-compile')
-            cache = (base / 'build/CMakeCache.txt').read_text()
-            resolution = {line.split(':', 1)[0]: line.split('=', 1)[1] for line in cache.splitlines()
-                if line.startswith(('HolonightImages_DIR:', 'HolonightThumbnails_DIR:', 'HolonightFileBrowser_DIR:'))}
-            h.require(len(resolution) == 3 and all(Path(p).is_relative_to(prefix) for p in resolution.values()),
-                      'native gate must resolve installed arm providers')
-            h.write(base / 'package-resolution.json', resolution)
-            for name, relative in [('harness', 'harness-build/preview-benchmark'),
-                                   ('helper', 'build/holonight-images/holonight-images-helper')]:
-                path = built / arm / relative
-                run.command(['ldd', path], base, name + '-linkage')
-                h.require('not found' not in (base / (name + '-linkage.stdout')).read_text(), 'unresolved native dependency')
-            environment = dict(HOLONIGHT_CACHE_INVOCATION=str(uuid.uuid4()), PUBLICATION_ARM=arm,
-                XDG_CACHE_HOME=str(base / 'cache'), TMPDIR=str(base / 'temporary-source'))
-            for key in ('XDG_CACHE_HOME', 'TMPDIR'):
-                Path(environment[key]).mkdir(mode=0o700)
-            h.write(base / 'native-environment.json', environment)
-            previous = {key: os.environ.get(key) for key in environment}
-            try:
-                os.environ.update(environment)
-                run.command([base / 'build/publication-correctness',
-                    '--gtest_filter=Publication.*:IsolatedPreview.TargetChangeWhileCommittingDropsOldPixelsAndCache:'
-                    'IsolatedPreview.CancellationDuringCacheReadPreventsCommitAndLateDisplay:Cleanup.*:Verification.*:Generation.*',
-                    '--gtest_output=xml:' + str(base / 'native-tests.xml')], base, 'correctness-tests')
-            finally:
-                for key, value in previous.items():
-                    if value is None:
-                        os.environ.pop(key, None)
-                    else:
-                        os.environ[key] = value
-            try:
-                xml = ET.parse(base / 'native-tests.xml').getroot()
-            except ET.ParseError as error:
-                raise ValueError('malformed native test XML') from error
-            h.require(int(xml.attrib['tests']) > 0 and all(int(xml.attrib.get(k, '0')) == 0
-                for k in ('failures', 'disabled', 'errors')) and not xml.findall('.//skipped'),
-                'required native checks failed or skipped')
-            correctness = h.read(output / 'correctness.json')
-            correctness['arms'][arm] = dict(passed=True, tests=int(xml.attrib['tests']))
-            h.write(output / 'correctness.json', correctness)
-        h.require(h.inventory(native) == inputs, 'native gate source drift')
-        raise ValueError('protected-session, generation, runtime verification and installed-consumer gates remain unvalidated')
-    return run.action(output, 'correctness', work)
+            runtime = stage.runtime_path(output, arm)
+            if os.path.lexists(runtime):
+                result['staging'] = 'attempted'
+                try:
+                    h.require((output / (arm + '-staging.json')).exists(), 'unverifiable staging retained')
+                    row = next(r for r in rows if r['name'] == arm + '-unstage')
+                    if row['name'] not in result['attempted']:
+                        invoke(row, output)
+                    h.require(not os.path.lexists(runtime), 'staging retained')
+                except ERRORS as error:
+                    result.update(status='blocked', cleanup=False, cleanup_failure=str(error))
+        unchanged = bool(tools) and c.tools() == tools
+        try:
+            unchanged = unchanged and h.inventory(output / 'native-source') == native and c.built_binding(built) == binding
+        except ERRORS:
+            unchanged = False
+        if not unchanged:
+            result.update(status='blocked', failure=result.get('failure', 'tool drift'))
+        h.write(output / 'integrity.json', dict(unchanged=unchanged))
+        h.write(output / 'case-accounting.json', case_accounting(rows, output))
+        h.write(output / 'assessment.json', result)
+        (output / 'REPORT.md').write_text('# Correctness protocol v2\n\n' + result['status'] + ': ' +
+            result.get('failure', '') + '\n\nOverlap: Evidence insufficient. No warm-ups or diagnostic observations.\n'
+            'Streaming and validation reuse Deferred; candidate selection Evidence insufficient; '
+            'historical qualification 78/80 unchanged. Uncaptured historical loading identities remain unavailable.\n')
+        h.write(output / 'seal.json', h.inventory(output))
+    return result
 
 
 if __name__ == '__main__':
