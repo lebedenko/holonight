@@ -113,3 +113,18 @@ and final diff review, following [proportional verification](../../CONTRIBUTING.
 Unchanged historical verification is reused; no native build, suite, staging, workload
 or recording runs. This document and the sealed package are the diagnostic protocol,
 not a claim that native instrumentation compiles or execution is ready.
+
+## Early-publication selection trial — 2026-11-18
+
+The separate [uninstrumented startup trial](preview-cache-publication-trial.md) completes
+202 fresh processes after a fresh independently verified 130-check correctness run.
+Its decision is **Deferred**: pixel p95 improves by 20.733529 ms, but final-metadata
+p95 improves by only 2.142534 ms, below the unchanged 5 ms requirement. Both medians
+improve. Earlier pixels alone do not qualify, so no production candidate is selected.
+
+The new [trial tooling](../../tooling/preview-cache-publication-trial/PROTOCOL.md)
+preserves all historical tooling and evidence. It builds Images/Thumbnails once,
+reuses identical packages/runtime payloads across arms and keeps probes outside the
+measured path. Historical qualification remains **78/80**; streaming, validation
+reuse and SHA dispatch remain **Deferred**. Production changes, full qualification,
+consumer rollout and deployment require a subsequent plan.
