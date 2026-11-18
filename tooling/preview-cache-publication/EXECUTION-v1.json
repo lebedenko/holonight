@@ -1,0 +1,205 @@
+{
+  "affinity_changes": false,
+  "artificial_load": false,
+  "cache_flushing": false,
+  "candidate_selection": "Evidence insufficient",
+  "clock": "CLOCK_MONOTONIC nanoseconds",
+  "events": [
+    "eligible",
+    "store_entry",
+    "store_return",
+    "enqueue",
+    "accepted",
+    "adequate",
+    "final"
+  ],
+  "execution_capability": "implemented",
+  "execution_commands": [
+    "authorization",
+    "control-configure",
+    "control-compile",
+    "control-linkage",
+    "control-stage-authorization",
+    "control-stage",
+    "early-configure",
+    "early-compile",
+    "early-linkage",
+    "early-stage-authorization",
+    "early-stage",
+    "observation-00",
+    "observation-01",
+    "observation-02",
+    "observation-03",
+    "observation-04",
+    "observation-05",
+    "observation-06",
+    "observation-07",
+    "observation-08",
+    "observation-09",
+    "observation-10",
+    "observation-11",
+    "control-unstage-authorization",
+    "control-unstage",
+    "early-unstage-authorization",
+    "early-unstage"
+  ],
+  "future_bindings": [
+    "native binaries",
+    "installed providers",
+    "runtime payloads",
+    "protected-generation leases",
+    "actual loading identities or explicit unavailable evidence"
+  ],
+  "identities": [
+    "invocation",
+    "service",
+    "request",
+    "worker",
+    "preparation",
+    "transaction"
+  ],
+  "measured": 10,
+  "native_correctness": "qualified prerequisite required",
+  "native_prerequisites": [
+    "target change during commit",
+    "cancellation",
+    "timeout",
+    "shutdown",
+    "store failure",
+    "pixel/metadata ordering",
+    "cache availability at final",
+    "session cleanup"
+  ],
+  "offscreen": true,
+  "performance_claims": false,
+  "private_cache": true,
+  "private_source": true,
+  "processes": 12,
+  "qualification": "78/80 unchanged",
+  "requested_size": [
+    256,
+    256
+  ],
+  "retries": 0,
+  "scenario": "startup",
+  "schedule": [
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 0,
+      "pair": null,
+      "warmup": true
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 1,
+      "pair": null,
+      "warmup": true
+    },
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 2,
+      "pair": 0,
+      "warmup": false
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 3,
+      "pair": 0,
+      "warmup": false
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 4,
+      "pair": 1,
+      "warmup": false
+    },
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 5,
+      "pair": 1,
+      "warmup": false
+    },
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 6,
+      "pair": 2,
+      "warmup": false
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 7,
+      "pair": 2,
+      "warmup": false
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 8,
+      "pair": 3,
+      "warmup": false
+    },
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 9,
+      "pair": 3,
+      "warmup": false
+    },
+    {
+      "arm": "control",
+      "count": 1,
+      "index": 10,
+      "pair": 4,
+      "warmup": false
+    },
+    {
+      "arm": "early",
+      "count": 1,
+      "index": 11,
+      "pair": 4,
+      "warmup": false
+    }
+  ],
+  "shared_cleanup_seconds": 5,
+  "streaming": "Deferred",
+  "supporting_order": "store_entry < adequate < store_return",
+  "validation_reuse": "Deferred",
+  "version": 1,
+  "warmups": 2,
+  "workload_seconds": 30,
+  "correctness_seal": "86ffc201c84924df0d06c2aa7a20a33bfa687bd079ba92befc65198b1c6f5727",
+  "built_seal": "d2e45f0c05b464e1c22de87145f35160ac038ff482a0cc72ca04d6f1396b2d7a",
+  "output_name": "preview-cache-publication-execution-20261118-01",
+  "fixture_sha256": "119b0a690ca78bbc821fbd979e6fdf75e72613dea381297d6fc8a92fe2bcbf54",
+  "helper_loading": "unavailable: helper mappings are not captured; runtime payload and lease are bound",
+  "harness_insertions": [
+    [
+      "#include <sys/stat.h>",
+      "#include <sys/stat.h>\n#include \"publication_checks.h\""
+    ],
+    [
+      "    bool final_delivered = false;",
+      "    bool final_delivered = false;\n    PublicationChecks publicationChecks;"
+    ],
+    [
+      "        final_delivered = true;",
+      "        final_delivered = true;\n        publicationChecks.finish(*service, path, runtime, tier ? static_cast<int>(*tier) : 0, required);"
+    ],
+    [
+      "                               {\"correct_pixels\", correct_pixels},",
+      "                               {\"correct_pixels\", correct_pixels},\n                               {\"publication_checks\", publicationChecks.record},"
+    ],
+    [
+      "                                               {\"fixture\", fixture},",
+      "                                               {\"fixture\", fixture},\n                                               {\"loaded_maps\", publicationMaps()},\n                                               {\"mapped_executable\", QFileInfo(\"/proc/self/exe\").symLinkTarget()},"
+    ]
+  ]
+}

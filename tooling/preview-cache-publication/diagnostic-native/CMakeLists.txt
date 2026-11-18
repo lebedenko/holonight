@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.25)
+project(publication_observation LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(HolonightFileBrowser REQUIRED CONFIG COMPONENTS Preview)
+add_executable(publication-observation main.cpp)
+target_link_libraries(publication-observation PRIVATE HolonightFileBrowser::Preview)
+target_compile_features(publication-observation PRIVATE cxx_std_23)
+target_compile_definitions(publication-observation PRIVATE REUSABLE_VARIANT ISOLATED)
