@@ -35,8 +35,12 @@ def schedule(built, output):
         argv = [str(v) for v in argv]
         if privileged and cases:
             argv = ['sudo', '-n', '/usr/bin/env', *[k + '=' + v for k, v in sorted(environment.items())], *argv]
+        if privileged and argv != ['sudo', '-n', '-v']:
+            add(name + '-authorization', ['sudo', '-n', '-v'], privileged=True)
         rows.append(dict(index=len(rows), name=name, arm=arm, argv=argv, environment=environment,
-            cases=cases or [], privileged=privileged, workload=workload, uid=0 if privileged else os.getuid()))
+            cases=cases or [], privileged=privileged, workload=workload, uid=0 if privileged else os.getuid(),
+            launch=dict(process_group=0) if privileged else dict(start_new_session=True)))
+    add('authorization', ['sudo', '-n', '-v'], privileged=True)
     add('fixtures', [sys.executable, output / 'format-fixtures.py', output / 'fixtures'])
     add('compiler', ['c++', '--version'])
     add('cmake', ['cmake', '--version'])
@@ -105,7 +109,7 @@ def invoke(row, output):
             h.require(before['isolated'], 'preexisting helper scopes or supervision unavailable')
         with (target / (row['name'] + '.stdout')).open('x') as stdout, (target / (row['name'] + '.stderr')).open('x') as stderr:
             process = subprocess.Popen(row['argv'], cwd=e.ROOT, env=env, stdout=stdout, stderr=stderr,
-                start_new_session=True)
+                **row['launch'])
             record['pid'] = process.pid
             record['exit'] = process.wait(timeout=600)
             h.require(record['exit'] == 0, 'command failed: ' + row['name'])
@@ -167,9 +171,37 @@ def case_accounting(rows, output):
     return records
 
 
-def qualify(built, output):
+def validate_request(built, output):
+    # Read-only checks must precede sudo and attempt creation.
+    h.require(output == output.resolve() and output.parent == e.ROOT / 'build' and
+              output.name == 'preview-cache-publication-correctness-20261118-04', 'fresh approved attempt path required')
+    h.require(not os.path.lexists(output), 'output collision')
+    h.require(output.parent.is_dir() and os.access(output.parent, os.W_OK | os.X_OK),
+              'destination parent unavailable')
+    for source in (built, e.PACKAGE, c.DIRECTORY, e.ROOT / 'tests'):
+        h.require(not output.is_relative_to(source.resolve()) and not source.resolve().is_relative_to(output),
+                  'output overlaps input')
+    h.require(built == built.resolve(), 'provider path must be canonical')
+    uid = os.getuid()
+    h.require(uid != 0 and os.geteuid() == uid, 'desktop user required')
+    runtime = Path('/run/user') / str(uid)
+    h.require(runtime == runtime.resolve() and runtime.is_dir() and runtime.stat().st_uid == uid and (runtime / 'bus').is_socket(),
+              'desktop runtime/session bus unavailable')
+    h.require(os.environ.get('XDG_RUNTIME_DIR') == str(runtime) and
+              os.environ.get('DBUS_SESSION_BUS_ADDRESS') == 'unix:path=' + str(runtime / 'bus'),
+              'desktop session identity mismatch')
+
+
+def qualify(built, output, authenticate=False):
+    validate_request(built, output)
+    if authenticate:
+        h.require(sys.stdin.isatty() and os.tcgetpgrp(sys.stdin.fileno()) == os.getpgrp(),
+                  'foreground authenticated terminal required')
+        # Inherit terminal input/output. Passwords are never captured or persisted.
+        subprocess.run(['sudo', '-v'], check=True)
+        validate_request(built, output)
     h.fresh(output, [built, e.PACKAGE, c.DIRECTORY, e.ROOT / 'tests'])
-    result = dict(status='blocked', phase='correctness-v3', decision='Evidence insufficient',
+    result = dict(status='blocked', phase='correctness-v4', decision='Evidence insufficient',
         attempted=[], completed=[], unexecuted=[], native_correctness='unvalidated',
         observations=0, staging='not attempted', cleanup=True, stage='preparation')
     tools = {}
@@ -177,7 +209,7 @@ def qualify(built, output):
     native = binding = None
     h.write(output / 'request.json', dict(built=str(built)))
     try:
-        h.require(output.name == 'preview-cache-publication-correctness-20261118-02', 'fresh approved attempt name required')
+        h.require(output.name == 'preview-cache-publication-correctness-20261118-04', 'fresh approved attempt name required')
         h.require(os.getuid() != 0, 'desktop user required')
         shutil.copytree(c.DIRECTORY / 'native', output / 'native-source')
         native = h.inventory(output / 'native-source')
@@ -187,9 +219,9 @@ def qualify(built, output):
         for path in tools:
             shutil.copyfile(path, output / 'tools' / Path(path).name)
         h.write(output / 'tools.json', tools)
-        shutil.copyfile(c.DIRECTORY / 'CORRECTNESS-v3.json', output / 'protocol-v3.json')
-        verifier = e.load('protocol_v3_pin', c.DIRECTORY / 'offline/verify_correctness_v3.py')
-        h.require(h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256, 'correctness protocol drift')
+        shutil.copyfile(c.DIRECTORY / 'CORRECTNESS-v4.json', output / 'protocol-v4.json')
+        verifier = e.load('protocol_v4_pin', c.DIRECTORY / 'offline/verify_correctness_v4.py')
+        h.require(h.digest(output / 'protocol-v4.json') == verifier.PROTOCOL_SHA256, 'correctness protocol drift')
         shutil.copyfile(c.generator(), output / 'format-fixtures.py')
         generator_digest = h.digest(output / 'format-fixtures.py')
         rows = schedule(built, output)
@@ -201,7 +233,7 @@ def qualify(built, output):
         c.validate_membership(c.DIRECTORY / 'native')
         for row in rows:
             h.require(c.tools() == tools and h.inventory(output / 'native-source') == native, 'frozen source/tool drift')
-            h.require(h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256 and
+            h.require(h.digest(output / 'protocol-v4.json') == verifier.PROTOCOL_SHA256 and
                       h.digest(output / 'format-fixtures.py') == generator_digest == h.digest(c.generator()), 'frozen preparation drift')
             if (output / 'fixtures.json').exists():
                 h.require(c.fixtures(output / 'fixtures') == h.read(output / 'fixtures.json'), 'fixture drift')
@@ -242,7 +274,7 @@ def qualify(built, output):
         if result['attempted']:
             command_result = output / 'commands' / (result['attempted'][-1] + '-result.json')
             if command_result.exists() and (not h.read(command_result)['cleanup'] or
-                    result['attempted'][-1].endswith('-unstage')):
+                    result['attempted'][-1].endswith(('-unstage', '-unstage-authorization'))):
                 result['cleanup'] = False
     finally:
         # Cleanup is the only permitted work after a failed invocation. Never resume tests.
@@ -254,6 +286,13 @@ def qualify(built, output):
                     h.require((output / (arm + '-staging.json')).exists(), 'unverifiable staging retained')
                     row = next(r for r in rows if r['name'] == arm + '-unstage')
                     if row['name'] not in result['attempted']:
+                        check = next(r for r in rows if r['name'] == arm + '-unstage-authorization')
+                        if check['name'] not in result['attempted']:
+                            invoke(check, output)
+                        else:
+                            record = h.read(output / 'commands' / (check['name'] + '-result.json'))
+                            h.require(record['exit'] == 0 and record['failure'] is None and record['cleanup'],
+                                      'cleanup authorization denied; staging retained')
                         invoke(row, output)
                     h.require(not os.path.lexists(runtime), 'staging retained')
                 except ERRORS as error:
@@ -267,7 +306,7 @@ def qualify(built, output):
         try:
             unchanged = bool(tools) and c.tools() == tools
             unchanged = unchanged and h.inventory(output / 'native-source') == native and c.built_binding(built) == binding
-            unchanged = unchanged and h.digest(output / 'protocol-v3.json') == verifier.PROTOCOL_SHA256 and \
+            unchanged = unchanged and h.digest(output / 'protocol-v4.json') == verifier.PROTOCOL_SHA256 and \
                 h.digest(output / 'format-fixtures.py') == generator_digest == h.digest(c.generator())
             if (output / 'fixtures.json').exists():
                 unchanged = unchanged and h.inventory(output / 'fixtures') == h.read(output / 'fixtures.json')
@@ -278,7 +317,7 @@ def qualify(built, output):
         h.write(output / 'integrity.json', dict(unchanged=unchanged))
         h.write(output / 'case-accounting.json', case_accounting(rows, output))
         h.write(output / 'assessment.json', result)
-        (output / 'REPORT.md').write_text('# Correctness protocol v3\n\n' + result['status'] + ': ' +
+        (output / 'REPORT.md').write_text('# Correctness protocol v4\n\n' + result['status'] + ': ' +
             result.get('failure', '') + '\n\nOverlap: Evidence insufficient. No warm-ups or diagnostic observations.\n'
             'Streaming and validation reuse Deferred; candidate selection Evidence insufficient; '
             'historical qualification 78/80 unchanged. Uncaptured historical loading identities remain unavailable.\n')
@@ -290,7 +329,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--built', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--authenticate', action='store_true', help='authenticate sudo in the foreground terminal before creating an attempt')
     args = parser.parse_args()
-    result = qualify(args.built.absolute(), args.output.absolute())
+    try:
+        result = qualify(args.built.absolute(), args.output.absolute(), args.authenticate)
+    except ERRORS as error:
+        print('No attempt created: ' + (str(error) or type(error).__name__), file=sys.stderr)
+        sys.exit(1)
     print(h.json.dumps(result, indent=2))
     sys.exit(result['status'] != 'qualified')

@@ -1,5 +1,4 @@
-"""Correctness v3 synthetic regressions. Starting any process is forbidden."""
-import shutil
+"""Correctness v4 synthetic regressions. Starting any process is forbidden."""
 from types import SimpleNamespace
 from pathlib import Path
 import os
@@ -15,7 +14,7 @@ sys.path.insert(0, str(DIRECTORY))
 import correctness as c
 import qualify
 import stage
-v = c.e.load('synthetic_correctness_v3_verifier', DIRECTORY / 'offline/verify_correctness_v3.py')
+v = c.e.load('synthetic_correctness_v4_verifier', DIRECTORY / 'offline/verify_correctness_v4.py')
 h = c.h
 
 
@@ -146,7 +145,7 @@ class CorrectnessTests(unittest.TestCase):
         rows = self.schedule()
         for row in rows:
             if row['privileged']:
-                self.assertTrue(row['name'].endswith(('-stage', '-unstage', '-protected-fixture')))
+                self.assertTrue(row['name'].endswith(('-stage', '-unstage', '-protected-fixture', '-authorization')) or row['name'] == 'authorization')
                 self.assertEqual(row['argv'][:2], ['sudo', '-n'])
                 if row['cases']:
                     self.assertEqual(row['cases'], c.protocol()['protected_fixture'])
@@ -215,18 +214,18 @@ class CorrectnessTests(unittest.TestCase):
             self.assertFalse(record['attempted'])
 
     def test_resealed_protocol_tampering_is_not_trusted(self):
-        h.write(self.root / 'assessment.json', dict(phase='correctness-v3', status='qualified',
+        h.write(self.root / 'assessment.json', dict(phase='correctness-v4', status='qualified',
             decision='Evidence insufficient', observations=0))
         protocol = c.protocol()
         protocol['ordinary'].pop(0)
-        h.write(self.root / 'protocol-v3.json', protocol)
+        h.write(self.root / 'protocol-v4.json', protocol)
         h.write(self.root / 'seal.json', h.inventory(self.root))
         h.sealed(self.root)
         with self.assertRaisesRegex(ValueError, 'protocol drift'):
             v.verify(self.root)
 
-    def production_record(self, stop='compiler', cleanup=True, invalid_xml=False, invalid_fixture=False, preparation_failure=False):
-        output = self.root / 'preview-cache-publication-correctness-20261118-02'
+    def production_record(self, stop='compiler', cleanup=True, invalid_xml=False, invalid_fixture=False, preparation_failure=False, cleanup_denied=False, authenticate=False):
+        output = self.root / 'preview-cache-publication-correctness-20261118-04'
         binding = dict(path=str(self.built), seal=v.BUILT_SEAL, inventory={})
         package = h.read(self.built / 'package.json')
         self.enterContext(patch.object(c, 'built_binding', side_effect=ValueError('provider unavailable') if preparation_failure else None,
@@ -239,7 +238,25 @@ class CorrectnessTests(unittest.TestCase):
         self.enterContext(patch.object(c.e, 'load', side_effect=lambda name, path:
             SimpleNamespace(verify=lambda path: dict(commands=27, failed_command=None))
             if name == 'independent_native_build_verifier' else load(name, path)))
+        staging = set()
+        real_lexists = os.path.lexists
+        self.enterContext(patch.object(qualify.os.path, 'lexists', side_effect=lambda path:
+            str(path) in staging or real_lexists(path)))
+        production_invoke = qualify.invoke
         def invoke(row, root):
+            if row['argv'] == ['sudo', '-n', '-v']:
+                class Process:
+                    pid = 123456789
+                    def wait(self, timeout):
+                        return 1 if row['name'] == stop or (cleanup_denied and row['name'] == 'control-unstage-authorization') else 0
+                def launch(argv, **kwargs):
+                    kwargs['stderr'].write('authorization denied' if row['name'] == stop or cleanup_denied else '')
+                    return Process()
+                with patch.object(qualify.subprocess, 'Popen', side_effect=launch), \
+                     patch.object(qualify.time, 'monotonic_ns', side_effect=[row['index'] * 2 + 1, row['index'] * 2 + 2]), \
+                     patch.object(qualify.e, 'load', return_value=SimpleNamespace(terminate=lambda *a, **k: None)), \
+                     patch.object(qualify.os, 'killpg', side_effect=ProcessLookupError):
+                    return production_invoke(row, root)
             target = root / 'commands'
             target.mkdir(exist_ok=True)
             h.write(target / (row['name'] + '-command.json'), row)
@@ -278,6 +295,7 @@ class CorrectnessTests(unittest.TestCase):
                     h.write(target / (row['name'] + '-scopes-' + phase + '.json'), clean)
             if row['name'].endswith('-stage'):
                 arm = row['arm']
+                staging.add(str(stage.runtime_path(root, arm)))
                 tree = {'generations/synthetic': dict(uid=0, mode=0o755, sha256=None)}
                 for name, sha in h.inventory(self.built / arm / 'runtime').items():
                     tree['generations/synthetic/' + name] = dict(uid=0, mode=0o644, sha256=sha)
@@ -286,11 +304,17 @@ class CorrectnessTests(unittest.TestCase):
                     runtime=str(stage.runtime_path(root, arm))))
             if row['name'].endswith('-unstage'):
                 arm = row['arm']
+                staging.discard(str(stage.runtime_path(root, arm)))
                 h.write(root / (arm + '-staging-cleanup.json'), dict(removed=True,
                     owner=dict(output=str(root), arm=arm, built=str(self.built), seal=v.BUILT_SEAL)))
 
-        with patch.object(qualify, 'invoke', side_effect=invoke):
-            qualify.qualify(self.built, output)
+        with patch.object(qualify, 'validate_request'), patch.object(qualify, 'invoke', side_effect=invoke), \
+             patch.object(qualify.sys.stdin, 'isatty', return_value=True), \
+             patch.object(qualify.os, 'tcgetpgrp', return_value=os.getpgrp()), \
+             patch.object(qualify.subprocess, 'run') as authentication:
+            qualify.qualify(self.built, output, authenticate=authenticate)
+        if authenticate:
+            authentication.assert_called_once_with(['sudo', '-v'], check=True)
         self.root = output
         return h.read(output / 'schedule.json')
 
@@ -342,9 +366,9 @@ class CorrectnessTests(unittest.TestCase):
 
     def test_protocol_copy_preserves_frozen_bytes(self):
         self.production_record()
-        self.assertEqual((self.root / 'protocol-v3.json').read_bytes(),
-                         (DIRECTORY / 'CORRECTNESS-v3.json').read_bytes())
-        self.assertEqual(h.digest(self.root / 'protocol-v3.json'), v.PROTOCOL_SHA256)
+        self.assertEqual((self.root / 'protocol-v4.json').read_bytes(),
+                         (DIRECTORY / 'CORRECTNESS-v4.json').read_bytes())
+        self.assertEqual(h.digest(self.root / 'protocol-v4.json'), v.PROTOCOL_SHA256)
         self.assertEqual(v.verify(self.root)['outcome'], 'blocked')
 
     def test_preparation_and_cleanup_failures_are_retained(self):
@@ -423,9 +447,135 @@ class CorrectnessTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'native snapshot drift'):
             v.verify(self.root)
 
+
+
+    def test_successful_terminal_authentication_preserves_production_record(self):
+        self.production_record(authenticate=True)
+        self.assertEqual(v.verify(self.root)['outcome'], 'blocked')
+        self.assertIn('authorization', h.read(self.root / 'assessment.json')['completed'])
+
+    def test_denied_terminal_authentication_creates_no_attempt(self):
+        output = self.root / 'denied'
+        with patch.object(qualify, 'validate_request'), \
+             patch.object(qualify.sys.stdin, 'isatty', return_value=True), \
+             patch.object(qualify.os, 'tcgetpgrp', return_value=os.getpgrp()), \
+             patch.object(qualify.subprocess, 'run', side_effect=qualify.subprocess.CalledProcessError(1, ['sudo', '-v'])):
+            with self.assertRaises(qualify.subprocess.CalledProcessError):
+                qualify.qualify(self.built, output, authenticate=True)
+        self.assertFalse(output.exists())
+
+    def test_owned_cleanup_after_stopped_schedule_is_verifiable(self):
+        self.production_record(stop='control-protected-fixture-authorization')
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-protected-fixture-authorization')
+        self.assertTrue(h.read(self.root / 'assessment.json')['cleanup'])
+        self.assertTrue((self.root / 'control-staging-cleanup.json').exists())
+
+    def test_cleanup_authorization_loss_after_workload_failure_retains_staging(self):
+        self.production_record(stop='control-protected-publication', cleanup_denied=True)
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-protected-publication')
+        self.assertFalse(h.read(self.root / 'assessment.json')['cleanup'])
+        self.assertFalse((self.root / 'commands/control-unstage-command.json').exists())
+
+    def test_request_rejects_collision_overlap_and_symlink_before_prompt(self):
+        (self.root / 'build').mkdir()
+        output = self.root / 'build/preview-cache-publication-correctness-20261118-04'
+        with patch.object(qualify.e, 'ROOT', self.root):
+            output.mkdir()
+            with self.assertRaisesRegex(ValueError, 'collision'):
+                qualify.validate_request(self.built, output)
+            output.rmdir()
+            with self.assertRaisesRegex(ValueError, 'overlaps'):
+                qualify.validate_request(output / 'provider', output)
+            output.symlink_to(self.root / 'elsewhere')
+            with self.assertRaisesRegex(ValueError, 'approved attempt'):
+                qualify.validate_request(self.built, output)
+
+    def test_staging_installer_loads_without_repository_on_import_path(self):
+        # sudo runs stage.py directly; neither the repository nor scripts is on sys.path.
+        paths = [p for p in sys.path if p and Path(p).resolve() not in
+                 (c.e.ROOT, c.e.ROOT / 'scripts')]
+        with patch.object(sys, 'path', paths), patch.dict(sys.modules):
+            for name in list(sys.modules):
+                if name == 'install_state' or name == 'scripts' or name.startswith('scripts.'):
+                    del sys.modules[name]
+            before = list(sys.path)
+            installer = stage.load_installer()
+            self.assertTrue(callable(installer.run))
+            self.assertTrue(callable(installer.remove_tree))
+            self.assertEqual(Path(sys.modules['install_state'].__file__).resolve(),
+                             c.e.ROOT / 'scripts/install_state.py')
+            self.assertEqual(sys.path, before)
+
+    def test_staging_rejects_historical_and_escaped_destinations(self):
+        with patch.object(stage.os, 'geteuid', return_value=0):
+            for output in (c.e.ROOT / 'build/preview-cache-publication-correctness-20261118-02',
+                           c.e.ROOT / 'build/preview-cache-publication-correctness-20261118-03',
+                           self.root / 'preview-cache-publication-correctness-20261118-04'):
+                with self.assertRaisesRegex(ValueError, 'unsafe staging'):
+                    stage.worker(output, 'control')
+
+    def test_desktop_identity_rejected_before_authentication(self):
+        with patch.object(qualify.os, 'getuid', return_value=0), \
+             patch.object(qualify.subprocess, 'run') as prompt:
+            with self.assertRaisesRegex(ValueError, 'desktop user'):
+                qualify.qualify(self.built, c.e.ROOT / 'build/preview-cache-publication-correctness-20261118-04', True)
+        prompt.assert_not_called()
+
+    def test_authentication_interruption_creates_no_attempt(self):
+        output = self.root / 'interrupted'
+        with patch.object(qualify, 'validate_request'), \
+             patch.object(qualify.sys.stdin, 'isatty', return_value=True), \
+             patch.object(qualify.os, 'tcgetpgrp', return_value=os.getpgrp()), \
+             patch.object(qualify.subprocess, 'run', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                qualify.qualify(self.built, output, authenticate=True)
+        self.assertFalse(output.exists())
+
+    def test_destination_rejected_before_authentication(self):
+        with patch.object(qualify.subprocess, 'run') as prompt:
+            with self.assertRaisesRegex(ValueError, 'approved attempt'):
+                qualify.qualify(self.built, self.root / 'wrong', authenticate=True)
+        prompt.assert_not_called()
+
+    def test_authorization_denial_is_independently_verifiable(self):
+        self.production_record(stop='authorization')
+        proof = v.verify(self.root)
+        self.assertEqual(proof['failed_command'], 'authorization')
+        self.assertFalse((self.root / 'fixtures').exists())
+        self.assertIn('authorization denied', (self.root / 'commands/authorization.stderr').read_text())
+
+    def test_authorization_loss_prevents_protected_work(self):
+        self.production_record(stop='control-stage-authorization')
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-stage-authorization')
+        self.assertFalse((self.root / 'commands/control-stage-command.json').exists())
+
+    def test_authorization_loss_prevents_cleanup(self):
+        self.production_record(stop='control-unstage-authorization')
+        self.assertEqual(v.verify(self.root)['failed_command'], 'control-unstage-authorization')
+        self.assertFalse((self.root / 'commands/control-unstage-command.json').exists())
+        self.assertFalse(h.read(self.root / 'assessment.json')['cleanup'])
+        self.assertIn('retained', h.read(self.root / 'assessment.json')['cleanup_failure'])
+
+    def test_privileged_launch_retains_session_and_separates_group(self):
+        row = self.schedule()[0]
+        class Process:
+            pid = 123456789
+            def wait(self, timeout):
+                return 0
+        with patch.object(qualify.subprocess, 'Popen', return_value=Process()) as launch, \
+             patch.object(qualify.e, 'load', return_value=SimpleNamespace(terminate=lambda *a, **k: None)), \
+             patch.object(qualify.os, 'killpg', side_effect=ProcessLookupError):
+            qualify.invoke(row, self.root)
+        self.assertEqual(launch.call_args.kwargs['process_group'], 0)
+        self.assertNotIn('start_new_session', launch.call_args.kwargs)
+        row['launch'] = dict(start_new_session=True)
+        h.write(self.root / 'schedule.json', [row, *self.schedule()[1:]])
+        with self.assertRaisesRegex(ValueError, 'launch policy'):
+            v.verify_schedule(self.root, self.built, c.protocol())
+
     def test_offline_verifier_imports_neither_qualifier_nor_build_implementation(self):
         import ast
-        tree = ast.parse((DIRECTORY / 'offline/verify_correctness_v3.py').read_text())
+        tree = ast.parse((DIRECTORY / 'offline/verify_correctness_v4.py').read_text())
         imports = [alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names]
         self.assertNotIn('qualify', imports)
         self.assertNotIn('run', imports)

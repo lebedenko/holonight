@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import os
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 import correctness as c
@@ -14,16 +15,26 @@ def runtime_path(output, arm):
     return Path('/run') / ('holonight-publication-' + hashlib.sha256(str(output).encode()).hexdigest()[:20] + '-' + arm)
 
 
+def load_installer():
+    # Match direct script execution so the installer's sibling imports resolve under sudo.
+    previous = list(sys.path)
+    sys.path.insert(0, str(e.ROOT / 'scripts'))
+    try:
+        return e.load('publication_installer', e.ROOT / 'scripts/manage-images-generations.py')
+    finally:
+        sys.path[:] = previous
+
+
 def worker(output, arm, remove=False):
     h.require(os.geteuid() == 0 and arm in ('control', 'early'), 'scoped root staging required')
     h.require(output == output.resolve() and output.parent == e.ROOT / 'build' and
-              output.name == 'preview-cache-publication-correctness-20261118-02', 'unsafe staging request')
+              output.name == 'preview-cache-publication-correctness-20261118-04', 'unsafe staging request')
     binding = h.read(output / 'built.json')
     built = Path(binding['path'])
     h.require(h.digest(built / 'seal.json') == c.BUILT_SEAL == binding['seal'], 'staging build binding')
     for name, digest in h.read(output / 'tools.json').items():
         h.require(h.digest(Path(name)) == digest, 'staging tool drift')
-    installer = e.load('publication_installer', e.ROOT / 'scripts/manage-images-generations.py')
+    installer = load_installer()
     runtime = runtime_path(output, arm)
     owner = dict(output=str(output), arm=arm, built=str(built), seal=binding['seal'])
     owner_path = output / (arm + '-staging.json')

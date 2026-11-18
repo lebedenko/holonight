@@ -1,5 +1,4 @@
-"""Version 3 correctness contracts. This module never starts processes."""
-import os
+"""Version 4 correctness contracts. This module never starts processes."""
 from pathlib import Path
 import re
 import stat
@@ -12,7 +11,7 @@ BUILT_SEAL = 'd2e45f0c05b464e1c22de87145f35160ac038ff482a0cc72ca04d6f1396b2d7a'
 
 
 def protocol():
-    return h.read(DIRECTORY / 'CORRECTNESS-v3.json')
+    return h.read(DIRECTORY / 'CORRECTNESS-v4.json')
 
 
 def validate_xml(path, required):
