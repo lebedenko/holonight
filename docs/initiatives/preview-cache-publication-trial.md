@@ -99,3 +99,13 @@ Historical qualification stays **78/80**. No diagnostic duration is subtracted f
 historical p95s. Streaming, validation reuse and SHA dispatch remain **Deferred**.
 Another candidate requires a separate evidence-based investigation. Production changes,
 full qualification, consumer rollout and deployment require a subsequent plan.
+
+## Directional-variation encoding addendum
+
+The subsequent [directional-variation encoding trial](preview-cache-complexity-encoding-trial.md)
+keeps frozen-C synchronous publication and leaves this trial's Deferred decision unchanged.
+Its corrected investigation independently passes store eligibility; preparation and host
+Release builds verify. Fresh correctness stops at missing noninteractive authorization,
+so the overall result is Evidence insufficient, with no staging or startup observations.
+
+The subsequently authorized [encoding rerun](preview-cache-complexity-encoding-rerun.md) independently qualifies all 130 required behavioral checks and completes the 202-process startup trial with **Recommend**. This concerns the private directional-variation encoder; this historical early-publication trial remains Deferred. Production rollout remains outside scope.
