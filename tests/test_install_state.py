@@ -1,6 +1,12 @@
 """Deployment and retry contracts in disposable roots; no host mutation."""
+import argparse
+import hashlib
 import importlib.util
+import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,7 +15,7 @@ from unittest.mock import patch
 SCRIPTS = Path(__file__).resolve().parents[1] / 'scripts'
 sys.path.insert(0, str(SCRIPTS))
 from install_catalog import select
-from install_state import STATE, inventory, manifest_text, parse_manifest, read_manifest
+from install_state import RUNTIME, STATE, inventory, manifest_text, parse_manifest, read_manifest, snapshot
 
 SPEC = importlib.util.spec_from_file_location('installer', SCRIPTS / 'source-install.py')
 installer = importlib.util.module_from_spec(SPEC)
@@ -38,6 +44,180 @@ class Deployment(unittest.TestCase):
         with patch.object(installer, 'validate_prepared'):
             (self.payload / 'prepared.json').write_text('{}')
             installer.execute(self.root, self.state, transaction)
+
+    def modified_payload(self, name='/usr/bin/hn-viewer', owner='holonight-viewer',
+                         old_mode=0o755, staged_mode=0o751):
+        staged = self.payload / 'holonight-viewer' / name.lstrip('/')
+        staged.parent.mkdir(parents=True, exist_ok=True)
+        live = self.root / name.lstrip('/')
+        live.parent.mkdir(parents=True, exist_ok=True)
+        live.write_text('previous executable')
+        live.chmod(old_mode)
+        (self.state / 'manifest.tsv').write_text(
+            manifest_text({name: [owner, '0' * 40, *snapshot(live), name]}))
+        live.write_text('local executable')
+        live.chmod(0o644)
+        staged.write_text('staged executable')
+        staged.chmod(staged_mode)
+        self.incoming = inventory(self.payload / 'holonight-viewer', 'holonight-viewer', '1' * 40)
+        return live
+
+    def saved_record(self, owner, rows):
+        record = {'root': str(self.root), 'selection': [owner], 'host': hashlib.sha256(b'').hexdigest(),
+                  'components': {owner: {'revision': '1' * 40, 'inventory': rows, 'dirty': False}},
+                  'adopt': False, 'protected_images': False, 'maintenance': False}
+        (self.payload / 'prepared.json').write_text(json.dumps(record))
+        return record
+
+    def test_repairs_modified_executable_without_live_execute_bits(self):
+        live = self.modified_payload()
+        previous = snapshot(live)
+        with patch.object(installer, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')) as run:
+            transaction = self.transaction()
+            run.assert_called_once()
+            self.assertEqual(run.call_args.args, ('pacman', '--root', self.root, '-Qql'))
+        action = next(action for action in transaction['actions'] if action['path'] == '/usr/bin/hn-viewer')
+        self.assertTrue(action['executable_repair'])
+        self.assertEqual(action['previous'], previous)
+        self.execute(transaction)
+        self.assertEqual(live.read_text(), 'staged executable')
+        self.assertEqual(live.stat().st_mode & 0o777, 0o751)
+        self.assertEqual(read_manifest(self.state / 'manifest.tsv'), self.incoming)
+        self.assertEqual(list(self.state.glob('adoption-backup-*')), [])
+
+    def test_executable_repair_requires_readable_unclaimed_inventory(self):
+        live = self.modified_payload()
+        cases = (
+            (subprocess.CompletedProcess([], 0, f'{live}\n', ''), 'package-owned collision'),
+            (subprocess.CompletedProcess([], 0, '', 'error: could not open package files'), 'cannot read pacman'),
+            (subprocess.CalledProcessError(1, ['pacman'], stderr='database unavailable'), 'cannot read pacman'),
+        )
+        for result, message in cases:
+            with self.subTest(message=message), patch.object(installer, 'run') as run:
+                if isinstance(result, Exception):
+                    run.side_effect = result
+                else:
+                    run.return_value = result
+                with self.assertRaisesRegex(ValueError, message):
+                    self.transaction()
+                run.assert_called_once()
+                self.assertFalse((self.state / 'transaction.json').exists())
+                self.assertEqual(live.read_text(), 'local executable')
+
+    def test_ineligible_modified_paths_keep_collision_protection(self):
+        cases = (
+            ('/usr/bin/hn-viewer', 'holonight-files', 0o755, 0o751),
+            ('/usr/bin/hn-viewer', 'holonight-viewer', 0o644, 0o751),
+            ('/usr/bin/hn-viewer', 'holonight-viewer', 0o755, 0o644),
+            ('/usr/lib/hn-viewer.so', 'holonight-viewer', 0o755, 0o751),
+            (RUNTIME + '/usr/bin/hn-viewer', 'holonight-viewer', 0o755, 0o751),
+        )
+        for name, owner, old_mode, staged_mode in cases:
+            with self.subTest(name=name, owner=owner, modes=(old_mode, staged_mode)):
+                live = self.modified_payload(name, owner, old_mode, staged_mode)
+                with patch.object(installer, 'run') as run, self.assertRaisesRegex(ValueError, 'modified|unselected'):
+                    installer.new_transaction(self.root, self.state, ['holonight-viewer', owner],
+                                              {name: self.incoming[name]}, False, False, self.payload)
+                run.assert_not_called()
+                self.assertEqual(live.read_text(), 'local executable')
+
+    def test_modified_executable_symlink_and_unsafe_ancestor_are_rejected(self):
+        live = self.modified_payload()
+        live.unlink()
+        outside = Path(self.temporary.name) / 'outside'
+        outside.mkdir()
+        external = outside / live.name
+        external.write_text('external executable')
+        live.symlink_to(external)
+        with self.assertRaisesRegex(ValueError, 'preserve modified path'):
+            self.transaction()
+        live.unlink()
+        live.parent.rmdir()
+        live.parent.symlink_to(outside)
+        with self.assertRaisesRegex(ValueError, 'unsafe installation parent|occupied'):
+            self.transaction()
+        self.assertEqual(external.read_text(), 'external executable')
+
+    def test_obsolete_cleanup_and_uninstall_preserve_modified_executable(self):
+        live = self.modified_payload()
+        old = read_manifest(self.state / 'manifest.tsv')
+        upgrade = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, False, False)
+        self.assertEqual(upgrade['actions'], [])
+        self.assertEqual(upgrade['manifest'], old)
+        removal = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, True, False)
+        self.execute(removal)
+        self.assertEqual(live.read_text(), 'local executable')
+        self.assertEqual(read_manifest(self.state / 'manifest.tsv'), old)
+
+    def test_repair_resume_rechecks_ownership_preserves_edits_and_does_not_recopy(self):
+        live = self.modified_payload()
+        record = self.saved_record('holonight-viewer', self.incoming)
+        args = argparse.Namespace(root=self.root, prepared=self.payload)
+        save = installer.save_transaction
+
+        def interrupt(state, transaction):
+            if live.read_text() == 'staged executable':
+                raise InterruptedError('after atomic replacement')
+            save(state, transaction)
+
+        with patch.object(installer, 'host_identity', return_value=record['host']), \
+                patch.object(installer, 'run') as run:
+            run.return_value = subprocess.CompletedProcess([], 0, '', '')
+            with patch.object(installer, 'save_transaction', side_effect=interrupt), \
+                    self.assertRaises(InterruptedError):
+                installer.deploy(args)
+            run.assert_called_once()
+            timestamp = live.stat().st_mtime_ns
+            run.return_value.stdout = str(live) + '\n'
+            with self.assertRaisesRegex(ValueError, 'package-owned collision'):
+                installer.deploy(args)
+            self.assertEqual(live.stat().st_mtime_ns, timestamp)
+            run.return_value.stdout = ''
+            live.write_text('further local edit')
+            with self.assertRaisesRegex(ValueError, 'transaction conflict'):
+                installer.deploy(args)
+            self.assertEqual(live.read_text(), 'further local edit')
+            live.write_text('staged executable')
+            inode = live.stat().st_ino
+            with patch.object(installer, 'atomic', wraps=installer.atomic) as atomic:
+                installer.deploy(args)
+            self.assertFalse(any(call.args[0] == live for call in atomic.call_args_list))
+            self.assertEqual(live.stat().st_ino, inode)
+            self.assertEqual(run.call_count, 4)
+        self.assertIsNone(installer.pending(self.state))
+
+    def test_public_installer_deploys_saved_package_helper_repair(self):
+        owner = 'holonight-pkg-manager'
+        name = '/usr/libexec/holonight-package-helper'
+        live = self.modified_payload(name, owner)
+        (self.payload / 'holonight-viewer/usr/bin/hn-viewer').unlink()
+        (self.payload / 'holonight-viewer/usr/bin').rmdir()
+        (self.payload / 'holonight-viewer').rename(self.payload / owner)
+        rows = inventory(self.payload / owner, owner, '1' * 40)
+        self.saved_record(owner, rows)
+        fixture = Path(self.temporary.name)
+        scripts = fixture / 'scripts'
+        scripts.mkdir()
+        for filename in ('install.sh', 'source-install.py', 'install_state.py', 'install_catalog.py'):
+            shutil.copy2(SCRIPTS / filename, scripts)
+        work = fixture / '.source-install'
+        work.mkdir()
+        (work / 'prepared.path').write_text(str(self.payload))
+        pacman = fixture / 'pacman'
+        pacman.write_text('#!/bin/sh\ncase "$*" in\n'
+                          '  "-Q"|"--root $TARGET -Qql") exit 0;;\n'
+                          '  *) exit 1;;\nesac\n')
+        pacman.chmod(0o755)
+        result = subprocess.run([scripts / 'install.sh', '--resume', '--yes', '--root', self.root],
+                                env={**os.environ, 'PATH': f'{fixture}:{os.environ["PATH"]}', 'TARGET': str(self.root)},
+                                capture_output=True, text=True, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f'Replaced modified executable: {live}', result.stdout)
+        self.assertIn(f'Verified installed {owner}', result.stdout)
+        self.assertEqual(live.read_text(), 'staged executable')
+        self.assertEqual(live.stat().st_mode & 0o777, 0o751)
+        self.assertEqual(read_manifest(self.state / 'manifest.tsv')[name], rows[name])
+        self.assertEqual(list(self.state.glob('adoption-backup-*')), [])
 
     def test_resume_after_replacement_does_not_recopy_and_preserves_conflict(self):
         transaction = self.transaction()
@@ -135,7 +315,6 @@ class Deployment(unittest.TestCase):
         self.assertIsNone(installer.pending(self.state))
 
     def test_persistent_directory_lock_excludes_another_process(self):
-        import subprocess
         from install_state import lock
         child = ('import os,fcntl,sys; fd=os.open(sys.argv[1],os.O_RDONLY|os.O_DIRECTORY); '
                  '\ntry: fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)'
@@ -158,8 +337,6 @@ class Deployment(unittest.TestCase):
                      'native CMake/Ninja toolchain required')
 class NativePreparation(unittest.TestCase):
     def test_incremental_build_saved_payload_and_stale_host_rejection(self):
-        import argparse
-        import subprocess
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source = root / 'holonight-viewer'
