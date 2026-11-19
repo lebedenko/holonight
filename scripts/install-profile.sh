@@ -23,6 +23,7 @@ readonly HOLONIGHT_INSTALL_PACKAGES=(
   libpulse
   libsecret
   libwebp
+  libxkbcommon
   md4c
   ninja
   nlohmann-json
