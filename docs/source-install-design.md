@@ -60,3 +60,16 @@ backups. Other unowned files are never inferred to be installer output.
 Verification uses disposable roots, inert application fixtures for ordinary
 ownership and recovery, and a host-built Images helper for protected runtime
 acceptance. Container acceptance remains a separate integration gate.
+
+Before marking an install complete, deployment verifies selected ordinary files
+and symlinks against their prepared inventories (including modes and SHA-256),
+after refresh hooks. A mismatch leaves the transaction pending for explicit retry.
+Managed Images resources keep their existing generation validation. Successful
+verification prints the deployed component revisions. Resume explicitly reports
+that it deploys saved payloads rather than rebuilding current checkouts.
+
+For the package manager on the host, deployment checks systemd's effective helper
+ExecStart after daemon-reload. A previous running helper inode is reported without
+restarting it: package transactions must finish, and the helper normally exits
+60 seconds after becoming idle. Reopen GUI applications to load their newly
+installed code. A desktop-shell restart is not needed for helper activation.

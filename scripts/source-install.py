@@ -414,12 +414,54 @@ def execute(root, state, transaction):
     transaction['published'] = True
     save_transaction(state, transaction)
     refresh(root, transaction['selection'], transaction['removing'], state, transaction)
+    verify_deployment(root, transaction)
+    report_package_helper(root, transaction['selection'], transaction['removing'])
     image_journal = state / 'images-transaction.json'
     if image_journal.exists():
         os.replace(image_journal, state / 'images-transaction.completed.json')
         sync(state)
     transaction['status'] = 'complete'
     save_transaction(state, transaction)
+
+
+def verify_deployment(root, transaction):
+    """Verify selected installed files before declaring the deployment complete."""
+    if transaction['removing']:
+        return
+    revisions = {}
+    for name, row in transaction['manifest'].items():
+        if row[0] not in transaction['selection'] or row[2] == 'd' or runtime_path(name):
+            continue
+        if snapshot(root / name.lstrip('/')) != row_state(row):
+            raise ValueError(f'deployment verification failed: {name}; retry with --resume')
+        revisions[row[0]] = row[1]
+    for component, revision in sorted(revisions.items()):
+        print(f'==> Verified installed {component}: {revision}', flush=True)
+
+
+def report_package_helper(root, selection, removing):
+    """Inspect activation and running code without starting or stopping a transaction."""
+    if root != Path('/') or removing or 'holonight-pkg-manager' not in selection:
+        return
+    unit = 'holonight-package-helper.service'
+    expected = '/usr/libexec/holonight-package-helper'
+    start = output('systemctl', 'show', unit, '--property=ExecStart', '--value')
+    if f'path={expected} ;' not in start:
+        raise ValueError(f'{unit} does not activate {expected}: {start}')
+    print(f'==> Verified activation: {unit} -> {expected}', flush=True)
+    pid = output('systemctl', 'show', unit, '--property=MainPID', '--value')
+    if pid != '0':
+        try:
+            running = Path(f'/proc/{int(pid)}/exe').stat()
+        except FileNotFoundError:
+            return  # The idle helper exited during inspection.
+        installed = Path(expected).stat()
+        if (running.st_dev, running.st_ino) != (installed.st_dev, installed.st_ino):
+            print('==> Helper is still running the previous executable. Let it finish and exit '
+                  '(normally after 60 seconds idle); the next activation uses the installed build. '
+                  'Do not restart it during a transaction.', flush=True)
+    print('==> Reopen HoloNight Packages after installation. Existing GUI/session processes '
+          'keep their loaded code; restarting the desktop shell is not required for helper activation.', flush=True)
 
 
 def runtime_path(path):
@@ -572,6 +614,10 @@ def main():
             if args.check:
                 return
             attempt, record = prepare(selection, args)
+        for name, component in record['components'].items():
+            print(f"==> Prepared {name}: {component['revision']}" + (' (dirty checkout)' if component['dirty'] else ''), flush=True)
+        if args.resume:
+            print('==> Resuming saved payloads; checkout changes are not rebuilt.', flush=True)
         approved(args, record['selection'])
         command = ['python3', str(Path(__file__).resolve()), 'deploy', '--prepared', str(attempt), '--root', str(args.root)]
         if args.root == Path('/') and os.geteuid() != 0:
