@@ -29,3 +29,6 @@ consumer commits that reference them. Update umbrella pins per coherent mileston
 
 Use Conventional Commits. Preserve component boundaries and installed-package tests.
 The umbrella owns coordinated installation and conservative uninstall.
+
+See the [clang-tidy translation contract](docs/initiatives/clang-tidy-compatibility.md)
+for synchronized standalone helpers and focused analysis verification.
