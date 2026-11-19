@@ -1,0 +1,293 @@
+#!/usr/bin/env python3
+"""Independent offline correctness-v2 verifier; imports no execution implementation."""
+import argparse
+import os
+from pathlib import Path
+import re
+import sys
+import uuid
+import xml.etree.ElementTree as ET
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import evidence as e
+h = e.h
+PROTOCOL_SHA256 = 'dd22efe29f749d39a0d9f7396f06811be57d4bb0de9d917befb3c0a7b3c18755'
+BUILT_SEAL = 'd2e45f0c05b464e1c22de87145f35160ac038ff482a0cc72ca04d6f1396b2d7a'
+DIRECTORY = Path(__file__).resolve().parents[1]
+
+
+def xml_cases(path, required):
+    xml = ET.parse(path).getroot()
+    cases = xml.findall('.//testcase')
+    names = [case.attrib['classname'] + '.' + case.attrib['name'] for case in cases]
+    h.require(len(names) == len(set(names)) == len(required) == int(xml.attrib['tests']) and
+              set(names) == set(required), 'required test membership mismatch')
+    h.require(all('DISABLED_' not in name for name in names) and
+              all(int(xml.attrib.get(key, '0')) == 0 for key in ('failures', 'disabled', 'errors')) and
+              not xml.findall('.//skipped') and not xml.findall('.//failure') and
+              all(case.attrib.get('status') == 'run' and case.attrib.get('result') == 'completed' for case in cases),
+              'required tests failed or skipped')
+    return names
+
+
+def expected_schedule(root, built, p):
+    """Reconstruct every command and case independently of the qualifier."""
+    import hashlib
+    rows = []
+    def add(name, argv, arm=None, cases=None, privileged=False, workload=False, runtime=None):
+        rows.append(dict(name=name, argv=[str(x) for x in argv], arm=arm, cases=cases or [],
+            privileged=privileged, workload=workload, runtime=runtime))
+    add('compiler', ['c++', '--version'])
+    add('cmake', ['cmake', '--version'])
+    add('dependencies', ['pkg-config', '--modversion', 'Qt6Core', 'libexif', 'libwebp'])
+    for arm in ('control', 'early'):
+        base = root / arm
+        protected = Path('/run') / ('holonight-publication-' + hashlib.sha256(str(root).encode()).hexdigest()[:20] + '-' + arm)
+        add(arm + '-configure', ['cmake', '-S', root / 'native-source', '-B', base / 'build', '-G', 'Ninja',
+            '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_PREFIX_PATH=' + str(built / arm / 'prefix'),
+            '-DFROZEN=' + str(e.PACKAGE / arm / 'source'), '-DRUNTIME=' + str(built / arm / 'runtime'),
+            '-DFIXTURES=' + str(e.historical.e.Q / 'fixtures')], arm)
+        add(arm + '-compile', ['cmake', '--build', base / 'build', '--parallel', '4'], arm)
+        for binary in ('publication-correctness', 'session-correctness', 'images-consumer', 'preview-consumer'):
+            add(arm + '-' + binary + '-linkage', ['ldd', base / 'build' / binary], arm)
+        for label, cases in [('ordinary', p['ordinary']), ('mutable-publication', p['publication'])]:
+            add(arm + '-' + label, [base / 'build/publication-correctness', '--gtest_filter=' + ':'.join(cases),
+                '--gtest_fail_fast', '--gtest_output=xml:' + str(base / (label + '.xml'))], arm, cases, workload=True)
+        for binary in ('images-consumer', 'preview-consumer'):
+            add(arm + '-mutable-' + binary, [base / 'build' / binary], arm, workload=True)
+        add(arm + '-stage', ['sudo', '-n', sys.executable, DIRECTORY / 'stage.py', '--output', root,
+            '--arm', arm], arm, privileged=True)
+        for label, binary, cases, privileged in (
+            ('protected-fixture', 'publication-correctness', p['protected_fixture'], True),
+            ('protected-publication', 'publication-correctness', p['publication'], False),
+            ('protected-preview', 'publication-correctness', p['protected_preview'], False),
+            ('session', 'session-correctness', p['session'], False)):
+            add(arm + '-' + label, [base / 'build' / binary, '--gtest_filter=' + ':'.join(cases),
+                '--gtest_fail_fast', '--gtest_output=xml:' + str(base / (label + '.xml'))], arm, cases,
+                privileged, workload=not privileged, runtime=str(protected))
+        add(arm + '-protected-consumer', [base / 'build/preview-consumer'], arm, workload=True, runtime=str(protected))
+        add(arm + '-unstage', ['sudo', '-n', sys.executable, DIRECTORY / 'stage.py', '--output', root,
+            '--arm', arm, '--remove'], arm, privileged=True)
+    return rows
+
+
+def verify_schedule(root, built, p):
+    rows = h.read(root / 'schedule.json')
+    expected = expected_schedule(root, built, p)
+    h.require(len(rows) == len(expected), 'schedule membership')
+    invocations = set()
+    desktop_uid = None
+    for index, (row, wanted) in enumerate(zip(rows, expected)):
+        for key in ('name', 'arm', 'cases', 'privileged', 'workload'):
+            h.require(row[key] == wanted[key], 'schedule role/case mismatch')
+        h.require(row['index'] == index, 'schedule index mismatch')
+        if not row['privileged']:
+            desktop_uid = row['uid'] if desktop_uid is None else desktop_uid
+            h.require(row['uid'] == desktop_uid and desktop_uid != 0, 'desktop privilege boundary')
+        else:
+            h.require(row['uid'] == 0 and (row['cases'] == p['protected_fixture'] or
+                      row['name'].endswith(('-stage', '-unstage'))), 'privileged model workload')
+        env = row['environment']
+        expected_env = dict(QT_QPA_PLATFORM='offscreen', CMAKE_BUILD_PARALLEL_LEVEL='4',
+            XDG_RUNTIME_DIR='/run/user/' + str(desktop_uid),
+            DBUS_SESSION_BUS_ADDRESS='unix:path=/run/user/' + str(desktop_uid) + '/bus')
+        if row['arm']:
+            invocation = env['HOLONIGHT_CACHE_INVOCATION']
+            h.require(str(uuid.UUID(invocation)) == invocation and invocation not in invocations, 'invocation identity reused')
+            invocations.add(invocation)
+            arm, name = row['arm'], row['name']
+            import hashlib
+            protected = Path('/run') / ('holonight-publication-' + hashlib.sha256(str(root).encode()).hexdigest()[:20] + '-' + arm)
+            expected_env.update(HOLONIGHT_CACHE_INVOCATION=invocation, PUBLICATION_ARM=arm,
+                PUBLICATION_RUNTIME=wanted['runtime'] or str(built / arm / 'runtime'),
+                HN_SESSION_RUNTIME=str(protected), HN_BROWSER_SESSION_RUNTIME=str(protected),
+                XDG_CACHE_HOME=str(root / arm / 'private' / name / 'cache'),
+                TMPDIR=str(root / arm / 'private' / name / 'source'))
+        h.require(env == expected_env, 'environment propagation mismatch')
+        argv = wanted['argv']
+        if row['privileged'] and row['cases']:
+            argv = ['sudo', '-n', '/usr/bin/env', *[k + '=' + v for k, v in sorted(env.items())], *argv]
+        h.require(row['argv'] == argv, 'independent command reconstruction mismatch')
+    return rows
+
+
+def verify(root):
+    inventory = h.sealed(root)
+    assessment = h.read(root / 'assessment.json')
+    h.require(assessment['phase'] == 'correctness-v2' and assessment['status'] in ('blocked', 'qualified') and
+              assessment['decision'] == 'Evidence insufficient' and assessment['observations'] == 0,
+              'unsupported correctness outcome')
+    h.require(h.digest(root / 'protocol-v2.json') == PROTOCOL_SHA256, 'correctness protocol drift')
+    p = h.read(root / 'protocol-v2.json')
+    binding = h.read(root / 'built.json')
+    built = Path(binding['path'])
+    h.require(binding['seal'] == BUILT_SEAL == h.digest(built / 'seal.json'), 'pinned provider build mismatch')
+    h.require(binding['inventory'] == h.sealed(built), 'provider payload/inventory drift')
+    historical = e.load('independent_native_build_verifier', Path(__file__).with_name('verify.py'))
+    record = historical.verify(built)
+    h.require(record['commands'] == 27 and record['failed_command'] is None, 'provider build prerequisite')
+    h.require(h.read(root / 'package.json') == e.package() == h.read(built / 'package.json'), 'provider preparation binding')
+    tools = h.read(root / 'tools.json')
+    required_tools = {'qualify.py', 'correctness.py', 'stage.py', 'CORRECTNESS-v2.json', 'CORRECTNESS-v2.md',
+        'verify_correctness_v2.py', 'test_preview_cache_publication_correctness.py', 'manage-images-generations.py',
+        'install_state.py', 'run-preview-cpu-profile.py', 'run-preview-startup-smoke.py', 'evidence.py', 'run.py'}
+    h.require(required_tools <= {Path(path).name for path in tools}, 'missing tool snapshot')
+    for path, digest in tools.items():
+        h.require(h.digest(root / 'tools' / Path(path).name) == digest == h.digest(Path(path)),
+                  'tool snapshot/input drift')
+    native = h.read(root / 'native-inputs.json')
+    h.require(native == h.inventory(root / 'native-source') == h.inventory(DIRECTORY / 'native'),
+              'native snapshot drift')
+    h.require(h.read(root / 'integrity.json') == dict(unchanged=True), 'input integrity failure')
+    rows = verify_schedule(root, built, p)
+    names = [r['name'] for r in rows]
+    attempted = assessment['attempted']
+    completed = assessment['completed']
+    h.require(attempted == names[:len(attempted)] and attempted and
+              assessment['unexecuted'] == names[len(attempted):] and
+              completed == attempted[:len(completed)] and len(attempted) - len(completed) in (0, 1),
+              'stopped schedule accounting')
+    actual = {n.removeprefix('commands/').removesuffix('-command.json') for n in inventory
+              if n.startswith('commands/') and n.endswith('-command.json')}
+    cleanup_commands = actual - set(attempted)
+    h.require(cleanup_commands <= {'control-unstage', 'early-unstage'}, 'execution after stopped schedule')
+    h.require(actual == set(attempted) | cleanup_commands, 'missing/unexpected command artifacts')
+    previous = 0
+    failed = []
+    required_count = 0
+    for row in rows:
+        name = row['name']
+        if name not in actual:
+            continue
+        base = root / 'commands' / name
+        h.require(h.read(Path(str(base) + '-command.json')) == row, 'executed command differs from frozen schedule')
+        result = h.read(Path(str(base) + '-result.json'))
+        h.require(type(result['start_ns']) is int and type(result['stop_ns']) is int and
+                  previous <= result['start_ns'] <= result['stop_ns'], 'invocation chronology')
+        previous = result['stop_ns']
+        for suffix in ('.stdout', '.stderr'):
+            h.require('commands/' + name + suffix in inventory, 'missing raw process output')
+        successful = result['exit'] == 0 and result['failure'] is None and result['cleanup']
+        if result['cleanup']:
+            h.require(0 <= result['cleanup_seconds'] <= 5, 'cleanup deadline exceeded')
+        if row['workload']:
+            for phase in ('before', 'after'):
+                path = Path(str(base) + '-scopes-' + phase + '.json')
+                if successful:
+                    value = h.read(path)
+                    h.require(value['isolated'] and value['exit'] == 0 and not value['stdout'].strip() and
+                              not value['cgroups'], 'scope cleanup proof missing')
+        if name in completed:
+            h.require(successful, 'completed failed process')
+            if row['cases']:
+                xml = next(v.split('xml:', 1)[1] for v in row['argv'] if v.startswith('--gtest_output=xml:'))
+                required_count += len(xml_cases(Path(xml), row['cases']))
+                stdout = Path(str(base) + '.stdout').read_text()
+                h.require('[  PASSED  ] ' + str(len(row['cases'])) + ' test' in stdout, 'raw test success mismatch')
+            if name.endswith('-linkage'):
+                text = Path(str(base) + '.stdout').read_text()
+                h.require('not found' not in text, 'unresolved linked dependency')
+                identities = {}
+                for line in text.splitlines():
+                    tokens = line.split()
+                    path = tokens[2] if len(tokens) > 2 and tokens[1] == '=>' else tokens[0] if tokens else ''
+                    if path.startswith('/'):
+                        resolved = Path(path).resolve()
+                        identities[str(resolved)] = h.digest(resolved)
+                h.require(identities and h.read(root / (name + '-identities.json')) == identities,
+                          'current dependency identity mismatch')
+            if name.endswith('-configure'):
+                resolution = h.read(root / row['arm'] / 'package-resolution.json')
+                h.require(set(resolution) == {'HolonightImages_DIR', 'HolonightThumbnails_DIR', 'HolonightFileBrowser_DIR'} and
+                          all(Path(v).resolve().is_relative_to(built / row['arm'] / 'prefix') for v in resolution.values()),
+                          'installed consumer resolution mismatch')
+        elif name in attempted:
+            # A process may succeed but fail XML, linkage or source-identity validation.
+            failure = result['failure']
+            if successful and row['cases']:
+                xml = next(v.split('xml:', 1)[1] for v in row['argv'] if v.startswith('--gtest_output=xml:'))
+                try:
+                    xml_cases(Path(xml), row['cases'])
+                except (OSError, ValueError, KeyError, ET.ParseError) as error:
+                    failure = str(error)
+            h.require(bool(failure) or not successful, 'blocked without independently corroborated failure')
+            failed.append(name)
+    h.require(failed == attempted[len(completed):], 'failure schedule mismatch')
+    expected_accounting = []
+    for row in rows:
+        if not row['cases']:
+            continue
+        xmlpath = Path(next(arg.split('xml:', 1)[1] for arg in row['argv'] if arg.startswith('--gtest_output=xml:')))
+        observed = []
+        parse_failure = None
+        if xmlpath.exists():
+            try:
+                observed = [dict(name=case.attrib['classname'] + '.' + case.attrib['name'],
+                    status=case.attrib.get('status'), result=case.attrib.get('result'),
+                    failed=case.find('failure') is not None, skipped=case.find('skipped') is not None)
+                    for case in ET.parse(xmlpath).getroot().findall('.//testcase')]
+            except (OSError, KeyError, ET.ParseError) as error:
+                parse_failure = str(error)
+        attempted_cases = [case['name'] for case in observed if case['status'] == 'run' and not case['skipped']]
+        expected_accounting.append(dict(invocation=row['name'], required=row['cases'], observed=observed,
+            attempted=attempted_cases, unexecuted=[name for name in row['cases'] if name not in attempted_cases],
+            parse_failure=parse_failure))
+    h.require(h.read(root / 'case-accounting.json') == expected_accounting, 'stopped case accounting mismatch')
+
+    for arm in ('control', 'early'):
+        staged = root / (arm + '-staging.json')
+        if staged.exists():
+            row = h.read(staged)
+            generation = [name.split('/')[1] for name in row['tree'] if name.startswith('generations/') and name.count('/') == 1]
+            h.require(len(generation) == 1, 'staged generation membership')
+            payload = h.inventory(built / arm / 'runtime')
+            for name, digest in payload.items():
+                entry = row['tree']['generations/' + generation[0] + '/' + name]
+                h.require(entry['sha256'] == digest and entry['uid'] == 0 and entry['mode'] & 0o022 == 0,
+                          'staged provider binding/protection mismatch')
+            if assessment['cleanup']:
+                h.require(h.read(root / (arm + '-staging-cleanup.json')) == dict(removed=True, owner=row['owner']) and
+                          not os.path.lexists(row['runtime']), 'owned staging cleanup unverified')
+    if assessment['status'] == 'qualified':
+        h.require(completed == names and not failed and assessment['cleanup'] and
+                  assessment['native_correctness'] == 'qualified', 'false qualification')
+    else:
+        h.require(bool(failed) or not assessment['cleanup'], 'unsupported blocked outcome')
+        h.require(bool(assessment.get('failure') or assessment.get('cleanup_failure')), 'missing blocker')
+    fixed = {'assessment.json', 'integrity.json', 'built.json', 'package.json', 'tools.json', 'protocol-v2.json',
+             'schedule.json', 'native-inputs.json', 'REPORT.md', 'seal.json', 'case-accounting.json'}
+    fixed |= {'tools/' + Path(path).name for path in tools}
+    fixed |= {'native-source/' + name for name in native}
+    fixed |= {r['arm'] + '/package-resolution.json' for r in rows if r['arm']}
+    for arm in ('control', 'early'):
+        fixed |= {arm + '-staging.json', arm + '-staging-cleanup.json'}
+        fixed |= {arm + '/' + label + '.xml' for label in ('ordinary', 'mutable-publication',
+            'protected-fixture', 'protected-publication', 'protected-preview', 'session')}
+    fixed |= {r['name'] + '-identities.json' for r in rows if r['name'].endswith('-linkage')}
+    command_files = {'commands/' + name + suffix for name in actual for suffix in
+        ('-command.json', '-result.json', '.stdout', '.stderr', '-scopes-before.json', '-scopes-after.json')}
+    h.require(all(name in fixed | command_files or any(name.startswith(arm + '/' + directory + '/')
+        for arm in ('control', 'early') for directory in ('build', 'private')) for name in inventory),
+        'unexpected artifact membership')
+    return dict(status='passed', outcome=assessment['status'], decision='Evidence insufficient',
+        evidence_seal=h.digest(root / 'seal.json'), completed_commands=len(completed), required_cases_passed=required_count,
+        failed_command=failed[0] if failed else None, observations=0, imports_runner=False,
+        verifier_sha256=h.digest(Path(__file__)))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('evidence', type=Path)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    root, output = args.evidence.absolute(), args.output.absolute()
+    h.require(output == output.resolve() and not output.exists() and not output.is_relative_to(root) and
+              not root.is_relative_to(output), 'verification collision/overlap')
+    try:
+        result = verify(root)
+    except (OSError, ValueError, KeyError, TypeError, ET.ParseError) as error:
+        result = dict(status='failed', decision='Evidence insufficient', failure=str(error))
+    h.write(output, result)
+    print(h.json.dumps(result, indent=2))
+    sys.exit(result['status'] != 'passed')

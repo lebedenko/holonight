@@ -1,0 +1,230 @@
+# Identity-bound startup baseline
+
+This is a new diagnostic population using the retained qualification A-fixed and C
+harnesses and runtime bytes and the `3200x2400.png` fixture. It cannot recover
+historical loading identities, revise **78/80**, or select an optimization. The
+[applicability audit](startup-validation-applicability.md) remains historical.
+
+## Preparation boundary
+
+[Preparation](../../scripts/prepare-preview-identity-baseline.py) imports only the
+[read-only evidence boundary](../../scripts/preview-identity-evidence.py). It binds
+accepted audit 05's pinned seal and passing independent verification, reuses its
+unchanged source and native/package verification, and checks complete historical
+runtime membership, sizes and digests. A-fixed uses qualification A's corrected
+harness and legacy `runtime`; C uses qualification C's harness and `runtime-final`.
+Validation-instrumented binaries cannot substitute for either.
+
+The package copies the binaries, runtime manifests/payloads and fixture, current
+Python tools (including transitive execution support), installer/support modules,
+focused tests and this protocol into a fresh disjoint ignored `build/` directory.
+Installer identity describes **new staging only**, not the historical installation.
+Sources are rechecked after copying. Collisions, overlapping inputs, symlink escapes,
+conflicting bindings and drift fail closed. Blocked partial packages remain sealed.
+A successful package means **prepared; execution capability unvalidated**. Preparation
+never imports an execution recipe and launches zero builds, staging operations,
+recorder rehearsals, recordings or workloads.
+
+## Future execution
+
+The [runner](../../scripts/run-preview-identity-baseline.py) has a dependency-injected
+OS boundary so that the entire schedule and stop/cleanup protocol can be exercised
+synthetically. Its native adapter reuses the existing gated-launch/control-ack
+primitive, not an instrumented harness. Real execution requires later explicit
+authorization and a passing capability rehearsal bound to the preparation seal,
+recorder bytes, host/boot identity, ordinary desktop UID and exact protocol. Unsupported options,
+permissions, metadata formats or identities block execution; there is no automatic privileged
+recorder fallback. A future authorized `rehearse` action runs only the four excluded
+combinations in a separate sealed population; its independent verification must
+pass before `execute` can consume it. Neither action is invoked during preparation.
+Preparation does not validate this capability.
+
+There are four combinations, in canonical order: A-fixed uncaptured, A-fixed
+metadata-captured, C uncaptured, C metadata-captured. Each has one excluded warm-up.
+Five measured blocks each contain five observations per combination. Block order
+rotates left by the block index modulo four, then reverses odd blocks. Thus there
+are **104 fresh harness processes, each with count 1: 100 measured observations and
+four excluded warm-ups**. No retries occur. Startup success, setup, pixel and
+metadata correctness, finite ordered first/final timings and worker cleanup retain
+the qualification checks.
+
+Run as the ordinary desktop user with offscreen Qt and private observation directories.
+No cache flushing, CPU affinity, artificial load or environment tuning is permitted.
+Each gated invocation has a 30-second deadline and shared five-second termination
+budget. The native primitive conservatively includes recorder shutdown in its
+reported elapsed duration. Staging uses a narrowly elevated worker only for disposable
+`/run/holonight-identity-*` trees, marked with the package seal and execution owner.
+The frozen installer copies A's legacy runtime and publishes C's protected generation;
+the deployed runtime is never a destination. The complete outer tree records modes,
+owners, generation names, selector contents and manifest bytes. Nested payload
+membership is checked separately before execution and between invocations. Historical
+source verification is reused; between invocations, recheck the sealed executable
+package and current tool identities rather than replaying the historical analysis.
+
+Namespace metadata requires `CAP_PERFMON` on the current host. An explicitly
+authorized `--capability-recorder /var/lib/holonight-identity-recorder-<attempt>/perf`
+may select a disposable byte-identical copy of `/usr/bin/perf` with only
+`cap_perfmon=ep`. Its directory and executable must be root-owned, group 1000,
+mode 0750, with no symlinks. The runner and harness stay UID 1000; neither inherits
+the recorder capability. System perf, sysctls and deployed runtimes stay unchanged.
+The recorder path, bytes, ownership and permission mode are sealed in capability
+evidence and must match for later baseline execution. This opt-in changes the
+original permission boundary and requires explicit authorization.
+
+Authorization is a separate, untimed interaction. Before staging, cleanup, and
+each capability-recorder workload, the ordinary-user runner waits for
+`sudo -A -v` to finish. It records that wait separately and starts machine timing
+only after successful authorization. Actual elevated actions use `sudo -n`;
+expired authorization fails promptly without opening askpass inside a workload.
+The workload's 30-second deadline and five-second process cleanup budget are
+unchanged and exclude authorization. Authorization timing evidence is never an
+observation or part of a timing distribution.
+
+Staging and protected-tree cleanup have no arbitrary outer wall-clock timeout.
+The runner joins sudo and its worker before inventory, cleanup checks, or sealing.
+Terminal cancellation is deferred until the worker exits; successful staging
+still has its full cleanup identity captured if cancellation was requested.
+Existing installer operation limits and conservative removal checks remain.
+The read-only recorder identity worker has its own five-second alarm after
+noninteractive authorization, and its caller waits for the worker to be reaped.
+Stage/cleanup evidence separates authorization, total machine execution, package
+verification and install/removal durations. The independent verifier checks their
+ordering and requires authorization before each timed workload starts.
+
+Capability execution restricts ordinary `/proc` namespace inspection. Only for an
+opted-in recorder, the native adapter may use the read-only elevated
+`recorder-identity` action. It validates the protected executable, UID 1000, sole
+effective/permitted CAP_PERFMON, metadata recorder command, and stable PID/start
+identity before returning the existing identity format. Reader command, result
+and diagnostics are retained; the independent verifier binds that result to the
+recorder and gate namespaces. No elevated workload or privileged harness fallback
+is permitted. Remove the disposable capability recorder after the authorized
+attempt and retain its recorded identity; a passing rehearsal does not authorize
+recreation for a measured baseline.
+
+The first execution, correctness, recorder, identity or cleanup failure stops the
+schedule. Evidence retains attempted counts, accepted observations, failure and
+all unexecuted schedule entries. Cleanup checks exact ownership and the complete
+staged identity, uses the installer's lease-aware C removal, and preserves modified
+or partially staged trees rather than adopting or deleting them.
+
+## Captured identity contract
+
+Perf attaches to the gated PID before release. `enable` must be acknowledged before
+releasing that same PID into the harness. Descendant tracking is inherited. Recording
+uses `dummy:u`, `--no-samples`, mapping build IDs, task and namespace metadata,
+the required `sample_id_all` event attribute, and the monotonic clock. Build-ID cache writes and automatic symbol
+downloads are disabled. CPU samples, stacks and scheduler events are excluded.
+
+Retain `perf.data`, raw exported metadata, gate identity, acknowledgement, release,
+recorder stderr/shutdown and normalized process/fork, exec, namespace, mapping and
+exit records. Explicit fork parentage, lifetime tokens and namespace transitions
+bind mappings; timestamp proximity never establishes ancestry. PID reuse starts a
+new lifetime; forked children inherit the parent's loading context before their
+own exec. Missing exits, unavailable identities/build IDs, capture loss,
+unsupported records, ambiguous candidate bytes or conflicting mapping bytes block
+acceptance. Anonymous/non-file mappings have explicit exclusion records.
+Both raw readers classify perf's `//anon` names as anonymous before checking file
+build IDs, matching the normalized ledger's existing `//` exclusion rule. Absolute
+file-backed mappings still require build-ID evidence.
+
+Captured warm-ups establish separate A-fixed/C dependency-path ledgers, with desktop
+and sandbox scopes distinguished. Freeze ELF bytes, sizes, SHA-256 and available GNU
+build IDs without running the binaries. New captures resolve exact build-ID-matching
+candidates within the recorded namespace's source: desktop mappings use desktop
+paths; sandbox `/usr` mappings use only listed frozen runtime payload entries.
+Sandbox attribution requires a changed mount namespace, not just a change in
+another namespace. The verified launcher binds each manifest entry read-only at
+its sandbox `/usr` path. There is no fallback across these sources. Equal GNU build
+IDs may identify different whole-file bytes in the two namespaces; the separately
+scoped SHA-256/size identities remain exact, and drift within either scope blocks.
+The independent verifier checks these source bindings too, joining removed staging
+paths through their retained protected outer identities to the frozen payload.
+This lookup is never used for historical recordings. Recheck
+sources and frozen copies before and after every measured invocation. Unexpected
+measured paths or changed identities block; repeated paths within a scope cannot
+silently denote different bytes. The strict decoder supports little-endian ELF64
+and Linux perf's build-ID MMAP2 metadata; other formats require a later reviewed
+implementation, not a fallback that weakens identity checks.
+
+The runner and independent verifier validate the frozen single-event `dummy:u`
+attribute before reading trailers: metadata only, `sample_id_all`, monotonic clock,
+and sample type `IP | TID | TIME | PERIOD` (263). Its non-sample trailer contains
+TID and TIME; IP and PERIOD do not add trailer fields. Finite captures are stably
+ordered by trailer timestamp and original file offset before reconstructing active
+lifetimes. Initial synthesized zero-time records retain file order. Native FORK
+time remains the lifetime token; ordering never establishes parentage.
+
+Both readers independently validate header-only `FINISHED_ROUND` (68) and
+`FINISHED_INIT` (82), complete `ID_INDEX` (69) and `THREAD_MAP` (73) arrays,
+range-encoded `CPU_MAP` (74), and the fixed 56-byte `TIME_CONV` (79) layout.
+These records never become normalized lifecycle events. Unsupported encodings,
+malformed counts, missing trailers and unknown types block acceptance. Record
+numbers and layouts follow the [upstream perf definitions](https://github.com/torvalds/linux/blob/master/tools/lib/perf/include/perf/event.h).
+Type 78 is `EVENT_UPDATE`, not `TIME_CONV`. Both readers accept only its
+32-byte CPUS variant (update type 3) with a validated range encoding and an event
+ID present in the frozen attribute's complete ID section. Other update variants,
+unknown IDs, malformed ID sections and CPU encodings remain rejected. This
+bookkeeping never adds lifecycle events or establishes ancestry. Read-only replay
+of attempt 04 now agrees across both readers without removing records, using
+explicitly synthetic mapping identities; it establishes no historical ELF bytes
+and does not change that attempt's original sealed outcome.
+
+## Reporting and verification
+
+[Independent verification](../../scripts/verify-preview-identity-baseline.py) imports
+neither preparation nor runner. It independently reconstructs schedule arithmetic,
+checks bindings and snapshot membership, validates synthetic execution fixtures,
+rejoins lifetime/namespace evidence, and recomputes all reporting arithmetic.
+
+Report first/final median and nearest-rank p95 separately for each combination, plus
+signed C-minus-A-fixed block comparisons within each capture population. Warm-ups
+never enter these distributions. Captured mappings establish identities only for
+captured executions; uncaptured loading identities remain unavailable. No overhead
+correction, quantile subtraction across populations, historical timing transfer,
+qualification inference or automatic authorization of streaming, validation reuse
+or dispatch changes is allowed. Complete real execution means a verified new
+baseline with these limitations; synthetic completion never means a real baseline.
+
+Preparation acceptance uses only the focused synthetic suite, one fresh preparation
+package and its independent offline verification, documentation links and whitespace.
+Existing native/package results are reused. No native build or real workload is
+necessary or authorized by this preparation step.
+
+```sh
+python3 -m unittest discover -s tests -p test_preview_identity_baseline.py
+python3 scripts/prepare-preview-identity-baseline.py --output build/preview-identity-baseline-NEW
+python3 scripts/verify-preview-identity-baseline.py build/preview-identity-baseline-NEW --output build/preview-identity-baseline-NEW-independent.json
+```
+
+The preparation-only acceptance artifacts are the
+[sealed preparation report](../../build/preview-identity-baseline-20261116-03/REPORT.md)
+and [independent result](../../build/preview-identity-baseline-20261116-03-independent.json).
+The focused suite covers 54 synthetic cases, including namespace source bindings, authorization boundaries, binary perf fixtures and ELF
+note parsing, with all real process execution disabled. These artifacts do not
+attest real recorder or execution capability.
+
+## Offline follow-up review
+
+The [sealed identity review](../../build/preview-identity-review-20261117-03/REPORT.md)
+and [independent verification](../../build/preview-identity-review-20261117-03-independent.json)
+combine execution 20261117-03, preparation 20261117-04, rehearsal 20261117-05,
+applicability audit 05 and reconciliation 03 through retained provenance. The
+[assessor](../../scripts/assess-preview-identity-review.py) accepts `--output` for a
+fresh directory beneath `build/`; the [verifier](../../scripts/verify-preview-identity-review.py)
+accepts that directory and a separate `--output` JSON result. Existing destinations
+and input overlap are rejected; advance the directory suffix on collision.
+
+The review preserves complete desktop/sandbox ledgers and per-observation process
+attribution, compares retained payload and mapping identities, and independently
+checks four populations of 25, nearest-rank p95 and all 20 signed block comparisons.
+Warm-ups and authorization waits are excluded. Captured loading identity cannot
+recover historical qualification or uncaptured loading identities. The decision
+remains **Evidence insufficient**: streaming, validation reuse and SHA-256 dispatch
+remain deferred with their mechanism, applicability, integrity and contradiction
+gaps. Qualification remains **78/80**; no ranking or experiment is prepared.
+
+Verification uses `python3 -m unittest discover -s tests -p test_preview_identity_review.py`
+with process execution disabled, followed by one offline assessment and independent
+verification. No builds, workloads, recordings, staging or qualification reruns are
+part of this follow-up. Earlier audits remain unchanged.

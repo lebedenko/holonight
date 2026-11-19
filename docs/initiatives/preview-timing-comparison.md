@@ -108,6 +108,10 @@ and [binary identities](../../build/preview-standby-arb90t5w/measurement-inputs.
 
 ## Corrected-reference comparison: qualification failed
 
+The [offline startup reconciliation](startup-evidence-decision.md) connects the
+completed investigations and remainder evidence. All three proposals remain deferred;
+finer validation observations already exist in separate populations.
+
 **The cancellation/cleanup race is resolved in A-fixed, but strict qualification remains failed.** The single preregistered comparison collected all 12,000 observations (4,000 per variant), plus separate warm-ups, without correctness, protocol, cleanup or missing-observation failures. Of 80 numerical gates, 78 pass. Large textured PNG startup fails the p95 regression gate for both pixels and final metadata.
 
 | Startup event, 3200×2400 PNG | A-fixed p95 | C p95 | Change | Allowed C p95 |
@@ -673,3 +677,66 @@ attribution is established. Previous assessments, the overhead host-activity
 limitation, C's failed qualification and D's failed pilot remain unchanged. Native
 validation and any fixed diagnostic experiment require a separately planned step.
 No deployment, publication, pin changes or commit were performed.
+
+## Remaining cold-start selection (2026-11-16)
+
+The [bounded offline review](delivery-tracing-v4.md#remaining-cold-start-decision-2026-11-16)
+selects **Evidence insufficient**, with no optimization or new experiment.
+It retains the failed 78/80 qualification and unchanged thresholds, compares frozen
+A-fixed/C source relationships and separate diagnostic populations, and identifies
+helper preparation as the next unresolved boundary. Hashing and initial standby
+deferral remain deferred; the review does not close qualification.
+
+The [private helper-startup preparation](delivery-tracing-v4.md#private-ac-helper-startup-preparation-2026-11-16)
+now records finer A/C parent-side probes and a frozen future protocol. It remains
+uncompiled and unexecuted, selects no optimization and leaves the failed 78/80
+qualification and its thresholds unchanged.
+
+The [native helper-startup diagnostic](helper-startup-diagnostic.md) built all four
+private trees and passed one workload-free recorder rehearsal, then stopped at the
+third warm-up on a new lifecycle-validator assumption. All 33 remaining invocations
+were left unexecuted. Corrected offline replay preserves the original blocked
+attempt; no measured population, optimization selection or qualification change
+resulted.
+
+The explicitly authorized rerun with the corrected validator passed fresh native
+builds and a recorder rehearsal, then stopped before invocation 1 because four
+frozen host dependency hashes had changed. Its [retained audit](helper-startup-diagnostic.md#authorized-rerun-after-the-validator-fix)
+records all 36 invocations unexecuted, passing cleanup and staging checks, and
+blocked input-integrity verification. No measured evidence or qualification change
+resulted.
+
+A subsequent [explicit host revision and rerun](helper-startup-diagnostic.md#host-revision-and-captured-warm-up-validator-correction)
+passed four warm-ups, then stopped at captured A because the validator treated
+unrelated scheduler startup warnings as a global coverage failure. The corrected
+offline replay passes all five retained invocations with complete helper-thread
+coverage. The executed attempt remains blocked, with 31 invocations unexecuted and
+no measured block collected.
+
+The authorized [fresh attempt completed](helper-startup-diagnostic.md#completed-fresh-attempt)
+all 36 invocations: 150 measured observations and 300 measured endpoints, plus six
+excluded warm-ups. Execution and offline-report independent verification passed.
+The diagnostic retains selected demand, standby and setup separately, reports
+scheduler coverage and signed block-median arm comparisons, and selects no
+optimization. Qualification remains failed at 78/80 under unchanged thresholds.
+
+The [offline helper-startup decision review](helper-startup-decision.md) reconciles
+the retained 150 measured observations and 300 endpoints, keeping six warm-ups
+separate. Independent interval, scheduler, selection and decision verification
+passes. The decision is **Evidence insufficient** because C's block rankings
+disagree and uncovered startup time dominates; no optimization or new experiment
+is selected. Qualification remains failed at **78/80** under unchanged thresholds.
+
+The subsequent [retained startup remainder assessment](helper-startup-remainder.md)
+explains review 03's helper-uncovered intervals using existing v3/v4 traces. All 32
+required C views agree on runtime verification nested inside generation validation
+as one source-bound investigation. This does not revise the earlier helper-operation
+**Evidence insufficient** decision or the failed **78/80** qualification; no
+experiment or optimization is prepared.
+
+The [qualification C startup-validation applicability audit](startup-validation-applicability.md)
+binds the frozen C execution path and runtime input manifest to validation 04,
+CPU profile 03 and the completed hashing investigations. Mechanism source compatibility,
+different payload bytes and unavailable qualification generation/loading identities
+remain distinct. The decision remains **Evidence insufficient**, with all three
+proposals deferred, no experiment prepared and qualification still **78/80**.

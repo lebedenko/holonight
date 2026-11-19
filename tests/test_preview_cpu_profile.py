@@ -341,8 +341,10 @@ class CPUProfileTests(unittest.TestCase):
                  patch.object(r, 'cleanup_all', return_value={'passed': False}):
                 # Avoid a real /proc PID dependency while retaining real evidence writes.
                 with self.assertRaises(OSError) as caught:
-                    r.workload(['synthetic'], target, True)
+                    r.workload(['synthetic'], target, True, recorder_identity=lambda pid: dict(pid=pid, scoped=True))
             self.assertIs(caught.exception, error)
+            self.assertEqual(p.read(root / 'case-recording/recorder-identity.json'), dict(pid=123, scoped=True))
+            self.assertEqual(p.read(root / 'case-recording/gate.json')['identity'], {})
             partial = json.loads((root / 'case-recording/partial.json').read_text())
             self.assertEqual(partial['first_failure']['errno'], 13)
             self.assertEqual(partial['first_failure']['recorder_stderr'], 'perf_event_open: EACCES')

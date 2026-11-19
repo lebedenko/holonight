@@ -1,0 +1,203 @@
+{
+  "version": 4,
+  "arms": [
+    "control",
+    "candidate"
+  ],
+  "jobs": 4,
+  "build_type": "Release",
+  "timeout_seconds": 600,
+  "cleanup_seconds": 5,
+  "retries": 0,
+  "observations": 0,
+  "decision": "Evidence insufficient",
+  "ordinary": [
+    "RuntimeVerification.CountsManifestTowardFileLimit",
+    "RuntimeVerification.CountsManifestTowardByteLimitBeforeHashingPayload",
+    "RuntimeVerification.MutableDevelopmentPrefixIsNotProtected",
+    "RuntimeVerification.RejectsInventorySymlink",
+    "RuntimeVerification.RejectsSymlinkDirectoryInsideInventory",
+    "GenerationOwner.MutableAncestorCannotAuthorizeReuse",
+    "Cleanup.EmptyAndRemovedNeedNoManagerCommands",
+    "Cleanup.ReobservesTransientFailureAfterInitiallyEmptyScope",
+    "Cleanup.MissingIdentityCanBeProvenByManager",
+    "Cleanup.DisappearanceDuringQueryOrSignals",
+    "Cleanup.ManagerFailuresRemainAttributable",
+    "Cleanup.TermResistantDescendantsRequireKill",
+    "Cleanup.UnknownAndPopulatedNeverProveCleanup",
+    "Cleanup.UnreapedLauncherSuppressesResults",
+    "Cleanup.CancellationDuringCompletionOrCleanupWinsDelivery",
+    "Cleanup.CleanupFailurePreservesTheOperationFailureEvenWhenCancelled",
+    "Cleanup.SerializationIsBoundedAndPreservesOriginalFailure",
+    "Cleanup.EventsFailuresOnlyProveRemovalWithFreshEnoent",
+    "Cleanup.DirectoryPermissionErrorIsNotRemoval",
+    "Cleanup.EmptyProofIsNotLatchedAcrossLauncherReaping",
+    "Cleanup.FinalObservationCannotProvePastDeadline",
+    "Cleanup.ObservationRequiresUnambiguousPopulatedValue",
+    "PreviewScheduling.LatestPendingSelectionWaitsForActiveWorkToFinish",
+    "PoolLifecycle.RecyclesAfter32StartedTransactionsWithinTwoHelperCap",
+    "PoolLifecycle.IdleExpiryDoesNotPrepareReplacementUntilAnotherDemand",
+    "PoolLifecycle.IdleExpiryStillRetiresWhenOwnerStopsAuthorizingAcquisitions",
+    "PoolLifecycle.EnforcesAggregateIdleMemoryByRetiringWorkers",
+    "PoolLifecycle.PreparationFailureHasNoSelfScheduledRetry",
+    "PoolLifecycle.CleanupFailurePermanentlyDisablesNewLaunches",
+    "PoolLifecycle.ObsoletePreparationCannotBecomeReadyAfterRefresh",
+    "PoolLifecycle.AgeRetirementWaitsForInFlightTransaction",
+    "PoolLifecycle.CancelledUsedWorkerCleanupBlocksDecodeOnReadyStandby",
+    "IsolatedPreview.MissingRuntimeHasDistinctError",
+    "IsolatedPreview.CancellationDuringCacheReadPreventsCommitAndLateDisplay",
+    "IsolatedPreview.QualifiedFormatsAndOrientationsPreservePixelsAndBounds",
+    "IsolatedPreview.PrecisionAlphaUnsupportedProfileAndInputLimit",
+    "IsolatedPreview.TargetChangeWhileCommittingDropsOldPixelsAndCache",
+    "WarmPreview.RevisitPreservesOrientedDimensionsMetadataAndProgressivePixelsWithoutRuntime",
+    "WarmPreview.DiskHitKeepsSourceExifOrientationAndNotificationOrder",
+    "WarmPreview.ChangedRemovedAndUnreadableSourcesCannotReusePixels",
+    "WarmPreview.MutationAtMemoryCheckpointInvalidatesMemoryAndDiskCandidate"
+  ],
+  "protected_fixture": [
+    "ProtectedGeneration.SharesLeaseUntilLastCopyAndPinsAcrossRefresh",
+    "ProtectedGeneration.FailedRefreshRevokesAcquisitionWithoutInvalidatingActiveLease",
+    "ProtectedGeneration.ConcurrentAcquisitionObservesCompletedRefreshRevocation",
+    "ProtectedGeneration.RejectsSymlinkSelectorAndDigestMismatch",
+    "ProtectedGeneration.CleanupFailureDisablesOwnerPermanentlyAcrossRefresh",
+    "ProtectedGeneration.LegacyAndSessionCapabilitiesAreValidatedPerSelection"
+  ],
+  "publication": [
+    "Publication.ProgressivePixelsFinalMetadataAndContext",
+    "Publication.CancellationDuringCommitSuppressesOldApplication",
+    "Publication.SupersessionDuringCommitCompletesReplacement",
+    "Publication.TimeoutDuringCommitSuppressesOldApplication",
+    "Publication.ShutdownDuringCommitFinishesAsynchronously",
+    "Publication.StoreFailurePreservesPixelsAndFinalMetadata"
+  ],
+  "session": [
+    "NativeSession.RepeatedTransactionsKeepReadinessAndSourceIsolation",
+    "NativeSession.CancellationBeforeDispatchPreservesReadiness",
+    "NativeSession.CallbackExceptionPoisonsAndRetiresSession",
+    "NativeSession.CancellationAfterInspectionPoisonsTheDispatchedSession",
+    "NativeSession.LocalRejectionPreservesReadinessWithoutClaimingCompletion"
+  ],
+  "protected_preview": [
+    "ProtectedPreview.RepeatedSelectionsReuseWorkersAndPreservePixels"
+  ],
+  "prerequisites": [
+    {
+      "label": "runtime-verification",
+      "cases": [
+        "RuntimeVerification.CountsManifestTowardFileLimit",
+        "RuntimeVerification.CountsManifestTowardByteLimitBeforeHashingPayload",
+        "RuntimeVerification.MutableDevelopmentPrefixIsNotProtected",
+        "RuntimeVerification.RejectsInventorySymlink",
+        "RuntimeVerification.RejectsSymlinkDirectoryInsideInventory"
+      ]
+    },
+    {
+      "label": "generation-ownership",
+      "cases": [
+        "GenerationOwner.MutableAncestorCannotAuthorizeReuse"
+      ]
+    },
+    {
+      "label": "cleanup",
+      "cases": [
+        "Cleanup.EmptyAndRemovedNeedNoManagerCommands",
+        "Cleanup.ReobservesTransientFailureAfterInitiallyEmptyScope",
+        "Cleanup.MissingIdentityCanBeProvenByManager",
+        "Cleanup.DisappearanceDuringQueryOrSignals",
+        "Cleanup.ManagerFailuresRemainAttributable",
+        "Cleanup.TermResistantDescendantsRequireKill",
+        "Cleanup.UnknownAndPopulatedNeverProveCleanup",
+        "Cleanup.UnreapedLauncherSuppressesResults",
+        "Cleanup.CancellationDuringCompletionOrCleanupWinsDelivery",
+        "Cleanup.CleanupFailurePreservesTheOperationFailureEvenWhenCancelled",
+        "Cleanup.SerializationIsBoundedAndPreservesOriginalFailure",
+        "Cleanup.EventsFailuresOnlyProveRemovalWithFreshEnoent",
+        "Cleanup.DirectoryPermissionErrorIsNotRemoval",
+        "Cleanup.EmptyProofIsNotLatchedAcrossLauncherReaping",
+        "Cleanup.FinalObservationCannotProvePastDeadline",
+        "Cleanup.ObservationRequiresUnambiguousPopulatedValue"
+      ]
+    },
+    {
+      "label": "scheduling",
+      "cases": [
+        "PreviewScheduling.LatestPendingSelectionWaitsForActiveWorkToFinish"
+      ]
+    },
+    {
+      "label": "pool-lifecycle",
+      "cases": [
+        "PoolLifecycle.RecyclesAfter32StartedTransactionsWithinTwoHelperCap",
+        "PoolLifecycle.IdleExpiryDoesNotPrepareReplacementUntilAnotherDemand",
+        "PoolLifecycle.IdleExpiryStillRetiresWhenOwnerStopsAuthorizingAcquisitions",
+        "PoolLifecycle.EnforcesAggregateIdleMemoryByRetiringWorkers",
+        "PoolLifecycle.PreparationFailureHasNoSelfScheduledRetry",
+        "PoolLifecycle.CleanupFailurePermanentlyDisablesNewLaunches",
+        "PoolLifecycle.ObsoletePreparationCannotBecomeReadyAfterRefresh",
+        "PoolLifecycle.AgeRetirementWaitsForInFlightTransaction",
+        "PoolLifecycle.CancelledUsedWorkerCleanupBlocksDecodeOnReadyStandby"
+      ]
+    },
+    {
+      "label": "preview",
+      "cases": [
+        "IsolatedPreview.MissingRuntimeHasDistinctError",
+        "IsolatedPreview.CancellationDuringCacheReadPreventsCommitAndLateDisplay",
+        "IsolatedPreview.QualifiedFormatsAndOrientationsPreservePixelsAndBounds",
+        "IsolatedPreview.PrecisionAlphaUnsupportedProfileAndInputLimit",
+        "IsolatedPreview.TargetChangeWhileCommittingDropsOldPixelsAndCache",
+        "WarmPreview.RevisitPreservesOrientedDimensionsMetadataAndProgressivePixelsWithoutRuntime",
+        "WarmPreview.DiskHitKeepsSourceExifOrientationAndNotificationOrder",
+        "WarmPreview.ChangedRemovedAndUnreadableSourcesCannotReusePixels",
+        "WarmPreview.MutationAtMemoryCheckpointInvalidatesMemoryAndDiskCandidate"
+      ]
+    }
+  ],
+  "fixture_generator_sha256": "48f9d66c9d3eb9ba27acbc85c532f39559998207eb55c05f343a54cadccba1e2",
+  "fixtures": {
+    "animated.webp": "376fe31fd9e9c36bfd83f3908a741fb4f0874f2b501bc1565d4ea5e3038e6c5b",
+    "compact.webp": "810ec61c66c725b10b7e76cec64c7ffb57dcdeedae6b6c294fbfa76f1d9eca9e",
+    "extended.webp": "9ff81ee2befdc3982067899021b83b2cb9193c0fb10397af2ee0a36cc67ad181",
+    "gif87a.gif": "3493d1fd89989b535aee7caa612213fefa471e82b509104ac9b6f346423eec05",
+    "lossy.webp": "6e1f02307db7deaf5abeb7e751f90b597dc9aabe96bbfb3ebfd705089b6976ad",
+    "sample.bmp": "aa17a30f6ec6d08cd44f4567a44e4b0916ca968a7b2d0a7bb9cdb9a34b461825",
+    "sample.gif": "272ba1c00df1b85d60c2867b98205414f74ff6bac6566ca5b23cb3c63c725a80",
+    "sample.jpg": "febf46eb17d81b0105ed1e7237cf5a744407929bb333b25a9ee1e29ce877a1f4",
+    "sample.png": "ac308cdc947fb054538666cfd4a0c92c3fab0d5dd51083c0e8eae204aed8c645",
+    "sample.tif": "9e0ecc18cd47692c357c857eab05113846a420bb1e9b37c78626c6711e45ddd6",
+    "sample.webp": "7d367321b848362df3fa5476ae2348361d7891d19f2e7c7b6066a73488e59af4",
+    "tiff-be-bigtiff.tif": "37b2a700cb0656d31426a45dfc70ad2f0e771e484a93c3af6b771694b3b26659",
+    "tiff-be-cmyk.tif": "4f6b6e0bd1cb840f87294cc3212bd14afff5f15852b1da4fd40f070c67c39ab7",
+    "tiff-be-deflate.tif": "a984f67a1dc5f6c27e04974528ae3175a2b8751112535fa073d63ed61fd12546",
+    "tiff-be-float.tif": "a302418886f1a505dbf9f55173ee750e8b9b53d7c8aef2492aa0ebf57c1f7e87",
+    "tiff-be-lab.tif": "6e6fc5edf2d517c835a8174fad5e1a85c33b8bd1403017e53688f6c70bbbdbb1",
+    "tiff-be-lzw.tif": "1fce09df478f77c505fa6460291c9809ea7fb25bbe3f27e68c210095e22b8548",
+    "tiff-be-packbits.tif": "3b6b9cbae61172eecfa358ef165152ec5ec36f206c63cb2a106964d8417a56e1",
+    "tiff-be-rgb16.tif": "d19fd4bad513a44e811e982ca0717f7c888d4216df8ce32ff9777f3020c62341",
+    "tiff-be-tiled.tif": "3306ebd577cc6e44ba104ecae68d34b97dff16a85fd2b88139957ce7b9223e2d",
+    "tiff-exif-be.tif": "23acdaf8f23b35e586b1e68dcf57279628f55fdfe892aa0cfd5bedcf3514eb51",
+    "tiff-exif.tif": "62c9fd6e4760558a5aa826f68256f8a2b039b0d1d31f03dc86e8e29fcc500403",
+    "tiff-gray8.tif": "c835409418aafebe9b6b7c1d5fac864a922ad99afdef8413c62460255fda0814",
+    "tiff-palette8.tif": "0cb8ad93d73210e79e47e07c0cad326c90a3f375036c8ea5854fd2044d3036e1",
+    "tiff-rgb8.tif": "fe9af5aaa56afbe7604488e890f550dbfa26988e1b43b1002b9fa829317c603a",
+    "tiff-truncated.tif": "9fb165198dc3c6c72b62195101d962691fa20ecbe9df021e42c7ce0f99fc98e0",
+    "tiff-two-page.tif": "abd4fe04819e73612ccb35dc7a428f0eaff5ed937587df479b0e4d8d724affe3",
+    "transparent.gif": "9f9e418e613686b285121a6c5f1a404ecedfccfaeebd4a6592df3610caeb8482"
+  },
+  "authorization": {
+    "check": [
+      "sudo",
+      "-n",
+      "-v"
+    ],
+    "privileged_launch": {
+      "process_group": 0
+    },
+    "desktop_launch": {
+      "start_new_session": true
+    }
+  },
+  "context_mapping": {
+    "Publication.ProgressivePixelsFinalMetadataAndContext": "Same selected source: exactly one oriented progressive image, EXIF only at final, final source dimensions, committed cache equals delivered pixels; both arms wait for synchronous commit. No context properties or event probes."
+  }
+}
