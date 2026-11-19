@@ -73,3 +73,12 @@ its managed removal completed. Build/test/deployment diagnostics, exact rollback
 payloads and private smoke fixtures remain in the ignored rollout workspace. The
 user's thumbnail cache was not cleared. The completed installer transaction and live
 hashes were rechecked after smoke acceptance; results are in `final-installation-check.json`.
+
+
+## Subsequent publication
+
+The user subsequently authorized publishing the remaining evidence and updating umbrella
+pins. Thumbnails `e3f290d` and portal `52998b3` are published before their umbrella pin
+update. The portal pin includes its existing filtered-row reconciliation fix; the local
+encoding rollout described above still used installed portal revision `d44d9802`.
+This publication does not redeploy consumers or repeat the accepted startup trial.
