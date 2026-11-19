@@ -29,3 +29,5 @@ Component development guidance is in each repository's `CONTRIBUTING.md` or
 `AGENTS.md`; the shared workflow is described in the umbrella
 [contribution guide](../../CONTRIBUTING.md). Keep synchronized helper changes in
 their owning repositories; publication and umbrella pin updates are separate.
+
+See [native source cleanup](tidy-cleanup.md) for the follow-up diagnostic fixes.
