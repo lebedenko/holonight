@@ -79,13 +79,22 @@ provider also prepares its installed dependents; it does not add absent applicat
 Multiple names are accepted. Scoped provider removal requires selecting its installed
 dependents too. Checks and refresh hooks follow the selection.
 
+Run `task install` for a normal upgrade, or use the same component selection as
+before for a scoped upgrade. Deployment approval covers replacing locally modified
+executables in `/usr/bin/` and `/usr/libexec/` when the selected component already
+owns the path and the staged payload still ships it as an executable. The installer
+checks the target's pacman file inventory, reports replacements, and retains no
+backup of the replaced executables. The managed Images runtime has its own upgrade rules.
+
 Native CMake/Ninja caches persist between installs. Each completed preparation saves
 independent payloads and inventories before approval. `--resume` deploys those saved
 payloads without building, after verifying their contents and host package identity.
 If host packages changed, prepare again without `--resume`. Interrupted deployment
-retains a durable transaction; retry accepts only previous or intended file states
-and preserves conflicting changes. Modified files retained by uninstall retain their
-original ownership evidence for future attempts. Use `task uninstall -- --resume`
+retains a durable transaction. Use `task install -- --resume` to continue an
+interrupted deployment. The retry rechecks package ownership for executable
+replacements and accepts only the recorded previous or intended file states.
+Uninstall preserves modified files and keeps their original ownership evidence
+for future attempts. Use `task uninstall -- --resume`
 with the original selection and root to retry interrupted removal.
 
 See [source installation design](docs/source-install-design.md) for locking,

@@ -245,6 +245,37 @@ def package_collision(root, name):
                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
 
 
+def check_executable_repairs(root, actions):
+    repairs = [action['path'] for action in actions if action.get('executable_repair')]
+    if not repairs:
+        return
+    try:
+        listing = run('pacman', '--root', root, '-Qql', capture_output=True,
+                      text=True, errors='surrogateescape', env={**os.environ, 'LC_ALL': 'C'})
+    except (OSError, subprocess.CalledProcessError) as error:
+        detail = getattr(error, 'stderr', None) or str(error)
+        raise ValueError(f'cannot read pacman file inventory for {root}: {detail.strip()}') from error
+    # A local query can warn about absent sync databases. Local file read errors
+    # can also be printed to stderr even when pacman exits successfully.
+    diagnostics = [line for line in listing.stderr.splitlines()
+                   if not (line.startswith("warning: database file for '")
+                           and line.endswith("does not exist (use '-Sy' to download)"))]
+    if diagnostics:
+        raise ValueError(f'cannot read pacman file inventory for {root}: ' + '\n'.join(diagnostics))
+    claimed = {line.rstrip('/') for line in listing.stdout.split('\n')}
+    inventory_root = root.resolve()  # pacman prefixes file paths with the canonical target root.
+    for name in repairs:
+        if str(inventory_root / name.lstrip('/')) in claimed:
+            raise ValueError(f'package-owned collision: {root / name.lstrip("/")}')
+
+
+def repairable_executable(name, prior, row, actual, selection):
+    return (prior[0] == row[0] and row[0] in selection
+            and name.startswith(('/usr/bin/', '/usr/libexec/')) and not runtime_path(name)
+            and actual[0] == 'f'
+            and all(record[2] == 'f' and int(record[3], 8) & 0o111 for record in (prior, row)))
+
+
 def new_transaction(root, state, selection, incoming, removing, adopt, attempt=None, defer=False):
     old = read_manifest(state / 'manifest.tsv')
     intended = {name: row for name, row in old.items() if row[0] not in selection or row[2] == 'd'}
@@ -268,6 +299,7 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
                 intended[name] = prior
             continue
         if row:
+            repair = False
             if row[2] == 'd':
                 if actual and actual[0] != 'd':
                     raise ValueError(f'installation directory is occupied: {path}')
@@ -277,13 +309,17 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
                 if package_collision(root, name):
                     raise ValueError(f'package-owned collision: {path}')
             elif actual and actual != row_state(prior) and actual != row_state(row):
-                raise ValueError(f'preserve modified path: {path}; resolve it manually')
+                repair = repairable_executable(name, prior, row, actual, selection)
+                if not repair:
+                    raise ValueError(f'preserve modified path: {path}; resolve it manually')
             intended[name] = row
             if row[2] == 'd' and actual:
                 row = [*row[:3], actual[1], *row[4:]]
                 intended[name] = row
             actions.append({'path': name, 'previous': actual, 'intended': row_state(row),
                             'owner': row[0], 'backup': bool(actual and not prior and row[2] != 'd')})
+            if repair:
+                actions[-1]['executable_repair'] = True
         elif actual and actual != row_state(prior):
             print(f'preserved modified path: {path}', file=sys.stderr)
             intended[name] = prior
@@ -313,6 +349,7 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
     transaction = {'selection': selection, 'previous_manifest': old, 'manifest': intended, 'actions': actions,
                    'attempt': str(attempt) if attempt else None, 'removing': removing,
                    'done': [], 'status': 'pending', 'root': str(root)}
+    check_executable_repairs(root, actions)
     if not defer:
         save_transaction(state, transaction)
     return transaction
@@ -391,6 +428,8 @@ def execute(root, state, transaction):
                     os.replace(temporary, path)
                     sync(path.parent)
             sync(path.parent)
+        if action.get('executable_repair'):
+            print(f'==> Replaced modified executable: {path}', flush=True)
         if actual is None and action['previous'] and action['previous'][0] == 'd':
             transaction['manifest'].pop(action['path'], None)
         transaction['done'].append(index)
@@ -696,6 +735,8 @@ def deploy(args):
                 transaction['actions'] = [a for a in transaction['actions'] if not runtime_path(a['path'])]
                 transaction['manifest'].update({p: r for p, r in transaction['previous_manifest'].items() if runtime_path(p)})
             save_transaction(state, transaction)
+        else:
+            check_executable_repairs(args.root, transaction['actions'])
         execute(args.root, state, transaction)
 
 
