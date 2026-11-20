@@ -35,6 +35,7 @@ CATALOG = {
     'holonight-files': Component(('holonight-file-browser', 'holonight-qt', 'holonight-images',
                                  'holonight-thumbnails', 'holonight-search', 'holonight-system-services'),
                                 hooks=('desktop',)),
+    'holonight-screenshot': Component(('holonight-qt',), packages=('grim', 'wl-clipboard')),
     'xdg-desktop-portal-holonight': Component(('holonight-qt', 'holonight-search', 'holonight-file-browser'),
                                             hooks=('services',)),
     'holonight-ai': Component(('holonight-qt',), packages=('libsecret', 'syntax-highlighting', 'qmarkdown'), hooks=('desktop',)),

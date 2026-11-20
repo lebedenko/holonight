@@ -55,3 +55,6 @@
 [submodule "holonight-file-browser"]
 	path = holonight-file-browser
 	url = git@github.com:lebedenko/holonight-file-browser.git
+[submodule "holonight-screenshot"]
+	path = holonight-screenshot
+	url = git@github.com:lebedenko/holonight-screenshot.git
