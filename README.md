@@ -20,6 +20,7 @@ implementation stays in the component repositories.
 | `holonight-images` | Shared image inspection, raster decoding and metadata | Pinned submodule |
 | `holonight-viewer` | Static image viewer | Pinned submodule |
 | `holonight-files` | Keyboard-driven file manager | Pinned submodule |
+| `holonight-screenshot` | Wayland screenshot capture and launcher | Pinned submodule |
 | `xdg-desktop-portal-holonight` | Standalone Wayland FileChooser portal | Pinned submodule |
 | `holonight-system-services` | Shared Qt/C++ system-control integration | Pinned submodule |
 | `holonightd` | HoloNight service | Pinned submodule |
@@ -118,8 +119,9 @@ refreshes only that root's themes, never host caches.
 
 **Naming migration:** `HoloNight` now means light. Select `HoloNight-Dark` explicitly for dark icons.
 
-Installed menu entries include **HoloNight AI** (`holonight-chat`) and **HoloNight Packages**
-(`holonight-packages`), with application SVGs in the hicolor fallback theme.
+Installed menu entries include **HoloNight AI** (`holonight-chat`), **HoloNight Packages**
+(`holonight-packages`), and **HoloNight Screenshot** (`holonight-screenshot`), with application SVGs in
+the hicolor fallback theme.
 
 The installer also stages the HoloNight Hyprlock fallback: `/etc/xdg/hypr/hyprlock.conf`,
 `/usr/libexec/holonight-hyprlock/status`, and assets in `/usr/share/holonight-hyprlock`.
