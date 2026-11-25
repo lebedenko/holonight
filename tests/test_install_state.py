@@ -37,7 +37,7 @@ class Deployment(unittest.TestCase):
 
     def transaction(self):
         return installer.new_transaction(self.root, self.state, ['holonight-viewer'], self.incoming,
-                                         False, False, self.payload)
+                                         False, self.payload)
 
     def execute(self, transaction):
         # Package database identity is an external boundary; fixture contains inert bytes.
@@ -117,7 +117,7 @@ class Deployment(unittest.TestCase):
                 live = self.modified_payload(name, owner, old_mode, staged_mode)
                 with patch.object(installer, 'run') as run, self.assertRaisesRegex(ValueError, 'modified|unselected'):
                     installer.new_transaction(self.root, self.state, ['holonight-viewer', owner],
-                                              {name: self.incoming[name]}, False, False, self.payload)
+                                              {name: self.incoming[name]}, False, self.payload)
                 run.assert_not_called()
                 self.assertEqual(live.read_text(), 'local executable')
 
@@ -141,10 +141,10 @@ class Deployment(unittest.TestCase):
     def test_obsolete_cleanup_and_uninstall_preserve_modified_executable(self):
         live = self.modified_payload()
         old = read_manifest(self.state / 'manifest.tsv')
-        upgrade = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, False, False)
+        upgrade = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, False)
         self.assertEqual(upgrade['actions'], [])
         self.assertEqual(upgrade['manifest'], old)
-        removal = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, True, False)
+        removal = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, True)
         self.execute(removal)
         self.assertEqual(live.read_text(), 'local executable')
         self.assertEqual(read_manifest(self.state / 'manifest.tsv'), old)
@@ -195,22 +195,7 @@ class Deployment(unittest.TestCase):
         (self.payload / 'holonight-viewer').rename(self.payload / owner)
         rows = inventory(self.payload / owner, owner, '1' * 40)
         self.saved_record(owner, rows)
-        fixture = Path(self.temporary.name)
-        scripts = fixture / 'scripts'
-        scripts.mkdir()
-        for filename in ('install.sh', 'source-install.py', 'install_state.py', 'install_catalog.py'):
-            shutil.copy2(SCRIPTS / filename, scripts)
-        work = fixture / '.source-install'
-        work.mkdir()
-        (work / 'prepared.path').write_text(str(self.payload))
-        pacman = fixture / 'pacman'
-        pacman.write_text('#!/bin/sh\ncase "$*" in\n'
-                          '  "-Q"|"--root $TARGET -Qql") exit 0;;\n'
-                          '  *) exit 1;;\nesac\n')
-        pacman.chmod(0o755)
-        result = subprocess.run([scripts / 'install.sh', '--resume', '--yes', '--root', self.root],
-                                env={**os.environ, 'PATH': f'{fixture}:{os.environ["PATH"]}', 'TARGET': str(self.root)},
-                                capture_output=True, text=True, timeout=20)
+        result = self.public_installer('--resume')
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn(f'Replaced modified executable: {live}', result.stdout)
         self.assertIn(f'Verified installed {owner}', result.stdout)
@@ -249,7 +234,7 @@ class Deployment(unittest.TestCase):
         binary = self.root / 'usr/bin/hn-viewer'
         binary.write_text('local edit')
         for _ in range(2):
-            transaction = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, True, False)
+            transaction = installer.new_transaction(self.root, self.state, ['holonight-viewer'], {}, True)
             installer.execute(self.root, self.state, transaction)
             rows = read_manifest(self.state / 'manifest.tsv')
             self.assertEqual(rows[other[5]], other)
@@ -270,31 +255,128 @@ class Deployment(unittest.TestCase):
             self.transaction()
         self.assertEqual(list(outside.iterdir()), [])
 
-    def test_adoption_backs_up_every_original_before_replacement(self):
-        second = self.payload / 'holonight-viewer/usr/bin/second'
-        second.write_text('new second')
-        incoming = inventory(self.payload / 'holonight-viewer', 'holonight-viewer', '1' * 40)
-        for name in ('hn-viewer', 'second'):
-            path = self.root / 'usr/bin' / name
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text('old ' + name)
-        with patch.object(installer, 'package_collision', return_value=False):
-            transaction = installer.new_transaction(self.root, self.state, ['holonight-viewer'], incoming,
-                                                     False, True, self.payload)
-        atomic = installer.atomic
-        def fail_backup(path, *args, **kwargs):
-            if 'adoption-backup-' in str(path) and path.name == 'second':
-                raise OSError('backup failure')
-            atomic(path, *args, **kwargs)
-        with patch.object(installer, 'atomic', side_effect=fail_backup):
-            with self.assertRaisesRegex(OSError, 'backup failure'):
-                self.execute(transaction)
-        for name in ('hn-viewer', 'second'):
-            self.assertEqual((self.root / 'usr/bin' / name).read_text(), 'old ' + name)
-        self.execute(transaction)
-        backups = list(self.state.glob('adoption-backup-*/usr/bin/*'))
-        self.assertEqual({path.name: path.read_text() for path in backups},
-                         {'hn-viewer': 'old hn-viewer', 'second': 'old second'})
+    def public_installer(self, *flags, claimed='', diagnostic=''):
+        fixture = Path(self.temporary.name)
+        scripts = fixture / 'scripts'
+        scripts.mkdir(exist_ok=True)
+        for filename in ('install.sh', 'source-install.py', 'install_state.py', 'install_catalog.py'):
+            shutil.copy2(SCRIPTS / filename, scripts)
+        work = fixture / '.source-install'
+        work.mkdir(exist_ok=True)
+        (work / 'prepared.path').write_text(str(self.payload))
+        pacman = fixture / 'pacman'
+        pacman.write_text('#!/bin/sh\ncase "$*" in\n'
+                          '  "-Q") exit 0;;\n'
+                          '  "--root $TARGET -Qql") echo query >> "$QUERY_LOG"; '
+                          'printf "%s" "$CLAIMED"; printf "%s" "$DIAGNOSTIC" >&2;;\n'
+                          '  *) exit 1;;\nesac\n')
+        pacman.chmod(0o755)
+        return subprocess.run([scripts / 'install.sh', '--yes', '--root', self.root, *flags],
+                              env={**os.environ, 'PATH': f'{fixture}:{os.environ["PATH"]}',
+                                   'TARGET': str(self.root), 'QUERY_LOG': str(fixture / 'queries'),
+                                   'CLAIMED': claimed, 'DIAGNOSTIC': diagnostic},
+                              capture_output=True, text=True, timeout=20)
+
+    def test_public_installer_replaces_untracked_entries_and_claims_identical_file(self):
+        stage = self.payload / 'holonight-viewer/usr/bin'
+        (stage / 'link').symlink_to('new-target')
+        (stage / 'identical').write_text('already staged')
+        self.incoming = inventory(self.payload / 'holonight-viewer', 'holonight-viewer', '1' * 40)
+        self.saved_record('holonight-viewer', self.incoming)
+        live = self.root / 'usr/bin'
+        live.mkdir(parents=True)
+        (live / 'hn-viewer').write_text('old viewer')
+        (live / 'link').symlink_to('old-target')
+        shutil.copy2(stage / 'identical', live / 'identical')
+        inode = (live / 'identical').stat().st_ino
+        (live / 'unrelated').write_text('outside the payload')
+
+        removed = self.public_installer('--resume', '--adopt-existing')
+        self.assertNotEqual(removed.returncode, 0)
+        self.assertIn('unrecognized arguments: --adopt-existing', removed.stderr)
+        for kwargs, message in (
+                ({'claimed': f'{live / "identical"}\n'}, 'package-owned collision'),
+                ({'diagnostic': 'error: could not open package files'}, 'cannot read pacman')):
+            with self.subTest(message=message):
+                result = self.public_installer('--resume', **kwargs)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+                self.assertEqual((live / 'hn-viewer').read_text(), 'old viewer')
+                self.assertEqual(os.readlink(live / 'link'), 'old-target')
+                self.assertFalse((self.state / 'transaction.json').exists())
+
+        result = self.public_installer('--resume')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('without a backup', result.stdout)
+        self.assertEqual((live / 'hn-viewer').read_text(), 'new viewer')
+        self.assertEqual(os.readlink(live / 'link'), 'new-target')
+        self.assertEqual((live / 'identical').stat().st_ino, inode)
+        self.assertEqual((live / 'unrelated').read_text(), 'outside the payload')
+        installed = read_manifest(self.state / 'manifest.tsv')
+        self.assertEqual({name: row for name, row in installed.items() if row[2] != 'd'},
+                         {name: row for name, row in self.incoming.items() if row[2] != 'd'})
+        self.assertEqual(list(self.state.glob('adoption-backup-*')), [])
+        self.assertEqual((Path(self.temporary.name) / 'queries').read_text().splitlines(), ['query'] * 3)
+
+    def test_untracked_protected_destinations_and_directories_are_rejected(self):
+        cases = (
+            ('/usr/share/xdg-desktop-portal/portals/holonight.portal', 'protected destination'),
+            (RUNTIME + '/lib/libexample.so', 'protected destination'),
+            ('/usr/bin/hn-viewer', 'destination is a directory'),
+        )
+        for name, message in cases:
+            with self.subTest(name=name):
+                live = self.root / name.lstrip('/')
+                live.parent.mkdir(parents=True, exist_ok=True)
+                if name == '/usr/bin/hn-viewer':
+                    live.mkdir()
+                else:
+                    live.write_text('untracked')
+                before = snapshot(live)
+                row = [*self.incoming['/usr/bin/hn-viewer'][:-1], name]
+                with patch.object(installer, 'run') as run, self.assertRaisesRegex(ValueError, message):
+                    installer.new_transaction(self.root, self.state, ['holonight-viewer'], {name: row}, False)
+                run.assert_not_called()
+                self.assertEqual(snapshot(live), before)
+
+    def test_public_resume_of_legacy_journal_rechecks_ownership_and_keeps_inode(self):
+        live = self.root / 'usr/bin/hn-viewer'
+        live.parent.mkdir(parents=True)
+        live.write_text('old viewer')
+        self.saved_record('holonight-viewer', self.incoming)
+        with patch.object(installer, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')):
+            transaction = self.transaction()
+        action = next(action for action in transaction['actions'] if action['path'] == '/usr/bin/hn-viewer')
+        action['backup'] = True
+        legacy_backup = self.state / 'adoption-backup-old/retained'
+        legacy_backup.parent.mkdir()
+        legacy_backup.write_text('original contents')
+        installer.save_transaction(self.state, transaction)
+        save = installer.save_transaction
+
+        def interrupt(state, journal):
+            if live.read_text() == 'new viewer':
+                raise InterruptedError('after atomic replacement')
+            save(state, journal)
+
+        with patch.object(installer, 'validate_prepared'), \
+                patch.object(installer, 'save_transaction', side_effect=interrupt), \
+                self.assertRaises(InterruptedError):
+            installer.execute(self.root, self.state, transaction)
+        inode = live.stat().st_ino
+        result = self.public_installer('--resume', claimed=f'{live}\n')
+        self.assertIn('package-owned collision', result.stderr)
+        live.write_text('administrator edit')
+        result = self.public_installer('--resume')
+        self.assertIn('transaction conflict', result.stderr)
+        self.assertEqual(live.read_text(), 'administrator edit')
+        live.write_text('new viewer')
+        result = self.public_installer('--resume')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(live.stat().st_ino, inode)
+        self.assertEqual(read_manifest(self.state / 'manifest.tsv'), self.incoming)
+        self.assertEqual(legacy_backup.read_text(), 'original contents')
+        self.assertEqual(list(self.state.glob('adoption-backup-*')), [legacy_backup.parent])
 
     def test_resume_after_manifest_publication_skips_completed_payloads(self):
         transaction = self.transaction()
@@ -352,7 +434,7 @@ class NativePreparation(unittest.TestCase):
             work = root / '.source-install'
             work.mkdir()
             args = argparse.Namespace(components=['holonight-viewer'], root=root / 'target',
-                                      protected_images_runtime=False, adopt_existing=False,
+                                      protected_images_runtime=False,
                                       maintenance_migrate_images_runtime=False)
             logs = []
             real_run = installer.run
@@ -367,6 +449,7 @@ class NativePreparation(unittest.TestCase):
                 binary = next((work / 'caches').glob('*/build/holonight-viewer/fixture'))
                 before = binary.stat().st_mtime_ns
                 second, _ = installer.prepare(['holonight-viewer'], args)
+                self.assertNotIn('adopt', first_record)
                 self.assertEqual(binary.stat().st_mtime_ns, before)
                 self.assertIn('ninja: no work to do.', '\n'.join(logs))
                 self.assertNotEqual(first, second)

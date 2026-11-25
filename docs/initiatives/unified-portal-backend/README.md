@@ -102,8 +102,8 @@ Before any destination copies, staging rejects duplicate component owners,
 missing unified executable/service/descriptor, legacy payloads and incompatible
 interfaces. An existing `holonight.portal` transfers from shell ownership only
 when its contents match the old recorded hash. Modified or unmanaged descriptors
-stop the upgrade even with `--adopt-existing`: back up and compare the file,
-then move the conflicting copy aside manually before retrying.
+stop the upgrade. Back up and compare the file, then move the conflicting copy
+aside manually before retrying.
 
 The installer removes only unchanged backend-owned
 `holonight-filechooser.portal` and

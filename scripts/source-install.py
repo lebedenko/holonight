@@ -201,7 +201,7 @@ def prepare(selection, args):
         raise ValueError('host packages changed during preparation; prepare again')
     record = {'selection': selection, 'host': host, 'components': components, 'root': str(args.root),
               'protected_images': args.protected_images_runtime or args.root == Path('/'),
-              'adopt': args.adopt_existing, 'maintenance': args.maintenance_migrate_images_runtime}
+              'maintenance': args.maintenance_migrate_images_runtime}
     atomic(attempt / 'prepared.json', json.dumps(record, sort_keys=True))
     atomic(WORK / 'prepared.path', str(attempt))
     return attempt, record
@@ -235,19 +235,22 @@ def save_transaction(state, transaction):
 
 def approved(args, selection):
     print('==> Deployment selection: ' + ', '.join(selection), flush=True)
+    if args.command == 'install':
+        print('==> Deployment may replace untracked files or symlinks at staged destinations '
+              'and modified managed executables after checking pacman ownership. '
+              'Atomic replacement discards the old entry without a backup. '
+              'Matching entries keep their inode.', flush=True)
     if not args.yes and input(f'Deploy prepared operation into {args.root}? [y/N] ').lower() not in ('y', 'yes'):
         raise ValueError('operation cancelled; prepared payloads retained for --resume')
 
 
-def package_collision(root, name):
-    run('pacman', '--root', root, '-Q', stdout=subprocess.DEVNULL)
-    return subprocess.run(['pacman', '--root', str(root), '-Qo', '--', name],
-                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
-
-
-def check_executable_repairs(root, actions):
-    repairs = [action['path'] for action in actions if action.get('executable_repair')]
-    if not repairs:
+def check_replacement_ownership(root, transaction):
+    prior = transaction['previous_manifest']
+    candidates = [action['path'] for action in transaction['actions']
+                  if action.get('executable_repair')
+                  or (action['path'] not in prior and action['previous'] and action['intended']
+                      and action['previous'][0] in ('f', 'l') and action['intended'][0] in ('f', 'l'))]
+    if not candidates:
         return
     try:
         listing = run('pacman', '--root', root, '-Qql', capture_output=True,
@@ -264,7 +267,7 @@ def check_executable_repairs(root, actions):
         raise ValueError(f'cannot read pacman file inventory for {root}: ' + '\n'.join(diagnostics))
     claimed = {line.rstrip('/') for line in listing.stdout.split('\n')}
     inventory_root = root.resolve()  # pacman prefixes file paths with the canonical target root.
-    for name in repairs:
+    for name in candidates:
         if str(inventory_root / name.lstrip('/')) in claimed:
             raise ValueError(f'package-owned collision: {root / name.lstrip("/")}')
 
@@ -276,7 +279,7 @@ def repairable_executable(name, prior, row, actual, selection):
             and all(record[2] == 'f' and int(record[3], 8) & 0o111 for record in (prior, row)))
 
 
-def new_transaction(root, state, selection, incoming, removing, adopt, attempt=None, defer=False):
+def new_transaction(root, state, selection, incoming, removing, attempt=None, defer=False):
     old = read_manifest(state / 'manifest.tsv')
     intended = {name: row for name, row in old.items() if row[0] not in selection or row[2] == 'd'}
     actions = []
@@ -304,10 +307,10 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
                 if actual and actual[0] != 'd':
                     raise ValueError(f'installation directory is occupied: {path}')
             elif actual and not prior:
-                if not adopt or name == '/usr/share/xdg-desktop-portal/portals/holonight.portal':
-                    raise ValueError(f'unmanaged collision: {path}; use --adopt-existing for migration')
-                if package_collision(root, name):
-                    raise ValueError(f'package-owned collision: {path}')
+                if runtime_path(name) or name == '/usr/share/xdg-desktop-portal/portals/holonight.portal':
+                    raise ValueError(f'unmanaged collision at protected destination: {path}; resolve it manually')
+                if actual[0] == 'd':
+                    raise ValueError(f'installation destination is a directory: {path}')
             elif actual and actual != row_state(prior) and actual != row_state(row):
                 repair = repairable_executable(name, prior, row, actual, selection)
                 if not repair:
@@ -317,7 +320,7 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
                 row = [*row[:3], actual[1], *row[4:]]
                 intended[name] = row
             actions.append({'path': name, 'previous': actual, 'intended': row_state(row),
-                            'owner': row[0], 'backup': bool(actual and not prior and row[2] != 'd')})
+                            'owner': row[0]})
             if repair:
                 actions[-1]['executable_repair'] = True
         elif actual and actual != row_state(prior):
@@ -349,45 +352,16 @@ def new_transaction(root, state, selection, incoming, removing, adopt, attempt=N
     transaction = {'selection': selection, 'previous_manifest': old, 'manifest': intended, 'actions': actions,
                    'attempt': str(attempt) if attempt else None, 'removing': removing,
                    'done': [], 'status': 'pending', 'root': str(root)}
-    check_executable_repairs(root, actions)
+    check_replacement_ownership(root, transaction)
     if not defer:
         save_transaction(state, transaction)
     return transaction
-
-
-def backup_adoptions(root, state, transaction):
-    # Complete every durable backup before changing any target payload.
-    for action in transaction['actions']:
-        if not action.get('backup'):
-            continue
-        path = root / action['path'].lstrip('/')
-        backup = state / ('adoption-backup-' + Path(transaction['attempt']).name) / action['path'].lstrip('/')
-        ancestors(backup)
-        if os.path.lexists(backup):
-            if snapshot(backup) != action['previous']:
-                raise ValueError(f'adoption backup changed: {backup}')
-            continue
-        if snapshot(path) != action['previous']:
-            raise ValueError(f'adoption source changed before backup: {path}')
-        backup.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        if path.is_symlink():
-            backup.symlink_to(os.readlink(path))
-            sync(backup.parent)
-        else:
-            atomic(backup, path.read_bytes(), int(action['previous'][1], 8))
-        if snapshot(backup) != action['previous']:
-            raise ValueError(f'adoption backup does not match approved previous state: {backup}')
-        for parent in (backup.parent, *backup.parent.parents):
-            sync(parent)
-            if parent == state:
-                break
 
 
 def execute(root, state, transaction):
     if transaction['attempt']:
         payload = Path(transaction['attempt'])
         validate_prepared(payload, json.loads((payload / 'prepared.json').read_text()))
-    backup_adoptions(root, state, transaction)
     images_step(root, state, transaction)
     for index, action in enumerate(transaction['actions']):
         path = root / action['path'].lstrip('/')
@@ -586,7 +560,6 @@ def main():
     parser.add_argument('--yes', action='store_true')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--resume', action='store_true', help='deploy saved payloads without configuring or building')
-    parser.add_argument('--adopt-existing', action='store_true')
     parser.add_argument('--protected-images-runtime', action='store_true')
     parser.add_argument('--maintenance-migrate-images-runtime', action='store_true')
     parser.add_argument('--prepared', type=Path, help=argparse.SUPPRESS)
@@ -616,7 +589,7 @@ def main():
                 return
             approved(args, selection)
             if transaction is None:
-                transaction = new_transaction(args.root, state, selection, {}, True, False)
+                transaction = new_transaction(args.root, state, selection, {}, True)
             elif not args.resume or not transaction['removing'] or transaction['selection'] != selection:
                 raise ValueError('pending transaction exists; retry the original operation with --resume')
             if 'holonight-images' in selection and RUNTIME + '/ownership.json' in previous and 'images' not in transaction:
@@ -727,7 +700,7 @@ def deploy(args):
                 if name in incoming and name not in prior and snapshot(args.root / name.lstrip('/')) and f'/usr/share/icons/{theme}/index.theme' in prior:
                     print(f'==> Preserving unowned legacy cache: {name}')
                     incoming.pop(name)
-            transaction = new_transaction(args.root, state, record['selection'], incoming, False, record['adopt'], protected_attempt, defer=True)
+            transaction = new_transaction(args.root, state, record['selection'], incoming, False, protected_attempt, defer=True)
             transaction['prepared_origin'] = str(attempt)
             if images:
                 transaction['images'] = images
@@ -736,7 +709,7 @@ def deploy(args):
                 transaction['manifest'].update({p: r for p, r in transaction['previous_manifest'].items() if runtime_path(p)})
             save_transaction(state, transaction)
         else:
-            check_executable_repairs(args.root, transaction['actions'])
+            check_replacement_ownership(args.root, transaction)
         execute(args.root, state, transaction)
 
 

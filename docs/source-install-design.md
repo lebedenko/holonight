@@ -43,18 +43,25 @@ retain original evidence for modified files, including repeated removal attempts
 Directories may be shared and are removed only when empty. Symlinked ancestors
 are rejected for deployment and preserved during removal.
 
-A normal `task install` upgrade can replace modified regular files under
-`/usr/bin/` and `/usr/libexec/` when the previous and staged inventories both
-record an executable owned by the same selected component. Recorded execute bits
-determine eligibility even when the live file has lost those bits. The managed
-Images runtime follows its own rules. Before publishing intent, deployment
-queries the target root's pacman file inventory once for all replacement
-candidates and stops if the inventory is unreadable or claims a candidate.
-The journal marks these actions and records the observed live hash and mode
-along with the staged hash and mode. Replacement is atomic and creates no
-backup. After interruption, `task install -- --resume` rechecks package ownership
-and accepts only the recorded previous or intended file state. If the staged
-state is already present, retry completes the transaction without copying that file again.
+A normal `task install` or `--resume` can replace untracked regular files and
+symlinks at exact staged destinations. The untracked HoloNight portal descriptor
+and Images runtime retain their collision protections. A normal upgrade can
+also replace modified regular files under `/usr/bin/` and `/usr/libexec/` when
+the previous and staged inventories both record an executable owned by the same
+selected component. Recorded execute bits determine eligibility even when the
+live file has lost those bits.
+
+Deployment queries the target root's pacman file inventory once per attempt
+when there are replacement candidates and stops if the inventory is unreadable
+or claims a candidate. The journal records the observed live and staged states,
+including hashes and modes. Atomic replacement discards the old entry without
+a backup. An identical untracked entry keeps its inode and enters the ownership
+manifest. After interruption, `task install -- --resume` rechecks package
+ownership and preserves any destination that matches neither the recorded
+previous state nor the staged state. If the staged state is already present,
+retry completes without copying the entry again. Saved preparations and
+pending journals can resume with obsolete adoption fields present, and existing
+backups remain on disk.
 
 Protected Images generations remain lease-managed, verified protected copies
 with a two-generation bound. Writers serialize on the stable parent directory

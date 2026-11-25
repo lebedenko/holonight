@@ -81,11 +81,16 @@ Multiple names are accepted. Scoped provider removal requires selecting its inst
 dependents too. Checks and refresh hooks follow the selection.
 
 Run `task install` for a normal upgrade, or use the same component selection as
-before for a scoped upgrade. Deployment approval covers replacing locally modified
-executables in `/usr/bin/` and `/usr/libexec/` when the selected component already
-owns the path and the staged payload still ships it as an executable. The installer
-checks the target's pacman file inventory, reports replacements, and retains no
-backup of the replaced executables. The managed Images runtime has its own upgrade rules.
+before for a scoped upgrade. Deployment approval covers replacing untracked regular
+files or symlinks at exact staged destinations. It also covers replacing locally
+modified executables in `/usr/bin/` and `/usr/libexec/` when the selected component
+already owns the path and the staged payload still ships it as an executable.
+The installer checks the target's pacman file inventory before proceeding and stops
+if it cannot read the inventory or a package claims a candidate. Atomic replacement
+discards the previous entry without a backup. An identical untracked entry keeps
+its inode and enters the ownership manifest. Untracked portal descriptors at
+`/usr/share/xdg-desktop-portal/portals/holonight.portal` block installation and
+must be moved aside manually. The managed Images runtime has its own upgrade rules.
 
 Native CMake/Ninja caches persist between installs. Each completed preparation saves
 independent payloads and inventories before approval. `--resume` deploys those saved
@@ -128,8 +133,8 @@ The installer also stages the HoloNight Hyprlock fallback: `/etc/xdg/hypr/hyprlo
 Runtime requires hyprlock 0.9.6 or newer, PAM, Inter, Rajdhani, and JetBrainsMono Nerd Font;
 WirePlumber's `wpctl` is optional for the volume indicator. Install these requirements separately.
 An existing `~/.config/hypr/hyprlock.conf` takes precedence. Installation does not change user
-configuration, install system packages, or enable services. Unmanaged system Hyprlock configuration
-receives the same collision protection and explicit migration backups as other installed files.
+configuration, install system packages, or enable services. An untracked system Hyprlock
+configuration at the staged destination follows the replacement policy above.
 
 After deployment and desktop database refresh, a real installation by a non-root user
 extends an existing Viewer selection to newly supported image formats. JPEG, PNG, GIF
@@ -147,27 +152,20 @@ run from the system bundle. See the [icons documentation](holonight-icons/README
 
 Upgrades remove obsolete icons-owned files and aliases only when they match the previous manifest.
 Modified files and nonempty directories containing unowned content are preserved and reported;
-retained managed paths keep their original ownership hashes for later uninstall. Files from an
-unmanaged legacy installation still trigger collision rejection. No blanket theme-directory removal
-is performed.
+retained managed paths keep their original ownership hashes for later uninstall. Untracked legacy
+theme files outside the staged destinations are preserved.
 
 Images upgrades reconcile `/usr/libexec/holonight-images/runtime` as a complete bundle.
 Obsolete regular files are removed only when the previous manifest assigns them to
 `holonight-images` and their type, mode and hash are unchanged. Recorded obsolete
 directories are removed only when empty after cleanup. Unowned leftovers (including
 files forgotten by older manifests), modified obsolete files, symlinks and incompatible
-path types block deployment, even with `--adopt-existing`. Move each reported conflict
+path types block deployment. Move each reported conflict
 outside the runtime or resolve it manually before retrying; an untracked `libcrypto.so.3`
 must be manually quarantined, since its filename cannot establish ownership.
 The native helper verifies the deployed bundle before ownership records are replaced.
 A failure retains transaction evidence for explicit `--resume`; it does not roll back
 payloads already copied.
-
-To migrate existing files from an unmanaged source installation, run
-`task install -- --adopt-existing`. The installer rejects package-owned files and
-backs up adopted files in private `adoption-backup-*` directories under
-`/var/lib/holonight/source-install/` before replacing them. The new files enter the umbrella ownership manifest,
-so subsequent installs need no migration flag. Uninstall does not restore backups.
 
 Older umbrella installations generated an untracked `icon-theme.cache`. Upgrades preserve and report
 that unowned cache instead of overwriting it; theme changes invalidate its timestamp. Remove the
