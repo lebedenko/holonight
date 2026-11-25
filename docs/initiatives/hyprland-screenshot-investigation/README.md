@@ -3,7 +3,7 @@
 Both patches for each Hyprland base are independent. Each was checked against
 the exact base with `git apply --check --whitespace=error`. Host-native builds
 and changed-file clang-format checks passed. The patches are local investigation
-artifacts.
+artifacts. [Hyprland BSD 3-Clause notice](../../../LICENSES/BSD-3-Clause.txt)
 
 | Hyprland base | Cursor capture | Keyboard focus |
 | --- | --- | --- |
@@ -72,6 +72,14 @@ PickColor values, and restored pointer and keyboard input after first-use Allow.
 | Full physical matrix using the patched compositor and stock broker, and staged Access on physical Sway and labwc | **unverified** | The matching complete matrix ran headless. |
 | Earlier physical frozen-consent implementation, private patched broker | **pass** | Hyprland, Sway and labwc exported real Flatpak Documents PNGs. Fresh and saved decisions, one-shot consent, Escape and Close, explicit and interactive cross-output Area, and layout invalidation and retry were exercised. Fresh full exports matched 6912 × 2160 on Hyprland and 7680 × 2400 on Sway and labwc. Independent pointer traces established exact mixed-scale Area bounds. This earlier broker and backend contract exercised a different consent path. |
 
-The final recorded staging requalification identifies no HoloNight regression.
+## Publication verification
+
+| Scenario | Result | Evidence |
+| --- | --- | --- |
+| Installed-package integration | **pass** | Screenshot provider `c5ffc7f4dc36f6bd760a59128c5a3854b6b01f2d` passed 7 CTest suites. The CLI rebuilt using the installed capture package and passed 6 suites. The portal built against the same installed provider and host-native HolonightQt. |
+| Staged portal activation | **pass** | The stock broker activated the staged backend, selected `holonight-access.portal` for Access and `holonight.portal` for Screenshot in the opt-in configuration, and exposed the public Screenshot interface. Private-bus Screenshot, Access, and Settings tests passed. |
+| Full visual matrix for the publication pins | **unverified** | The final provider has a newer Wayland capture and selection implementation. The historical headless and physical results above identify the tested configurations. The final pins were checked with installed-package builds, private-bus tests and broker activation. |
+
+The recorded staging requalification identified no HoloNight regression.
 Keep Access opt-in. See the [integration guide](../hyprland-screenshot-portal.md)
 for the staged configuration and native release gate.

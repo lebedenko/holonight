@@ -1,7 +1,7 @@
 # Screenshot portal integration
 
-Install the host build of HolonightQt with Wayland support, followed by
-the host build of the screenshot provider. Build the portal against the
+Install the host builds of HolonightQt with Wayland support and the
+standalone screenshot provider. Build the portal against the
 installed packages with `-DHOLONIGHT_PORTAL_SCREENSHOT=ON` and
 `-DHOLONIGHT_PORTAL_ACCESS=ON`. The installer keeps its defaults. The stock
 distro broker owns consent persistence and document export.

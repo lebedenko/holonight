@@ -4,3 +4,9 @@ path = ["**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Andrii L <lebeden@gmail.com>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["docs/initiatives/hyprland-screenshot-investigation/*/*.patch"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2022-2026 vaxerski", "2026 Andrii L <lebeden@gmail.com>"]
+SPDX-License-Identifier = "BSD-3-Clause"
