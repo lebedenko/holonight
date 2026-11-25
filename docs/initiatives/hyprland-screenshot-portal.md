@@ -1,39 +1,50 @@
-# Hyprland screenshot portal integration
+# Screenshot portal integration
 
-Install the host build of the screenshot provider first. Build the portal
-against that installed package with `-DHOLONIGHT_PORTAL_SCREENSHOT=ON`.
-The provider owns capture and selection, and the portal owns broker
-authorization, approval, request lifetime, and session PNGs.
+Install the host build of HolonightQt with Wayland support, followed by
+the host build of the screenshot provider. Build the portal against the
+installed packages with `-DHOLONIGHT_PORTAL_SCREENSHOT=ON` and
+`-DHOLONIGHT_PORTAL_ACCESS=ON`. The installer keeps its defaults. The stock
+distro broker owns consent persistence and document export.
 [Capture design](../../holonight-screenshot/docs/capture.md)
-[Portal design](../../xdg-desktop-portal-holonight/docs/sdd/screenshot.md)
+[Capture backend design](../../xdg-desktop-portal-holonight/docs/sdd/screenshot.md)
+[Access backend design](../../xdg-desktop-portal-holonight/docs/sdd/access.md)
 
-Use a fresh prefix for the capture provider. Build the CLI again with
-`-DSCREENSHOT_USE_INSTALLED_CAPTURE=ON` and build the opted-in portal with the
-same prefix on `CMAKE_PREFIX_PATH`. Run both test suites, including the
-private-bus screenshot tests and staged service activation.
+Use a fresh prefix for the capture provider. Build the CLI with
+`-DSCREENSHOT_USE_INSTALLED_CAPTURE=ON` and place the same prefix on the portal's
+`CMAKE_PREFIX_PATH`. Run the capture-provider and private-bus portal tests.
+Stage both default and opt-in portal payloads and check discovery and D-Bus
+activation with the distro broker.
 
-For a staged Hyprland session, make the staged backend service and
-`holonight.portal` visible to the private session bus and the broker. In the
-staged `xdg-desktop-portal/hyprland-portals.conf` under `XDG_CONFIG_HOME`,
-keep the session’s existing preferences and set these entries under
-`[preferred]`.
+In the staged session's active portal config under `XDG_CONFIG_HOME/xdg-desktop-portal`,
+retain the other preferences and set these entries under `[preferred]`.
 
 ```ini
+org.freedesktop.impl.portal.Access=holonight-access
 org.freedesktop.impl.portal.Screenshot=holonight
-org.freedesktop.impl.portal.Access=gtk
 ```
 
-Start the broker with the staged configuration and verify from its verbose
-log that it selects HoloNight for Screenshot and GTK for Access. The broker
-needs Access for the non-interactive screenshot permission flow.
+Verify in the stock broker's verbose log that it selects the two staged
+descriptors. Compare both split-backend configurations with the corresponding
+third-party Access or Screenshot implementation. Changing Access routing also
+changes other broker prompts that use Access. To roll back, restore the previous
+session preference and start a fresh session.
 [Portal routing configuration](https://flatpak.github.io/xdg-desktop-portal/docs/portals.conf.html)
 
-Manually verify a full-desktop capture, annotated area sharing across
-differently scaled outputs, and PickColor on each output. Check Escape or
-Cancel and verify that a sandboxed app can read the shared PNG through the
-broker’s document export. Run these interactively in Hyprland.
+## Native release gate
 
-Publish the provider before the consumer. The umbrella installer stages
-the screenshot provider after HolonightQt. The default source build of the
-portal keeps the Screenshot option off. Default Hyprland routing is a
-separate release handoff.
+Exercise Hyprland with long animations, then Sway and labwc with normal compositor
+settings. Use `grim` and the wlroots layout adapter's `wlr-randr --json` where applicable.
+Compare the former card area against solid and patterned references on mixed-scale
+outputs, and confirm pointer and keyboard input return when the card clears.
+
+Reset the Flatpak probe's screenshot permission between first-use Allow and Deny.
+Repeat after saved decisions and with ask-every-time. Test Escape, request
+cancellation, interactive capture, PickColor, and reading the exported PNG from
+the Flatpak app. Check an Access prompt unrelated to screenshots. Compare the
+interactive Area crop against the expected raster bounds across a mixed-scale seam.
+
+Keep Access staged until all three compositors pass. Record any presentation
+failure or capture artifacts with the compositor, scale, and animation settings.
+Publish the provider before the consumer when releasing the coordinated change.
+
+[Hyprland investigation and acceptance results](hyprland-screenshot-investigation/README.md)

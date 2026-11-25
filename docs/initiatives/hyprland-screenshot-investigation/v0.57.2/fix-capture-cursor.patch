@@ -1,0 +1,413 @@
+diff --git a/src/managers/screenshare/ScreenshareFrame.cpp b/src/managers/screenshare/ScreenshareFrame.cpp
+index 67e3381..33be5df 100644
+--- a/src/managers/screenshare/ScreenshareFrame.cpp
++++ b/src/managers/screenshare/ScreenshareFrame.cpp
+@@ -202,7 +202,7 @@ void CScreenshareFrame::renderMonitor(Render::CRenderContext& ctx) {
+ 
+     const auto PMONITOR = m_session->monitor();
+ 
+-    auto       TEXTURE = ctx.m_data.pMonitor->resources()->getMirrorTexture();
++    auto       TEXTURE = ctx.m_data.pMonitor->resources()->getCaptureTexture();
+     if (!TEXTURE) {
+         LOG(Log::ERR, "Invalid source texture");
+         return;
+@@ -331,7 +331,7 @@ void CScreenshareFrame::renderMonitor(Render::CRenderContext& ctx) {
+     if (m_overlayCursor) {
+         CRegion  fakeDamage = {0, 0, m_bufferSize.x, m_bufferSize.y};
+         Vector2D cursorPos  = Pointer::mgr()->untransformedPosition() - PMONITOR->m_position - m_session->m_captureBox.pos() / PMONITOR->m_scale;
+-        Pointer::mgr()->renderSoftwareCursorsFor(ctx, PMONITOR, Time::steadyNow(), fakeDamage, cursorPos, true);
++        Pointer::mgr()->renderSoftwareCursorsFor(ctx, PMONITOR, Time::steadyNow(), fakeDamage, cursorPos, true, true);
+     }
+ }
+ 
+diff --git a/src/output/MonitorResources.cpp b/src/output/MonitorResources.cpp
+index 4cc4d1b..757dd3b 100644
+--- a/src/output/MonitorResources.cpp
++++ b/src/output/MonitorResources.cpp
+@@ -58,6 +58,8 @@ void CMonitorResources::setImageDescription(NColorManagement::PImageDescription
+     m_sizedWorkBuffers.setImageDescription(imageDescription);
+     if (m_monitorMirrorFB)
+         m_monitorMirrorFB->setImageDescription(getMirrorTexImageDescription());
++    if (m_monitorCaptureFB)
++        m_monitorCaptureFB->setImageDescription(getMirrorTexImageDescription());
+     if (m_mirrorTex)
+         m_mirrorTex->m_imageDescription = getMirrorTexImageDescription();
+     invalidateMirrorFB();
+@@ -93,15 +95,14 @@ bool CMonitorResources::hasMirrorFB() const {
+     return m_monitorMirrorFB && m_monitorMirrorFB->isAllocated();
+ }
+ 
+-bool CMonitorResources::shouldKeepMirrorFB() const {
+-    return !m_monitor->m_mirrors.empty() || Screenshare::mgr()->isOutputBeingSSd(m_monitor.lock());
+-}
+-
+-void CMonitorResources::releaseMirrorFB() {
+-    if (m_monitorMirrorFB)
++void CMonitorResources::releaseUnusedOutputCopies() {
++    if (m_monitorMirrorFB && m_monitor->m_mirrors.empty())
+         m_monitorMirrorFB->release();
+ 
+-    invalidateMirrorFB();
++    // A mirror may have advanced the shared damage state while no capture was pending.
++    if (getCaptureTexture() && !Screenshare::mgr()->outputNeedsCopyFB(m_monitor.lock()) &&
++        (!m_monitor->m_mirrors.empty() || !Screenshare::mgr()->isOutputBeingSSd(m_monitor.lock())))
++        m_monitorCaptureFB->release();
+ }
+ 
+ void CMonitorResources::invalidateMirrorFB() {
+@@ -111,14 +112,14 @@ void CMonitorResources::invalidateMirrorFB() {
+ }
+ 
+ void CMonitorResources::markMirrorFBStale(const CRegion& damage) {
+-    if (damage.empty() || !hasMirrorFB() || !m_mirrorFBValid)
++    if (damage.empty() || !m_mirrorFBValid)
+         return;
+ 
+     m_mirrorFBStaleDamage.add(damage).intersect(CBox{{}, mirrorFBDamageSize()});
+ }
+ 
+ void CMonitorResources::markMirrorFBStale() {
+-    if (!hasMirrorFB() || !m_mirrorFBValid)
++    if (!m_mirrorFBValid)
+         return;
+ 
+     m_mirrorFBNeedsFullRefresh = true;
+@@ -133,22 +134,35 @@ void CMonitorResources::markMirrorFBUpdated() {
+ 
+ CRegion CMonitorResources::pendingMirrorFBDamage() const {
+     const auto DAMAGE_SIZE = mirrorFBDamageSize();
+-    if (!hasMirrorFB() || !m_mirrorFBValid || m_mirrorFBNeedsFullRefresh)
++    if (!m_mirrorFBValid || m_mirrorFBNeedsFullRefresh || (!m_monitor->m_mirrors.empty() && !hasMirrorFB()) ||
++        (Screenshare::mgr()->outputNeedsCopyFB(m_monitor.lock()) && !getCaptureTexture()))
+         return CRegion{0, 0, DAMAGE_SIZE.x, DAMAGE_SIZE.y};
+ 
+     return m_mirrorFBStaleDamage.copy();
+ }
+ 
+ SP<Render::IFramebuffer> CMonitorResources::mirrorFB() {
+-    if (!m_monitorMirrorFB)
+-        m_monitorMirrorFB = g_pHyprRenderer->createFB(std::format("Monitor {} mirror FB", m_monitor->m_name));
++    return outputCopyFB(m_monitorMirrorFB, "mirror");
++}
+ 
+-    if (!m_monitorMirrorFB->isAllocated()) {
+-        m_monitorMirrorFB->alloc(m_size.x, m_size.y, m_monitor->m_activeMonitorRule.m_enable10bit ? DRM_FORMAT_XRGB2101010 : DRM_FORMAT_XRGB8888);
+-        m_monitorMirrorFB->setImageDescription(getMirrorTexImageDescription());
++SP<Render::IFramebuffer> CMonitorResources::captureFB() {
++    return outputCopyFB(m_monitorCaptureFB, "capture");
++}
++
++SP<Render::ITexture> CMonitorResources::getCaptureTexture() const {
++    return m_monitorCaptureFB && m_monitorCaptureFB->isAllocated() ? m_monitorCaptureFB->getTexture() : nullptr;
++}
++
++SP<Render::IFramebuffer> CMonitorResources::outputCopyFB(SP<Render::IFramebuffer>& fb, const char* purpose) {
++    if (!fb)
++        fb = g_pHyprRenderer->createFB(std::format("Monitor {} {} FB", m_monitor->m_name, purpose));
++
++    if (!fb->isAllocated()) {
++        fb->alloc(m_size.x, m_size.y, m_monitor->m_activeMonitorRule.m_enable10bit ? DRM_FORMAT_XRGB2101010 : DRM_FORMAT_XRGB8888);
++        fb->setImageDescription(getMirrorTexImageDescription());
+     }
+ 
+-    return m_monitorMirrorFB;
++    return fb;
+ }
+ 
+ SP<Render::ITexture> CMonitorResources::getMirrorTexture() {
+diff --git a/src/output/MonitorResources.hpp b/src/output/MonitorResources.hpp
+index 9a63811..ea84750 100644
+--- a/src/output/MonitorResources.hpp
++++ b/src/output/MonitorResources.hpp
+@@ -20,8 +20,7 @@ namespace Monitor {
+         SP<Render::IFramebuffer>           getUnusedWorkBuffer(DRMFormat format, NColorManagement::PImageDescription imageDescription, std::optional<Vector2D> size = std::nullopt);
+         void                               forEachUnusedFB(std::function<void(SP<Render::IFramebuffer>)> callback, bool includeNamed = false);
+         bool                               hasMirrorFB() const;
+-        bool                               shouldKeepMirrorFB() const;
+-        void                               releaseMirrorFB();
++        void                               releaseUnusedOutputCopies();
+         void                               invalidateMirrorFB();
+         void                               markMirrorFBStale(const CRegion& damage);
+         void                               markMirrorFBStale();
+@@ -31,6 +30,8 @@ namespace Monitor {
+         void                               disableMirror();
+         SP<Render::IFramebuffer>           mirrorFB();
+         SP<Render::ITexture>               getMirrorTexture();
++        SP<Render::IFramebuffer>           captureFB();
++        SP<Render::ITexture>               getCaptureTexture() const;
+         void                               refreshBlurFB();
+         const SP<Render::CSceneResources>& sceneResources() const;
+         bool                               prepareSceneResources(Render::CSceneResources& resources) const;
+@@ -45,7 +46,10 @@ namespace Monitor {
+         NColorManagement::PImageDescription getMirrorTexImageDescription();
+         Vector2D                            mirrorFBDamageSize() const;
+ 
++        SP<Render::IFramebuffer>            outputCopyFB(SP<Render::IFramebuffer>& fb, const char* purpose);
++
+         SP<Render::IFramebuffer>            m_monitorMirrorFB;
++        SP<Render::IFramebuffer>            m_monitorCaptureFB;
+         CRegion                             m_mirrorFBStaleDamage;
+         WP<CMonitor>                        m_monitor;
+         DRMFormat                           m_drmFormat;
+diff --git a/src/render/Context.hpp b/src/render/Context.hpp
+index 430f238..9c299a8 100644
+--- a/src/render/Context.hpp
++++ b/src/render/Context.hpp
+@@ -82,9 +82,11 @@ namespace Render {
+         bool                               m_swapchainAcquired    = false;
+ 
+         struct {
+-            bool fakeFrame            = false;
+-            bool offloadedFramebuffer = false;
+-            bool applyFinalShader     = false;
++            bool                fakeFrame            = false;
++            bool                offloadedFramebuffer = false;
++            bool                applyFinalShader     = false;
++            bool                captureCopyFailed    = false;
++            std::optional<CBox> outputBox;
+         } m_gl;
+ 
+       private:
+diff --git a/src/render/OpenGL.cpp b/src/render/OpenGL.cpp
+index cb2801c..2ed83a6 100644
+--- a/src/render/OpenGL.cpp
++++ b/src/render/OpenGL.cpp
+@@ -793,8 +793,7 @@ bool CHyprOpenGLImpl::begin(CRenderContext& ctx, PHLMONITOR pMonitor, const CReg
+ 
+ void CHyprOpenGLImpl::end(CRenderContext& ctx) {
+     static auto PZOOMDISABLEAA = CConfigValue<Config::INTEGER>("cursor:zoom_disable_aa");
+-    auto&       m_renderData   = ctx.m_data;
+-    const auto  PMONITOR       = m_renderData.pMonitor;
++    const auto  PMONITOR       = ctx.m_data.pMonitor;
+     TRACY_GPU_ZONE("RenderEnd");
+ 
+     ctx.m_data.currentWindow.reset();
+@@ -819,22 +818,17 @@ void CHyprOpenGLImpl::end(CRenderContext& ctx) {
+             renderTexturePrimitive(ctx, TEXTURE, CBox{{}, TARGET_SIZE});
+             blend(true);
+         } else {
+-            CBox monbox = {0, 0, m_renderData.pMonitor->m_transformedSize.x, m_renderData.pMonitor->m_transformedSize.y};
+-
+-            if LIKELY (ctx.m_data.mouseZoomFactor == 1.0f)
+-                m_renderData.pMonitor->m_zoomController.m_resetCameraState = true;
+-            m_renderData.pMonitor->m_zoomController.applyZoomTransform(ctx, monbox);
++            const auto monbox = outputBox(ctx);
+ 
+             if UNLIKELY (ctx.m_data.mouseZoomFactor != 1.F && ctx.m_data.mouseZoomUseMouse && *PZOOMDISABLEAA)
+                 ctx.m_data.useNearestNeighbor = true;
+ 
+-            // copy the damaged areas into the mirror buffer
+-            // we can't use the offloadFB for mirroring / ss, as it contains artifacts from blurring
+-            if UNLIKELY (ctx.m_data.pMonitor->needsACopyFB() && !ctx.m_gl.fakeFrame) {
+-                if (saveBufferForMirror(ctx, monbox))
+-                    ctx.m_data.pMonitor->resources()->markMirrorFBUpdated();
++            if UNLIKELY (PMONITOR->needsACopyFB() && !ctx.m_gl.fakeFrame) {
++                const bool MIRROR_READY = PMONITOR->m_mirrors.empty() || saveOutputCopy(ctx, monbox, PMONITOR->resources()->mirrorFB());
++                if (MIRROR_READY && !ctx.m_gl.captureCopyFailed)
++                    PMONITOR->resources()->markMirrorFBUpdated();
+                 else
+-                    ctx.m_data.pMonitor->resources()->invalidateMirrorFB();
++                    PMONITOR->resources()->invalidateMirrorFB();
+             }
+ 
+             blend(false);
+@@ -865,7 +859,7 @@ void CHyprOpenGLImpl::end(CRenderContext& ctx) {
+                         }
+ 
+                         finalTexture    = postProcessFBs[postProcessCount++]->getTexture();
+-                        finalBox        = CBox{{}, m_renderData.pMonitor->m_transformedSize};
++                        finalBox        = CBox{{}, PMONITOR->m_transformedSize};
+                         finalCMComplete = true;
+                     } else {
+                         LOG(Log::ERR, "Failed to acquire a work buffer for final color management");
+@@ -890,7 +884,7 @@ void CHyprOpenGLImpl::end(CRenderContext& ctx) {
+                         }
+ 
+                         finalTexture = postProcessFBs[postProcessCount++]->getTexture();
+-                        finalBox     = CBox{{}, m_renderData.pMonitor->m_transformedSize};
++                        finalBox     = CBox{{}, PMONITOR->m_transformedSize};
+                     } else {
+                         LOG(Log::ERR, "Failed to acquire a work buffer for the final screen shader");
+                         postProcessFBs[postProcessCount].reset();
+@@ -2388,16 +2382,38 @@ void CHyprOpenGLImpl::renderInnerGlow(CRenderContext& ctx, const CBox& box, int
+     glBindVertexArray(0);
+ }
+ 
+-bool CHyprOpenGLImpl::saveBufferForMirror(CRenderContext& ctx, const CBox& box) {
++const CBox& CHyprOpenGLImpl::outputBox(CRenderContext& ctx) {
++    if (!ctx.m_gl.outputBox) {
++        const auto MONITOR = ctx.m_data.pMonitor;
++        ctx.m_gl.outputBox = CBox{{}, MONITOR->m_transformedSize};
++        if (ctx.m_data.mouseZoomFactor == 1.F)
++            MONITOR->m_zoomController.m_resetCameraState = true;
++        MONITOR->m_zoomController.applyZoomTransform(ctx, *ctx.m_gl.outputBox);
++    }
++    return *ctx.m_gl.outputBox;
++}
++
++void CHyprOpenGLImpl::saveBufferForCapture(CRenderContext& ctx) {
++    static auto PZOOMDISABLEAA = CConfigValue<Config::INTEGER>("cursor:zoom_disable_aa");
++    auto        drawState      = ctx.saveDrawState();
++    ctx.m_data.currentWindow.reset();
++    ctx.m_data.surface.reset();
++    ctx.m_data.clipBox = {};
++    if (ctx.m_data.mouseZoomFactor != 1.F && ctx.m_data.mouseZoomUseMouse && *PZOOMDISABLEAA)
++        ctx.m_data.useNearestNeighbor = true;
++
++    ctx.m_gl.captureCopyFailed = !saveOutputCopy(ctx, outputBox(ctx), ctx.m_data.pMonitor->resources()->captureFB());
++}
++
++bool CHyprOpenGLImpl::saveOutputCopy(CRenderContext& ctx, const CBox& box, const SP<IFramebuffer>& fb) {
+     const auto TEX = ctx.m_data.pMonitor->resources()->m_mirrorTex ? ctx.m_data.pMonitor->resources()->m_mirrorTex : ctx.m_data.currentFB->getTexture();
+-    if (!TEX) {
+-        LOG(Log::ERR, "Invalid source texture for mirror");
++    if (!TEX || !fb->isAllocated()) {
++        LOG(Log::ERR, "Invalid framebuffer for output copy");
+         return false;
+     }
+-    auto fb    = ctx.m_data.pMonitor->resources()->mirrorFB();
+     auto guard = g_pHyprRenderer->bindTempFB(ctx, fb);
+ 
+-    LOG(Log::TRACE, "CM: saveBufferForMirror {} -> {}", TEX->m_imageDescription->value(), ctx.m_data.currentFB->imageDescription()->value());
++    LOG(Log::TRACE, "CM: saveOutputCopy {} -> {}", TEX->m_imageDescription->value(), ctx.m_data.currentFB->imageDescription()->value());
+ 
+     blend(false);
+ 
+diff --git a/src/render/OpenGL.hpp b/src/render/OpenGL.hpp
+index ffaa353..bf64edb 100644
+--- a/src/render/OpenGL.hpp
++++ b/src/render/OpenGL.hpp
+@@ -191,6 +191,7 @@ namespace Render::GL {
+         bool begin(CRenderContext& ctx, PHLMONITOR, const CRegion& damage, SP<IFramebuffer> fb = nullptr, std::optional<CRegion> finalDamage = {});
+         void beginSimple(CRenderContext& ctx, PHLMONITOR, const CRegion& damage, SP<IRenderbuffer> rb = nullptr, SP<IFramebuffer> fb = nullptr);
+         void end(CRenderContext& ctx);
++        void saveBufferForCapture(CRenderContext& ctx);
+ 
+         void renderRect(CRenderContext& ctx, const CBox&, const CHyprColor&, SRectRenderData data);
+         void renderTexture(CRenderContext& ctx, SP<ITexture>, const CBox&, STextureRenderData data);
+@@ -226,7 +227,8 @@ namespace Render::GL {
+ 
+         void                                      destroyMonitorResources(PHLMONITORREF);
+ 
+-        bool                                      saveBufferForMirror(CRenderContext& ctx, const CBox&);
++        bool                                      saveOutputCopy(CRenderContext& ctx, const CBox&, const SP<IFramebuffer>&);
++        const CBox&                               outputBox(CRenderContext& ctx);
+ 
+         void                                      applyScreenShader(const std::string& path);
+ 
+diff --git a/src/render/Renderer.cpp b/src/render/Renderer.cpp
+index a748a54..182c662 100644
+--- a/src/render/Renderer.cpp
++++ b/src/render/Renderer.cpp
+@@ -1899,10 +1899,8 @@ bool IHyprRenderer::beginRender(PHLMONITOR pMonitor, CRegion& damage, eRenderMod
+     if (m_context.readOnlyEffects())
+         damage = CRegion{CBox{{}, simple ? m_context.m_data.fbSize : pMonitor->m_transformedSize}};
+ 
+-    const bool HAS_MIRROR_FB = RESOURCES->hasMirrorFB();
+-
+-    if (!m_context.readOnlyEffects() && HAS_MIRROR_FB && !RESOURCES->shouldKeepMirrorFB())
+-        RESOURCES->releaseMirrorFB();
++    if (!m_context.readOnlyEffects() && m_context.m_mode == RENDER_MODE_NORMAL)
++        RESOURCES->releaseUnusedOutputCopies();
+ 
+     if (m_context.m_mode == RENDER_MODE_FULL_FAKE) {
+         started = beginFullFakeRenderInternal(m_context, pMonitor, damage, fb, simple);
+@@ -2229,7 +2227,7 @@ void IHyprRenderer::renderMirrored(CRenderContext& ctx) {
+     auto monitor  = ctx.m_data.pMonitor;
+     auto mirrored = monitor->m_mirrorOf;
+ 
+-    // saveBufferForMirror should create it
++    // The mirrored output populates this framebuffer during rendering.
+     if (!mirrored->resources()->hasMirrorFB())
+         return;
+ 
+@@ -2455,6 +2453,9 @@ void IHyprRenderer::renderMonitor(PHLMONITOR pMonitor, bool commit) {
+             sendFrameEventsToWorkspace(pMonitor, pMonitor->m_activeSpecialWorkspace, NOW);
+     }
+ 
++    if (Screenshare::mgr()->outputNeedsCopyFB(pMonitor))
++        ctx.m_pass.addScreenCapture();
++
+     renderCursor = renderCursor && shouldRenderCursor();
+ 
+     if (renderCursor) {
+diff --git a/src/render/pass/Pass.cpp b/src/render/pass/Pass.cpp
+index 913be94..fdb23c4 100644
+--- a/src/render/pass/Pass.cpp
++++ b/src/render/pass/Pass.cpp
+@@ -38,6 +38,26 @@ void CRenderPass::add(UP<IPassElement>&& el) {
+     m_passElements.emplace_back(SPassElementData{.element = std::move(el)});
+ }
+ 
++class CScreenCapturePassElement : public IPassElement {
++  public:
++    bool needsLiveBlur(CRenderContext&) override {
++        return false;
++    }
++    bool needsPrecomputeBlur(CRenderContext&) override {
++        return false;
++    }
++    const char* passName() override {
++        return "CScreenCapturePassElement";
++    }
++    ePassElementType type() override {
++        return EK_SCREEN_CAPTURE;
++    }
++};
++
++void CRenderPass::addScreenCapture() {
++    add(makeUnique<CScreenCapturePassElement>());
++}
++
+ void CRenderPass::simplify(CRenderContext& ctx, bool willBlur, const CRegion& liveBlurRegion) {
+     const auto  pMonitor   = ctx.m_data.pMonitor;
+     static auto PDEBUGPASS = CConfigValue<Config::INTEGER>("debug:pass");
+@@ -47,6 +67,12 @@ void CRenderPass::simplify(CRenderContext& ctx, bool willBlur, const CRegion& li
+     CRegion newDamage = m_damage.copy().intersect(CBox{{}, pMonitor->m_transformedSize});
+     for (auto& el : m_passElements | std::views::reverse) {
+ 
++        // Elements above the capture point cannot occlude pixels needed by capture.
++        if (el.element->type() == EK_SCREEN_CAPTURE) {
++            newDamage = m_damage.copy().intersect(CBox{{}, pMonitor->m_transformedSize});
++            continue;
++        }
++
+         if (newDamage.empty() && !el.element->undiscardable(ctx)) {
+             el.discard = true;
+             continue;
+@@ -245,6 +271,11 @@ CRegion CRenderPass::render(CRenderContext& ctx, const CRegion& damage_) {
+     bool       usesPrecomputedBlur = false;
+ 
+     for (auto& el : m_passElements) {
++        if (el.element->type() == EK_SCREEN_CAPTURE) {
++            GL::g_pHyprOpenGL->saveBufferForCapture(ctx);
++            continue;
++        }
++
+         if (el.discard) {
+             el.element->discard(ctx);
+             continue;
+diff --git a/src/render/pass/Pass.hpp b/src/render/pass/Pass.hpp
+index 9659314..8333eff 100644
+--- a/src/render/pass/Pass.hpp
++++ b/src/render/pass/Pass.hpp
+@@ -17,6 +17,7 @@ namespace Render {
+ 
+         void    add(UP<IPassElement>&& elem);
+         void    clear();
++        void    addScreenCapture();
+         void    removeAllOfType(const std::string& type);
+ 
+         CRegion render(CRenderContext& ctx, const CRegion& damage_);
+diff --git a/src/render/pass/PassElement.hpp b/src/render/pass/PassElement.hpp
+index 75738fb..f79fd2e 100644
+--- a/src/render/pass/PassElement.hpp
++++ b/src/render/pass/PassElement.hpp
+@@ -23,6 +23,7 @@ enum ePassElementType : uint8_t {
+     EK_TRANSFORMED_WINDOW,
+     EK_CUSTOM,
+     EK_BACKDROP_SCOPE,
++    EK_SCREEN_CAPTURE,
+ };
+ 
+ class IPassElement {
