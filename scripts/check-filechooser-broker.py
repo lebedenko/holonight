@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import re
 from pathlib import Path
 import shlex
 import signal
@@ -57,6 +58,20 @@ def session(root):
                 return call(DESKTOP, PATH, settings_interface, "Read",
                             GLib.Variant("(ss)", (appearance_ns, "color-scheme"))).unpack()[0]
 
+            def check_read_all(destination, interface, scheme):
+                response = call(destination, PATH, interface, "ReadAll",
+                                GLib.Variant("(as)", ([appearance_ns],)))
+                namespace = response.get_child_value(0).get_child_value(0)
+                assert namespace.get_child_value(0).get_string() == appearance_ns
+                appearance = namespace.get_child_value(1)
+                signatures = {}
+                for index in range(appearance.n_children()):
+                    item = appearance.get_child_value(index)
+                    signatures[item.get_child_value(0).get_string()] = item.get_child_value(1).get_variant().get_type_string()
+                assert signatures == {"color-scheme": "u", "contrast": "u", "reduced-motion": "u",
+                                      "accent-color": "(ddd)"}, signatures
+                assert response.unpack()[0][appearance_ns]["color-scheme"] == scheme
+
             def replace_appearance(contents):
                 path = Path(os.environ["HOLONIGHT_APPEARANCE_FILE"])
                 temporary = path.with_suffix(".new")
@@ -76,6 +91,8 @@ def session(root):
                     time.sleep(0.01)
 
             assert read_scheme() == 1, "Settings startup default did not reach broker"
+            check_read_all(DESKTOP, settings_interface, 1)
+            check_read_all(BACKEND, "org.freedesktop.impl.portal.Settings", 1)
             pid = call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
                        "GetConnectionUnixProcessID", GLib.Variant("(s)", (BACKEND,))).unpack()[0]
             assert Path(f"/proc/{pid}/exe").resolve() == Path(os.environ["PORTAL_CHECK_EXECUTABLE"])
@@ -83,6 +100,7 @@ def session(root):
             light = dark.replace("holonight-dark", "holonight-day").replace("blue", "violet")
             replace_appearance(light)
             wait_for(lambda: read_scheme() == 2, "Settings watcher did not publish light mode")
+            check_read_all(DESKTOP, settings_interface, 2)
             drain_for(0.4)
             assert any(change[1] == "color-scheme" for change in changes), "Broker omitted SettingChanged"
             changes.clear()
@@ -95,7 +113,7 @@ def session(root):
             replace_appearance(dark)
             wait_for(lambda: read_scheme() == 1, "Settings watcher did not recover")
             bus.signal_unsubscribe(subscription)
-            print("Settings: shell-independent activation, Read, watcher signals, retention and recovery PASS", flush=True)
+            print("Settings: shell-independent activation, Read and ReadAll, watcher signals, retention and recovery PASS", flush=True)
             for index, (method, extra) in enumerate((
                     ("OpenFile", {}),
                     ("OpenFile", {"directory": GLib.Variant("b", True)}),
@@ -107,6 +125,18 @@ def session(root):
                 handle = call(DESKTOP, PATH, "org.freedesktop.portal.FileChooser", method,
                               GLib.Variant("(ssa{sv})", ("", "Isolated broker check", options))).unpack()[0]
                 wait_for(lambda: backend_request_exists(handle), f"{method} did not reach the staged backend")
+                if index == 0:
+                    def loaded_host_qt():
+                        mappings = Path(f"/proc/{pid}/maps").read_text()
+                        core = Path(os.environ["PORTAL_CHECK_QT_CORE"]).resolve(strict=True)
+                        match = re.fullmatch(r"libQt6Core\.so\.(.+)", core.name)
+                        assert match, core
+                        shapes = core.with_name("libQt6QuickShapes.so." + match[1])
+                        return {str(core), str(shapes)} <= {
+                            line.split(maxsplit=5)[-1] for line in mappings.splitlines()
+                        }
+
+                    wait_for(loaded_host_qt, "Fresh backend did not load host Qt Core and Qt Quick Shapes")
                 call(DESKTOP, handle, "org.freedesktop.portal.Request", "Close")
                 wait_for(lambda: not backend_request_exists(handle), f"{method} cancellation left a backend request")
                 assert call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
@@ -150,7 +180,8 @@ def main():
             raise RuntimeError("Staged backend executable missing")
         service.write_text("\n".join(f"Exec={shlex.quote(str(executable))}" if line.startswith("Exec=") else line
                                      for line in service.read_text().splitlines()) + "\n")
-        env = {**os.environ, "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
+        _, qt_core = next(stage.rglob("xdg-desktop-portal-holonight.qt-build")).read_text().splitlines()
+        env = {**os.environ, "PORTAL_CHECK_QT_CORE": qt_core, "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
                "QML_IMPORT_PATH": args.imports, "LD_LIBRARY_PATH": args.libraries, "XDG_CURRENT_DESKTOP": "HoloNight",
                "QT_QPA_PLATFORMTHEME": "", "PORTAL_CHECK_EXECUTABLE": str(executable),
                "HOLONIGHT_APPEARANCE_FILE": str(root / "appearance.toml"),
