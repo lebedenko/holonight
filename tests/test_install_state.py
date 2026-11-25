@@ -439,6 +439,8 @@ class NativePreparation(unittest.TestCase):
             logs = []
             real_run = installer.run
             def capture(*command, **kwargs):
+                if command[:2] != ('cmake', '--build'):
+                    return real_run(*command, **kwargs)
                 result = real_run(*command, **kwargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
                 logs.append(result.stdout)
                 return result

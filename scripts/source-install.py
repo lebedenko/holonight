@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shlex
 import shutil
 import subprocess
 import sys
@@ -19,12 +20,26 @@ ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / '.source-install'
 
 
-def run(*args, **kwargs):
-    return subprocess.run(list(map(str, args)), check=True, **kwargs)
+def run(*args, destdir=None, **kwargs):
+    command = list(map(str, args))
+    if destdir is not None:
+        kwargs['env'] = dict(os.environ, DESTDIR=str(destdir))
+    try:
+        return subprocess.run(command, check=True, **kwargs)
+    except subprocess.CalledProcessError as error:
+        line = shlex.join(command)
+        if destdir is not None:
+            line = 'DESTDIR=' + shlex.join([str(destdir)]) + ' ' + line
+        if (source := kwargs.get('input')) is not None:
+            # Keep the probe on one line while preserving its trailing newline.
+            escaped = source.replace('\\', '\\\\').replace('\n', '\\n')
+            line = shlex.join(['printf', '%b', escaped]) + ' | ' + line
+        print(f'error: command failed (exit {error.returncode})\n{line}', file=sys.stderr)
+        raise
 
 
 def output(*args):
-    return subprocess.check_output(list(map(str, args)), text=True).strip()
+    return run(*args, stdout=subprocess.PIPE, text=True).stdout.strip()
 
 
 def host_identity():
@@ -36,7 +51,8 @@ def source_identity(name):
     revision = output('git', '-C', source, 'rev-parse', 'HEAD')
     status = output('git', '-C', source, 'status', '--porcelain', '--untracked-files=normal')
     checksum = hashlib.sha256()
-    files = subprocess.check_output(['git', '-C', str(source), 'ls-files', '-z', '--cached', '--others', '--exclude-standard'])
+    files = run('git', '-C', source, 'ls-files', '-z', '--cached', '--others', '--exclude-standard',
+                stdout=subprocess.PIPE).stdout
     for relative in sorted(set(files.split(b'\0')) - {b''}):
         path = source / os.fsdecode(relative)
         checksum.update(relative + b'\0')
@@ -156,7 +172,10 @@ def prepare(selection, args):
                 key_file = build / 'installer-runtime.key'
                 valid = key_file.exists() and key_file.read_text() == bundle_key and bundle.is_dir()
                 if valid:
-                    valid = subprocess.run([str(build / 'holonight-images-helper'), '--verify-runtime', str(bundle)]).returncode == 0
+                    try:
+                        run(build / 'holonight-images-helper', '--verify-runtime', bundle)
+                    except subprocess.CalledProcessError:
+                        valid = False
                 if not valid:
                     bundle = Path(tempfile.mkdtemp(prefix='runtime-', dir=build)) / 'bundle'
                     run('python3', source / 'scripts/prepare-isolated-runtime.py', '--helper',
@@ -167,7 +186,7 @@ def prepare(selection, args):
                     bundle = Path((build / 'installer-runtime.path').read_text())
                 atomic(key_file, bundle_key)
                 run('cmake', '-S', source, '-B', build, f'-DHOLONIGHT_IMAGES_RUNTIME_BUNDLE={bundle}')
-            run('cmake', '--install', build, env=dict(os.environ, DESTDIR=str(payload)))
+            run('cmake', '--install', build, destdir=payload)
         if source_identity(name) != identity:
             raise ValueError(f'source changed while preparing {name}; prepare again')
         rows = inventory(payload, name, identity['revision'])
@@ -494,7 +513,7 @@ def images_command(root, state, images, check=False):
         command += ['--check']
     else:
         command += ['--emit-manifest', '--transaction-journal', str(state / 'images-transaction.json')]
-    return subprocess.check_output(command, text=True)
+    return run(*command, stdout=subprocess.PIPE, text=True).stdout
 
 
 def images_step(root, state, transaction):
@@ -716,5 +735,7 @@ def deploy(args):
 if __name__ == '__main__':
     try:
         main()
+    except subprocess.CalledProcessError:
+        sys.exit('error: prepared payloads and transaction evidence retained')
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         sys.exit(f'error: {error}; prepared payloads and transaction evidence retained')
