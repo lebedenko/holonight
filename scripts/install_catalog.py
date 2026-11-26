@@ -35,7 +35,7 @@ CATALOG = {
     'holonight-files': Component(('holonight-file-browser', 'holonight-qt', 'holonight-images',
                                  'holonight-thumbnails', 'holonight-search', 'holonight-system-services'),
                                 hooks=('desktop',)),
-    'holonight-screenshot': Component(packages=('grim', 'layer-shell-qt', 'wl-clipboard', 'wlr-randr'),
+    'holonight-screenshot': Component(packages=('grim', 'layer-shell-qt', 'tomlplusplus', 'wl-clipboard', 'wlr-randr'),
                                      hooks=('desktop',)),
     'xdg-desktop-portal-holonight': Component(('holonight-qt', 'holonight-search', 'holonight-file-browser'),
                                             hooks=('services',)),
